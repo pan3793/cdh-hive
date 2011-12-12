@@ -27,9 +27,12 @@
     <include file="${ivy.conf.dir}/common-configurations.xml"/>
   </configurations>
   <dependencies>
-    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${hadoop.version.ant-internal}">
-      <artifact name="hadoop" type="source" ext="tar.gz"/>
-    </dependency>
+    <dependency org="${hadoop.dep.org}" name="${hadoop.dep.name}" rev="${hadoop.version.ant-internal}">
+      <artifact name="${hadoop.dep.artifact}" type="source" ext="tar.gz"/>
+    </dependency> 
+    <dependency org="${hadoop.dep.org}" name="${hadoop.dep.name}" rev="${hadoop.security.version}">
+      <artifact name="${hadoop.dep.artifact}" type="source" ext="tar.gz"/>
+    </dependency> 
     <dependency org="org.apache.zookeeper" name="zookeeper"
                 rev="${zookeeper.version}" transitive="false">
       <include type="jar"/>

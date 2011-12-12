@@ -23,6 +23,33 @@
          name="hivecommon" default="jar">
 
   <property name="hive.root" location="${basedir}/.."/>
+
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="${hive.root}/testlibs/ant-contrib-1.0b3.jar"/>
+    </classpath>
+  </taskdef>
+
+  <!-- Initializes ivy/libraries.properties and build.properties with CDH versions -->
+  <if>
+    <and>
+      <not>
+        <isset property="cdh.maven" />
+      </not>
+      <not>
+        <available file="${hive.root}/cdh.build.properties" />
+      </not>
+    </and>
+    <then>
+      <exec  executable="mvn" dir="${hive.root}" failonerror="true">
+        <arg value="-f" />
+        <arg value="cloudera-pom.xml" />
+        <arg value="process-resources"/>
+      </exec>
+    </then>
+  </if>
+
+  <property file="${hive.root}/cdh.build.properties"/>
   <property file="${hive.root}/build.properties"/>
   <property file="${user.home}/build.properties" />
   <property file="${basedir}/build.properties" />
@@ -130,6 +157,8 @@
   <target name="install-hadoopcore-internal" depends="ivy-retrieve-hadoop-source"
     unless="hadoopcore.${hadoop.version.ant-internal}.install.done">
     <echo message="Project: ${ant.project.name}"/>
+    <move tofile="${build.dir.hadoop}/hadoop-${hadoop.version.ant-internal}.tar.gz"
+          file="${build.dir.hadoop}/hadoop-dist-${hadoop.version.ant-internal}.tar.gz" />
     <untar src="${build.dir.hadoop}/hadoop-${hadoop.version.ant-internal}.tar.gz" dest="${build.dir.hadoop}" compression="gzip"/>
     <chmod file="${hadoop.root}/bin/hadoop" perm="+x"/>
     <touch file="${build.dir.hadoop}/hadoop-${hadoop.version.ant-internal}.installed"/>

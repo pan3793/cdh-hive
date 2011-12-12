@@ -47,6 +47,15 @@
       <artifact pattern="${hadoop.mirror2}/hadoop/core/[artifact]-[revision]/[artifact]-[revision].[ext]" />
     </url>
 
+    <!-- CDH build repo, the pattern attribute handles SNAPSHOT artifacts -->
+    <ibiblio name="reactor-repo" root="${reactor.repo}"
+             m2compatible="true"
+             checkmodified="true"/>
+    <ibiblio name="cloudera-releases" m2compatible="true"
+             root="https://repository.cloudera.com/content/groups/cdh-releases-rcs" checkmodified="true"/>
+    <ibiblio name="cloudera-snapshots" m2compatible="true"
+             root="https://repository.cloudera.com/content/repositories/snapshots" checkmodified="true"/>
+
     <ibiblio name="maven2" root="${repo.maven.org}" pattern="${maven2.pattern.ext}" m2compatible="true"/>
     <ibiblio name="apache-snapshot" root="${snapshot.apache.org}" m2compatible="true"
              checkmodified="${ivy.checkmodified}" 
@@ -64,18 +73,24 @@
     <chain name="default" dual="true" returnFirst="true" 
            checkmodified="${ivy.checkmodified}" 
            changingPattern="${ivy.changingPattern}">
+      <resolver ref="reactor-repo"/>
       <resolver ref="apache-snapshot"/>
       <resolver ref="maven2"/>
       <resolver ref="datanucleus-repo"/>
       <resolver ref="hadoop-source"/>
       <resolver ref="hadoop-source2"/>
+      <resolver ref="cloudera-releases" />
+      <resolver ref="cloudera-snapshots" />
     </chain>
 
     <chain name="internal" dual="true">
+      <resolver ref="reactor-repo"/>
       <resolver ref="fs"/>
       <resolver ref="apache-snapshot"/>
       <resolver ref="maven2"/>
       <resolver ref="datanucleus-repo"/>
+      <resolver ref="cloudera-releases" />
+      <resolver ref="cloudera-snapshots" />
     </chain>
 
     <chain name="external">

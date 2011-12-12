@@ -28,8 +28,8 @@
   </configurations>
   <dependencies>
     <!-- Runtime Dependencies -->
-    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${hadoop.version.ant-internal}">
-      <artifact name="hadoop" type="source" ext="tar.gz"/>
+    <dependency org="org.apache.hadoop" name="${hadoop.dep.name}" rev="${hadoop.version.ant-internal}">
+      <artifact name="${hadoop.dep.artifact}" type="source" ext="tar.gz"/>
     </dependency>
     <dependency org="commons-cli" name="commons-cli" rev="${commons-cli.version}"/>
     <dependency org="commons-lang" name="commons-lang" rev="${commons-lang.version}"/>
