@@ -4,6 +4,7 @@ hadoop.dep.name=hadoop-dist
 hadoop.dep.artifact=hadoop-dist
 hadoop.version=org.apache.hadoop:hadoop-main.version
 hadoop.security.version=org.apache.hadoop:hadoop-main.version
+hadoop.security.version.prefix=0.23
 reactor.repo=https://repository.cloudera.com/content/repositories/snapshots
 hbase.version=org.apache.hbase:hbase.version
 hbase-test.version=org.apache.hbase:hbase.version
