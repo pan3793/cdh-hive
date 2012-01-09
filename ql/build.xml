@@ -61,6 +61,9 @@
     </fileset>
 
     <path refid="classpath"/>
+    <!-- Hack to get jobclient test jar in classpath. -->
+    <fileset dir="${hive.root}/build/ivy/lib/default" includes="hadoop-mapreduce-client-jobclient-*-tests.jar" />
+
   </path>
 
   <target name="thriftif" depends="check-thrift-home">
