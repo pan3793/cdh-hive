@@ -31,6 +31,7 @@ to call at top-level: ant deploy-contrib compile-core-test
       <exclude name="lib/**/excluded/" />
       <!-- below is for 0.23 onwards -->
       <include name="share/hadoop/common/lib/*.jar" />
+      <include name="share/hadoop/tools/lib/*.jar" />
       <exclude name="share/hadoop/common/lib/hadoop-mapreduce-*.jar" />
       <exclude name="share/hadoop/common/lib/hadoop-yarn-*.jar" />
     </fileset>
