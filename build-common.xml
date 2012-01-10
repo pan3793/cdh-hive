@@ -106,7 +106,7 @@
       <exclude name="share/hadoop/common/lib/hadoop-yarn-*.jar" />
     </fileset>
     <!-- Hack to get jobclient test jar in classpath. -->
-    <fileset dir="${hive.root}/build/ivy/lib/default" includes="hadoop-mapreduce-client-jobclient-*-tests.jar" />
+    <fileset dir="${hive.root}/build/ivy/lib/test" includes="hadoop-mapreduce-client-jobclient-*-tests.jar" />
   </path>
 
 
@@ -152,7 +152,22 @@
   	<ivy:retrieve settingsRef="${ant.project.name}-${hadoop.version.ant-internal}.ivy.settings"
       pattern="${build.dir.hadoop}/[artifact]-[revision].[ext]"/>
   </target>
-  
+
+  <target name="ivy-resolve-test" depends="ivy-init-settings" unless="offline">
+    <echo message="Project: ${ant.project.name}"/>
+    <ivy:resolve settingsRef="${ant.project.name}.ivy.settings"
+      conf="test" log="${ivyresolvelog}"/>
+  </target>
+
+  <target name="ivy-retrieve-test" depends="ivy-resolve-test"
+    description="Retrieve Ivy-managed artifacts">
+    <echo message="Project: ${ant.project.name}"/>
+    <ivy:retrieve settingsRef="${ant.project.name}.ivy.settings"
+      pattern="${build.ivy.lib.dir}/${ivy.artifact.retrieve.pattern}"
+      log="${ivyresolvelog}" conf="test"/>
+  </target>
+
+
   <available property="hadoopcore.${hadoop.version.ant-internal}.install.done"
     file="${build.dir.hadoop}/hadoop-${hadoop.version.ant-internal}.installed"/>
 
@@ -283,7 +298,7 @@
   </target>
 
   <!-- target to compile tests -->
-  <target name="compile-test" depends="compile">
+  <target name="compile-test" depends="compile, ivy-retrieve-test">
     <echo message="Project: ${ant.project.name}"/>
     <javac
      encoding="${build.encoding}"
@@ -469,6 +484,7 @@
     <ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${build.dir}/pom.xml">
       <mapping conf="default" scope="compile" />
       <mapping conf="runtime" scope="compile" />
+      <mapping conf="test"    scope="test" />
     </ivy:makepom>
     <replace file="${build.dir}/pom.xml">
       <replacetoken>&lt;dependencies&gt;</replacetoken>

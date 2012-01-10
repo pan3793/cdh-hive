@@ -62,7 +62,8 @@
     <dependency org="org.apache.derby" name="derby" rev="${derby.version}"/>
 
     <!-- Hack to get jobclient tests dependency in. -->
-    <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${hadoop.version.ant-internal}">
+    <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${hadoop.version.ant-internal}"
+                conf="test->default">
       <artifact name="hadoop-mapreduce-client-jobclient" ext="jar" />
       <artifact name="hadoop-mapreduce-client-jobclient" type="tests" ext="jar" m:classifier="tests"/>
       <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
