@@ -516,7 +516,7 @@
 
     <!-- copy jar files -->
     <copy todir="${target.lib.dir}" preservelastmodified="true" flatten="true">
-      <fileset dir="${hive.root}" includes="*/*.jar, */*/*.jar" excludes="**/antlr-2*,**/antlr-3*,**/TestSerDe.jar"/>
+      <fileset dir="${hive.root}" includes="*/*.jar, */*/*.jar" excludes="**/antlr-2*,**/antlr-3*,**/TestSerDe.jar,**/clover-*.jar"/>
       <fileset file="${build.dir.hive}/cli/hive-cli-${version}.jar"/>
       <fileset file="${build.dir.hive}/common/hive-common-${version}.jar"/>
       <fileset file="${build.dir.hive}/ql/hive-exec-${version}.jar"/>
