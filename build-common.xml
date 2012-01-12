@@ -403,7 +403,7 @@
 
   <!-- target to run the tests -->
   <target name="test"
-  	depends="test-conditions,gen-test,compile-test,test-jar,test-init">
+  	depends="clean-test,test-conditions,gen-test,compile-test,test-jar,test-init">
     <echo message="Project: ${ant.project.name}"/>
     <!--<property name="testcp" refid="test.classpath"/>-->
     <!--<echo message="test.classpath: ${testcp}"/>-->
