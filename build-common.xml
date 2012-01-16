@@ -106,7 +106,7 @@
       <exclude name="share/hadoop/common/lib/hadoop-yarn-*.jar" />
     </fileset>
     <!-- Hack to get jobclient test jar in classpath. -->
-    <fileset dir="${hive.root}/build/ivy/lib/test" includes="hadoop-mapreduce-client-jobclient-*-tests.jar" />
+    <fileset dir="${hive.root}/build/ivy/lib" includes="test/hadoop-mapreduce-client-jobclient-*-tests.jar" />
   </path>
 
 
