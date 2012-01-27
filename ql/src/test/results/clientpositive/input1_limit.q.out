@@ -109,7 +109,7 @@ STAGE PLANS:
   Stage: Stage-4
     Map Reduce
       Alias -> Map Operator Tree:
-        file:/tmp/sdong/hive_2011-02-10_15-53-56_417_5846493441144147770/-mr-10004 
+        file:/tmp/cloudera/hive_2012-01-25_19-04-41_019_7817375527243579555/-mr-10004 
             Reduce Output Operator
               sort order: 
               tag: -1
@@ -169,42 +169,42 @@ POSTHOOK: Lineage: dest1.key EXPRESSION [(src)src.FieldSchema(name:key, type:str
 POSTHOOK: Lineage: dest1.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest2.key EXPRESSION [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest2.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
-PREHOOK: query: SELECT dest1.* FROM dest1
+PREHOOK: query: SELECT dest1.* FROM dest1 ORDER BY dest1.key ASC, dest1.value ASC
 PREHOOK: type: QUERY
 PREHOOK: Input: default@dest1
-PREHOOK: Output: file:/tmp/sdong/hive_2011-02-10_15-54-07_550_8419732472959696648/-mr-10000
-POSTHOOK: query: SELECT dest1.* FROM dest1
+PREHOOK: Output: file:/tmp/cloudera/hive_2012-01-25_19-04-53_695_8471958960161678362/-mr-10000
+POSTHOOK: query: SELECT dest1.* FROM dest1 ORDER BY dest1.key ASC, dest1.value ASC
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@dest1
-POSTHOOK: Output: file:/tmp/sdong/hive_2011-02-10_15-54-07_550_8419732472959696648/-mr-10000
+POSTHOOK: Output: file:/tmp/cloudera/hive_2012-01-25_19-04-53_695_8471958960161678362/-mr-10000
 POSTHOOK: Lineage: dest1.key EXPRESSION [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest1.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest2.key EXPRESSION [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest2.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
-86	val_86
-27	val_27
-98	val_98
-66	val_66
-37	val_37
-15	val_15
-82	val_82
-17	val_17
 0	val_0
+15	val_15
+17	val_17
+27	val_27
+37	val_37
 57	val_57
-PREHOOK: query: SELECT dest2.* FROM dest2
+66	val_66
+82	val_82
+86	val_86
+98	val_98
+PREHOOK: query: SELECT dest2.* FROM dest2 ORDER BY dest2.key ASC, dest2.value ASC
 PREHOOK: type: QUERY
 PREHOOK: Input: default@dest2
-PREHOOK: Output: file:/tmp/sdong/hive_2011-02-10_15-54-07_847_310894400949776200/-mr-10000
-POSTHOOK: query: SELECT dest2.* FROM dest2
+PREHOOK: Output: file:/tmp/cloudera/hive_2012-01-25_19-04-58_350_3861226139981559305/-mr-10000
+POSTHOOK: query: SELECT dest2.* FROM dest2 ORDER BY dest2.key ASC, dest2.value ASC
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@dest2
-POSTHOOK: Output: file:/tmp/sdong/hive_2011-02-10_15-54-07_847_310894400949776200/-mr-10000
+POSTHOOK: Output: file:/tmp/cloudera/hive_2012-01-25_19-04-58_350_3861226139981559305/-mr-10000
 POSTHOOK: Lineage: dest1.key EXPRESSION [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest1.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest2.key EXPRESSION [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest2.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
-86	val_86
 27	val_27
-98	val_98
-66	val_66
 37	val_37
+66	val_66
+86	val_86
+98	val_98
