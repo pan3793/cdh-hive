@@ -49,6 +49,7 @@
     </then>
   </if>
 
+  
   <property name="hive.root" location="${basedir}"/>
   <property file="${hive.root}/cdh.build.properties"/>
   <property file="${hive.root}/build.properties"/>
@@ -574,6 +575,7 @@
       </fileset>
       <filterset>
         <filtersfile file="${hive.root}/ivy/libraries.properties"/>
+        <filtersfile file="${hive.root}/cdh.build.properties"/>
         <filter token="PROJECT" value="${eclipse.project}"/>
         <filter token="HADOOPVER" value="${hadoop.version.ant-internal}"/>
         <filter token="HADOOPVERPREF" value="${hadoop.version.ant-internal.prefix}"/>
