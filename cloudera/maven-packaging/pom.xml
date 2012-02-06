@@ -21,19 +21,19 @@
   <parent>
     <groupId>com.cloudera.cdh</groupId>
     <artifactId>cdh-root</artifactId>
-    <version>4.0-b1-SNAPSHOT</version>
+    <version>4.0-b2-SNAPSHOT</version>
     <relativePath>../../../../../pom.xml</relativePath>
   </parent>
 
   <groupId>com.cloudera.cdh</groupId>
   <artifactId>hive-root</artifactId>
-  <version>0.8.0-cdh4b1-SNAPSHOT</version>
+  <version>0.8.0-cdh4b2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>CDH Hive root</name>
 
   <properties>
-    <cdh.hive.version>0.8.0-cdh4b1-SNAPSHOT</cdh.hive.version>
+    <cdh.hive.version>0.8.0-cdh4b2-SNAPSHOT</cdh.hive.version>
   </properties>
 
   <repositories>
