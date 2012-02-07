@@ -91,23 +91,29 @@
   <property name="hadoopVersion" value="${hadoop.version.ant-internal}"/>
   <property name="test.serialize.qplan" value="false"/>
 
+  <path id="hadoop-23.test.classpath">
+    <fileset dir="${hadoop.root}">
+      <include name="share/hadoop/common/*.jar"/>
+      <include name="share/hadoop/common/lib/*.jar"/>
+      <include name="share/hadoop/hdfs/*.jar"/>
+      <include name="share/hadoop/hdfs/lib/*.jar"/>
+      <include name="share/hadoop/mapreduce/*.jar"/>
+      <include name="share/hadoop/mapreduce/lib/*.jar"/>
+      <include name="share/hadoop/tools/*.jar"/>
+      <include name="share/hadoop/tools/lib/*.jar"/>
+    </fileset>
+    <!-- Hack to get jobclient test jar in classpath. -->
+    <fileset dir="${hive.root}/build/ivy/lib" includes="test/hadoop-mapreduce-client-jobclient-*-tests.jar" />
+  </path>
+  
   <path id="test.classpath">
+    <path refid="hadoop-23.test.classpath"/>
     <pathelement location="${test.build.classes}" />
     <pathelement location="${test.build.resources}" />
     <pathelement location="" />
     <pathelement location="${test.src.data.dir}/conf"/>
     <pathelement location="${hive.conf.dir}"/>
-    <fileset dir="${hive.root}" includes="testlibs/*.jar"/>
     <path refid="classpath"/>
-    <fileset dir="${hadoop.root}">
-      <!-- below is for 0.23 onwards -->
-      <include name="share/hadoop/common/lib/*.jar" />
-      <include name="share/hadoop/tools/lib/*.jar" />
-      <exclude name="share/hadoop/common/lib/hadoop-mapreduce-*.jar" />
-      <exclude name="share/hadoop/common/lib/hadoop-yarn-*.jar" />
-    </fileset>
-    <!-- Hack to get jobclient test jar in classpath. -->
-    <fileset dir="${hive.root}/build/ivy/lib" includes="test/hadoop-mapreduce-client-jobclient-*-tests.jar" />
   </path>
 
 

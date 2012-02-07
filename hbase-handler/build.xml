@@ -30,6 +30,7 @@
   <import file="../build-common.xml"/>
 
   <path id="test.classpath">
+    <path refid="hadoop-23.test.classpath"/>
     <pathelement location="${build.dir.hive}/ql/test/classes" />
     <pathelement location="${test.build.classes}" />
     <pathelement location="" />
@@ -49,8 +50,6 @@
     <pathelement location="${jsp.test.jar}"/>
     <pathelement location="${common.jar}"/>
     <fileset dir="${hive.root}" includes="testlibs/*.jar"/>
-    <fileset dir="${hadoop.root}/lib" includes="*.jar"/>
-    <fileset dir="${hadoop.root}/lib" includes="jsp-2.1/*.jar"/>
     <path refid="classpath"/>
   </path>
 

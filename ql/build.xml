@@ -33,6 +33,7 @@
   <property name="ql.test.clientpositive.exclude" value="${minimr.query.files}"/>
 
   <path id="test.classpath">
+    <path refid="hadoop-23.test.classpath"/>
     <pathelement location="${test.build.classes}" />
     <pathelement location="" />
     <pathelement location="${hadoop.conf.dir}"/>
@@ -50,21 +51,7 @@
     <pathelement location="${jsp.test.jar}"/>
     <pathelement location="${common.jar}"/>
     <pathelement location="${hive.root}/build/ivy/lib/default/derby-${derby.version}.jar"/>
-    <fileset dir="${hive.root}" includes="testlibs/*.jar"/>
-    <fileset dir="${hadoop.root}">
-      <include name="lib/**/*.jar" />
-      <exclude name="lib/**/excluded/" />
-      <!-- below is for 0.23 onwards -->
-      <include name="share/hadoop/common/lib/*.jar" />
-      <include name="share/hadoop/tools/lib/*.jar" />
-      <exclude name="share/hadoop/common/lib/hadoop-mapreduce-*.jar" />
-      <exclude name="share/hadoop/common/lib/hadoop-yarn-*.jar" />
-    </fileset>
-
     <path refid="classpath"/>
-    <!-- Hack to get jobclient test jar in classpath. -->
-    <fileset dir="${hive.root}/build/ivy/lib/test" includes="hadoop-mapreduce-client-jobclient-*-tests.jar" />
-
   </path>
 
   <target name="thriftif" depends="check-thrift-home">
