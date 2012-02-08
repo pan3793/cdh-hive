@@ -24,7 +24,7 @@
   <parent>
     <groupId>com.cloudera.cdh</groupId>
     <artifactId>hive-root</artifactId>
-    <version>0.8.0-cdh4b2-SNAPSHOT</version>
+    <version>0.8.1-cdh4b2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

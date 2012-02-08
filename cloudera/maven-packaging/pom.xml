@@ -27,13 +27,13 @@
 
   <groupId>com.cloudera.cdh</groupId>
   <artifactId>hive-root</artifactId>
-  <version>0.8.0-cdh4b2-SNAPSHOT</version>
+  <version>0.8.1-cdh4b2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>CDH Hive root</name>
 
   <properties>
-    <cdh.hive.version>0.8.0-cdh4b2-SNAPSHOT</cdh.hive.version>
+    <cdh.hive.version>0.8.1-cdh4b2-SNAPSHOT</cdh.hive.version>
   </properties>
 
   <repositories>
