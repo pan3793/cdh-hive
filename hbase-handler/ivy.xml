@@ -51,5 +51,11 @@
     </dependency>
     <dependency org="org.apache.zookeeper" name="zookeeper" rev="${zookeeper.version}"
                 transitive="false"/>
+    
+    <!-- Hack to get MiniYARNCluster for Minimr tests -->
+    <dependency org="org.apache.hadoop" name="hadoop-yarn-server-tests" rev="${hadoop.version.ant-internal}"
+                conf="test->default">
+      <artifact name="hadoop-yarn-server-tests" type="tests" ext="jar" m:classifier="tests"/>
+    </dependency>
   </dependencies>
 </ivy-module>

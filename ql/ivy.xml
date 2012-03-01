@@ -69,5 +69,11 @@
       <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
       <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
     </dependency>
+    
+    <!-- Hack to get MiniYARNCluster for Minimr tests -->
+    <dependency org="org.apache.hadoop" name="hadoop-yarn-server-tests" rev="${hadoop.version.ant-internal}"
+                conf="test->default">
+      <artifact name="hadoop-yarn-server-tests" type="tests" ext="jar" m:classifier="tests"/>
+    </dependency>
   </dependencies>
 </ivy-module>

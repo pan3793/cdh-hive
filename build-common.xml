@@ -104,6 +104,8 @@
     </fileset>
     <!-- Hack to get jobclient test jar in classpath. -->
     <fileset dir="${hive.root}/build/ivy/lib" includes="test/hadoop-mapreduce-client-jobclient-*-tests.jar" />
+    <!-- Hack to get MiniYARNCluster in classpath for Minimr tests -->
+    <fileset dir="${hive.root}/build/ivy/lib" includes="test/hadoop-yarn-server-tests-*-tests.jar" />
   </path>
   
   <path id="test.classpath">
