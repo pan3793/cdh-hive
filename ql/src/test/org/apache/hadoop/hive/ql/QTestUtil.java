@@ -955,6 +955,7 @@ public class QTestUtil {
         "-I", "[.][.][.] [0-9]* more",
         "-I", "job_[0-9]*_[0-9]*",
         "-I", "USING 'java -cp",
+        "-I", "Deleted",
         (new File(logDir, tname + ".out")).getPath(),
         outFileName };
 
