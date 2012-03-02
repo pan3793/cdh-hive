@@ -181,6 +181,7 @@
   <classpathentry kind="src" path="jdbc/src/test"/>
   <classpathentry kind="src" path="shims/src/@HADOOPVERPREF@/java"/>
   <classpathentry kind="src" path="shims/src/common/java"/>
+  <classpathentry kind="src" path="shims/src/common-secure/java"/>
   <classpathentry kind="src" path="hwi/src/java"/>
   <classpathentry kind="src" path="hwi/src/test"/>
   <classpathentry kind="src" path="hbase-handler/src/java"/>
