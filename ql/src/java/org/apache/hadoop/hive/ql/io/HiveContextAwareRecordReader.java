@@ -183,7 +183,7 @@ public abstract class HiveContextAwareRecordReader<K, V> implements RecordReader
       blockStart = in.getPosition();
       in.close();
     }
-    this.initIOContext(blockStart, blockPointer, split.getPath().toString());
+    this.initIOContext(blockStart, blockPointer, path.makeQualified(fs).toString());
 
     this.initIOContextSortedProps(split, recordReader, job);
   }
