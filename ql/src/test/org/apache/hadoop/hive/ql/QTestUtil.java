@@ -949,6 +949,7 @@ public class QTestUtil {
         "-I", "transient_lastDdlTime",
         "-I", "last_modified_",
         "-I", "java.lang.RuntimeException",
+        "-I", "java.lang.IllegalArgumentException",
         "-I", "at org",
         "-I", "at sun",
         "-I", "at java",
