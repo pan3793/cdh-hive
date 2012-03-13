@@ -61,6 +61,17 @@
                 transitive="false"/>
     <dependency org="org.apache.derby" name="derby" rev="${derby.version}"/>
 
+    <dependency org="com.linkedin" name="haivvreo" rev="${haivvreo.version}"
+                transitive="false"/>
+    <dependency org="org.apache.avro" name="avro" rev="${avro.version}"
+                transitive="false"/>
+    <dependency org="org.apache.avro" name="avro" rev="${avro.version}"
+                transitive="false"/>
+    <dependency org="org.apache.avro" name="avro-ipc" rev="${avro.version}"
+                transitive="false"/>
+    <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
+                transitive="false"/>
+        
     <!-- Hack to get jobclient tests dependency in. -->
     <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${hadoop.version.ant-internal}"
                 conf="test->default">
