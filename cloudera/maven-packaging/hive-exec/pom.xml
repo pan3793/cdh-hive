@@ -114,6 +114,10 @@
       <artifactId>haivvreo</artifactId>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-core</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.apache.hadoop.hive</groupId>
           <artifactId>hive-exec</artifactId>
         </exclusion>
