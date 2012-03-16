@@ -61,7 +61,7 @@ public class HBaseTestSetup extends TestSetup {
       setUpFixtures(conf);
     }
     conf.set("hbase.rootdir", hbaseRoot);
-    conf.set("hbase.master", hbaseCluster.getMaster().toString());
+    conf.set("hbase.master", hbaseCluster.getMaster().getServerName().getHostAndPort());
     conf.set("hbase.zookeeper.property.clientPort",
       Integer.toString(zooKeeperPort));
     String auxJars = conf.getAuxJars();
@@ -88,7 +88,7 @@ public class HBaseTestSetup extends TestSetup {
     hbaseConf.setInt("hbase.regionserver.port", findFreePort());
     hbaseConf.setInt("hbase.regionserver.info.port", -1);
     hbaseCluster = new MiniHBaseCluster(hbaseConf, NUM_REGIONSERVERS);
-    conf.set("hbase.master", hbaseCluster.getMaster().toString());
+    conf.set("hbase.master", hbaseCluster.getMaster().getServerName().getHostAndPort());
     // opening the META table ensures that cluster is running
     new HTable(new HBaseConfiguration(conf), HConstants.META_TABLE_NAME);
   }
