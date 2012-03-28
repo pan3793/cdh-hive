@@ -109,12 +109,12 @@
   </path>
   
   <path id="test.classpath">
-    <path refid="hadoop-23.test.classpath"/>
     <pathelement location="${test.build.classes}" />
     <pathelement location="${test.build.resources}" />
     <pathelement location="" />
     <pathelement location="${test.src.data.dir}/conf"/>
     <pathelement location="${hive.conf.dir}"/>
+    <path refid="hadoop-23.test.classpath"/>
     <path refid="classpath"/>
   </path>
 
