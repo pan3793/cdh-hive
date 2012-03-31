@@ -38,6 +38,7 @@
     <fileset dir="${install.dir}" includes="lib/commons-lang-*.jar"/>
     <fileset dir="${install.dir}" includes="lib/commons-logging-*.jar"/>
     <fileset dir="${hadoop.home}" includes="hadoop-*-core.jar"/>
+    <fileset dir="${hadoop.home}" includes="**/*.jar"/>
     <pathelement location="${build.classes}"/>
   </path>
 
@@ -45,6 +46,7 @@
     <pathelement path="${install.dir}/conf"/>
     <fileset dir="${install.dir}" includes="lib/*.jar"/>
     <fileset dir="${hadoop.home}" includes="hadoop-*-core.jar"/>
+    <fileset dir="${hadoop.home}" includes="**/*.jar"/>
     <fileset dir="${build.dir}" includes="${plugin.jar.basename}"/>
   </path>
 
