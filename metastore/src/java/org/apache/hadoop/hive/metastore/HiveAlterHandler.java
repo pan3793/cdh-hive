@@ -158,7 +158,7 @@ public class HiveAlterHandler implements AlterHandler {
               + newt.getTableName());
         }
         // also the location field in partition
-        List<Partition> parts = msdb.getPartitions(dbname, name, 0);
+        List<Partition> parts = msdb.getPartitions(dbname, name, -1);
         for (Partition part : parts) {
           String oldPartLoc = part.getSd().getLocation();
           Path oldPartLocPath = new Path(oldPartLoc);
