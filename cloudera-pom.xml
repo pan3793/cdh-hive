@@ -21,13 +21,13 @@
     <parent>
         <groupId>com.cloudera.cdh</groupId>
         <artifactId>hive-root</artifactId>
-        <version>0.8.1-cdh4b2-SNAPSHOT</version>
+        <version>0.8.1-cdh4.0.0-SNAPSHOT</version>
         <relativePath>cloudera/maven-packaging/pom.xml</relativePath>
     </parent>
 
     <groupId>com.cloudera.cdh</groupId>
     <artifactId>hive-ant</artifactId>
-    <version>0.8.1-cdh4b2-SNAPSHOT</version>
+    <version>0.8.1-cdh4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
