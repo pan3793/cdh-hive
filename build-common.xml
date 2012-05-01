@@ -119,6 +119,31 @@
     <pathelement location="${build.classes}" />
   </path>
 
+    
+  <path id="hadoop.test.classpath">
+    <pathelement location="${test.build.classes}" />
+    <pathelement location="${test.build.resources}" />
+    <pathelement location="" />
+    <pathelement location="${test.src.data.dir}/conf"/>
+    <pathelement location="${hive.conf.dir}"/>
+    <pathelement location="${build.dir.hive}/cli/test/classes"/>
+    <pathelement location="${build.dir.hive}/common/test/classes"/>
+    <pathelement location="${build.dir.hive}/hbase-handler/test/classes"/>
+    <pathelement location="${build.dir.hive}/hwi/test/classes"/>
+    <pathelement location="${build.dir.hive}/jdbc/test/classes"/>
+    <pathelement location="${build.dir.hive}/metastore/test/classes"/>
+    <pathelement location="${build.dir.hive}/ql/test/classes"/>
+    <pathelement location="${build.dir.hive}/serde/test/classes"/>
+    <pathelement location="${build.dir.hive}/service/test/classes"/>
+    <pathelement location="${build.dir.hive}/shims/test/classes"/>
+
+    <fileset dir="${hive.root}/build/ivy/lib/test" includes="*.jar" erroronmissingdir="false" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar,**/hadoop*.jar"/>
+    <fileset dir="${hive.root}/build/ivy/lib/default" includes="*.jar" erroronmissingdir="false" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar,**/hadoop*.jar" />
+    <fileset dir="${hive.root}/testlibs" includes="*.jar"/>
+    <fileset dir="${hive.root}/build/ivy/lib/hadoop.test" includes="*.jar" />
+    <pathelement location="${build.classes}" />
+  </path>
+
   <!-- include contrib on local classpath, but not on cluster -->
   <!-- https://reviews.facebook.net/D2133#comment-47 -->
   <path id="test.local.classpath">
@@ -397,9 +422,9 @@
   <target name="test"
   	depends="test-conditions,gen-test,compile-test,test-jar,test-init">
     <echo message="Project: ${ant.project.name}"/>
-    <property name="hadoop.testcp" refid="test.classpath"/>
+    <property name="hadoop.testcp" refid="hadoop.test.classpath"/>
     <if>
-      <equals arg1="${hadoop.mr.rev}" arg2="23" />
+      <equals arg1="${hadoop.mr.test.rev}" arg2="23" />
       <then>
         <property name="hadoop.opts" value="${hadoop.opts.23}" />
       </then>

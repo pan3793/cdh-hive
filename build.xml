@@ -341,7 +341,7 @@
     <iterate-test target="compile-test"/>
   </target>
   
-  <target name="test" depends="clean-test,jar-test" description="Run tests">
+  <target name="test" depends="clean-test,jar-test,ivy-retrieve-hadoop-test" description="Run tests">
     <echo message="Project: ${ant.project.name}"/>
     <antcall target="test-shims">
       <param name="hadoop.version.ant-internal" value="${hadoop.security.version}" />
@@ -800,6 +800,19 @@
     </macro_tar>
   </target>
 
+  <target name="ivy-resolve-hadoop-test" depends="ivy-init-settings" unless="offline">
+    <echo message="Project: ${ant.project.name}"/>
+    <ivy:resolve settingsRef="${ant.project.name}.ivy.settings"
+      conf="hadoop.test" log="${ivyresolvelog}"/>
+  </target>
+
+  <target name="ivy-retrieve-hadoop-test" depends="ivy-resolve-hadoop-test"
+    description="Retrieve Ivy-managed artifacts">
+    <echo message="Project: ${ant.project.name}"/>
+    <ivy:retrieve settingsRef="${ant.project.name}.ivy.settings"
+      pattern="${build.ivy.lib.dir}/${ivy.artifact.retrieve.pattern}"
+      log="${ivyresolvelog}" conf="hadoop.test"/>
+  </target>
 
   <!-- ================================================================== -->
   <!-- RAT                                                                -->
