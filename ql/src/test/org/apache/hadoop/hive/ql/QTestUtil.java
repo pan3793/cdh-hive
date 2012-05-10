@@ -21,15 +21,18 @@ package org.apache.hadoop.hive.ql;
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_NAME;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
@@ -42,6 +45,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileStatus;
@@ -272,52 +276,71 @@ public class QTestUtil {
   }
 
   public void addFile(File qf) throws Exception {
-
     FileInputStream fis = new FileInputStream(qf);
     BufferedInputStream bis = new BufferedInputStream(fis);
-    DataInputStream dis = new DataInputStream(bis);
+    BufferedReader br = new BufferedReader(new InputStreamReader(bis, "UTF8"));
     StringBuilder qsb = new StringBuilder();
 
     // Look for a hint to not run a test on some Hadoop versions
-    Pattern pattern = Pattern.compile("-- EXCLUDE_HADOOP_MAJOR_VERSIONS(.*)");
-
+    Pattern pattern = Pattern.compile("-- (EX|IN)CLUDE_HADOOP_MAJOR_VERSIONS\\((.*)\\)");
+    
+    boolean excludeQuery = false;
+    boolean includeQuery = false;
+    Set<String> versionSet = new HashSet<String>();
+    String hadoopVer = ShimLoader.getMajorVersion();
+    String line;
 
     // Read the entire query
-    boolean excludeQuery = false;
-    String hadoopVer = ShimLoader.getMajorVersion();
-    while (dis.available() != 0) {
-      String line = dis.readLine();
+    while ((line = br.readLine()) != null) {
 
-      // While we are reading the lines, detect whether this query wants to be
-      // excluded from running because the Hadoop version is incorrect
+      // Each qfile may include at most one INCLUDE or EXCLUDE directive.
+      //
+      // If a qfile contains an INCLUDE directive, and hadoopVer does
+      // not appear in the list of versions to include, then the qfile
+      // is skipped.
+      //
+      // If a qfile contains an EXCLUDE directive, and hadoopVer is
+      // listed in the list of versions to EXCLUDE, then the qfile is
+      // skipped.
+      //
+      // Otherwise, the qfile is included.
       Matcher matcher = pattern.matcher(line);
       if (matcher.find()) {
-        String group = matcher.group();
-        int start = group.indexOf('(');
-        int end = group.indexOf(')');
-        assert end > start;
-        // versions might be something like '0.17, 0.19'
-        String versions = group.substring(start+1, end);
+        if (excludeQuery || includeQuery) {
+          String message = "QTestUtil: qfile " + qf.getName()
+            + " contains more than one reference to (EX|IN)CLUDE_HADOOP_MAJOR_VERSIONS";
+          throw new UnsupportedOperationException(message);
+        }
+        
+        String prefix = matcher.group(1);
+        if ("EX".equals(prefix)) {
+          excludeQuery = true;
+        } else {
+          includeQuery = true;
+        }
 
-        Set<String> excludedVersionSet = new HashSet<String>();
+        String versions = matcher.group(2);
         for (String s : versions.split("\\,")) {
           s = s.trim();
-          excludedVersionSet.add(s);
-        }
-        if (excludedVersionSet.contains(hadoopVer)) {
-          excludeQuery = true;
+          versionSet.add(s);
         }
       }
       qsb.append(line + "\n");
     }
     qMap.put(qf.getName(), qsb.toString());
-    if(excludeQuery) {
-      System.out.println("Due to the Hadoop Version ("+ hadoopVer + "), " +
-          "adding query " + qf.getName() + " to the set of tests to skip");
+    
+    if (excludeQuery && versionSet.contains(hadoopVer)) {
+      System.out.println("QTestUtil: " + qf.getName()
+        + " EXCLUDE list contains Hadoop Version " + hadoopVer + ". Skipping...");
       qSkipSet.add(qf.getName());
-     }
-    dis.close();
+    } else if (includeQuery && !versionSet.contains(hadoopVer)) {
+      System.out.println("QTestUtil: " + qf.getName()
+        + " INCLUDE list does not contain Hadoop Version " + hadoopVer + ". Skipping...");
+      qSkipSet.add(qf.getName());
+    }
+    br.close();
   }
+
 
   /**
    * Clear out any side effects of running tests
