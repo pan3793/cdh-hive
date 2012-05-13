@@ -61,5 +61,8 @@
                 conf="test->default">
       <artifact name="hadoop-yarn-server-tests" type="tests" ext="jar" m:classifier="tests"/>
     </dependency>
+
+    <!-- Test Dependencies -->
+    <dependency org="junit" name="junit" rev="${junit.version}" conf="test->default" />
   </dependencies>
 </ivy-module>

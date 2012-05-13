@@ -48,6 +48,10 @@
                 transitive="false"/>
     <dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="${jackson.version}"/>
     <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="${jackson.version}"/>
+
+    <!-- Test Dependencies -->
+    <dependency org="junit" name="junit" rev="${junit.version}" conf="test->default" />
+
     <conflict manager="all" />
   </dependencies>
 </ivy-module>
