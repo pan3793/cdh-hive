@@ -1,8 +1,8 @@
 set hive.archive.enabled = true;
 set hive.enforce.bucketing = true;
-set hive.input.format = org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;
+set hive.input.format = org.apache.hadoop.hive.ql.io.HiveInputFormat;
 
--- INCLUDE_HADOOP_MAJOR_VERSIONS(0.20)
+-- EXCLUDE_HADOOP_MAJOR_VERSIONS(0.20)
 -- A bug which is present in Hadoop 0.22 and 0.23 (MAPREDUCE-1806) causes
 -- CombineFileInputFormat to strip out the scheme and authority when generating
 -- splits. This causes severe problems for HAR files since they won't be
