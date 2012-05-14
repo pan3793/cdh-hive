@@ -143,7 +143,7 @@ public final class ArchiveUtils {
       String parentHost = archive.getHost();
       String harHost = null;
       if (parentHost == null) {
-        harHost = archive.getScheme();
+        harHost = archive.getScheme() + "-localhost";
       } else {
         harHost = archive.getScheme() + "-" + parentHost;
       }
