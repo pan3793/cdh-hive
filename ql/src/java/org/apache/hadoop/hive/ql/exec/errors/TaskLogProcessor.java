@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.mapred.JobConf;
 
@@ -38,6 +40,7 @@ import org.apache.hadoop.mapred.JobConf;
  */
 public class TaskLogProcessor {
 
+  private final Log LOG = LogFactory.getLog(TaskLogProcessor.class);
   private final Map<ErrorHeuristic, HeuristicStats> heuristics =
     new HashMap<ErrorHeuristic, HeuristicStats>();
   private final List<String> taskLogUrls = new ArrayList<String>();
@@ -105,15 +108,16 @@ public class TaskLogProcessor {
    */
   public List<ErrorAndSolution> getErrors() {
 
-    for(String urlString : taskLogUrls) {
+    for (String urlString : taskLogUrls) {
 
       // Open the log file, and read in a line. Then feed the line into
       // each of the ErrorHeuristics. Repeat for all the lines in the log.
       URL taskAttemptLogUrl;
       try {
         taskAttemptLogUrl = new URL(urlString);
-      } catch(MalformedURLException e) {
-        throw new RuntimeException("Bad task log url", e);
+      } catch (MalformedURLException e) {
+        LOG.error("Bad task log URL", e);
+        continue;
       }
       BufferedReader in;
       try {
@@ -127,19 +131,20 @@ public class TaskLogProcessor {
         }
         in.close();
       } catch (IOException e) {
-        throw new RuntimeException("Error while reading from task log url", e);
+        LOG.error("Error while reading from task log URL", e);
+        continue;
       }
 
       // Once the lines of the log file have been fed into the ErrorHeuristics,
       // see if they have detected anything. If any has, record
       // what ErrorAndSolution it gave so we can later return the most
       // frequently occurring error
-      for(Entry<ErrorHeuristic, HeuristicStats> ent : heuristics.entrySet()) {
+      for (Entry<ErrorHeuristic, HeuristicStats> ent : heuristics.entrySet()) {
         ErrorHeuristic eh = ent.getKey();
         HeuristicStats hs = ent.getValue();
 
         ErrorAndSolution es = eh.getErrorAndSolution();
-        if(es != null) {
+        if (es != null) {
           hs.incTriggerCount();
           hs.addErrorAndSolution(es);
         }

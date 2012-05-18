@@ -19,6 +19,8 @@
 package org.apache.hadoop.hive.ql.exec;
 
 import java.io.IOException;
+import java.lang.Exception;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -83,21 +85,18 @@ public class JobDebugger implements Runnable {
       console.printError(e.getMessage());
     }
   }
-  private String getTaskAttemptLogUrl(String taskTrackerHttpAddress, String taskAttemptId) {
-    return taskTrackerHttpAddress + "/tasklog?taskid=" + taskAttemptId + "&start=-8193";
-  }
 
   class TaskLogGrabber implements Runnable {
 
     public void run() {
       try {
         getTaskLogs();
-      } catch (IOException e) {
+      } catch (Exception e) {
         console.printError(e.getMessage());
       }
     }
 
-    private void getTaskLogs() throws IOException {
+    private void getTaskLogs() throws IOException, MalformedURLException {
       int startIndex = 0;
       while (true) {
         TaskCompletionEvent[] taskCompletions = rj.getTaskCompletionEvents(startIndex);
@@ -135,7 +134,8 @@ public class JobDebugger implements Runnable {
           }
           // These tasks should have come from the same job.
           assert (ti.getJobId() != null &&  ti.getJobId().equals(jobId));
-          ti.getLogUrls().add(getTaskAttemptLogUrl(t.getTaskTrackerHttp(), t.getTaskId()));
+          ti.getLogUrls().add(ShimLoader.getHadoopShims().getTaskAttemptLogUrl(
+            conf, t.getTaskTrackerHttp(), t.getTaskId()));
 
           // If a task failed, then keep track of the total number of failures
           // for that task (typically, a task gets re-run up to 4 times if it
