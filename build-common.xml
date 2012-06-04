@@ -141,6 +141,7 @@
     <fileset dir="${hive.root}/build/ivy/lib/default" includes="*.jar" erroronmissingdir="false" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar,**/hadoop*.jar" />
     <fileset dir="${hive.root}/testlibs" includes="*.jar"/>
     <fileset dir="${hive.root}/build/ivy/lib/hadoop.test" includes="*.jar" />
+    <fileset dir="${hive.root}/build/ivy/lib/hadoop0.${hadoop.mr.rev}.shim" includes="*.jar" />
     <pathelement location="${build.classes}" />
   </path>
 
