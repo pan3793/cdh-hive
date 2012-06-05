@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.shims;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.shims.HadoopShimsSecure;
