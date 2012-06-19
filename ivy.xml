@@ -33,11 +33,6 @@
 
 
   <dependencies>
-    <dependency org="org.apache.hadoop" name="hadoop-minicluster"
-                rev="${hadoop.test.version}" conf="hadoop.test->default">
-      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
-      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
-    </dependency>
    <dependency org="org.apache.rat" name="apache-rat-tasks"
                rev="${rat.version}" conf="rat->default"/>
    <dependency org="org.apache.rat" name="apache-rat-core"

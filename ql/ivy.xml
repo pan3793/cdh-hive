@@ -74,9 +74,43 @@
     <dependency org="org.datanucleus" name="datanucleus-rdbms" rev="${datanucleus-rdbms.version}"
                 transitive="false"/>
 
-    <!-- Hack to get jobclient tests dependency in. -->
+    <!-- MR1 dependency -->
+    <dependency org="org.apache.hadoop" name="hadoop-core"
+                rev="${hadoop.mr1.test.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-test"
+                rev="${hadoop.mr1.test.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-tools"
+                rev="${hadoop.mr1.test.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-minicluster"
+                rev="${hadoop.mr1.test.version}" conf="hadoop-mr1.test->default">
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+
+    <!-- MR2 dependency -->
+    <dependency org="org.apache.hadoop" name="hadoop-minicluster"
+                rev="${hadoop.version.ant-internal}" conf="hadoop-mr2.test->default">
+      <artifact name="hadoop-minicluster" ext="jar" />
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
     <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${hadoop.version.ant-internal}"
-                conf="hadoop23.test->default" transitive="false">
+                conf="hadoop-mr2.test->default" transitive="false">
       <artifact name="hadoop-mapreduce-client-jobclient" ext="jar" />
       <artifact name="hadoop-mapreduce-client-jobclient" type="tests" ext="jar" m:classifier="tests"/>
       <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
