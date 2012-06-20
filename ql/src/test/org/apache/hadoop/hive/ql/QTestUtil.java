@@ -942,6 +942,7 @@ public class QTestUtil {
         ".*transient_lastDdlTime.*",
         ".*last_modified_.*",
         ".*java.lang.RuntimeException.*",
+        ".*java.lang.IllegalArgumentException.*",
         ".*at org.*",
         ".*at sun.*",
         ".*at java.*",
