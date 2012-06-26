@@ -101,10 +101,10 @@
       </path>
       <path id="test.hadoop.classpath">
         <path refid="test.hive.jar.classpath"/>
-        <fileset dir="${hive.root}/build/ivy/lib/test" includes="*.jar" excludes="**/hadoop-mapreduce*.jar,**/hadoop-yarn*.jar,**/hadoop-archives*.jar,**/hive_contrib*.jar,**/hive-contrib*.jar" erroronmissingdir="false" />
-        <fileset dir="${hive.root}/build/ivy/lib/default" includes="*.jar" excludes="**/hadoop-mapreduce*.jar,**/hadoop-yarn*.jar,**/hadoop-archives*.jar,**/hive_contrib*.jar,**/hive-contrib*.jar" erroronmissingdir="false" />
-        <fileset dir="${hive.root}/build/ivy/lib/hadoop0.${hadoop.mr.rev}.shim" includes="*.jar" excludes="**/hadoop-mapreduce*.jar,**/hadoop-yarn*.jar,**/hadoop-archives*.jar,**/hive_contrib*.jar,**/hive-contrib*.jar" erroronmissingdir="false" />
-        <fileset dir="${hive.root}/build/ivy/lib/hadoop-mr1.test" includes="*.jar" />
+        <fileset dir="${hive.root}/build/ivy/lib/test" includes="*.jar" excludes="**/hadoop-mapreduce*.jar,**/hadoop-yarn*.jar,**/hadoop-archives*.jar,**/hive_contrib*.jar,**/hive-contrib*.jar,**/slf4j*.jar" erroronmissingdir="false" />
+        <fileset dir="${hive.root}/build/ivy/lib/default" includes="*.jar" excludes="**/hadoop-mapreduce*.jar,**/hadoop-yarn*.jar,**/hadoop-archives*.jar,**/hive_contrib*.jar,**/hive-contrib*.jar,**/slf4j*.jar" erroronmissingdir="false" />
+        <fileset dir="${hive.root}/build/ivy/lib/hadoop0.${hadoop.mr.rev}.shim" includes="*.jar" excludes="**/hadoop-mapreduce*.jar,**/hadoop-yarn*.jar,**/hadoop-archives*.jar,**/hive_contrib*.jar,**/hive-contrib*.jar,**/slf4j*.jar" erroronmissingdir="false" />
+        <fileset dir="${hive.root}/build/ivy/lib/hadoop-mr1.test" includes="*.jar" excludes="**/hadoop-mapreduce*.jar,**/hadoop-yarn*.jar,**/hadoop-archives*.jar,**/hive_contrib*.jar,**/hive-contrib*.jar" />
       </path>
     </then>
     <else>
@@ -114,11 +114,11 @@
       </path>
       <path id="test.hadoop.classpath">
         <path refid="test.hive.jar.classpath"/>
-        <fileset dir="${hive.root}/build/ivy/lib/test" includes="*.jar" erroronmissingdir="false" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar"/>
-        <fileset dir="${hive.root}/build/ivy/lib/default" includes="*.jar" erroronmissingdir="false" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar" />
+        <fileset dir="${hive.root}/build/ivy/lib/test" includes="*.jar" erroronmissingdir="false" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar,**/slf4j*.jar"/>
+        <fileset dir="${hive.root}/build/ivy/lib/default" includes="*.jar" erroronmissingdir="false" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar,**/slf4j*.jar" />
         <fileset dir="${hive.root}/testlibs" includes="*.jar"/>
-        <fileset dir="${hive.root}/build/ivy/lib/hadoop0.${hadoop.mr.rev}.shim" includes="*.jar" />
-        <fileset dir="${hive.root}/build/ivy/lib/hadoop-mr2.test" includes="*.jar" />
+        <fileset dir="${hive.root}/build/ivy/lib/hadoop0.${hadoop.mr.rev}.shim" includes="*.jar" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar,**/slf4j*.jar"/>
+        <fileset dir="${hive.root}/build/ivy/lib/hadoop-mr2.test" includes="*.jar" excludes="**/hive_contrib*.jar,**/hive-contrib*.jar"/>
       </path>
     </else>
   </if>
