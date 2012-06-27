@@ -10,5 +10,5 @@ PREHOOK: query: FROM src
 SELECT evaluate_npe(src.key) LIMIT 1
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
-PREHOOK: Output: file:/tmp/cloudera/hive_2012-05-17_16-25-32_591_2604050764036436885/-mr-10000
+#### A masked pattern was here ####
 FAILED: Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.MapRedTask
