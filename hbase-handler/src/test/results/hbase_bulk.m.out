@@ -95,7 +95,6 @@ POSTHOOK: Lineage: hbpartition.part_break SIMPLE [(src)src.FieldSchema(name:valu
 POSTHOOK: Lineage: hbsort.key SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: hbsort.val EXPRESSION [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: hbsort.val2 EXPRESSION [(src)src.FieldSchema(name:key, type:string, comment:default), ]
-#### A masked pattern was here ####
 PREHOOK: query: -- To get the files out to your local filesystem for loading into
 #### A masked pattern was here ####
 -- semicolon-terminate the line below before running this test:
