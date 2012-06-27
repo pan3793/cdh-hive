@@ -30,7 +30,6 @@ select distinct value
 from src
 where value='val_100' or value='val_200';
 
-dfs -count /build/ql/test/data/warehouse/hbpartition;
 dfs -cp /build/ql/test/data/warehouse/hbpartition/* /tmp/hbpartition.lst;
 
 set mapred.reduce.tasks=3;
@@ -48,7 +47,6 @@ select distinct value,
 from src
 cluster by value;
 
-dfs -count /tmp/hbsort/cf;
 
 -- To get the files out to your local filesystem for loading into
 -- HBase, run mkdir -p /tmp/blah/cf, then uncomment and
