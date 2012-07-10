@@ -64,7 +64,7 @@
   <property name="build.classes" location="${build.dir}/classes"/>
   <property name="build.encoding" value="ISO-8859-1"/>
 
-  <property name="thrift.args" value="-I ${thrift.home} --gen java:beans --gen cpp --gen php --gen py --gen rb"/>
+  <property name="thrift.args" value="-I ${thrift.home} --gen java:beans,hashcode --gen cpp --gen php --gen py --gen rb"/>
 
   <property name="hadoop.conf.dir" location="${hadoop.root}/conf"/>
 
@@ -496,7 +496,7 @@
     <property name="hadoop.testcp" refid="test.hadoop.classpath"/>
     <if>
       <equals arg1="${test.print.classpath}" arg2="true" />
-      <then>        
+      <then>
         <echo message="Test Classpath: ${hadoop.testcp}"/>
       </then>
     </if>
