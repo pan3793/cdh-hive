@@ -25,6 +25,7 @@
   <classpathentry kind="lib" path="build/hadoopcore/hadoop-@HADOOPVER@/lib/@JETTYJAR@"/>
   <classpathentry kind="lib" path="build/hadoopcore/hadoop-@HADOOPVER@/lib/@JETTYUTILJAR@"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/jline-@jline.version@.jar"/>
+  <classpathentry kind="lib" path="build/ivy/lib/default/sqlline-@sqlline.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/json-@json.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/asm-@asm.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/commons-compress-@commons-compress.version@.jar"/>
