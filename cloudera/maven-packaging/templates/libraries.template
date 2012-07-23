@@ -35,4 +35,4 @@ slf4j-log4j12.version=1.6.1
 thrift.version=0.5.0
 thrift-fb303.version=0.5.0
 avro.version=org.apache.avro:avro.version
-
+datanucleus-core.version=2.0.3-ZD5977-CDH5293
