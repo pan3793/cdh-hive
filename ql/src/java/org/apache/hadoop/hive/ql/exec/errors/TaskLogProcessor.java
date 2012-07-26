@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.mapred.JobConf;
 
 /**
@@ -206,7 +207,8 @@ public class TaskLogProcessor {
         Pattern endStackTracePattern =
             Pattern.compile("^\t... [0-9]+ more.*", Pattern.CASE_INSENSITIVE);
 
-        while ((inputLine = in.readLine()) != null) {
+        while ((inputLine =
+          ShimLoader.getHadoopShims().unquoteHtmlChars(in.readLine())) != null) {
 
           if (stackTracePattern.matcher(inputLine).matches() ||
               endStackTracePattern.matcher(inputLine).matches()) {
