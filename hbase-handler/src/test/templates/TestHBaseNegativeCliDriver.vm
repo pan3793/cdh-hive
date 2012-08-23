@@ -44,9 +44,6 @@ public class $className extends TestCase {
         "$resultsDir.getCanonicalPath()",
         "$logDir.getCanonicalPath()", miniMR, setup);
 
-#foreach ($qf in $qfiles)
-      qt.addFile("$qf.getCanonicalPath()");
-#end
     } catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -88,6 +85,14 @@ public class $className extends TestCase {
     long startTime = System.currentTimeMillis();
     try {
       System.out.println("Begin query: " + "$fname");
+
+      qt.addFile("$qf.getCanonicalPath()");
+
+      if (qt.shouldBeSkipped("$fname")) {
+        System.out.println("Test $fname skipped");
+        return;
+      }
+
       qt.cliInit("$fname");
       qt.clearTestSideEffects();
       int ecode = qt.executeClient("$fname");
