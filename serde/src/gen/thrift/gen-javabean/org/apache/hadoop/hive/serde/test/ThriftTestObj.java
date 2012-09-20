@@ -5,6 +5,7 @@
  */
 package org.apache.hadoop.hive.serde.test;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -348,7 +349,24 @@ public class ThriftTestObj implements org.apache.thrift.TBase<ThriftTestObj, Thr
 
   @Override
   public int hashCode() {
-    return 0;
+    HashCodeBuilder builder = new HashCodeBuilder();
+
+    boolean present_field1 = true;
+    builder.append(present_field1);
+    if (present_field1)
+      builder.append(field1);
+
+    boolean present_field2 = true && (isSetField2());
+    builder.append(present_field2);
+    if (present_field2)
+      builder.append(field2);
+
+    boolean present_field3 = true && (isSetField3());
+    builder.append(present_field3);
+    if (present_field3)
+      builder.append(field3);
+
+    return builder.toHashCode();
   }
 
   public int compareTo(ThriftTestObj other) {

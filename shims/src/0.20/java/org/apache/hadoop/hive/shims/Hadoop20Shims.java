@@ -519,10 +519,10 @@ public class Hadoop20Shims implements HadoopShims {
   }
 
   @Override
-  public void doAs(UserGroupInformation ugi, PrivilegedExceptionAction<Void> pvea) throws
+  public <T> T doAs(UserGroupInformation ugi, PrivilegedExceptionAction<T> pvea) throws
     IOException, InterruptedException {
     try {
-      Subject.doAs(SecurityUtil.getSubject(ugi),pvea);
+      return Subject.doAs(SecurityUtil.getSubject(ugi),pvea);
     } catch (PrivilegedActionException e) {
       throw new IOException(e);
     }
@@ -541,6 +541,11 @@ public class Hadoop20Shims implements HadoopShims {
       taskTrackerHttpURL.getHost(),
       Integer.toString(taskTrackerHttpURL.getPort()),
       taskAttemptId);
+  }
+
+  @Override
+  public UserGroupInformation createProxyUser(String userName) throws IOException {
+    throw new UnsupportedOperationException("Proxy users are not supported in current hadoop version");
   }
 
   @Override

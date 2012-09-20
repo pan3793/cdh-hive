@@ -47,11 +47,11 @@
     <!-- CDH build repo, the pattern attribute handles SNAPSHOT artifacts -->
     <ibiblio name="reactor-repo" root="${reactor.repo}"
              m2compatible="true"
-             checkmodified="true"/>
+             checkmodified="${ivy.checkmodified}"/>
     <ibiblio name="cloudera-releases" m2compatible="true"
-             root="${releases.cloudera.com}" checkmodified="true"/>
+             root="${releases.cloudera.com}" checkmodified="${ivy.checkmodified}"/>
     <ibiblio name="cloudera-snapshots" m2compatible="true"
-             root="${snapshots.cloudera.com}" checkmodified="true"/>
+             root="${snapshots.cloudera.com}" checkmodified="${ivy.checkmodified}"/>
 
     
     <ibiblio name="maven2" root="${repo.maven.org}" pattern="${maven2.pattern.ext}" m2compatible="true"/>
@@ -73,7 +73,7 @@
     </filesystem>
 
     <chain name="default" dual="true" returnFirst="true" 
-           checkmodified="true" 
+           checkmodified="${ivy.checkmodified}" 
            changingPattern="${ivy.changingPattern}">
       <resolver ref="local" />
       <resolver ref="reactor-repo"/>

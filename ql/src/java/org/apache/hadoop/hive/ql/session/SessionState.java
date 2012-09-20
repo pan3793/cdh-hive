@@ -128,6 +128,9 @@ public class SessionState {
 
   private Map<String, List<String>> localMapRedErrors;
 
+  // userid of the remote client connected via hiveserver
+  private String remoteUser;
+
   /**
    * Lineage state.
    */
@@ -749,4 +752,13 @@ public class SessionState {
   public void setLocalMapRedErrors(Map<String, List<String>> localMapRedErrors) {
     this.localMapRedErrors = localMapRedErrors;
   }
+
+  public String getRemoteUser() {
+    return remoteUser;
+  }
+
+  public void setRemoteUser(String remoteUser) {
+    this.remoteUser = remoteUser;
+  }
+
 }

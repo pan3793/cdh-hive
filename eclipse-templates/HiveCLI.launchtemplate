@@ -46,5 +46,4 @@
   <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="@PROJECT@"/>
   <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS"
     value="@JVM_ARGS@ -Dhive.root.logger=INFO,console -Dhadoop.bin.path=@HADOOP_BIN_PATH@"/>
-
 </launchConfiguration>

@@ -112,17 +112,27 @@ public class SetProcessor implements CommandProcessor {
       return new CommandProcessorResponse(0);
     } else if (varname.startsWith(SetProcessor.HIVECONF_PREFIX)){
       String propName = varname.substring(SetProcessor.HIVECONF_PREFIX.length());
-      ss.getConf().set(propName, new VariableSubstitution().substitute(ss.getConf(),varvalue));
-      return new CommandProcessorResponse(0);
+      try {
+        ss.getConf().verifyAndSet(propName, new VariableSubstitution().substitute(ss.getConf(),varvalue));
+        return new CommandProcessorResponse(0);
+      } catch (IllegalArgumentException e) {
+        ss.out.println(e.getMessage());
+        return new CommandProcessorResponse(-1, e.getMessage(), "42000");
+      }
     } else if (varname.startsWith(SetProcessor.HIVEVAR_PREFIX)) {
       String propName = varname.substring(SetProcessor.HIVEVAR_PREFIX.length());
       ss.getHiveVariables().put(propName, new VariableSubstitution().substitute(ss.getConf(),varvalue));
       return new CommandProcessorResponse(0);
     } else {
       String substitutedValue = new VariableSubstitution().substitute(ss.getConf(),varvalue);
-      ss.getConf().set(varname, substitutedValue );
-      ss.getOverriddenConfigurations().put(varname, substitutedValue);
-      return new CommandProcessorResponse(0);
+      try {
+        ss.getConf().verifyAndSet(varname, substitutedValue );
+        ss.getOverriddenConfigurations().put(varname, substitutedValue);
+        return new CommandProcessorResponse(0);
+      } catch (IllegalArgumentException e) {
+        ss.out.println(e.getMessage());
+        return new CommandProcessorResponse(-1, e.getMessage(), "42000");
+      }
     }
   }
 
@@ -186,7 +196,8 @@ public class SetProcessor implements CommandProcessor {
       }
     } else {
       dumpOption(varname);
-      return new CommandProcessorResponse(0);
+      return new CommandProcessorResponse(0, null, null, getSchema());
+      //return new CommandProcessorResponse(0);
     }
   }
 

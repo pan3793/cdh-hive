@@ -1,0 +1,173 @@
+Saving all output to "!!{outputDirectory}!!/rename_column.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/rename_column.q
+>>>  CREATE TABLE kv_rename_test(a int, b int, c int);
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a a STRING;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a','string',''
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a a1 INT;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a1','int',''
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a1 a2 INT FIRST;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a2','int',''
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a2 a INT AFTER b;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'b','int',''
+'a','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a a1 INT COMMENT 'test comment1';
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'b','int',''
+'a1','int','test comment1'
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a1 a2 INT COMMENT 'test comment2' FIRST;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a2','int','test comment2'
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE COLUMN a2 a INT AFTER b;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'b','int',''
+'a','int','test comment2'
+'c','int',''
+3 rows selected 
+>>>  
+>>>  DROP TABLE kv_rename_test;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+'primitives'
+'src'
+'src1'
+'src_json'
+'src_sequencefile'
+'src_thrift'
+'srcbucket'
+'srcbucket2'
+'srcpart'
+9 rows selected 
+>>>  
+>>>  -- Using non-default Database
+>>>  CREATE DATABASE kv_rename_test_db;
+No rows affected 
+>>>  USE kv_rename_test_db;
+No rows affected 
+>>>  
+>>>  CREATE TABLE kv_rename_test(a int, b int, c int);
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a a STRING;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a','string',''
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a a1 INT;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a1','int',''
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a1 a2 INT FIRST;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a2','int',''
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a2 a INT AFTER b;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'b','int',''
+'a','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a a1 INT COMMENT 'test comment1';
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'b','int',''
+'a1','int','test comment1'
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE a1 a2 INT COMMENT 'test comment2' FIRST;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'a2','int','test comment2'
+'b','int',''
+'c','int',''
+3 rows selected 
+>>>  
+>>>  ALTER TABLE kv_rename_test CHANGE COLUMN a2 a INT AFTER b;
+No rows affected 
+>>>  DESCRIBE kv_rename_test;
+'col_name','data_type','comment'
+'b','int',''
+'a','int','test comment2'
+'c','int',''
+3 rows selected 
+>>>  
+>>>  DROP TABLE kv_rename_test;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+No rows selected 
+>>>  !record

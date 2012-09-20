@@ -1,0 +1,50 @@
+Saving all output to "!!{outputDirectory}!!/describe_database_json.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/describe_database_json.q
+>>>  set hive.ddl.output.format=json;
+No rows affected 
+>>>  
+>>>  CREATE DATABASE IF NOT EXISTS jsondb1 COMMENT 'Test database' LOCATION '${hiveconf:hive.metastore.warehouse.dir}/jsondb1' WITH DBPROPERTIES ('id' = 'jsondb1');
+No rows affected 
+>>>  
+>>>  DESCRIBE DATABASE jsondb1;
+'db_name','comment','location','parameters'
+'{"location":"!!{hive.metastore.warehouse.dir}!!/jsondb1","comment":"Test database","database":"jsondb1"}','','',''
+1 row selected 
+>>>  
+>>>  DESCRIBE DATABASE EXTENDED jsondb1;
+'db_name','comment','location','parameters'
+'{"location":"!!{hive.metastore.warehouse.dir}!!/jsondb1","params":{"id":"jsondb1"},"comment":"Test database","database":"jsondb1"}','','',''
+1 row selected 
+>>>  
+>>>  SHOW DATABASES;
+'database_name'
+'{"databases":["add_part_test_db","alter3_db","alter5_db","alter_rename_partition_db","auto_join8","create_view","ctas","db1","db2","default","desc_non_existent_tbl","describe_database_json","describe_formatted_view_partitioned","describe_formatted_view_partitioned_json","describe_table","describe_table_json","describe_xpath","diff_part_input_formats","jsondb1","test_db"]}'
+1 row selected 
+>>>  
+>>>  SHOW DATABASES LIKE 'json*';
+'database_name'
+'{"databases":["jsondb1"]}'
+1 row selected 
+>>>  
+>>>  DROP DATABASE jsondb1;
+No rows affected 
+>>>  
+>>>  CREATE DATABASE jsondb1;
+No rows affected 
+>>>  
+>>>  DESCRIBE DATABASE jsondb1;
+'db_name','comment','location','parameters'
+'{"location":"!!{hive.metastore.warehouse.dir}!!/jsondb1.db","database":"jsondb1"}','','',''
+1 row selected 
+>>>  
+>>>  DESCRIBE DATABASE EXTENDED jsondb1;
+'db_name','comment','location','parameters'
+'{"location":"!!{hive.metastore.warehouse.dir}!!/jsondb1.db","database":"jsondb1"}','','',''
+1 row selected 
+>>>  
+>>>  DROP DATABASE jsondb1;
+No rows affected 
+>>>  
+>>>  set hive.ddl.output.format=text;
+No rows affected 
+>>>  !record

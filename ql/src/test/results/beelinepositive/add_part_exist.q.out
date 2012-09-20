@@ -1,0 +1,100 @@
+Saving all output to "!!{outputDirectory}!!/add_part_exist.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/add_part_exist.q
+>>>  CREATE TABLE add_part_test (key STRING, value STRING) PARTITIONED BY (ds STRING);
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+No rows selected 
+>>>  
+>>>  ALTER TABLE add_part_test ADD PARTITION (ds='2010-01-01');
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+'ds=2010-01-01'
+1 row selected 
+>>>  
+>>>  ALTER TABLE add_part_test ADD IF NOT EXISTS PARTITION (ds='2010-01-01');
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+'ds=2010-01-01'
+1 row selected 
+>>>  
+>>>  ALTER TABLE add_part_test ADD IF NOT EXISTS PARTITION (ds='2010-01-02');
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+'ds=2010-01-01'
+'ds=2010-01-02'
+2 rows selected 
+>>>  
+>>>  ALTER TABLE add_part_test ADD IF NOT EXISTS PARTITION (ds='2010-01-01') PARTITION (ds='2010-01-02') PARTITION (ds='2010-01-03');
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+'ds=2010-01-01'
+'ds=2010-01-02'
+'ds=2010-01-03'
+3 rows selected 
+>>>  
+>>>  DROP TABLE add_part_test;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+'primitives'
+'src'
+'src1'
+'src_json'
+'src_sequencefile'
+'src_thrift'
+'srcbucket'
+'srcbucket2'
+'srcpart'
+9 rows selected 
+>>>  
+>>>  -- Test ALTER TABLE ADD PARTITION in non-default Database
+>>>  CREATE DATABASE add_part_test_db;
+No rows affected 
+>>>  USE add_part_test_db;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+No rows selected 
+>>>  
+>>>  CREATE TABLE add_part_test (key STRING, value STRING) PARTITIONED BY (ds STRING);
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+No rows selected 
+>>>  
+>>>  ALTER TABLE add_part_test ADD PARTITION (ds='2010-01-01');
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+'ds=2010-01-01'
+1 row selected 
+>>>  
+>>>  ALTER TABLE add_part_test ADD IF NOT EXISTS PARTITION (ds='2010-01-01');
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+'ds=2010-01-01'
+1 row selected 
+>>>  
+>>>  ALTER TABLE add_part_test ADD IF NOT EXISTS PARTITION (ds='2010-01-02');
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+'ds=2010-01-01'
+'ds=2010-01-02'
+2 rows selected 
+>>>  
+>>>  ALTER TABLE add_part_test ADD IF NOT EXISTS PARTITION (ds='2010-01-01') PARTITION (ds='2010-01-02') PARTITION (ds='2010-01-03');
+No rows affected 
+>>>  SHOW PARTITIONS add_part_test;
+'partition'
+'ds=2010-01-01'
+'ds=2010-01-02'
+'ds=2010-01-03'
+3 rows selected 
+>>>  !record

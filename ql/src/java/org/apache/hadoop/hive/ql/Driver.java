@@ -112,6 +112,8 @@ public class Driver implements CommandProcessor {
   static final private Log LOG = LogFactory.getLog(Driver.class.getName());
   static final private LogHelper console = new LogHelper(LOG);
 
+  private static final Object compileMonitor = new Object();
+  
   private int maxRows = 100;
   ByteStream.Output bos = new ByteStream.Output();
 
@@ -899,9 +901,13 @@ public class Driver implements CommandProcessor {
     perfLogger.PerfLogBegin(LOG, PerfLogger.DRIVER_RUN);
     perfLogger.PerfLogBegin(LOG, PerfLogger.TIME_TO_SUBMIT);
 
-    int ret = compile(command);
+    int ret;
+    synchronized (compileMonitor) {
+      ret = compile(command);
+    }
     if (ret != 0) {
       releaseLocks(ctx.getHiveLocks());
+      // console.printError("Compilation failed for statement '" + command + "'");
       return new CommandProcessorResponse(ret, errorMessage, SQLState);
     }
 
@@ -945,6 +951,7 @@ public class Driver implements CommandProcessor {
     if (ret != 0) {
       //if needRequireLock is false, the release here will do nothing because there is no lock
       releaseLocks(ctx.getHiveLocks());
+      // console.printError("Execution failed for statement '" + command + "'");
       return new CommandProcessorResponse(ret, errorMessage, SQLState);
     }
 

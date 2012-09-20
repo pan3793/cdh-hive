@@ -1,0 +1,46 @@
+Saving all output to "!!{outputDirectory}!!/create_union_table.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/create_union_table.q
+>>>  explain create table abc(mydata uniontype<int,double,array<string>,struct<a:int,b:string>>, 
+strct struct<a:int, b:string, c:string>);
+'Explain'
+'ABSTRACT SYNTAX TREE:'
+'  (TOK_CREATETABLE (TOK_TABNAME abc) TOK_LIKETABLE (TOK_TABCOLLIST (TOK_TABCOL mydata (TOK_UNIONTYPE (TOK_COLTYPELIST TOK_INT TOK_DOUBLE (TOK_LIST TOK_STRING) (TOK_STRUCT (TOK_TABCOLLIST (TOK_TABCOL a TOK_INT) (TOK_TABCOL b TOK_STRING)))))) (TOK_TABCOL strct (TOK_STRUCT (TOK_TABCOLLIST (TOK_TABCOL a TOK_INT) (TOK_TABCOL b TOK_STRING) (TOK_TABCOL c TOK_STRING))))))'
+''
+'STAGE DEPENDENCIES:'
+'  Stage-0 is a root stage'
+''
+'STAGE PLANS:'
+'  Stage: Stage-0'
+'      Create Table Operator:'
+'        Create Table'
+'          columns: mydata uniontype<int,double,array<string>,struct<a:int,b:string>>, strct struct<a:int,b:string,c:string>'
+'          if not exists: false'
+'          input format: org.apache.hadoop.mapred.TextInputFormat'
+'          # buckets: -1'
+'          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+'          name: abc'
+'          isExternal: false'
+''
+''
+19 rows selected 
+>>>  
+>>>  create table abc(mydata uniontype<int,double,array<string>,struct<a:int,b:string>>, 
+strct struct<a:int, b:string, c:string>);
+No rows affected 
+>>>  
+>>>  load data local inpath '../data/files/union_input.txt' 
+overwrite into table abc;
+No rows affected 
+>>>  
+>>>  SELECT * FROM abc;
+'mydata','strct'
+'1','[1, one, one]'
+'2.0','[2, two, two]'
+'[three, four]','[3, three, four]'
+'[5, five]','[5, five, five]'
+'[six, seven]','[6, six, seven]'
+'[8, eight]','[8, eight, eight]'
+'9','[9, nine, nine]'
+'10.0','[10, ten, ten]'
+8 rows selected 
+>>>  !record

@@ -516,13 +516,18 @@ public abstract class HadoopShimsSecure implements HadoopShims {
   }
 
   @Override
-  public void doAs(UserGroupInformation ugi, PrivilegedExceptionAction<Void> pvea) throws IOException, InterruptedException {
-    ugi.doAs(pvea);
+  public <T> T doAs(UserGroupInformation ugi, PrivilegedExceptionAction<T> pvea) throws IOException, InterruptedException {
+    return ugi.doAs(pvea);
   }
 
   @Override
   public UserGroupInformation createRemoteUser(String userName, List<String> groupNames) {
     return UserGroupInformation.createRemoteUser(userName);
+  }
+
+  @Override
+  public UserGroupInformation createProxyUser(String userName) throws IOException {
+    return UserGroupInformation.createProxyUser(userName, UserGroupInformation.getLoginUser());
   }
 
   @Override

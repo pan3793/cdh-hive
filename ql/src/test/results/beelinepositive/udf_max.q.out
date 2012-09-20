@@ -1,0 +1,63 @@
+Saving all output to "!!{outputDirectory}!!/udf_max.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/udf_max.q
+>>>  DESCRIBE FUNCTION max;
+'tab_name'
+'max(expr) - Returns the maximum value of expr'
+1 row selected 
+>>>  DESCRIBE FUNCTION EXTENDED max;
+'tab_name'
+'max(expr) - Returns the maximum value of expr'
+1 row selected 
+>>>  
+>>>  
+>>>  set hive.map.aggr = false;
+No rows affected 
+>>>  set hive.groupby.skewindata = false;
+No rows affected 
+>>>  
+>>>  SELECT max(struct(CAST(key as INT), value)), 
+max(struct(key, value)) 
+FROM src;
+'_c0','_c1'
+'[498, val_498]','[98, val_98]'
+1 row selected 
+>>>  
+>>>  
+>>>  set hive.map.aggr = true;
+No rows affected 
+>>>  set hive.groupby.skewindata = false;
+No rows affected 
+>>>  
+>>>  SELECT max(struct(CAST(key as INT), value)), 
+max(struct(key, value)) 
+FROM src;
+'_c0','_c1'
+'[498, val_498]','[98, val_98]'
+1 row selected 
+>>>  
+>>>  
+>>>  set hive.map.aggr = false;
+No rows affected 
+>>>  set hive.groupby.skewindata = true;
+No rows affected 
+>>>  
+>>>  SELECT max(struct(CAST(key as INT), value)), 
+max(struct(key, value)) 
+FROM src;
+'_c0','_c1'
+'[498, val_498]','[98, val_98]'
+1 row selected 
+>>>  
+>>>  
+>>>  set hive.map.aggr = true;
+No rows affected 
+>>>  set hive.groupby.skewindata = true;
+No rows affected 
+>>>  
+>>>  SELECT max(struct(CAST(key as INT), value)), 
+max(struct(key, value)) 
+FROM src;
+'_c0','_c1'
+'[498, val_498]','[98, val_98]'
+1 row selected 
+>>>  !record

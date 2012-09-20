@@ -40,7 +40,6 @@
   <classpathentry kind="lib" path="build/ivy/lib/default/avro-@avro.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/avro-mapred-@avro.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/jline-@jline.version@.jar"/>
-  <classpathentry kind="lib" path="build/ivy/lib/default/sqlline-@sqlline.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/json-@json.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/asm-@asm.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/commons-cli-@commons-cli.version@.jar"/>
@@ -49,6 +48,7 @@
   <classpathentry kind="lib" path="build/ivy/lib/default/commons-compress-@commons-compress.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/commons-configuration-@commons-configuration.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/commons-dbcp-@commons-dbcp.version@.jar"/>
+  <classpathentry kind="lib" path="build/ivy/lib/default/commons-io-@commons-io.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/commons-lang-@commons-lang.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/commons-logging-@commons-logging.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/commons-logging-api-@commons-logging-api.version@.jar"/>
@@ -80,21 +80,32 @@
   <classpathentry kind="lib" path="build/ivy/lib/default/slf4j-log4j12-@slf4j-log4j12.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/JavaEWAH-@javaewah.version@.jar"/>
   <classpathentry kind="lib" path="build/ivy/lib/default/mockito-all-@mockito-all.version@.jar"/>
+  <classpathentry kind="lib" path="build/ivy/lib/default/tempus-fugit-@tempus-fugit.version@.jar"/>
   <classpathentry kind="lib" path="build/builtins/hive-builtins-@HIVE_VERSION@.jar"/>
   <classpathentry kind="src" path="build/contrib/test/src"/>
   <classpathentry kind="src" path="build/metastore/gen/antlr/gen-java"/>
   <classpathentry kind="src" path="build/ql/test/src"/>
   <classpathentry kind="src" path="build/ql/gen/antlr/gen-java"/>
+  <classpathentry kind="src" path="builtins/src"/>
   <classpathentry kind="src" path="cli/src/java"/>
   <classpathentry kind="src" path="cli/src/test"/>
   <classpathentry kind="src" path="common/src/java"/>
   <classpathentry kind="src" path="common/src/test"/>
+  <classpathentry kind="src" path="common/src/gen"/>
   <classpathentry kind="src" path="contrib/src/java"/>
   <classpathentry kind="src" path="contrib/src/test"/>
+  <classpathentry kind="src" path="jdbc/src/java"/>
+  <classpathentry kind="src" path="jdbc/src/test"/>
+  <classpathentry kind="src" path="hbase-handler/src/java"/>
+  <classpathentry excluding="queries/|results/|templates/" kind="src" path="hbase-handler/src/test"/>
+  <classpathentry kind="src" path="hwi/src/java"/>
+  <classpathentry kind="src" path="hwi/src/test"/>
   <classpathentry kind="src" path="metastore/src/gen/thrift/gen-javabean"/>
   <classpathentry kind="src" path="metastore/src/java"/>
   <classpathentry kind="src" path="metastore/src/model"/>
   <classpathentry kind="src" path="metastore/src/test"/>
+  <classpathentry kind="src" path="pdk/src/java"/>
+  <classpathentry kind="src" path="pdk/test-plugin/src"/>
   <classpathentry kind="src" path="ql/src/gen/thrift/gen-javabean"/>
   <classpathentry kind="src" path="ql/src/java"/>
   <classpathentry kind="src" path="ql/src/test"/>
@@ -105,18 +116,10 @@
   <classpathentry kind="src" path="service/src/gen/thrift/gen-javabean"/>
   <classpathentry kind="src" path="service/src/java"/>
   <classpathentry kind="src" path="service/src/test"/>
-  <classpathentry kind="src" path="jdbc/src/java"/>
-  <classpathentry kind="src" path="jdbc/src/test"/>
   <classpathentry kind="src" path="shims/src/0.23/java"/>
   <classpathentry kind="src" path="shims/src/common/java"/>
   <classpathentry kind="src" path="shims/src/common-secure/java"/>
   <classpathentry kind="src" path="shims/src/test"/>
-  <classpathentry kind="src" path="hwi/src/java"/>
-  <classpathentry kind="src" path="hwi/src/test"/>
-  <classpathentry kind="src" path="hbase-handler/src/java"/>
-  <classpathentry excluding="queries/|results/|templates/" kind="src" path="hbase-handler/src/test"/>
-  <classpathentry kind="src" path="pdk/src/java"/>
-  <classpathentry kind="src" path="pdk/test-plugin/src"/>
-  <classpathentry kind="src" path="builtins/src"/>
+  <classpathentry kind="src" path="testutils/src/java"/>
   <classpathentry kind="output" path="build/eclipse-classes"/>
 </classpath>

@@ -1,0 +1,63 @@
+Saving all output to "!!{outputDirectory}!!/udf_min.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/udf_min.q
+>>>  DESCRIBE FUNCTION min;
+'tab_name'
+'min(expr) - Returns the minimum value of expr'
+1 row selected 
+>>>  DESCRIBE FUNCTION EXTENDED min;
+'tab_name'
+'min(expr) - Returns the minimum value of expr'
+1 row selected 
+>>>  
+>>>  
+>>>  set hive.map.aggr = false;
+No rows affected 
+>>>  set hive.groupby.skewindata = false;
+No rows affected 
+>>>  
+>>>  SELECT min(struct(CAST(key as INT), value)), 
+min(struct(key, value)) 
+FROM src;
+'_c0','_c1'
+'[0, val_0]','[0, val_0]'
+1 row selected 
+>>>  
+>>>  
+>>>  set hive.map.aggr = true;
+No rows affected 
+>>>  set hive.groupby.skewindata = false;
+No rows affected 
+>>>  
+>>>  SELECT min(struct(CAST(key as INT), value)), 
+min(struct(key, value)) 
+FROM src;
+'_c0','_c1'
+'[0, val_0]','[0, val_0]'
+1 row selected 
+>>>  
+>>>  
+>>>  set hive.map.aggr = false;
+No rows affected 
+>>>  set hive.groupby.skewindata = true;
+No rows affected 
+>>>  
+>>>  SELECT min(struct(CAST(key as INT), value)), 
+min(struct(key, value)) 
+FROM src;
+'_c0','_c1'
+'[0, val_0]','[0, val_0]'
+1 row selected 
+>>>  
+>>>  
+>>>  set hive.map.aggr = true;
+No rows affected 
+>>>  set hive.groupby.skewindata = true;
+No rows affected 
+>>>  
+>>>  SELECT min(struct(CAST(key as INT), value)), 
+min(struct(key, value)) 
+FROM src;
+'_c0','_c1'
+'[0, val_0]','[0, val_0]'
+1 row selected 
+>>>  !record

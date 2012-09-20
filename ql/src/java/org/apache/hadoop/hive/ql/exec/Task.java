@@ -20,11 +20,14 @@ package org.apache.hadoop.hive.ql.exec;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +43,8 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.plan.api.StageType;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.session.SessionState.LogHelper;
+import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.StringUtils;
 
 /**
@@ -68,6 +73,8 @@ public abstract class Task<T extends Serializable> implements Serializable, Node
   protected int taskTag;
   private boolean isLocalMode =false;
   private boolean retryCmdWhenFail = false;
+  private String proxyUser = null;
+  private boolean useProxyMode = false;
 
   public static final int NO_TAG = 0;
   public static final int COMMON_JOIN = 1;
@@ -131,13 +138,28 @@ public abstract class Task<T extends Serializable> implements Serializable, Node
       if (ss != null) {
         ss.getHiveHistory().logPlanProgress(queryPlan);
       }
-      int retval = execute(driverContext);
+      final int retval;
+      if (useProxyMode) {
+        UserGroupInformation ugi = ShimLoader.getHadoopShims().createProxyUser(proxyUser);
+        retval = ShimLoader.getHadoopShims().doAs(ugi, new PrivilegedExceptionAction<Integer>() {
+          int ret;
+          @Override
+          public Integer run() throws Exception {
+            return execute(driverContext);
+          }
+
+        });
+      } else {
+        retval = execute(driverContext);
+      }
       this.setDone();
       if (ss != null) {
         ss.getHiveHistory().logPlanProgress(queryPlan);
       }
       return retval;
     } catch (IOException e) {
+      throw new RuntimeException(e.getMessage());
+    } catch (InterruptedException e) {
       throw new RuntimeException(e.getMessage());
     }
   }
@@ -353,7 +375,7 @@ public abstract class Task<T extends Serializable> implements Serializable, Node
   public Collection<Operator<? extends Serializable>> getTopOperators() {
     return new LinkedList<Operator<? extends Serializable>>();
   }
-  
+
   public boolean hasReduce() {
     return false;
   }
@@ -361,7 +383,7 @@ public abstract class Task<T extends Serializable> implements Serializable, Node
   public Operator<? extends Serializable> getReducer() {
     return null;
   }
-  
+
   public HashMap<String, Long> getCounters() {
     return taskCounters;
   }
@@ -511,5 +533,16 @@ public abstract class Task<T extends Serializable> implements Serializable, Node
 
   public List<FieldSchema> getResultSchema() {
     return null;
+  }
+
+  public String getProxyUser() {
+    return proxyUser;
+  }
+
+  public void setProxyUser(String proxyUser) throws UnsupportedOperationException {
+    if (ShimLoader.getHadoopShims().isSecureShimImpl()) {
+      this.proxyUser = proxyUser;
+      this.useProxyMode = true;
+    }
   }
 }

@@ -1,0 +1,50 @@
+Saving all output to "!!{outputDirectory}!!/authorization_5.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/authorization_5.q
+>>>  CREATE DATABASE IF NOT EXISTS test_db COMMENT 'Hive test database';
+No rows affected 
+>>>  SHOW DATABASES;
+'database_name'
+'add_part_test_db'
+'alter3_db'
+'alter5_db'
+'alter_rename_partition_db'
+'archive_mr_1806'
+'authorization_4'
+'authorization_5'
+'authorization_6'
+'authorization_7'
+'auto_join0'
+'auto_join1'
+'auto_join10'
+'auto_join11'
+'auto_join12'
+'default'
+'test_db'
+16 rows selected 
+>>>  
+>>>  GRANT drop ON DATABASE test_db TO USER hive_test_user;
+No rows affected 
+>>>  GRANT select ON DATABASE test_db TO USER hive_test_user;
+No rows affected 
+>>>  
+>>>  SHOW GRANT USER hive_test_user ON DATABASE test_db;
+No rows affected 
+>>>  
+>>>  CREATE ROLE db_test_role;
+No rows affected 
+>>>  GRANT ROLE db_test_role TO USER hive_test_user;
+No rows affected 
+>>>  SHOW ROLE GRANT USER hive_test_user;
+No rows affected 
+>>>  
+>>>  GRANT drop ON DATABASE test_db TO ROLE db_test_role;
+No rows affected 
+>>>  GRANT select ON DATABASE test_db TO ROLE db_test_role;
+No rows affected 
+>>>  
+>>>  SHOW GRANT ROLE db_test_role ON DATABASE test_db;
+No rows affected 
+>>>  
+>>>  DROP DATABASE IF EXISTS test_db;
+No rows affected 
+>>>  !record

@@ -42,8 +42,11 @@ import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.Partition;
 import org.apache.hadoop.hive.ql.plan.CopyWork;
+import org.apache.hadoop.hive.ql.plan.LoadFileDesc;
 import org.apache.hadoop.hive.ql.plan.LoadTableDesc;
 import org.apache.hadoop.hive.ql.plan.MoveWork;
+import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.shims.ShimLoader;
 
 /**
  * LoadSemanticAnalyzer.
@@ -228,10 +231,17 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
       rTask = TaskFactory.get(new CopyWork(fromURI.toString(), copyURIStr),
           conf);
       fromURI = copyURI;
+    } else if (needRemoteUserOp()) {
+      // add a staged move task to temp location
+      String moveURIStr = ctx.getExternalTmpFileURI(toURI);
+      rTask = TaskFactory.get(new MoveWork(null, null, null,
+          new LoadFileDesc(fromURI.toString(), moveURIStr, true, null, null), false), conf);
+      fromURI = URI.create(moveURIStr);
+      rTask.setProxyUser(SessionState.get().getRemoteUser());
     }
 
     // create final load/move work
-    
+
     String loadTmpPath = ctx.getExternalTmpFileURI(toURI);
     Map<String, String> partSpec = ts.getPartSpec();
     if (partSpec == null) {
@@ -282,6 +292,15 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
       } catch (HiveException e) {
         console.printInfo("WARNING: could not auto-update stale indexes, indexes are not out of sync");
       }
+    }
+  }
+
+  private boolean needRemoteUserOp() {
+    if (ShimLoader.getHadoopShims().isSecureShimImpl() &&
+        (SessionState.get() != null && SessionState.get().getRemoteUser() != null)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

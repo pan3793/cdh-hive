@@ -34,7 +34,6 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
@@ -47,7 +46,6 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileStatus;
@@ -172,17 +170,14 @@ public class QTestUtil {
         normalizeNames(file);
       }
     } else {
-      // System.out.println("Trying to match: " + path.getPath());
       Matcher m = reduceTok.matcher(path.getName());
       if (m.matches()) {
         String name = m.group(1) + "reduce" + m.group(3);
-        // System.out.println("Matched new name: " + name);
         path.renameTo(new File(path.getParent(), name));
       } else {
         m = mapTok.matcher(path.getName());
         if (m.matches()) {
           String name = m.group(1) + "map_" + m.group(3);
-          // System.out.println("Matched new name: " + name);
           path.renameTo(new File(path.getParent(), name));
         }
       }
@@ -191,6 +186,14 @@ public class QTestUtil {
 
   public QTestUtil(String outDir, String logDir) throws Exception {
     this(outDir, logDir, false, "0.20");
+  }
+
+  public String getOutputDirectory() {
+    return outDir;
+  }
+
+  public String getLogDirectory() {
+    return logDir;
   }
 
   private String getHadoopMainVersion(String input) {
@@ -286,7 +289,7 @@ public class QTestUtil {
 
     // Look for a hint to not run a test on some Hadoop versions
     Pattern pattern = Pattern.compile("-- (EX|IN)CLUDE_HADOOP_MAJOR_VERSIONS\\((.*)\\)");
-    
+
     boolean excludeQuery = false;
     boolean includeQuery = false;
     Set<String> versionSet = new HashSet<String>();
@@ -314,7 +317,7 @@ public class QTestUtil {
             + " contains more than one reference to (EX|IN)CLUDE_HADOOP_MAJOR_VERSIONS";
           throw new UnsupportedOperationException(message);
         }
-        
+
         String prefix = matcher.group(1);
         if ("EX".equals(prefix)) {
           excludeQuery = true;
@@ -331,7 +334,7 @@ public class QTestUtil {
       qsb.append(line + "\n");
     }
     qMap.put(qf.getName(), qsb.toString());
-    
+
     if (excludeQuery && versionSet.contains(hadoopVer)) {
       System.out.println("QTestUtil: " + qf.getName()
         + " EXCLUDE list contains Hadoop Version " + hadoopVer + ". Skipping...");
@@ -884,6 +887,7 @@ public class QTestUtil {
 
     in = new BufferedReader(new FileReader(fname));
     out = new BufferedWriter(new FileWriter(fname + ".orig"));
+    
     while (null != (line = in.readLine())) {
       out.write(line);
       out.write('\n');
@@ -913,7 +917,6 @@ public class QTestUtil {
         lastWasMasked = false;
       }
     }
-
     in.close();
     out.close();
   }
@@ -955,6 +958,7 @@ public class QTestUtil {
         ".*USING 'java -cp.*",
         "^Deleted.*",
     };
+
     maskPatterns(patterns, (new File(logDir, tname + ".out")).getPath());
 
     cmdArray = new String[] {

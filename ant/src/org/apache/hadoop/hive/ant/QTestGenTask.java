@@ -81,6 +81,8 @@ public class QTestGenTask extends Task {
   }
 
   private List<String> templatePaths = new ArrayList<String>();
+
+  private String hiveRootDirectory;
   
   private String outputDirectory;
  
@@ -168,6 +170,18 @@ public class QTestGenTask extends Task {
     return StringUtils.join(templatePaths, ",");
   }
 
+  public void setHiveRootDirectory(File hiveRootDirectory) {
+    try {
+      this.hiveRootDirectory = hiveRootDirectory.getCanonicalPath();
+    } catch (IOException ioe) {
+      throw new BuildException(ioe);
+    }
+  }
+
+  public String getHiveRootDirectory() {
+    return hiveRootDirectory;
+  }
+  
   public void setOutputDirectory(File outputDirectory) {
     try {
       this.outputDirectory = outputDirectory.getCanonicalPath();
@@ -259,38 +273,39 @@ public class QTestGenTask extends Task {
     }
 
     List<File> qFiles = new ArrayList<File>();
+    File hiveRootDir = null;
+    File queryDir = null;
     File outDir = null;
     File resultsDir = null;
     File logDir = null;
     
     try {
-      File inpDir = null;
       if (queryDirectory != null) {
-        inpDir = new File(queryDirectory);
+        queryDir = new File(queryDirectory);
       }
 
       if (queryFile != null && !queryFile.equals("")) {
         // The user may have passed a list of files - comma seperated
         for (String qFile : queryFile.split(",")) {
-          if (null != inpDir) {
-            qFiles.add(new File(inpDir, qFile));
+          if (null != queryDir) {
+            qFiles.add(new File(queryDir, qFile));
           } else {
             qFiles.add(new File(qFile));
           }
         }
       } else if (queryFileRegex != null && !queryFileRegex.equals("")) {
-        qFiles.addAll(Arrays.asList(inpDir.listFiles(new QFileRegexFilter(queryFileRegex))));
+        qFiles.addAll(Arrays.asList(queryDir.listFiles(new QFileRegexFilter(queryFileRegex))));
       } else if (runDisabled != null && runDisabled.equals("true")) {
-        qFiles.addAll(Arrays.asList(inpDir.listFiles(new DisabledQFileFilter())));        
+        qFiles.addAll(Arrays.asList(queryDir.listFiles(new DisabledQFileFilter())));        
       } else {
-        qFiles.addAll(Arrays.asList(inpDir.listFiles(new QFileFilter())));
+        qFiles.addAll(Arrays.asList(queryDir.listFiles(new QFileFilter())));
       }
 
       if (excludeQueryFile != null && !excludeQueryFile.equals("")) {
         // Exclude specified query files, comma separated
         for (String qFile : excludeQueryFile.split(",")) {
-          if (null != inpDir) {
-            qFiles.remove(new File(inpDir, qFile));
+          if (null != queryDir) {
+            qFiles.remove(new File(queryDir, qFile));
           } else {
             qFiles.remove(new File(qFile));
           }
@@ -299,6 +314,12 @@ public class QTestGenTask extends Task {
       
       Collections.sort(qFiles);
 
+      hiveRootDir = new File(hiveRootDirectory);
+      if (!hiveRootDir.exists()) {
+        throw new BuildException("Hive Root Directory "
+            + hiveRootDir.getCanonicalPath() + " does not exist");
+      }
+      
       // Make sure the output directory exists, if it doesn't
       // then create it.
       outDir = new File(outputDirectory);
@@ -348,6 +369,8 @@ public class QTestGenTask extends Task {
       VelocityContext ctx = new VelocityContext();
       ctx.put("className", className);
       ctx.put("qfiles", qFiles);
+      ctx.put("hiveRootDir", hiveRootDir);
+      ctx.put("queryDir", queryDir);
       ctx.put("resultsDir", resultsDir);
       ctx.put("logDir", logDir);
       ctx.put("clusterMode", clusterMode);

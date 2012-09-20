@@ -23,8 +23,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -50,6 +52,7 @@ public class HiveConf extends Configuration {
   private static final Log l4j = LogFactory.getLog(HiveConf.class);
   private static URL hiveSiteURL = null;
   private static URL confVarURL = null;
+  private final List<String> restrictList = new ArrayList<String>();
 
   static {
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -586,6 +589,22 @@ public class HiveConf extends Configuration {
     HIVE_DRIVER_RUN_HOOKS("hive.exec.driver.run.hooks", ""),
     HIVE_DDL_OUTPUT_FORMAT("hive.ddl.output.format", null),
 
+    HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS("hive.server2.thrift.min.worker.threads", 5),
+    HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS("hive.server2.thrift.max.worker.threads", 100),
+
+    HIVE_SERVER2_THRIFT_PORT("hive.server2.thrift.port", 10000),
+    HIVE_SERVER2_THRIFT_BIND_HOST("hive.server2.thrift.bind.host", ""),
+
+
+    // HiveServer2 auth configuration
+    HIVE_SERVER2_AUTHENTICATION("hive.server2.authentication", "NONE"),
+    HIVE_SERVER2_KERBEROS_KEYTAB("hive.server2.authentication.kerberos.keytab", ""),
+    HIVE_SERVER2_KERBEROS_PRINCIPAL("hive.server2.authentication.kerberos.principal", ""),
+    HIVE_SERVER2_PLAIN_LDAP_URL("hive.server2.authentication.ldap.url", null),
+    HIVE_SERVER2_PLAIN_LDAP_BASEDN("hive.server2.authentication.ldap.baseDN", null),
+
+    HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),
+
     // If this is set all move tasks at the end of a multi-insert query will only begin once all
     // outputs are ready
     HIVE_MULTI_INSERT_MOVE_TASKS_SHARE_DEPENDENCIES(
@@ -696,6 +715,13 @@ public class HiveConf extends Configuration {
       }
     }
     return confVarURL;
+  }
+
+  public void verifyAndSet(String name, String value) throws IllegalArgumentException {
+    if (restrictList.contains(name)) {
+      throw new IllegalArgumentException("Cann't modify " + name + " at runtime");
+    }
+    set(name, value);
   }
 
   public static int getIntVar(Configuration conf, ConfVars var) {
@@ -888,6 +914,15 @@ public class HiveConf extends Configuration {
     if (auxJars == null) {
       auxJars = this.get(ConfVars.HIVEAUXJARS.varname);
     }
+
+    // setup list of conf vars that are not allowed to change runtime
+    String restrictListStr = this.get(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
+    if (restrictListStr != null) {
+      for (String entry : restrictListStr.split(",")) {
+        restrictList.add(entry);
+      }
+    }
+    restrictList.add(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
   }
 
   /**
@@ -999,4 +1034,5 @@ public class HiveConf extends Configuration {
       return -1;
     }
   }
+
 }

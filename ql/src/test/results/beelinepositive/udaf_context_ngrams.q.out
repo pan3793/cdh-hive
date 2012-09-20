@@ -1,0 +1,31 @@
+Saving all output to "!!{outputDirectory}!!/udaf_context_ngrams.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/udaf_context_ngrams.q
+>>>  CREATE TABLE kafka (contents STRING);
+No rows affected 
+>>>  LOAD DATA LOCAL INPATH '../data/files/text-en.txt' INTO TABLE kafka;
+No rows affected 
+>>>  set mapred.reduce.tasks=1 
+set hive.exec.reducers.max=1 
+ 
+SELECT context_ngrams(sentences(lower(contents)), array(null), 100, 1000).estfrequency FROM kafka;
+No rows affected 
+>>>  SELECT context_ngrams(sentences(lower(contents)), array("he",null), 100, 1000) FROM kafka;
+'_c0'
+'[[[was], 17.0], [[had], 16.0], [[thought], 13.0], [[could], 9.0], [[would], 7.0], [[lay], 5.0], [[looked], 4.0], [[s], 4.0], [[wanted], 4.0], [[did], 4.0], [[felt], 4.0], [[needed], 3.0], [[must], 3.0], [[told], 3.0], [[lifted], 3.0], [[tried], 3.0], [[finally], 3.0], [[slid], 3.0], [[reported], 2.0], [[drew], 2.0], [[is], 2.0], [[wouldn't], 2.0], [[always], 2.0], [[really], 2.0], [[let], 2.0], [[threw], 2.0], [[found], 2.0], [[also], 2.0], [[made], 2.0], [[didn't], 2.0], [[touched], 2.0], [[do], 2.0], [[began], 2.0], [[preferred], 1.0], [[maintained], 1.0], [[managed], 1.0], [[urged], 1.0], [[will], 1.0], [[failed], 1.0], [[have], 1.0], [[heard], 1.0], [[were], 1.0], [[caught], 1.0], [[hit], 1.0], [[turned], 1.0], [[slowly], 1.0], [[stood], 1.0], [[chose], 1.0], [[swung], 1.0], [[denied], 1.0], [[intended], 1.0], [[became], 1.0], [[sits], 1.0], [[discovered], 1.0], [[called], 1.0], [[never], 1.0], [[cut], 1.0], [[directed], 1.0], [[hoped], 1.0], [[remembered], 1.0], [[said], 1.0], [[allowed], 1.0], [[confined], 1.0], [[almost], 1.0], [[retracted], 1.0]]'
+1 row selected 
+>>>  SELECT context_ngrams(sentences(lower(contents)), array(null,"salesmen"), 100, 1000) FROM kafka;
+'_c0'
+'[[[travelling], 3.0]]'
+1 row selected 
+>>>  SELECT context_ngrams(sentences(lower(contents)), array("what","i",null), 100, 1000) FROM kafka;
+'_c0'
+'[[[think], 3.0], [[feel], 2.0]]'
+1 row selected 
+>>>  SELECT context_ngrams(sentences(lower(contents)), array(null,null), 100, 1000).estfrequency FROM kafka;
+'estfrequency'
+'[23.0, 20.0, 18.0, 17.0, 17.0, 16.0, 16.0, 16.0, 16.0, 15.0, 14.0, 13.0, 12.0, 12.0, 12.0, 11.0, 11.0, 11.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 9.0, 9.0, 9.0, 8.0, 8.0, 8.0, 8.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0]'
+1 row selected 
+>>>  
+>>>  DROP TABLE kafka;
+No rows affected 
+>>>  !record

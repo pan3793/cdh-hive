@@ -1,0 +1,233 @@
+Saving all output to "!!{outputDirectory}!!/alter1.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/alter1.q
+>>>  create table alter1(a int, b int);
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  alter table alter1 set tblproperties ('a'='1', 'c'='3');
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{last_modified_by=!!ELIDED!!, c=3, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  alter table alter1 set tblproperties ('a'='1', 'c'='4', 'd'='3');
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  alter table alter1 set tblproperties ('EXTERNAL'='TRUE');
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=TRUE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:EXTERNAL_TABLE)',''
+4 rows selected 
+>>>  alter table alter1 set tblproperties ('EXTERNAL'='FALSE');
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  alter table alter1 set serdeproperties('s1'='9');
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{s1=9, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  alter table alter1 set serdeproperties('s1'='10', 's2' ='20');
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{s2=20, s1=10, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  add jar ../data/files/TestSerDe.jar;
+No rows affected 
+>>>  alter table alter1 set serde 'org.apache.hadoop.hive.serde2.TestSerDe' with serdeproperties('s1'='9');
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','string','from deserializer'
+'b','string','from deserializer'
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:string, comment:from deserializer), FieldSchema(name:b, type:string, comment:from deserializer)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.TestSerDe, parameters:{s2=20, s1=9, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  alter table alter1 set serde 'org.apache.hadoop.hive.serde2.MetadataTypedColumnsetSerDe';
+No rows affected 
+>>>  describe extended alter1;
+'col_name','data_type','comment'
+'a','string','from deserializer'
+'b','string','from deserializer'
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:string, comment:from deserializer), FieldSchema(name:b, type:string, comment:from deserializer)], location:!!{hive.metastore.warehouse.dir}!!/alter1.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{s2=20, s1=9, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  alter table alter1 replace columns (a int, b int, c string);
+No rows affected 
+>>>  describe alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'c','string',''
+3 rows selected 
+>>>  
+>>>  -- Cleanup
+>>>  DROP TABLE alter1;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+'primitives'
+'src'
+'src1'
+'src_json'
+'src_sequencefile'
+'src_thrift'
+'srcbucket'
+'srcbucket2'
+'srcpart'
+9 rows selected 
+>>>  
+>>>  -- With non-default Database
+>>>  
+>>>  CREATE DATABASE alter1_db;
+No rows affected 
+>>>  USE alter1_db;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+No rows selected 
+>>>  
+>>>  CREATE TABLE alter1(a INT, b INT);
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  ALTER TABLE alter1 SET TBLPROPERTIES ('a'='1', 'c'='3');
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{last_modified_by=!!ELIDED!!, c=3, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  ALTER TABLE alter1 SET TBLPROPERTIES ('a'='1', 'c'='4', 'd'='3');
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  ALTER TABLE alter1 SET TBLPROPERTIES ('EXTERNAL'='TRUE');
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=TRUE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:EXTERNAL_TABLE)',''
+4 rows selected 
+>>>  
+>>>  ALTER TABLE alter1 SET TBLPROPERTIES ('EXTERNAL'='FALSE');
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  ALTER TABLE alter1 SET SERDEPROPERTIES('s1'='9');
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{s1=9, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  ALTER TABLE alter1 SET SERDEPROPERTIES('s1'='10', 's2' ='20');
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{s2=20, s1=10, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  add jar ../data/files/TestSerDe.jar;
+No rows affected 
+>>>  ALTER TABLE alter1 SET SERDE 'org.apache.hadoop.hive.serde2.TestSerDe' WITH SERDEPROPERTIES ('s1'='9');
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','string','from deserializer'
+'b','string','from deserializer'
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:string, comment:from deserializer), FieldSchema(name:b, type:string, comment:from deserializer)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.TestSerDe, parameters:{s2=20, s1=9, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  ALTER TABLE alter1 SET SERDE 'org.apache.hadoop.hive.serde2.MetadataTypedColumnsetSerDe';
+No rows affected 
+>>>  DESCRIBE EXTENDED alter1;
+'col_name','data_type','comment'
+'a','string','from deserializer'
+'b','string','from deserializer'
+'','',''
+'Detailed Table Information','Table(tableName:alter1, dbName:alter1_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:string, comment:from deserializer), FieldSchema(name:b, type:string, comment:from deserializer)], location:!!{hive.metastore.warehouse.dir}!!/alter1_db.db/alter1, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{s2=20, s1=9, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[], parameters:{d=3, EXTERNAL=FALSE, last_modified_by=!!ELIDED!!, c=4, last_modified_time=!!UNIXTIME!!, a=1, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+4 rows selected 
+>>>  
+>>>  ALTER TABLE alter1 REPLACE COLUMNS (a int, b int, c string);
+No rows affected 
+>>>  DESCRIBE alter1;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'c','string',''
+3 rows selected 
+>>>  
+>>>  DROP TABLE alter1;
+No rows affected 
+>>>  USE default;
+No rows affected 
+>>>  DROP DATABASE alter1_db;
+No rows affected 
+>>>  !record

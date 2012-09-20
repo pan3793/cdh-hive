@@ -1,0 +1,99 @@
+Saving all output to "!!{outputDirectory}!!/database_location.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/database_location.q
+>>>  CREATE DATABASE db1;
+No rows affected 
+>>>  DESCRIBE DATABASE EXTENDED db1;
+'db_name','comment','location','parameters'
+'db1','','!!{hive.metastore.warehouse.dir}!!/db1.db',''
+1 row selected 
+>>>  
+>>>  USE db1;
+No rows affected 
+>>>  CREATE TABLE table_db1 (name STRING, value INT);
+No rows affected 
+>>>  
+>>>  DESCRIBE FORMATTED table_db1;
+'col_name','data_type','comment'
+'# col_name            ','data_type           ','comment             '
+'','',''
+'name                ','string              ','None                '
+'value               ','int                 ','None                '
+'','',''
+'# Detailed Table Information','',''
+'Database:           ','db1                 ',''
+'Owner:              ','!!{user.name}!!                ',''
+'CreateTime:         ','!!TIMESTAMP!!',''
+'LastAccessTime:     ','UNKNOWN             ',''
+'Protect Mode:       ','None                ',''
+'Retention:          ','0                   ',''
+'Location:           ','!!{hive.metastore.warehouse.dir}!!/db1.db/table_db1',''
+'Table Type:         ','MANAGED_TABLE       ',''
+'Table Parameters:','',''
+'','transient_lastDdlTime','!!UNIXTIME!!          '
+'','',''
+'# Storage Information','',''
+'SerDe Library:      ','org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe',''
+'InputFormat:        ','org.apache.hadoop.mapred.TextInputFormat',''
+'OutputFormat:       ','org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat',''
+'Compressed:         ','No                  ',''
+'Num Buckets:        ','-1                  ',''
+'Bucket Columns:     ','[]                  ',''
+'Sort Columns:       ','[]                  ',''
+'Storage Desc Params:','',''
+'','serialization.format','1                   '
+27 rows selected 
+>>>  SHOW TABLES;
+'tab_name'
+'table_db1'
+1 row selected 
+>>>  
+>>>  CREATE DATABASE db2 
+COMMENT 'database 2' 
+LOCATION '${hiveconf:hive.metastore.warehouse.dir}/db2';
+No rows affected 
+>>>  
+>>>  DESCRIBE DATABASE EXTENDED db2;
+'db_name','comment','location','parameters'
+'db2','database 2','!!{hive.metastore.warehouse.dir}!!/db2',''
+1 row selected 
+>>>  
+>>>  USE db2;
+No rows affected 
+>>>  CREATE TABLE table_db2 (name STRING, value INT);
+No rows affected 
+>>>  
+>>>  DESCRIBE FORMATTED table_db2;
+'col_name','data_type','comment'
+'# col_name            ','data_type           ','comment             '
+'','',''
+'name                ','string              ','None                '
+'value               ','int                 ','None                '
+'','',''
+'# Detailed Table Information','',''
+'Database:           ','db2                 ',''
+'Owner:              ','!!{user.name}!!                ',''
+'CreateTime:         ','!!TIMESTAMP!!',''
+'LastAccessTime:     ','UNKNOWN             ',''
+'Protect Mode:       ','None                ',''
+'Retention:          ','0                   ',''
+'Location:           ','!!{hive.metastore.warehouse.dir}!!/db2/table_db2',''
+'Table Type:         ','MANAGED_TABLE       ',''
+'Table Parameters:','',''
+'','transient_lastDdlTime','!!UNIXTIME!!          '
+'','',''
+'# Storage Information','',''
+'SerDe Library:      ','org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe',''
+'InputFormat:        ','org.apache.hadoop.mapred.TextInputFormat',''
+'OutputFormat:       ','org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat',''
+'Compressed:         ','No                  ',''
+'Num Buckets:        ','-1                  ',''
+'Bucket Columns:     ','[]                  ',''
+'Sort Columns:       ','[]                  ',''
+'Storage Desc Params:','',''
+'','serialization.format','1                   '
+27 rows selected 
+>>>  SHOW TABLES;
+'tab_name'
+'table_db2'
+1 row selected 
+>>>  !record

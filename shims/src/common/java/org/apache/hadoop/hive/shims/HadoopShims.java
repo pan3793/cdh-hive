@@ -187,12 +187,13 @@ public interface HadoopShims {
 
   /**
    * Used by metastore server to perform requested rpc in client context.
+   * @param <T>
    * @param ugi
    * @param pvea
    * @throws IOException
    * @throws InterruptedException
    */
-  public void doAs(UserGroupInformation ugi, PrivilegedExceptionAction<Void> pvea) throws
+  public <T> T doAs(UserGroupInformation ugi, PrivilegedExceptionAction<T> pvea) throws
     IOException, InterruptedException;
 
   /**
@@ -201,8 +202,15 @@ public interface HadoopShims {
    * @param groupNames group names associated with remote user name
    * @return UGI created for the remote user.
    */
-
   public UserGroupInformation createRemoteUser(String userName, List<String> groupNames);
+
+  /**
+   * Create a proxy user using username of the effective user and the ugi of the real user.
+   * @param userName
+   * @return proxyUser ugi
+   */
+  public UserGroupInformation createProxyUser(String userName) throws IOException;
+
   /**
    * Get the short name corresponding to the subject in the passed UGI
    *

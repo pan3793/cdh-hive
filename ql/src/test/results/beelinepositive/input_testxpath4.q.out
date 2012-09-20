@@ -1,0 +1,136 @@
+Saving all output to "!!{outputDirectory}!!/input_testxpath4.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/input_testxpath4.q
+>>>  set hive.optimize.ppd=false;
+No rows affected 
+>>>  
+>>>  EXPLAIN 
+FROM src_thrift 
+SELECT src_thrift.mstringstring['key_9'], lintstring.myint 
+WHERE src_thrift.mstringstring['key_9'] IS NOT NULL 
+AND lintstring.myint IS NOT NULL 
+AND lintstring IS NOT NULL;
+'Explain'
+'ABSTRACT SYNTAX TREE:'
+'  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME src_thrift))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR ([ (. (TOK_TABLE_OR_COL src_thrift) mstringstring) 'key_9')) (TOK_SELEXPR (. (TOK_TABLE_OR_COL lintstring) myint))) (TOK_WHERE (AND (AND (TOK_FUNCTION TOK_ISNOTNULL ([ (. (TOK_TABLE_OR_COL src_thrift) mstringstring) 'key_9')) (TOK_FUNCTION TOK_ISNOTNULL (. (TOK_TABLE_OR_COL lintstring) myint))) (TOK_FUNCTION TOK_ISNOTNULL (TOK_TABLE_OR_COL lintstring))))))'
+''
+'STAGE DEPENDENCIES:'
+'  Stage-1 is a root stage'
+'  Stage-0 is a root stage'
+''
+'STAGE PLANS:'
+'  Stage: Stage-1'
+'    Map Reduce'
+'      Alias -> Map Operator Tree:'
+'        src_thrift '
+'          TableScan'
+'            alias: src_thrift'
+'            Filter Operator'
+'              predicate:'
+'                  expr: ((mstringstring['key_9'] is not null and lintstring.myint is not null) and lintstring is not null)'
+'                  type: boolean'
+'              Select Operator'
+'                expressions:'
+'                      expr: mstringstring['key_9']'
+'                      type: string'
+'                      expr: lintstring.myint'
+'                      type: array<int>'
+'                outputColumnNames: _col0, _col1'
+'                File Output Operator'
+'                  compressed: false'
+'                  GlobalTableId: 0'
+'                  table:'
+'                      input format: org.apache.hadoop.mapred.TextInputFormat'
+'                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+''
+'  Stage: Stage-0'
+'    Fetch Operator'
+'      limit: -1'
+''
+''
+37 rows selected 
+>>>  
+>>>  FROM src_thrift 
+SELECT src_thrift.mstringstring['key_9'], lintstring.myint 
+WHERE src_thrift.mstringstring['key_9'] IS NOT NULL 
+OR lintstring.myint IS NOT NULL 
+OR lintstring IS NOT NULL;
+'_c0','myint'
+'','[0]'
+'','[1]'
+'','[4]'
+'','[9]'
+'','[16]'
+'','[25]'
+'','[36]'
+'','[49]'
+'','[64]'
+'value_9','[81]'
+10 rows selected 
+>>>  
+>>>  set hive.optimize.ppd=true;
+No rows affected 
+>>>  
+>>>  EXPLAIN 
+FROM src_thrift 
+SELECT src_thrift.mstringstring['key_9'], lintstring.myint 
+WHERE src_thrift.mstringstring['key_9'] IS NOT NULL 
+AND lintstring.myint IS NOT NULL 
+AND lintstring IS NOT NULL;
+'Explain'
+'ABSTRACT SYNTAX TREE:'
+'  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME src_thrift))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR ([ (. (TOK_TABLE_OR_COL src_thrift) mstringstring) 'key_9')) (TOK_SELEXPR (. (TOK_TABLE_OR_COL lintstring) myint))) (TOK_WHERE (AND (AND (TOK_FUNCTION TOK_ISNOTNULL ([ (. (TOK_TABLE_OR_COL src_thrift) mstringstring) 'key_9')) (TOK_FUNCTION TOK_ISNOTNULL (. (TOK_TABLE_OR_COL lintstring) myint))) (TOK_FUNCTION TOK_ISNOTNULL (TOK_TABLE_OR_COL lintstring))))))'
+''
+'STAGE DEPENDENCIES:'
+'  Stage-1 is a root stage'
+'  Stage-0 is a root stage'
+''
+'STAGE PLANS:'
+'  Stage: Stage-1'
+'    Map Reduce'
+'      Alias -> Map Operator Tree:'
+'        src_thrift '
+'          TableScan'
+'            alias: src_thrift'
+'            Filter Operator'
+'              predicate:'
+'                  expr: ((mstringstring['key_9'] is not null and lintstring.myint is not null) and lintstring is not null)'
+'                  type: boolean'
+'              Select Operator'
+'                expressions:'
+'                      expr: mstringstring['key_9']'
+'                      type: string'
+'                      expr: lintstring.myint'
+'                      type: array<int>'
+'                outputColumnNames: _col0, _col1'
+'                File Output Operator'
+'                  compressed: false'
+'                  GlobalTableId: 0'
+'                  table:'
+'                      input format: org.apache.hadoop.mapred.TextInputFormat'
+'                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+''
+'  Stage: Stage-0'
+'    Fetch Operator'
+'      limit: -1'
+''
+''
+37 rows selected 
+>>>  
+>>>  FROM src_thrift 
+SELECT src_thrift.mstringstring['key_9'], lintstring.myint 
+WHERE src_thrift.mstringstring['key_9'] IS NOT NULL 
+OR lintstring.myint IS NOT NULL 
+OR lintstring IS NOT NULL;
+'_c0','myint'
+'','[0]'
+'','[1]'
+'','[4]'
+'','[9]'
+'','[16]'
+'','[25]'
+'','[36]'
+'','[49]'
+'','[64]'
+'value_9','[81]'
+10 rows selected 
+>>>  !record

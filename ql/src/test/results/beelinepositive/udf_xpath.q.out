@@ -1,0 +1,39 @@
+Saving all output to "!!{outputDirectory}!!/udf_xpath.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/udf_xpath.q
+>>>  DESCRIBE FUNCTION xpath ;
+'tab_name'
+'xpath(xml, xpath) - Returns a string array of values within xml nodes that match the xpath expression'
+1 row selected 
+>>>  DESCRIBE FUNCTION EXTENDED xpath ;
+'tab_name'
+'xpath(xml, xpath) - Returns a string array of values within xml nodes that match the xpath expression'
+'Example:'
+'  > SELECT xpath('<a><b>b1</b><b>b2</b><b>b3</b><c>c1</c><c>c2</c></a>', 'a/text()') FROM src LIMIT 1'
+'  []'
+'  > SELECT xpath('<a><b>b1</b><b>b2</b><b>b3</b><c>c1</c><c>c2</c></a>', 'a/b/text()') FROM src LIMIT 1'
+'  ["b1","b2","b3"]'
+'  > SELECT xpath('<a><b>b1</b><b>b2</b><b>b3</b><c>c1</c><c>c2</c></a>', 'a/c/text()') FROM src LIMIT 1'
+'  ["c1","c2"]'
+8 rows selected 
+>>>  
+>>>  SELECT xpath ('<a><b>b1</b><b>b2</b><b>b3</b><c>c1</c><c>c2</c></a>', 'a/text()') FROM src LIMIT 1 ;
+'_c0'
+'[]'
+1 row selected 
+>>>  SELECT xpath ('<a><b>b1</b><b>b2</b><b>b3</b><c>c1</c><c>c2</c></a>', 'a/*/text()') FROM src LIMIT 1 ;
+'_c0'
+'[b1, b2, b3, c1, c2]'
+1 row selected 
+>>>  SELECT xpath ('<a><b>b1</b><b>b2</b><b>b3</b><c>c1</c><c>c2</c></a>', 'a/b/text()') FROM src LIMIT 1 ;
+'_c0'
+'[b1, b2, b3]'
+1 row selected 
+>>>  SELECT xpath ('<a><b>b1</b><b>b2</b><b>b3</b><c>c1</c><c>c2</c></a>', 'a/c/text()') FROM src LIMIT 1 ;
+'_c0'
+'[c1, c2]'
+1 row selected 
+>>>  SELECT xpath ('<a><b class="bb">b1</b><b>b2</b><b>b3</b><c class="bb">c1</c><c>c2</c></a>', 'a/*[@class="bb"]/text()') FROM src LIMIT 1 ;
+'_c0'
+'[b1, c1]'
+1 row selected 
+>>>  !record

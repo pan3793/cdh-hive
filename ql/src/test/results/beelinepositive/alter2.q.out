@@ -1,0 +1,211 @@
+Saving all output to "!!{outputDirectory}!!/alter2.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/alter2.q
+>>>  create table alter2(a int, b int) partitioned by (insertdate string);
+No rows affected 
+>>>  describe extended alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+5 rows selected 
+>>>  show partitions alter2;
+'partition'
+No rows selected 
+>>>  alter table alter2 add partition (insertdate='2008-01-01') location '2008/01/01';
+No rows affected 
+>>>  describe extended alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+5 rows selected 
+>>>  show partitions alter2;
+'partition'
+'insertdate=2008-01-01'
+1 row selected 
+>>>  alter table alter2 add partition (insertdate='2008-01-02') location '2008/01/02';
+No rows affected 
+>>>  describe extended alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+5 rows selected 
+>>>  show partitions alter2;
+'partition'
+'insertdate=2008-01-01'
+'insertdate=2008-01-02'
+2 rows selected 
+>>>  drop table alter2;
+No rows affected 
+>>>  
+>>>  create external table alter2(a int, b int) partitioned by (insertdate string);
+No rows affected 
+>>>  describe extended alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{EXTERNAL=TRUE, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:EXTERNAL_TABLE)',''
+5 rows selected 
+>>>  show partitions alter2;
+'partition'
+No rows selected 
+>>>  alter table alter2 add partition (insertdate='2008-01-01') location '2008/01/01';
+No rows affected 
+>>>  describe extended alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{EXTERNAL=TRUE, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:EXTERNAL_TABLE)',''
+5 rows selected 
+>>>  show partitions alter2;
+'partition'
+'insertdate=2008-01-01'
+1 row selected 
+>>>  alter table alter2 add partition (insertdate='2008-01-02') location '2008/01/02';
+No rows affected 
+>>>  describe extended alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{EXTERNAL=TRUE, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:EXTERNAL_TABLE)',''
+5 rows selected 
+>>>  show partitions alter2;
+'partition'
+'insertdate=2008-01-01'
+'insertdate=2008-01-02'
+2 rows selected 
+>>>  
+>>>  -- Cleanup
+>>>  DROP TABLE alter2;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+'primitives'
+'src'
+'src1'
+'src_json'
+'src_sequencefile'
+'src_thrift'
+'srcbucket'
+'srcbucket2'
+'srcpart'
+9 rows selected 
+>>>  
+>>>  -- Using non-default Database
+>>>  
+>>>  CREATE DATABASE alter2_db;
+No rows affected 
+>>>  USE alter2_db;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+No rows selected 
+>>>  
+>>>  CREATE TABLE alter2(a int, b int) PARTITIONED BY (insertdate string);
+No rows affected 
+>>>  DESCRIBE EXTENDED alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2_db.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+5 rows selected 
+>>>  SHOW PARTITIONS alter2;
+'partition'
+No rows selected 
+>>>  ALTER TABLE alter2 ADD PARTITION (insertdate='2008-01-01') LOCATION '2008/01/01';
+No rows affected 
+>>>  DESCRIBE EXTENDED alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2_db.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+5 rows selected 
+>>>  SHOW PARTITIONS alter2;
+'partition'
+'insertdate=2008-01-01'
+1 row selected 
+>>>  ALTER TABLE alter2 ADD PARTITION (insertdate='2008-01-02') LOCATION '2008/01/02';
+No rows affected 
+>>>  DESCRIBE EXTENDED alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2_db.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE)',''
+5 rows selected 
+>>>  SHOW PARTITIONS alter2;
+'partition'
+'insertdate=2008-01-01'
+'insertdate=2008-01-02'
+2 rows selected 
+>>>  DROP TABLE alter2;
+No rows affected 
+>>>  
+>>>  CREATE EXTERNAL TABLE alter2(a int, b int) PARTITIONED BY (insertdate string);
+No rows affected 
+>>>  DESCRIBE EXTENDED alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2_db.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{EXTERNAL=TRUE, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:EXTERNAL_TABLE)',''
+5 rows selected 
+>>>  SHOW PARTITIONS alter2;
+'partition'
+No rows selected 
+>>>  ALTER TABLE alter2 ADD PARTITION (insertdate='2008-01-01') LOCATION '2008/01/01';
+No rows affected 
+>>>  DESCRIBE EXTENDED alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2_db.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{EXTERNAL=TRUE, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:EXTERNAL_TABLE)',''
+5 rows selected 
+>>>  SHOW PARTITIONS alter2;
+'partition'
+'insertdate=2008-01-01'
+1 row selected 
+>>>  ALTER TABLE alter2 ADD PARTITION (insertdate='2008-01-02') LOCATION '2008/01/02';
+No rows affected 
+>>>  DESCRIBE EXTENDED alter2;
+'col_name','data_type','comment'
+'a','int',''
+'b','int',''
+'insertdate','string',''
+'','',''
+'Detailed Table Information','Table(tableName:alter2, dbName:alter2_db, owner:!!{user.name}!!, createTime:!!UNIXTIME!!, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:a, type:int, comment:null), FieldSchema(name:b, type:int, comment:null), FieldSchema(name:insertdate, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter2_db.db/alter2, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), partitionKeys:[FieldSchema(name:insertdate, type:string, comment:null)], parameters:{EXTERNAL=TRUE, transient_lastDdlTime=!!UNIXTIME!!}, viewOriginalText:null, viewExpandedText:null, tableType:EXTERNAL_TABLE)',''
+5 rows selected 
+>>>  SHOW PARTITIONS alter2;
+'partition'
+'insertdate=2008-01-01'
+'insertdate=2008-01-02'
+2 rows selected 
+>>>  
+>>>  DROP TABLE alter2;
+No rows affected 
+>>>  USE default;
+No rows affected 
+>>>  DROP DATABASE alter2_db;
+No rows affected 
+>>>  !record

@@ -1,0 +1,117 @@
+Saving all output to "!!{outputDirectory}!!/alter5.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/alter5.q
+>>>  --
+>>>  -- Added to validate the fix for HIVE-2117 - explicit partition location
+>>>  --
+>>>  
+>>>  create table alter5_src ( col1 string ) stored as textfile ;
+No rows affected 
+>>>  load data local inpath '../data/files/test.dat' overwrite into table alter5_src ;
+No rows affected 
+>>>  
+>>>  create table alter5 ( col1 string ) partitioned by (dt string);
+No rows affected 
+>>>  
+>>>  --
+>>>  -- Here's the interesting bit for HIVE-2117 - partition subdir should be
+>>>  -- named "parta".
+>>>  --
+>>>  alter table alter5 add partition (dt='a') location 'parta';
+No rows affected 
+>>>  
+>>>  describe extended alter5 partition (dt='a');
+'col_name','data_type','comment'
+'col1','string',''
+'dt','string',''
+'','',''
+'Detailed Partition Information','Partition(values:[a], dbName:alter5, tableName:alter5, createTime:!!UNIXTIME!!, lastAccessTime:0, sd:StorageDescriptor(cols:[FieldSchema(name:col1, type:string, comment:null), FieldSchema(name:dt, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter5.db/alter5/parta, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), parameters:{transient_lastDdlTime=!!UNIXTIME!!})',''
+4 rows selected 
+>>>  
+>>>  insert overwrite table alter5 partition (dt='a') select col1 from alter5_src ;
+'col1'
+No rows selected 
+>>>  select * from alter5 where dt='a';
+'col1','dt'
+'1','a'
+'2','a'
+'3','a'
+'4','a'
+'5','a'
+'6','a'
+6 rows selected 
+>>>  
+>>>  describe extended alter5 partition (dt='a');
+'col_name','data_type','comment'
+'col1','string',''
+'dt','string',''
+'','',''
+'Detailed Partition Information','Partition(values:[a], dbName:alter5, tableName:alter5, createTime:!!UNIXTIME!!, lastAccessTime:0, sd:StorageDescriptor(cols:[FieldSchema(name:col1, type:string, comment:null), FieldSchema(name:dt, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter5.db/alter5/parta, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), parameters:{numFiles=1, transient_lastDdlTime=!!UNIXTIME!!, numRows=6, totalSize=12, rawDataSize=6})',''
+4 rows selected 
+>>>  
+>>>  -- Cleanup
+>>>  DROP TABLE alter5_src;
+No rows affected 
+>>>  DROP TABLE alter5;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+'primitives'
+'src'
+'src1'
+'src_json'
+'src_sequencefile'
+'src_thrift'
+'srcbucket'
+'srcbucket2'
+'srcpart'
+9 rows selected 
+>>>  
+>>>  -- With non-default Database
+>>>  
+>>>  CREATE DATABASE alter5_db;
+No rows affected 
+>>>  USE alter5_db;
+No rows affected 
+>>>  SHOW TABLES;
+'tab_name'
+No rows selected 
+>>>  
+>>>  create table alter5_src ( col1 string ) stored as textfile ;
+No rows affected 
+>>>  load data local inpath '../data/files/test.dat' overwrite into table alter5_src ;
+No rows affected 
+>>>  
+>>>  create table alter5 ( col1 string ) partitioned by (dt string);
+No rows affected 
+>>>  alter table alter5 add partition (dt='a') location 'parta';
+No rows affected 
+>>>  
+>>>  describe extended alter5 partition (dt='a');
+'col_name','data_type','comment'
+'col1','string',''
+'dt','string',''
+'','',''
+'Detailed Partition Information','Partition(values:[a], dbName:alter5_db, tableName:alter5, createTime:!!UNIXTIME!!, lastAccessTime:0, sd:StorageDescriptor(cols:[FieldSchema(name:col1, type:string, comment:null), FieldSchema(name:dt, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter5_db.db/alter5/parta, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), parameters:{transient_lastDdlTime=!!UNIXTIME!!})',''
+4 rows selected 
+>>>  
+>>>  insert overwrite table alter5 partition (dt='a') select col1 from alter5_src ;
+'col1'
+No rows selected 
+>>>  select * from alter5 where dt='a';
+'col1','dt'
+'1','a'
+'2','a'
+'3','a'
+'4','a'
+'5','a'
+'6','a'
+6 rows selected 
+>>>  
+>>>  describe extended alter5 partition (dt='a');
+'col_name','data_type','comment'
+'col1','string',''
+'dt','string',''
+'','',''
+'Detailed Partition Information','Partition(values:[a], dbName:alter5_db, tableName:alter5, createTime:!!UNIXTIME!!, lastAccessTime:0, sd:StorageDescriptor(cols:[FieldSchema(name:col1, type:string, comment:null), FieldSchema(name:dt, type:string, comment:null)], location:!!{hive.metastore.warehouse.dir}!!/alter5_db.db/alter5/parta, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}), parameters:{numFiles=1, transient_lastDdlTime=!!UNIXTIME!!, numRows=6, totalSize=12, rawDataSize=6})',''
+4 rows selected 
+>>>  !record

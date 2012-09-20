@@ -1,0 +1,60 @@
+Saving all output to "!!{outputDirectory}!!/lock3.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/lock3.q
+>>>  drop table tstsrcpart;
+No rows affected 
+>>>  create table tstsrcpart like srcpart;
+No rows affected 
+>>>  
+>>>  from srcpart 
+insert overwrite table tstsrcpart partition (ds='2008-04-08',hr='11') 
+select key, value where ds='2008-04-08' and hr='11';
+'key','value'
+No rows selected 
+>>>  
+>>>  set hive.exec.dynamic.partition.mode=nonstrict;
+No rows affected 
+>>>  set hive.exec.dynamic.partition=true;
+No rows affected 
+>>>  
+>>>  
+>>>  from srcpart 
+insert overwrite table tstsrcpart partition (ds, hr) select key, value, ds, hr where ds <= '2008-04-08';
+'key','value','ds','hr'
+No rows selected 
+>>>  
+>>>  from srcpart 
+insert overwrite table tstsrcpart partition (ds ='2008-04-08', hr) select key, value, hr where ds = '2008-04-08';
+'key','value','hr'
+No rows selected 
+>>>  
+>>>  
+>>>  SHOW LOCKS;
+'tab_name','mode'
+'join_filters@smb_input2','SHARED'
+'join_nulls@smb_input2','SHARED'
+'load_dyn_part5@nzhang_part5','SHARED'
+'load_dyn_part5@src','SHARED'
+'lock4@primitives','EXCLUSIVE'
+5 rows selected 
+>>>  SHOW LOCKS tstsrcpart;
+'tab_name','mode'
+No rows selected 
+>>>  
+>>>  drop table tstsrcpart;
+No rows affected 
+>>>  
+>>>  drop table tst1;
+No rows affected 
+>>>  create table tst1 (key string, value string) partitioned by (a string, b string, c string, d string);
+No rows affected 
+>>>  
+>>>  
+>>>  from srcpart 
+insert overwrite table tst1 partition (a='1', b='2', c, d) select key, value, ds, hr where ds = '2008-04-08';
+'key','value','ds','hr'
+No rows selected 
+>>>  
+>>>  
+>>>  drop table tst1;
+No rows affected 
+>>>  !record

@@ -1,0 +1,29 @@
+Saving all output to "!!{outputDirectory}!!/create_struct_table.q.raw". Enter "record" with no arguments to stop it.
+>>>  !run !!{qFileDirectory}!!/create_struct_table.q
+>>>  
+>>>  create table abc(strct struct<a:int, b:string, c:string>) 
+row format delimited 
+fields terminated by '\t' 
+collection items terminated by '\001';
+No rows affected 
+>>>  
+>>>  load data local inpath '../data/files/kv1.txt' 
+overwrite into table abc;
+No rows affected 
+>>>  
+>>>  SELECT strct, strct.a, strct.b FROM abc LIMIT 10;
+'strct','a','b'
+'[238, val_238, null]','238','val_238'
+'[86, val_86, null]','86','val_86'
+'[311, val_311, null]','311','val_311'
+'[27, val_27, null]','27','val_27'
+'[165, val_165, null]','165','val_165'
+'[409, val_409, null]','409','val_409'
+'[255, val_255, null]','255','val_255'
+'[278, val_278, null]','278','val_278'
+'[98, val_98, null]','98','val_98'
+'[484, val_484, null]','484','val_484'
+10 rows selected 
+>>>  
+>>>  
+>>>  !record
