@@ -609,6 +609,12 @@ public class HiveConf extends Configuration {
     // outputs are ready
     HIVE_MULTI_INSERT_MOVE_TASKS_SHARE_DEPENDENCIES(
         "hive.multi.insert.move.tasks.share.dependencies", false),
+
+    // Allow TCP Keep alive socket option for for HiveServer or a maximum timeout for the socket.
+
+    SERVER_READ_SOCKET_TIMEOUT("hive.server.read.socket.timeout", 10),
+    SERVER_TCP_KEEP_ALIVE("hive.server.tcp.keepalive", true),
+
     ;
 
     public final String varname;
