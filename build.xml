@@ -24,6 +24,34 @@
          xmlns:rat="antlib:org.apache.rat.anttasks" >
 
   <property name="hive.root" location="${basedir}"/>
+
+  <!-- load ant-contrib tasks to get the "if" task. -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="${hive.root}/testlibs/ant-contrib-1.0b3.jar"/>
+    </classpath>
+  </taskdef>
+
+  <!-- Initializes ivy/libraries.properties and build.properties with CDH versions -->
+  <if>
+    <and>
+      <not>
+        <isset property="cdh.maven" />
+      </not>
+      <not>
+        <available file="${basedir}/cdh.build.properties" />
+      </not>
+    </and>
+    <then>
+      <exec  executable="mvn" dir="${basedir}" failonerror="true">
+        <arg value="-f" />
+        <arg value="cloudera-pom.xml" />
+        <arg value="process-resources"/>
+      </exec>
+    </then>
+  </if>
+
+  <property file="${hive.root}/cdh.build.properties"/>
   <property file="${hive.root}/build.properties"/>
   <property file="${user.home}/build.properties" />
   <property file="${basedir}/build.properties" />
