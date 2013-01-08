@@ -55,9 +55,11 @@
       <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
       <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
     </dependency>
-    <dependency org="org.apache.avro" name="avro" rev="${avro.version}"
-                conf="hadoop23.compile->default" transitive="false" />
 
+    <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
+                conf="hadoop23.compile->default">
+    </dependency>
+    
     <dependency org="org.apache.hadoop" name="hadoop-core"
                 rev="${hadoop-0.20.version}"
                 conf="hadoop20.compile->default" transitive="false">

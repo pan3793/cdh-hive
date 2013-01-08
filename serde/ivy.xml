@@ -45,10 +45,9 @@
                 transitive="false"/>
     <dependency org="commons-codec" name="commons-codec" rev="${commons-codec.version}"
                 transitive="false"/>
-    <dependency org="org.apache.avro" name="avro" rev="${avro.version}"
-                transitive="false"/>
-    <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
-                transitive="false"/>
+     <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
+                conf="compile->default">
+     </dependency>
 
     <!-- Test Dependencies -->
     <dependency org="org.apache.hadoop" name="hadoop-common"
