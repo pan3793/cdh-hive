@@ -47,6 +47,13 @@
     <dependency org="org.codehaus.jackson" name="jackson-jaxrs" rev="${jackson.version}"/>
     <dependency org="org.codehaus.jackson" name="jackson-xc" rev="${jackson.version}"/>
 
+    <dependency org="org.apache.hadoop" name="hadoop-minicluster"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+                          <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+
     <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${hadoop-0.23.version}"
                 conf="hadoop23.test->default" transitive="false">
       <artifact name="hadoop-mapreduce-client-jobclient" ext="jar" />
