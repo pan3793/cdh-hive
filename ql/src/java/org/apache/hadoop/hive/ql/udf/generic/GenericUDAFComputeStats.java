@@ -506,6 +506,10 @@ public class GenericUDAFComputeStats extends AbstractGenericUDAFResolver {
         if (!emptyTable) {
           numVectors = PrimitiveObjectInspectorUtils.getInt(parameters[1], numVectorsOI);
         }
+        if (numVectors > 1024) {
+          throw new HiveException("The maximum allowed value for number of bit vectors " +
+            " is 1024, but was passed " + numVectors + " bit vectors");
+        }
         initNDVEstimator(myagg, numVectors);
         myagg.firstItem = false;
         myagg.numBitVectors = numVectors;
@@ -674,6 +678,7 @@ public class GenericUDAFComputeStats extends AbstractGenericUDAFResolver {
       if (mode == Mode.PARTIAL1 || mode == Mode.COMPLETE) {
         inputOI = (PrimitiveObjectInspector) parameters[0];
         numVectorsOI = (PrimitiveObjectInspector) parameters[1];
+           
       } else {
         soi = (StructObjectInspector) parameters[0];
 
@@ -825,6 +830,10 @@ public class GenericUDAFComputeStats extends AbstractGenericUDAFResolver {
         int numVectors = 0;
         if (!emptyTable) {
           numVectors = PrimitiveObjectInspectorUtils.getInt(parameters[1], numVectorsOI);
+        }
+        if (numVectors > 1024) {
+          throw new HiveException("The maximum allowed value for number of bit vectors " +
+            " is 1024, but was passed " + numVectors + " bit vectors");
         }
         initNDVEstimator(myagg, numVectors);
         myagg.firstItem = false;
@@ -1160,6 +1169,10 @@ public class GenericUDAFComputeStats extends AbstractGenericUDAFResolver {
         int numVectors = 0;
         if (!emptyTable) {
           numVectors = PrimitiveObjectInspectorUtils.getInt(parameters[1], numVectorsOI);
+        }
+        if (numVectors > 1024) {
+          throw new HiveException("The maximum allowed value for number of bit vectors " +
+            " is 1024, but was passed " + numVectors + " bit vectors");
         }
         initNDVEstimator(myagg, numVectors);
         myagg.firstItem = false;
