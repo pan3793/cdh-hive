@@ -1646,7 +1646,7 @@
 </property>
 
 <property>
-  <name>hive.server2.kerberos.principal</name>
+  <name>hive.server2.authentication.kerberos.principal</name>
   <value></value>
   <description>
     Kerberos server principal
@@ -1654,7 +1654,7 @@
 </property>
 
 <property>
-  <name>hive.server2.kerberos.keytab</name>
+  <name>hive.server2.authentication.kerberos.keytab</name>
   <value></value>
   <description>
     Kerberos keytab file for server principal
