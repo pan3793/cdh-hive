@@ -6,6 +6,7 @@
  */
 package org.apache.hadoop.hive.serde2.thrift.test;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.thrift.scheme.IScheme;
 import org.apache.thrift.scheme.SchemeFactory;
 import org.apache.thrift.scheme.StandardScheme;
@@ -1566,7 +1567,109 @@ public class MegaStruct implements org.apache.thrift.TBase<MegaStruct, MegaStruc
 
   @Override
   public int hashCode() {
-    return 0;
+    HashCodeBuilder builder = new HashCodeBuilder();
+
+    boolean present_my_bool = true && (isSetMy_bool());
+    builder.append(present_my_bool);
+    if (present_my_bool)
+      builder.append(my_bool);
+
+    boolean present_my_byte = true && (isSetMy_byte());
+    builder.append(present_my_byte);
+    if (present_my_byte)
+      builder.append(my_byte);
+
+    boolean present_my_16bit_int = true && (isSetMy_16bit_int());
+    builder.append(present_my_16bit_int);
+    if (present_my_16bit_int)
+      builder.append(my_16bit_int);
+
+    boolean present_my_32bit_int = true && (isSetMy_32bit_int());
+    builder.append(present_my_32bit_int);
+    if (present_my_32bit_int)
+      builder.append(my_32bit_int);
+
+    boolean present_my_64bit_int = true && (isSetMy_64bit_int());
+    builder.append(present_my_64bit_int);
+    if (present_my_64bit_int)
+      builder.append(my_64bit_int);
+
+    boolean present_my_double = true && (isSetMy_double());
+    builder.append(present_my_double);
+    if (present_my_double)
+      builder.append(my_double);
+
+    boolean present_my_string = true && (isSetMy_string());
+    builder.append(present_my_string);
+    if (present_my_string)
+      builder.append(my_string);
+
+    boolean present_my_binary = true && (isSetMy_binary());
+    builder.append(present_my_binary);
+    if (present_my_binary)
+      builder.append(my_binary);
+
+    boolean present_my_string_string_map = true && (isSetMy_string_string_map());
+    builder.append(present_my_string_string_map);
+    if (present_my_string_string_map)
+      builder.append(my_string_string_map);
+
+    boolean present_my_string_enum_map = true && (isSetMy_string_enum_map());
+    builder.append(present_my_string_enum_map);
+    if (present_my_string_enum_map)
+      builder.append(my_string_enum_map);
+
+    boolean present_my_enum_string_map = true && (isSetMy_enum_string_map());
+    builder.append(present_my_enum_string_map);
+    if (present_my_enum_string_map)
+      builder.append(my_enum_string_map);
+
+    boolean present_my_enum_struct_map = true && (isSetMy_enum_struct_map());
+    builder.append(present_my_enum_struct_map);
+    if (present_my_enum_struct_map)
+      builder.append(my_enum_struct_map);
+
+    boolean present_my_enum_stringlist_map = true && (isSetMy_enum_stringlist_map());
+    builder.append(present_my_enum_stringlist_map);
+    if (present_my_enum_stringlist_map)
+      builder.append(my_enum_stringlist_map);
+
+    boolean present_my_enum_structlist_map = true && (isSetMy_enum_structlist_map());
+    builder.append(present_my_enum_structlist_map);
+    if (present_my_enum_structlist_map)
+      builder.append(my_enum_structlist_map);
+
+    boolean present_my_stringlist = true && (isSetMy_stringlist());
+    builder.append(present_my_stringlist);
+    if (present_my_stringlist)
+      builder.append(my_stringlist);
+
+    boolean present_my_structlist = true && (isSetMy_structlist());
+    builder.append(present_my_structlist);
+    if (present_my_structlist)
+      builder.append(my_structlist);
+
+    boolean present_my_enumlist = true && (isSetMy_enumlist());
+    builder.append(present_my_enumlist);
+    if (present_my_enumlist)
+      builder.append(my_enumlist);
+
+    boolean present_my_stringset = true && (isSetMy_stringset());
+    builder.append(present_my_stringset);
+    if (present_my_stringset)
+      builder.append(my_stringset);
+
+    boolean present_my_enumset = true && (isSetMy_enumset());
+    builder.append(present_my_enumset);
+    if (present_my_enumset)
+      builder.append(my_enumset);
+
+    boolean present_my_structset = true && (isSetMy_structset());
+    builder.append(present_my_structset);
+    if (present_my_structset)
+      builder.append(my_structset);
+
+    return builder.toHashCode();
   }
 
   public int compareTo(MegaStruct other) {

@@ -30,6 +30,7 @@
     <!-- Runtime Dependencies -->
 
     <dependency org="commons-cli" name="commons-cli" rev="${commons-cli.version}"/>
+    <dependency org="commons-io" name="commons-io" rev="${commons-io.version}" />
     <dependency org="commons-lang" name="commons-lang" rev="${commons-lang.version}"/>
     <dependency org="commons-logging" name="commons-logging" rev="${commons-logging.version}"
                 transitive="false"/>

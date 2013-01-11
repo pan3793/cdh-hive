@@ -6,6 +6,7 @@
  */
 package org.apache.hadoop.hive.serde2.thrift.test;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.thrift.scheme.IScheme;
 import org.apache.thrift.scheme.SchemeFactory;
 import org.apache.thrift.scheme.StandardScheme;
@@ -601,7 +602,39 @@ public class Complex implements org.apache.thrift.TBase<Complex, Complex._Fields
 
   @Override
   public int hashCode() {
-    return 0;
+    HashCodeBuilder builder = new HashCodeBuilder();
+
+    boolean present_aint = true;
+    builder.append(present_aint);
+    if (present_aint)
+      builder.append(aint);
+
+    boolean present_aString = true && (isSetAString());
+    builder.append(present_aString);
+    if (present_aString)
+      builder.append(aString);
+
+    boolean present_lint = true && (isSetLint());
+    builder.append(present_lint);
+    if (present_lint)
+      builder.append(lint);
+
+    boolean present_lString = true && (isSetLString());
+    builder.append(present_lString);
+    if (present_lString)
+      builder.append(lString);
+
+    boolean present_lintString = true && (isSetLintString());
+    builder.append(present_lintString);
+    if (present_lintString)
+      builder.append(lintString);
+
+    boolean present_mStringString = true && (isSetMStringString());
+    builder.append(present_mStringString);
+    if (present_mStringString)
+      builder.append(mStringString);
+
+    return builder.toHashCode();
   }
 
   public int compareTo(Complex other) {
