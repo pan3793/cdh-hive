@@ -464,12 +464,12 @@
     <echo message="Project: ${ant.project.name}"/>
     <property name="hadoop.testcp" refid="test.classpath"/>
     <if>
-      <equals arg1="${hadoop.mr.rev}" arg2="23" />
+      <equals arg1="${hadoop.mr.test.rev}" arg2="mr1" />
       <then>
-        <property name="hadoop.opts" value="${hadoop.opts.23}" />
+        <property name="hadoop.opts" value="${hadoop.opts.20}" />
       </then>
       <else>
-        <property name="hadoop.opts" value="${hadoop.opts.20}" />
+        <property name="hadoop.opts" value="${hadoop.opts.23}" />
       </else>
     </if>
     <!-- Set the OS specific settings to run junit tests on unix as well as on windows -->
