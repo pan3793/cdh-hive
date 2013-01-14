@@ -96,7 +96,7 @@
   <property name="test.lang" value="en_US.UTF-8"/>
 
   <property name="hadoop.opts.23" value="-D mapreduce.framework.name=local" />
-  <property name="hadoop.opts.20" value="" />
+  <property name="hadoop.opts.20" value="-D mapreduce.framework.name=local" />
 
   <target name="set-test-classpath">
     <if>
@@ -455,8 +455,9 @@
   </condition>
 
   <property name="test.warehouse.dir" value="${test.warehouse.scheme}${build.dir}/test/data/warehouse"/>
-  <property name="mapred.job.tracker" value="local"/>
   <property name="fs.default.name" value="file:///"/>
+  <property name="mapred.job.tracker" value=""/>
+  <property name="mapreduce.framework.name" value=""/>
 
   <!-- target to run the tests -->
   <target name="test"
@@ -466,9 +467,11 @@
     <if>
       <equals arg1="${hadoop.mr.test.rev}" arg2="mr1" />
       <then>
+        <property name="mapred.job.tracker" value="local"/>
         <property name="hadoop.opts" value="${hadoop.opts.20}" />
       </then>
       <else>
+        <property name="mapreduce.framework.name" value="local"/>
         <property name="hadoop.opts" value="${hadoop.opts.23}" />
       </else>
     </if>
@@ -514,6 +517,7 @@
       <sysproperty key="test.warehouse.dir" value="${test.warehouse.dir}"/>
       <sysproperty key="test.build.resources" value="${test.build.resources}"/>
       <sysproperty key="mapred.job.tracker" value="${mapred.job.tracker}"/>
+      <sysproperty key="mapreduce.framework.name" value="${mapreduce.framework.name}"/>
       <sysproperty key="fs.default.name" value="${fs.default.name}"/>
       <sysproperty key="build.dir" value="${build.dir}"/>
       <sysproperty key="build.dir.hive" value="${build.dir.hive}"/>

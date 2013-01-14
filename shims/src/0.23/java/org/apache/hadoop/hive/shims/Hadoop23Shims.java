@@ -87,30 +87,52 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
   @Override
   public boolean isLocalMode(Configuration conf) {
-    return "local".equals(conf.get("mapreduce.framework.name"));
+    if ("local".equals(conf.get("mapreduce.framework.name"))) {
+      return true;
+    } else {
+      return "local".equals(conf.get("mapred.job.tracker"));
+    }
   }
 
   @Override
   public String getJobLauncherRpcAddress(Configuration conf) {
-    return conf.get("yarn.resourcemanager.address");
+    if (isMR2(conf)) {
+      return conf.get("yarn.resourcemanager.address");
+    } else {
+      return conf.get("mapred.job.tracker");
+    }
   }
 
   @Override
   public void setJobLauncherRpcAddress(Configuration conf, String val) {
     if (val.equals("local")) {
       // LocalClientProtocolProvider expects both parameters to be 'local'.
-      conf.set("mapreduce.framework.name", val);
-      conf.set("mapreduce.jobtracker.address", val);
+      if (isMR2(conf)) {
+        conf.set("mapreduce.framework.name", val);
+        conf.set("mapreduce.jobtracker.address", val);
+      } else {
+        conf.set("mapred.job.tracker", val);
+      }
     }
     else {
-      conf.set("mapreduce.framework.name", "yarn");
-      conf.set("yarn.resourcemanager.address", val);
+      if (isMR2(conf)) {
+        conf.set("yarn.resourcemanager.address", val);
+      } else {
+        conf.set("mapred.job.tracker", val);
+      }
     }
   }
 
   @Override
   public String getJobLauncherHttpAddress(Configuration conf) {
-    return conf.get("yarn.resourcemanager.webapp.address");
+    if (isMR2(conf)) {
+      return conf.get("yarn.resourcemanager.webapp.address");
+    } else {
+      return conf.get("mapred.job.tracker.http.address");
+    }
   }
 
+  private boolean isMR2(Configuration conf) {
+    return "yarn".equals(conf.get("mapreduce.framework.name"));
+  }
 }
