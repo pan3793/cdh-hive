@@ -51,13 +51,15 @@ public class HookContext {
   private UserGroupInformation ugi;
   private HookType hookType;
   final private Map<String, ContentSummary> inputPathToContentSummary;
+  private final String ipAddress;
 
   public HookContext(QueryPlan queryPlan, HiveConf conf) throws Exception{
-    this(queryPlan, conf, new ConcurrentHashMap<String, ContentSummary>());
+    this(queryPlan, conf, new ConcurrentHashMap<String, ContentSummary>(), null);
   }
 
   public HookContext(QueryPlan queryPlan, HiveConf conf,
-      Map<String, ContentSummary> inputPathToContentSummary) throws Exception {
+      Map<String, ContentSummary> inputPathToContentSummary,
+      String ipAddress) throws Exception {
     this.queryPlan = queryPlan;
     this.conf = conf;
     this.inputPathToContentSummary = inputPathToContentSummary;
@@ -69,6 +71,7 @@ public class HookContext {
     if(SessionState.get() != null){
       linfo = SessionState.get().getLineageState().getLineageInfo();
     }
+    this.ipAddress = ipAddress;
   }
 
   public QueryPlan getQueryPlan() {
@@ -141,6 +144,10 @@ public class HookContext {
 
   public void setHookType(HookType hookType) {
     this.hookType = hookType;
+  }
+
+  public String getIpAddress() {
+    return this.ipAddress;
   }
 
 }

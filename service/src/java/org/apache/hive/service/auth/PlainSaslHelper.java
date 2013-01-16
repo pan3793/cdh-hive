@@ -30,8 +30,8 @@ import javax.security.sasl.SaslException;
 
 import org.apache.hive.service.auth.PlainSaslServer.ExternalAuthenticationCallback;
 import org.apache.hive.service.auth.PlainSaslServer.SaslPlainProvider;
-import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TCLIService.Iface;
+import org.apache.hive.service.cli.thrift.TSetIpAddressProcessor;
 import org.apache.hive.service.cli.thrift.ThriftCLIService;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.TProcessorFactory;
@@ -100,9 +100,11 @@ public class PlainSaslHelper {
       this.service = service;
     }
 
+    // Note that we do not do this in KerberosSaslHelper because we get the ipaddress differently in case of Sasl.
     @Override
     public TProcessor getProcessor(TTransport trans) {
-      return new TCLIService.Processor<Iface>(service);
+      // Note that we do not wrap the processor for kerberos. And handle it a bit differently.
+      return new TSetIpAddressProcessor<Iface>(service);
     }
   }
 

@@ -106,4 +106,8 @@ public class HiveAuthFactory {
       return null;
     }
   }
+
+  public String getIpAddress() {
+    return saslServer != null ? saslServer.getRemoteAddress().toString() : null;
+  }
 }

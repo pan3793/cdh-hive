@@ -28,6 +28,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hive.service.AbstractService;
 import org.apache.hive.service.auth.HiveAuthFactory;
+import org.apache.hive.service.cli.CLIService;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.GetInfoType;
 import org.apache.hive.service.cli.GetInfoValue;
@@ -35,7 +36,6 @@ import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationHandle;
 import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.RowSet;
-import org.apache.hive.service.cli.CLIService;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.thrift.TException;
@@ -110,14 +110,21 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
     TOpenSessionResp resp = new TOpenSessionResp();
     try {
       String userName;
+      String ipAddress = null;
       if (hiveAuthFactory != null
           && hiveAuthFactory.getRemoteUser() != null) {
         userName = hiveAuthFactory.getRemoteUser();
+        ipAddress = hiveAuthFactory.getIpAddress();
       } else {
         userName = req.getUsername();
       }
       SessionHandle sessionHandle = cliService
           .openSession(userName, req.getPassword(), req.getConfiguration());
+      // Cannot break the b/w compatibility of API to accept ipAddress as another parameter in
+      // openSession call. Hence making this call
+      if (ipAddress != null) {
+        cliService.setIpAddress(sessionHandle, ipAddress);
+      }
       resp.setSessionHandle(sessionHandle.toTSessionHandle());
       // TODO: set real configuration map
       resp.setConfiguration(new HashMap<String, String>());

@@ -61,10 +61,12 @@ public class HiveSession {
   private SessionManager sessionManager;
   private OperationManager operationManager;
   private IMetaStoreClient metastoreClient = null;
+  private String ipAddress;
 
-  public HiveSession(String username, String password, Map<String, String> sessionConf) {
+  public HiveSession(String username, String password, Map<String, String> sessionConf, String ipAddress) {
     this.username = username;
     this.password = password;
+    this.ipAddress = ipAddress;
 
     if (sessionConf != null) {
       sessionConf.putAll(sessionConf);
@@ -260,6 +262,14 @@ public class HiveSession {
 
   public SessionState getSessionState() {
     return sessionState;
+  }
+
+  public String getIpAddress() {
+    return ipAddress;
+  }
+
+  public String setIpAddress(String ipAddress) {
+    return this.ipAddress = ipAddress;
   }
 
 }
