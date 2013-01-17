@@ -20,6 +20,8 @@ package org.apache.hive.service.server;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.hive.common.LogUtils;
+import org.apache.hadoop.hive.common.LogUtils.LogInitializationException;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.hive.service.CompositeService;
@@ -68,6 +70,15 @@ public class HiveServer2 extends CompositeService {
    * @param args
    */
   public static void main(String[] args) {
+
+    //NOTE: It is critical to do this here so that log4j is reinitialized
+    // before any of the other core hive classes are loaded
+    try {
+      LogUtils.initHiveLog4j();
+    } catch (LogInitializationException e) {
+      LOG.warn(e.getMessage());
+    }
+
     HiveStringUtils.startupShutdownMessage(HiveServer2.class, args, LOG);
     try {
       HiveConf hiveConf = new HiveConf();
