@@ -36,6 +36,7 @@ public class SessionManager extends CompositeService {
   private HiveConf hiveConf;
   private final Map<SessionHandle, HiveSession> handleToSession = new HashMap<SessionHandle, HiveSession>();
   private OperationManager operationManager = new OperationManager();
+  private static final Object sessionMapLock = new Object();
 
   public SessionManager() {
     super("SessionManager");
@@ -63,17 +64,21 @@ public class SessionManager extends CompositeService {
     super.stop();
   }
 
-
   public SessionHandle openSession(String username, String password, Map<String, String> sessionConf) {
     HiveSession session = new HiveSession(username, password, sessionConf, threadLocalIpAddress.get());
     session.setSessionManager(this);
     session.setOperationManager(operationManager);
-    handleToSession.put(session.getSessionHandle(), session);
+    synchronized(sessionMapLock) {
+      handleToSession.put(session.getSessionHandle(), session);
+    }
     return session.getSessionHandle();
   }
 
   public void closeSession(SessionHandle sessionHandle) throws HiveSQLException {
-    HiveSession session = handleToSession.remove(sessionHandle);
+    HiveSession session;
+    synchronized(sessionMapLock) {
+      session = handleToSession.remove(sessionHandle);
+    }
     if (session == null) {
       throw new HiveSQLException("Session does not exist!");
     }
@@ -82,7 +87,10 @@ public class SessionManager extends CompositeService {
 
 
   public HiveSession getSession(SessionHandle sessionHandle) throws HiveSQLException {
-    HiveSession session = handleToSession.get(sessionHandle);
+    HiveSession session;
+    synchronized(sessionMapLock) {
+      session = handleToSession.get(sessionHandle);
+    }
     if (session == null) {
       throw new HiveSQLException("Invalid SessionHandle: " + sessionHandle);
     }
