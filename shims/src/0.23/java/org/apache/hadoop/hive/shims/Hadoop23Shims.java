@@ -17,20 +17,18 @@
  */
 package org.apache.hadoop.hive.shims;
 
-import java.lang.Integer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hive.shims.HadoopShims.JobTrackerState;
-import org.apache.hadoop.hive.shims.HadoopShimsSecure;
 import org.apache.hadoop.mapred.ClusterStatus;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.JobContextImpl;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-import org.apache.hadoop.mapreduce.util.HostUtil;
 import org.apache.hadoop.util.Progressable;
 
 /**
@@ -42,17 +40,33 @@ public class Hadoop23Shims extends HadoopShimsSecure {
   public String getTaskAttemptLogUrl(JobConf conf,
     String taskTrackerHttpAddress, String taskAttemptId)
     throws MalformedURLException {
-    if (conf.get("mapreduce.framework.name") != null
-      && conf.get("mapreduce.framework.name").equals("yarn")) {
+    if (isMR2(conf)) {
       // if the cluster is running in MR2 mode, return null
       LOG.warn("Can't fetch tasklog: TaskLogServlet is not supported in MR2 mode.");
       return null;
     } else {
-      // if the cluster is running in MR1 mode, using HostUtil to construct TaskLogURL
-      URL taskTrackerHttpURL = new URL(taskTrackerHttpAddress);
-      return HostUtil.getTaskLogUrl(taskTrackerHttpURL.getHost(),
-        Integer.toString(taskTrackerHttpURL.getPort()),
-        taskAttemptId);
+      // MR2 doesn't have TaskLogServlet class, so need to
+      String taskLogURL = null;
+      try {
+        Class<?> taskLogClass= Class.forName("TaskLogServlet");
+        Method taskLogMethod  = taskLogClass.getDeclaredMethod("getTaskLogUrl", String.class, String.class, String.class);
+        URL taskTrackerHttpURL = new URL(taskTrackerHttpAddress);
+        taskLogURL = (String)taskLogMethod.invoke(null, taskTrackerHttpURL.getHost(),
+            Integer.toString(taskTrackerHttpURL.getPort()), taskAttemptId);
+      } catch (IllegalArgumentException e) {
+        throw new MalformedURLException("Could not execute getTaskLogUrl " + e.getCause());
+      } catch (IllegalAccessException e) {
+        throw new MalformedURLException("Could not execute getTaskLogUrl " + e.getCause());
+      } catch (InvocationTargetException e) {
+        throw new MalformedURLException("Could not execute getTaskLogUrl " + e.getCause());
+      } catch (SecurityException e) {
+        throw new MalformedURLException("Could not execute getTaskLogUrl " + e.getCause());
+      } catch (NoSuchMethodException e) {
+        throw new MalformedURLException("Method getTaskLogUrl not found " + e.getCause());
+      } catch (ClassNotFoundException e) {
+        LOG.warn("Can't fetch tasklog: TaskLogServlet is not supported in MR2 mode.");
+      }
+      return taskLogURL;
     }
   }
 
