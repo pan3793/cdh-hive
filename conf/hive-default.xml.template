@@ -1642,6 +1642,22 @@
        NONE: no authentication check
        LDAP: LDAP/AD based authentication
        KERBEROS: Kerberos/GSSAPI authentication
+       CUSTOM: Custom authentication provider
+               (Use with property hive.server2.custom.authentication.class)
+  </description>
+</property>
+
+<property>
+  <name>hive.server2.custom.authentication.class</name>
+  <value></value>
+  <description>
+    Custom authentication class. Used when property
+    'hive.server2.authentication' is set to 'CUSTOM'. Provided class
+    must be a proper implementation of the interface
+    org.apache.hive.service.auth.PasswdAuthenticationProvider. HiveServer2
+    will call its Authenticate(user, passed) method to authenticate requests.
+    The implementation may optionally extend the Hadoop's
+    org.apache.hadoop.conf.Configured class to grab Hive's Configuration object.
   </description>
 </property>
 

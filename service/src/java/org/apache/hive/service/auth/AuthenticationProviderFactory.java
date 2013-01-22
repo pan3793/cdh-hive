@@ -23,6 +23,7 @@ public class AuthenticationProviderFactory {
 
   public static enum AuthMethods {
     LDAP("LDAP"),
+    CUSTOM("CUSTOM"),
     NONE("NONE");
 
     String authMethod;
@@ -52,6 +53,8 @@ public class AuthenticationProviderFactory {
             throws AuthenticationException {
     if (authMethod.equals(AuthMethods.LDAP)) {
       return new LdapAuthenticationProviderImpl();
+    } else if (authMethod.equals(AuthMethods.CUSTOM)) {
+      return new CustomAuthenticationProviderImpl();
     } else if (authMethod.equals(AuthMethods.NONE)) {
       return new AnonymousAuthenticationProviderImpl();
     } else {

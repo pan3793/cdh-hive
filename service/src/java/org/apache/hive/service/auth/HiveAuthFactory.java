@@ -34,7 +34,8 @@ public class HiveAuthFactory {
     NOSASL("NOSASL"),
     NONE("NONE"),
     LDAP("LDAP"),
-    KERBEROS("KERBEROS");
+    KERBEROS("KERBEROS"),
+    CUSTOM("CUSTOM");
 
     private String authType; // Auth type for SASL
 
@@ -84,6 +85,8 @@ public class HiveAuthFactory {
       transportFactory = PlainSaslHelper.getPlainTransportFactory(authTypeStr);
     } else if (authTypeStr.equalsIgnoreCase(AuthTypes.NOSASL.getAuthName())) {
       transportFactory = new TTransportFactory();
+    } else if (authTypeStr.equalsIgnoreCase(AuthTypes.CUSTOM.getAuthName())) {
+      transportFactory = PlainSaslHelper.getPlainTransportFactory(authTypeStr);
     } else {
       throw new LoginException("Unsupported authentication type " + authTypeStr);
     }
