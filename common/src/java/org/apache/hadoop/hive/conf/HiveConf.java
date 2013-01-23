@@ -677,10 +677,11 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_KERBEROS_PRINCIPAL("hive.server2.authentication.kerberos.principal", ""),
     HIVE_SERVER2_PLAIN_LDAP_URL("hive.server2.authentication.ldap.url", null),
     HIVE_SERVER2_PLAIN_LDAP_BASEDN("hive.server2.authentication.ldap.baseDN", null),
+    HIVE_SERVER2_KERBEROS_IMPERSONATION("hive.server2.enable.impersonation", false),
     HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS("hive.server2.custom.authentication.class", null),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),
-      
+
     // If this is set all move tasks at the end of a multi-insert query will only begin once all
     // outputs are ready
     HIVE_MULTI_INSERT_MOVE_TASKS_SHARE_DEPENDENCIES(
@@ -1042,7 +1043,7 @@ public class HiveConf extends Configuration {
     if (auxJars == null) {
       auxJars = this.get(ConfVars.HIVEAUXJARS.varname);
     }
-    
+
     // setup list of conf vars that are not allowed to change runtime
     String restrictListStr = this.get(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
     if (restrictListStr != null) {
@@ -1053,7 +1054,7 @@ public class HiveConf extends Configuration {
     restrictList.add(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
   }
 
-  
+
   /**
    * Apply system properties to this object if the property name is defined in ConfVars
    * and the value is non-null and not an empty string.

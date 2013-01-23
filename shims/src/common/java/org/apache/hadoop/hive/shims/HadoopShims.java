@@ -192,15 +192,15 @@ public interface HadoopShims {
   public void closeAllForUGI(UserGroupInformation ugi);
 
   public UserGroupInformation getUGIForConf(Configuration conf) throws LoginException, IOException;
-
   /**
    * Used by metastore server to perform requested rpc in client context.
+   * @param <T>
    * @param ugi
    * @param pvea
    * @throws IOException
    * @throws InterruptedException
    */
-  public void doAs(UserGroupInformation ugi, PrivilegedExceptionAction<Void> pvea) throws
+  public <T> T doAs(UserGroupInformation ugi, PrivilegedExceptionAction<T> pvea) throws
     IOException, InterruptedException;
 
   /**

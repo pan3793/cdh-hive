@@ -28,6 +28,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.AuthorizeCallback;
 import javax.security.sasl.SaslException;
 
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.auth.PlainSaslServer.ExternalAuthenticationCallback;
 import org.apache.hive.service.auth.PlainSaslServer.SaslPlainProvider;
 import org.apache.hive.service.cli.thrift.TCLIService.Iface;
@@ -95,16 +96,22 @@ public class PlainSaslHelper {
 
   private static class SQLPlainProcessorFactory extends TProcessorFactory {
     private final ThriftCLIService service;
+    private final HiveConf conf;
+    private final boolean doAsEnabled;
+
     public SQLPlainProcessorFactory(ThriftCLIService service) {
       super(null);
       this.service = service;
+      this.conf = service.getHiveConf();
+      this.doAsEnabled = conf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_KERBEROS_IMPERSONATION);
     }
 
     // Note that we do not do this in KerberosSaslHelper because we get the ipaddress differently in case of Sasl.
     @Override
     public TProcessor getProcessor(TTransport trans) {
       // Note that we do not wrap the processor for kerberos. And handle it a bit differently.
-      return new TSetIpAddressProcessor<Iface>(service);
+      TProcessor baseProcessor = new TSetIpAddressProcessor<Iface>(service);
+      return doAsEnabled ? new TUGIContainingProcessor(baseProcessor, conf) : baseProcessor;
     }
   }
 
