@@ -547,7 +547,7 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
                 for (int _i145 = 0; _i145 < _map144.size; ++_i145)
                 {
                   String _key146; // required
-                  String _val147; // optional
+                  String _val147; // required
                   _key146 = iprot.readString();
                   _val147 = iprot.readString();
                   struct.confOverlay.put(_key146, _val147);
@@ -649,7 +649,7 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
           for (int _i151 = 0; _i151 < _map150.size; ++_i151)
           {
             String _key152; // required
-            String _val153; // optional
+            String _val153; // required
             _key152 = iprot.readString();
             _val153 = iprot.readString();
             struct.confOverlay.put(_key152, _val153);

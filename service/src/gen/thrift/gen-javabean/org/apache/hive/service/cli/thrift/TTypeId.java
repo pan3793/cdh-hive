@@ -26,7 +26,8 @@ public enum TTypeId implements org.apache.thrift.TEnum {
   MAP_TYPE(11),
   STRUCT_TYPE(12),
   UNION_TYPE(13),
-  USER_DEFINED_TYPE(14);
+  USER_DEFINED_TYPE(14),
+  DECIMAL_TYPE(15);
 
   private final int value;
 
@@ -77,6 +78,8 @@ public enum TTypeId implements org.apache.thrift.TEnum {
         return UNION_TYPE;
       case 14:
         return USER_DEFINED_TYPE;
+      case 15:
+        return DECIMAL_TYPE;
       default:
         return null;
     }

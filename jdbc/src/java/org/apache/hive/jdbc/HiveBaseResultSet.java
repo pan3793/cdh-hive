@@ -21,6 +21,7 @@ package org.apache.hive.jdbc;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
@@ -116,19 +117,26 @@ public abstract class HiveBaseResultSet implements ResultSet {
   }
 
   public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-    throw new SQLException("Method not supported");
+    Object val = getObject(columnIndex);
+
+    if (val == null || val instanceof BigDecimal) {
+      return (BigDecimal)val;
+    }
+
+    throw new SQLException("Illegal conversion");
   }
 
   public BigDecimal getBigDecimal(String columnName) throws SQLException {
-    throw new SQLException("Method not supported");
+    return getBigDecimal(findColumn(columnName));
   }
 
   public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
-    throw new SQLException("Method not supported");
+    MathContext mc = new MathContext(scale);
+    return getBigDecimal(columnIndex).round(mc);
   }
 
   public BigDecimal getBigDecimal(String columnName, int scale) throws SQLException {
-    throw new SQLException("Method not supported");
+    return getBigDecimal(findColumn(columnName), scale);
   }
 
   public InputStream getBinaryStream(int columnIndex) throws SQLException {
@@ -431,6 +439,15 @@ public abstract class HiveBaseResultSet implements ResultSet {
     return null;
   }
 
+  private BigDecimal getBigDecimalValue(TStringValue tStringValue) {
+    if (tStringValue.isSetValue()) {
+      wasNull = false;
+      return new BigDecimal(tStringValue.getValue());
+    }
+    wasNull = true;
+    return null;
+  }
+
   private Object getColumnValue(int columnIndex) throws SQLException {
     if (row == null) {
       throw new SQLException("No row found.");
@@ -465,6 +482,8 @@ public abstract class HiveBaseResultSet implements ResultSet {
       return getStringValue(tColumnValue.getStringVal());
     case TIMESTAMP_TYPE:
       return getTimestampValue(tColumnValue.getStringVal());
+    case DECIMAL_TYPE:
+      return getBigDecimalValue(tColumnValue.getStringVal());
     default:
       throw new SQLException("Unrecognized column type:" + columnType);
     }

@@ -892,7 +892,7 @@ public class Complex implements org.apache.thrift.TBase<Complex, Complex._Fields
                 for (int _i10 = 0; _i10 < _map9.size; ++_i10)
                 {
                   String _key11; // required
-                  String _val12; // optional
+                  String _val12; // required
                   _key11 = iprot.readString();
                   _val12 = iprot.readString();
                   struct.mStringString.put(_key11, _val12);
@@ -1115,7 +1115,7 @@ public class Complex implements org.apache.thrift.TBase<Complex, Complex._Fields
           for (int _i31 = 0; _i31 < _map30.size; ++_i31)
           {
             String _key32; // required
-            String _val33; // optional
+            String _val33; // required
             _key32 = iprot.readString();
             _val33 = iprot.readString();
             struct.mStringString.put(_key32, _val33);

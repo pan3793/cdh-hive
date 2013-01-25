@@ -57,6 +57,10 @@ public enum Type {
   BINARY_TYPE("BINARY",
       java.sql.Types.BINARY,
       TTypeId.BINARY_TYPE),
+  DECIMAL_TYPE("DECIMAL",
+      java.sql.Types.DECIMAL,
+      TTypeId.DECIMAL_TYPE,
+      false, false),
   ARRAY_TYPE("ARRAY",
       java.sql.Types.VARCHAR,
       TTypeId.STRING_TYPE,
@@ -213,6 +217,8 @@ public enum Type {
       return 7;
     case DOUBLE_TYPE:
       return 15;
+    case DECIMAL_TYPE:
+      return Integer.MAX_VALUE;
     default:
       return null;
     }
@@ -250,6 +256,7 @@ public enum Type {
     case BIGINT_TYPE:
     case FLOAT_TYPE:
     case DOUBLE_TYPE:
+    case DECIMAL_TYPE:
       return true;
     default:
       return false;

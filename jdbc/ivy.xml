@@ -34,6 +34,57 @@
     <dependency org="commons-logging" name="commons-logging" rev="${commons-logging.version}"
                 transitive="false"/>
 
+    <!-- MR1 dependency -->
+    <dependency org="org.apache.hadoop" name="hadoop-core"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-test"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-tools"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-minicluster"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+
+    <!-- Hack to get jobclient tests dependency in. -->
+    <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${hadoop-0.23.version}"
+                conf="hadoop23.test->default" transitive="false">
+      <artifact name="hadoop-mapreduce-client-jobclient" type="tests" ext="jar" />
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-app"
+                rev="${hadoop-0.23.version}"
+                conf="hadoop23.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-hs"
+                rev="${hadoop-0.23.version}"
+                conf="hadoop23.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+
     <!-- Test Dependencies -->
     <dependency org="junit" name="junit" rev="${junit.version}" conf="test->default" />
 

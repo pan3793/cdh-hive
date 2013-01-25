@@ -25,12 +25,12 @@ import java.sql.SQLWarning;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TCloseOperationReq;
 import org.apache.hive.service.cli.thrift.TCloseOperationResp;
 import org.apache.hive.service.cli.thrift.TExecuteStatementReq;
 import org.apache.hive.service.cli.thrift.TExecuteStatementResp;
 import org.apache.hive.service.cli.thrift.TOperationHandle;
-import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TSessionHandle;
 
 /**
@@ -117,16 +117,7 @@ public class HiveStatement implements java.sql.Statement {
     warningChain = null;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.sql.Statement#close()
-   */
-
-  public void close() throws SQLException {
-    if (isClosed) {
-      return;
-    }
+  private void closeClientOperation() throws SQLException {
     try {
       if (stmtHandle != null) {
         TCloseOperationReq closeReq = new TCloseOperationReq();
@@ -139,8 +130,20 @@ public class HiveStatement implements java.sql.Statement {
     } catch (Exception e) {
       throw new SQLException(e.toString(), "08S01");
     }
-    client = null;
     stmtHandle = null;
+  }
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.sql.Statement#close()
+   */
+
+  public void close() throws SQLException {
+    if (isClosed) {
+      return;
+    }
+    closeClientOperation();
+    client = null;
     resultSet = null;
     isClosed = true;
   }
@@ -157,8 +160,7 @@ public class HiveStatement implements java.sql.Statement {
     }
 
     try {
-      resultSet = null;
-      stmtHandle = null;
+      closeClientOperation();
       TExecuteStatementReq execReq = new TExecuteStatementReq(sessHandle, sql);
       execReq.setConfOverlay(sessConf);
       TExecuteStatementResp execResp = client.ExecuteStatement(execReq);

@@ -84,6 +84,8 @@ public class JdbcColumn {
     // see http://download.oracle.com/javase/6/docs/api/constant-values.html#java.lang.Double.MAX_EXPONENT
     case Types.DOUBLE:
       return 25; // e.g. -(17#).e-####
+    case Types.DECIMAL:
+      return Integer.MAX_VALUE;
     default:
       throw new SQLException("Invalid column type: " + columnType);
     }
@@ -110,6 +112,8 @@ public class JdbcColumn {
       return 15;
     case Types.TIMESTAMP:
       return 29;
+    case Types.DECIMAL:
+      return Integer.MAX_VALUE;
     default:
       throw new SQLException("Invalid column type: " + columnType);
     }
@@ -131,6 +135,8 @@ public class JdbcColumn {
       return 15;
     case  Types.TIMESTAMP:
       return 9;
+    case Types.DECIMAL:
+      return Integer.MAX_VALUE;
     default:
       throw new SQLException("Invalid column type: " + columnType);
     }
@@ -159,6 +165,8 @@ public class JdbcColumn {
       return 2;
     } else if (type.equalsIgnoreCase("double")) {
       return 2;
+    } else if (type.equalsIgnoreCase("decimal")) {
+      return 10;
     } else { // anything else including boolean and string is null
       return null;
     }

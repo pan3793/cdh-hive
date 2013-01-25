@@ -107,10 +107,6 @@ public class HiveConnection implements java.sql.Connection {
 
   private void configureConnection(Utils.JdbcConnectionParams connParams)
       throws SQLException {
-    Statement stmt = createStatement();
-    stmt.execute("set hive.fetch.output.serde = org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe");
-    stmt.close();
-
     // set the hive variable in session state for local mode
     if (connParams.isEmbeddedMode()) {
       if (!connParams.getHiveVars().isEmpty()) {
@@ -118,6 +114,7 @@ public class HiveConnection implements java.sql.Connection {
       }
     } else {
       // for remote JDBC client, try to set the conf var using 'set foo=bar'
+      Statement stmt = createStatement();
       for (Entry<String, String> hiveConf : connParams.getHiveConfs().entrySet()) {
         stmt.execute("set " + hiveConf.getKey() + "=" + hiveConf.getValue());
         stmt.close();

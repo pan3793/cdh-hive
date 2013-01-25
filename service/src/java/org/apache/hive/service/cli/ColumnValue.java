@@ -18,6 +18,7 @@
 
 package org.apache.hive.service.cli;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import org.apache.hive.service.cli.thrift.TBoolValue;
@@ -118,6 +119,14 @@ public class ColumnValue {
     return new ColumnValue(TColumnValue.stringVal(tStringValue));
   }
 
+  public static ColumnValue stringValue(BigDecimal value) {
+    TStringValue tStrValue = new TStringValue();
+    if (value != null) {
+      tStrValue.setValue(((BigDecimal)value).toString());
+    }
+    return new ColumnValue(TColumnValue.stringVal(tStrValue));
+  }
+
   public static ColumnValue newColumnValue(Type type, Object value) {
     switch (type) {
     case BOOLEAN_TYPE:
@@ -138,6 +147,8 @@ public class ColumnValue {
       return stringValue((String)value);
     case TIMESTAMP_TYPE:
       return timestampValue((Timestamp)value);
+    case DECIMAL_TYPE:
+      return stringValue(((BigDecimal)value));
     case BINARY_TYPE:
     case ARRAY_TYPE:
     case MAP_TYPE:

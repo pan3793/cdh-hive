@@ -45,6 +45,7 @@ public class TCLIServiceConstants {
     PRIMITIVE_TYPES.add(org.apache.hive.service.cli.thrift.TTypeId.STRING_TYPE);
     PRIMITIVE_TYPES.add(org.apache.hive.service.cli.thrift.TTypeId.TIMESTAMP_TYPE);
     PRIMITIVE_TYPES.add(org.apache.hive.service.cli.thrift.TTypeId.BINARY_TYPE);
+    PRIMITIVE_TYPES.add(org.apache.hive.service.cli.thrift.TTypeId.DECIMAL_TYPE);
   }
 
   public static final Set<TTypeId> COMPLEX_TYPES = new HashSet<TTypeId>();
@@ -78,6 +79,7 @@ public class TCLIServiceConstants {
     TYPE_NAMES.put(org.apache.hive.service.cli.thrift.TTypeId.MAP_TYPE, "MAP");
     TYPE_NAMES.put(org.apache.hive.service.cli.thrift.TTypeId.STRUCT_TYPE, "STRUCT");
     TYPE_NAMES.put(org.apache.hive.service.cli.thrift.TTypeId.UNION_TYPE, "UNIONTYPE");
+    TYPE_NAMES.put(org.apache.hive.service.cli.thrift.TTypeId.DECIMAL_TYPE, "DECIMAL");
   }
 
 }

@@ -144,7 +144,8 @@ public class TestJdbcDriver2 extends TestCase {
         + " c14 map<int, map<int,int>>,"
         + " c15 struct<r:int,s:struct<a:int,b:string>>,"
         + " c16 array<struct<m:map<string,string>,n:int>>,"
-        + " c17 timestamp) comment '"+dataTypeTableComment
+        + " c17 timestamp, "
+        + " c18 decimal) comment'" + dataTypeTableComment
             +"' partitioned by (dt STRING)");
 
     stmt.execute("load data local inpath '"
@@ -428,6 +429,7 @@ public class TestJdbcDriver2 extends TestCase {
     assertEquals("[]", res.getString(16));
     assertEquals(null, res.getString(17));
     assertEquals(null, res.getTimestamp(17));
+    assertEquals(null, res.getBigDecimal(18));
 
     // row 3
     assertTrue(res.next());
@@ -449,6 +451,7 @@ public class TestJdbcDriver2 extends TestCase {
     assertEquals("[[{}, 1], [{c=d, a=b}, 2]]", res.getString(16));
     assertEquals("2012-04-22 09:00:00.123456789", res.getString(17));
     assertEquals("2012-04-22 09:00:00.123456789", res.getTimestamp(17).toString());
+    assertEquals("123456789.0123456", res.getBigDecimal(18).toString());
 
     // test getBoolean rules on non-boolean columns
     assertEquals(true, res.getBoolean(1));
@@ -840,13 +843,13 @@ public class TestJdbcDriver2 extends TestCase {
 
     ResultSet res = stmt.executeQuery(
         "select c1, c2, c3, c4, c5 as a, c6, c7, c8, c9, c10, c11, c12, " +
-        "c1*2, sentences(null, null, null) as b, c17 from " + dataTypeTableName + " limit 1");
+        "c1*2, sentences(null, null, null) as b, c17, c18 from " + dataTypeTableName + " limit 1");
     ResultSetMetaData meta = res.getMetaData();
 
     ResultSet colRS = con.getMetaData().getColumns(null, null,
         dataTypeTableName.toLowerCase(), null);
 
-    assertEquals(15, meta.getColumnCount());
+    assertEquals(16, meta.getColumnCount());
 
     assertTrue(colRS.next());
 
@@ -1039,6 +1042,13 @@ public class TestJdbcDriver2 extends TestCase {
     assertEquals(29, meta.getColumnDisplaySize(15));
     assertEquals(29, meta.getPrecision(15));
     assertEquals(9, meta.getScale(15));
+
+    assertEquals("c18", meta.getColumnName(16));
+    assertEquals(Types.DECIMAL, meta.getColumnType(16));
+    assertEquals("decimal", meta.getColumnTypeName(16));
+    assertEquals(Integer.MAX_VALUE, meta.getColumnDisplaySize(16));
+    assertEquals(Integer.MAX_VALUE, meta.getPrecision(16));
+    assertEquals(Integer.MAX_VALUE, meta.getScale(16));
 
     for (int i = 1; i <= meta.getColumnCount(); i++) {
       assertFalse(meta.isAutoIncrement(i));
