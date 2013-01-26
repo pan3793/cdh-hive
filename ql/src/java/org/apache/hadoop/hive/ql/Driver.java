@@ -134,6 +134,7 @@ public class Driver implements CommandProcessor {
   // This value is set only if the operation is launched through HiveServer2 and the underlying
   // transport is derived from TSocket
   private String ipAddress;
+  private String userName;  // username for the currently executing statement
 
   private boolean checkLockManager() {
     boolean supportConcurrency = conf.getBoolVar(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY);
@@ -324,9 +325,10 @@ public class Driver implements CommandProcessor {
     this.conf = conf;
   }
 
-  public Driver(HiveConf conf, String ipAddress) {
+  public Driver(HiveConf conf, String ipAddress, String userName) {
     this.conf = conf;
     this.ipAddress = ipAddress;
+    this.userName = userName;
   }
 
   public Driver() {
@@ -1073,7 +1075,7 @@ public class Driver implements CommandProcessor {
       }
       resStream = null;
 
-      HookContext hookContext = new HookContext(plan, conf, ctx.getPathToCS(), ipAddress);
+      HookContext hookContext = new HookContext(plan, conf, ctx.getPathToCS(), userName, ipAddress);
       hookContext.setHookType(HookContext.HookType.PRE_EXEC_HOOK);
 
       for (Hook peh : getHooks(HiveConf.ConfVars.PREEXECHOOKS)) {

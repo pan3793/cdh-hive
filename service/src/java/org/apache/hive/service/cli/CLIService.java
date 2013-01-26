@@ -88,7 +88,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     SessionHandle sessionHandle = sessionManager.openSession(username, password, configuration);
     LOG.info(sessionHandle + ": openSession()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return sessionHandle;
   }
 
@@ -100,7 +100,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     sessionManager.closeSession(sessionHandle);
     LOG.info(sessionHandle + ": closeSession()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
   }
 
   /* (non-Javadoc)
@@ -111,7 +111,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     GetInfoValue infoValue = sessionManager.getSession(sessionHandle).getInfo(getInfoType);
     LOG.info(sessionHandle + ": getInfo()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return infoValue;
   }
 
@@ -124,7 +124,7 @@ public class CLIService extends CompositeService implements ICLIService {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle)
         .executeStatement(statement, confOverlay);
     LOG.info(sessionHandle + ": executeStatement()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opHandle;
   }
 
@@ -136,7 +136,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle).getTypeInfo();
     LOG.info(sessionHandle + ": getTypeInfo()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opHandle;
   }
 
@@ -148,7 +148,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle).getCatalogs();
     LOG.info(sessionHandle + ": getCatalogs()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opHandle;
   }
 
@@ -162,7 +162,7 @@ public class CLIService extends CompositeService implements ICLIService {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle)
         .getSchemas(catalogName, schemaName);
     LOG.info(sessionHandle + ": getSchemas()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opHandle;
   }
 
@@ -176,7 +176,7 @@ public class CLIService extends CompositeService implements ICLIService {
     OperationHandle opHandle = sessionManager
         .getSession(sessionHandle).getTables(catalogName, schemaName, tableName, tableTypes);
     LOG.info(sessionHandle + ": getTables()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opHandle;
   }
 
@@ -188,7 +188,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle).getTableTypes();
     LOG.info(sessionHandle + ": getTableTypes()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opHandle;
   }
 
@@ -202,7 +202,7 @@ public class CLIService extends CompositeService implements ICLIService {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle)
         .getColumns(catalogName, schemaName, tableName, columnName);
     LOG.info(sessionHandle + ": getColumns()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opHandle;
   }
 
@@ -216,7 +216,7 @@ public class CLIService extends CompositeService implements ICLIService {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle)
         .getFunctions(catalogName, schemaName, functionName);
     LOG.info(sessionHandle + ": getFunctions()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opHandle;
   }
 
@@ -228,7 +228,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     OperationState opState = sessionManager.getOperationManager().getOperationState(opHandle);
     LOG.info(opHandle + ": getOperationStatus()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return opState;
   }
 
@@ -240,7 +240,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     sessionManager.getOperationManager().cancelOperation(opHandle);
     LOG.info(opHandle + ": cancelOperation()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     }
 
   /* (non-Javadoc)
@@ -251,7 +251,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     sessionManager.getOperationManager().closeOperation(opHandle);
     LOG.info(opHandle + ": closeOperation");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
   }
 
   /* (non-Javadoc)
@@ -263,7 +263,7 @@ public class CLIService extends CompositeService implements ICLIService {
     TableSchema tableSchema = sessionManager.getOperationManager()
         .getOperationResultSetSchema(opHandle);
     LOG.info(opHandle + ": getResultSetMetadata()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return tableSchema;
   }
 
@@ -276,7 +276,7 @@ public class CLIService extends CompositeService implements ICLIService {
     RowSet rowSet = sessionManager.getOperationManager()
         .getOperationNextRowSet(opHandle, orientation, maxRows);
     LOG.info(opHandle + ": fetchResults()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return rowSet;
   }
 
@@ -288,7 +288,7 @@ public class CLIService extends CompositeService implements ICLIService {
       throws HiveSQLException {
     RowSet rowSet = sessionManager.getOperationManager().getOperationNextRowSet(opHandle);
     LOG.info(opHandle + ": fetchResults()");
-    sessionManager.clearIpAddress();
+    sessionManager.clearThreadLocals();
     return rowSet;
   }
 

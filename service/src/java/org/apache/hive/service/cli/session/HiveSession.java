@@ -272,4 +272,7 @@ public class HiveSession {
     return this.ipAddress = ipAddress;
   }
 
+  public String getUserName() {
+    return username;
+  }
 }

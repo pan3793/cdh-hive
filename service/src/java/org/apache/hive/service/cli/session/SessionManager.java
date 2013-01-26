@@ -65,7 +65,9 @@ public class SessionManager extends CompositeService {
   }
 
   public SessionHandle openSession(String username, String password, Map<String, String> sessionConf) {
-    HiveSession session = new HiveSession(username, password, sessionConf, threadLocalIpAddress.get());
+    HiveSession session = new HiveSession(threadLocalUserName.get(), password, sessionConf,
+                                threadLocalIpAddress.get());
+
     session.setSessionManager(this);
     session.setOperationManager(operationManager);
     synchronized(sessionMapLock) {
@@ -112,8 +114,27 @@ public class SessionManager extends CompositeService {
     threadLocalIpAddress.set(ipAddress);
   }
 
-  public void clearIpAddress() {
+  private void clearIpAddress() {
     threadLocalIpAddress.remove();
   }
 
+  private static ThreadLocal<String> threadLocalUserName = new ThreadLocal<String>(){
+    @Override
+    protected synchronized String initialValue() {
+      return null;
+    }
+  };
+
+  public static void setUserName(String userName) {
+    threadLocalUserName.set(userName);
+  }
+
+  private void clearUserName() {
+    threadLocalUserName.remove();
+  }
+
+  public void clearThreadLocals() {
+    clearIpAddress();
+    clearUserName();
+  }
 }

@@ -34,7 +34,16 @@ public class TSetIpAddressProcessor<I extends Iface> extends TCLIService.Process
   @Override
   public boolean process(final TProtocol in, final TProtocol out) throws TException {
     setIpAddress(in);
+    setUserName(in);
     return super.process(in, out);
+  }
+
+  private void setUserName(final TProtocol in) {
+    TTransport transport = in.getTransport();
+    if (transport instanceof TSaslServerTransport) {
+      String userName = ((TSaslServerTransport)transport).getSaslServer().getAuthorizationID();
+      SessionManager.setUserName(userName);
+    }
   }
 
   protected void setIpAddress(final TProtocol in) {
