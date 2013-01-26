@@ -508,6 +508,9 @@
     <copy todir="${target.lib.dir}/py/hive_service">
       <fileset dir="${hive.root}/service/src/gen/thrift/gen-py/hive_service" excludes="${vcs.excludes}"/>
     </copy>
+    <copy todir="${target.lib.dir}/py/TCLIService">
+      <fileset dir="${hive.root}/service/src/gen/thrift/gen-py/TCLIService" excludes="${vcs.excludes}"/>
+    </copy>
     <copy todir="${target.lib.dir}/py/queryplan">
       <fileset dir="${hive.root}/ql/src/gen/thrift/gen-py/queryplan" excludes="${vcs.excludes}"/>
     </copy>
