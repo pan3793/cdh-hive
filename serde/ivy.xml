@@ -47,6 +47,7 @@
                 transitive="false"/>
      <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
                 conf="compile->default">
+        <artifact name="avro-mapred" type="hadoop2" ext="jar" m:classifier="hadoop2"/>
      </dependency>
 
     <!-- Test Dependencies -->
