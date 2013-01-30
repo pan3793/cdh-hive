@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.hive.service.cli.thrift.TCLIService;
+import org.apache.hive.service.cli.thrift.TCancelOperationReq;
+import org.apache.hive.service.cli.thrift.TCancelOperationResp;
 import org.apache.hive.service.cli.thrift.TCloseOperationReq;
 import org.apache.hive.service.cli.thrift.TCloseOperationResp;
 import org.apache.hive.service.cli.thrift.TExecuteStatementReq;
@@ -94,7 +96,20 @@ public class HiveStatement implements java.sql.Statement {
    */
 
   public void cancel() throws SQLException {
-    throw new SQLException("Method not supported");
+    if (isClosed) {
+      throw new SQLException("Can't cancel after statement has been closed");
+    }
+
+    TCancelOperationReq cancelReq = new TCancelOperationReq();
+    cancelReq.setOperationHandle(stmtHandle);
+    try {
+      TCancelOperationResp cancelResp = client.CancelOperation(cancelReq);
+      Utils.verifySuccessWithInfo(cancelResp.getStatus());
+    } catch (SQLException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new SQLException(e.toString(), "08S01");
+    }
   }
 
   /*
