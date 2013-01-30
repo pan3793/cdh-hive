@@ -103,12 +103,14 @@ public class QueryPlan implements Serializable {
   private QueryProperties queryProperties;
 
   private transient Long queryStartTime;
+  private String operationName;
 
   public QueryPlan() {
     this.reducerTimeStatsPerJobList = new ArrayList<ReducerTimeStatsPerJob>();
   }
 
-  public QueryPlan(String queryString, BaseSemanticAnalyzer sem, Long startTime) {
+  public QueryPlan(String queryString, BaseSemanticAnalyzer sem, Long startTime,
+     String operationName) {
     this.queryString = queryString;
 
     rootTasks = new ArrayList<Task<? extends Serializable>>();
@@ -129,6 +131,7 @@ public class QueryPlan implements Serializable {
     query.putToQueryAttributes("queryString", this.queryString);
     queryProperties = sem.getQueryProperties();
     queryStartTime = startTime;
+    this.operationName = operationName;
   }
 
   public String getQueryStr() {
@@ -807,5 +810,9 @@ public class QueryPlan implements Serializable {
 
   public void setQueryStartTime(Long queryStartTime) {
     this.queryStartTime = queryStartTime;
+  }
+
+  public String getOperationName() {
+    return operationName;
   }
 }

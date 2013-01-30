@@ -150,13 +150,13 @@ public class HookContext {
 
   public String getIpAddress() {
     return this.ipAddress;
-  }
+ }
 
-  public String getOperationName() {
-    return SessionState.get().getHiveOperation().name();
-  }
+ public String getOperationName() {
+   return queryPlan.getOperationName();
+ }
 
-  public String getUserName() {
+ public String getUserName() {
     return this.userName;
   }
 }
