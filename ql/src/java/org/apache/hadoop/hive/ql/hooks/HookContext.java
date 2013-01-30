@@ -150,7 +150,11 @@ public class HookContext {
 
   public String getIpAddress() {
     return this.ipAddress;
-  }
+ }
+
+ public String getOperationName() {
+   return queryPlan.getOperationName();
+ }
 
   public String getUserName() {
     return userName;

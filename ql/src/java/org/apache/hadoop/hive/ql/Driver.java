@@ -454,7 +454,8 @@ public class Driver implements CommandProcessor {
       // validate the plan
       sem.validate();
 
-      plan = new QueryPlan(command, sem, perfLogger.getStartTime(PerfLogger.DRIVER_RUN));
+      plan = new QueryPlan(command, sem, perfLogger.getStartTime(PerfLogger.DRIVER_RUN),
+           SessionState.get().getCommandType());
 
       // test Only - serialize the query plan and deserialize it
       if ("true".equalsIgnoreCase(System.getProperty("test.serialize.qplan"))) {
