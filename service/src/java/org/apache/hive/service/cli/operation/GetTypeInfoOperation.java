@@ -25,7 +25,7 @@ import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.Type;
-import org.apache.hive.service.cli.session.HiveSession;
+import org.apache.hive.service.cli.session.HiveSessionImpl;
 
 /**
  * GetTypeInfoOperation.
@@ -73,7 +73,7 @@ public class GetTypeInfoOperation extends MetadataOperation {
 
   private final RowSet rowSet = new RowSet();
 
-  protected GetTypeInfoOperation(HiveSession parentSession) {
+  protected GetTypeInfoOperation(HiveSessionImpl parentSession) {
     super(parentSession, OperationType.GET_TYPE_INFO);
   }
 

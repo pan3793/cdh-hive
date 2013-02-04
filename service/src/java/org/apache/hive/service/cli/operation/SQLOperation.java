@@ -47,7 +47,7 @@ import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
-import org.apache.hive.service.cli.session.HiveSession;
+import org.apache.hive.service.cli.session.HiveSessionImpl;
 
 /**
  * SQLOperation.
@@ -62,7 +62,7 @@ public class SQLOperation extends ExecuteStatementOperation {
   private SerDe serde = null;
 
 
-  public SQLOperation(HiveSession parentSession, String statement, Map<String, String> confOverlay) {
+  public SQLOperation(HiveSessionImpl parentSession, String statement, Map<String, String> confOverlay) {
     // TODO: call setRemoteUser in ExecuteStatementOperation or higher.
     super(parentSession, statement, confOverlay);
   }

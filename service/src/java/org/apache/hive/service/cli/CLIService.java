@@ -22,11 +22,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.login.LoginException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+import org.apache.hadoop.hive.ql.metadata.Hive;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.service.CompositeService;
 import org.apache.hive.service.ServiceException;
 import org.apache.hive.service.auth.HiveAuthFactory;
@@ -44,6 +49,7 @@ public class CLIService extends CompositeService implements ICLIService {
   private HiveConf hiveConf;
   private SessionManager sessionManager;
   private IMetaStoreClient metastoreClient;
+  private String serverUserName = null;
 
 
   public CLIService() {
@@ -58,7 +64,11 @@ public class CLIService extends CompositeService implements ICLIService {
     addService(sessionManager);
     try {
       HiveAuthFactory.loginFromKeytab(hiveConf);
+      serverUserName = ShimLoader.getHadoopShims().
+          getShortUserName(ShimLoader.getHadoopShims().getUGIForConf(hiveConf));
     } catch (IOException e) {
+      throw new ServiceException("Unable to login to kerberos with given principal/keytab", e);
+    } catch (LoginException e) {
       throw new ServiceException("Unable to login to kerberos with given principal/keytab", e);
     }
     super.init(hiveConf);
@@ -92,7 +102,20 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public SessionHandle openSession(String username, String password, Map<String, String> configuration)
       throws HiveSQLException {
-    SessionHandle sessionHandle = sessionManager.openSession(username, password, configuration);
+    SessionHandle sessionHandle = sessionManager.openSession(username, password, configuration, false, null);
+    LOG.info(sessionHandle + ": openSession()");
+    sessionManager.clearThreadLocals();
+    return sessionHandle;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.hive.service.cli.ICLIService#openSession(java.lang.String, java.lang.String, java.util.Map)
+   */
+  @Override
+  public SessionHandle openSessionWithImpersonation(String username, String password, Map<String, String> configuration,
+       String delegationToken) throws HiveSQLException {
+    SessionHandle sessionHandle = sessionManager.openSession(username, password, configuration,
+          true, delegationToken);
     LOG.info(sessionHandle + ": openSession()");
     sessionManager.clearThreadLocals();
     return sessionHandle;
@@ -312,8 +335,30 @@ public class CLIService extends CompositeService implements ICLIService {
     try {
       HiveSession session = sessionManager.getSession(sessionHandle);
       session.setUserName(userName);
+      sessionManager.setUserName(userName);
     } catch (HiveSQLException e) {
       LOG.error("Unable to set userName in sessions", e);
+    }
+  }
+
+  // obtain delegation token for the give user from metastore
+  public synchronized String getDelegationTokenFromMetaStore(String owner)
+      throws HiveSQLException, UnsupportedOperationException, LoginException, IOException {
+    if (!hiveConf.getBoolVar(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL) ||
+        !hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_KERBEROS_IMPERSONATION)) {
+      throw new UnsupportedOperationException(
+        "delegation token is can only be obtained for a secure remote metastore");
+    }
+
+    try {
+      Hive.closeCurrent();
+      return Hive.get(hiveConf).getDelegationToken(owner, owner);
+    } catch (HiveException e) {
+      if (e.getCause() instanceof UnsupportedOperationException) {
+        throw (UnsupportedOperationException)e.getCause();
+      } else {
+        throw new HiveSQLException("Error connect metastore to setup impersonation", e);
+      }
     }
   }
 }

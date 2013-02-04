@@ -21,7 +21,7 @@ package org.apache.hive.service.cli.operation;
 import java.util.Map;
 
 import org.apache.hadoop.hive.ql.processors.DfsProcessor;
-import org.apache.hive.service.cli.session.HiveSession;
+import org.apache.hive.service.cli.session.HiveSessionImpl;
 
 /**
  * HiveDfsCommandOperation.
@@ -29,7 +29,7 @@ import org.apache.hive.service.cli.session.HiveSession;
  */
 public class DfsOperation extends HiveCommandOperation {
 
-  protected DfsOperation(HiveSession parentSession, String statement,
+  protected DfsOperation(HiveSessionImpl parentSession, String statement,
       Map<String, String> confOverlay) {
     super(parentSession, statement, confOverlay);
     setCommandProcessor(new DfsProcessor(parentSession.getHiveConf()));
