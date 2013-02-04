@@ -289,6 +289,12 @@ public interface HadoopShims {
    */
   public String getJobLauncherHttpAddress(Configuration conf);
 
+ /**
+  *  Perform kerberos login using the given principal and keytab
+ * @throws IOException
+  */
+  public void loginUserFromKeytab(String principal, String keytabFile) throws IOException;
+
   /**
    * InputSplitShim.
    *
