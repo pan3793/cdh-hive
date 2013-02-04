@@ -21,7 +21,7 @@ package org.apache.hive.service.cli.operation;
 import java.util.Map;
 
 import org.apache.hadoop.hive.ql.processors.AddResourceProcessor;
-import org.apache.hive.service.cli.session.HiveSession;
+import org.apache.hive.service.cli.session.HiveSessionImpl;
 
 /**
  * HiveAddResourceOperation.
@@ -29,7 +29,7 @@ import org.apache.hive.service.cli.session.HiveSession;
  */
 public class AddResourceOperation extends HiveCommandOperation {
 
-  protected AddResourceOperation(HiveSession parentSession, String statement,
+  protected AddResourceOperation(HiveSessionImpl parentSession, String statement,
       Map<String, String> confOverlay) {
     super(parentSession, statement, confOverlay);
     setCommandProcessor(new AddResourceProcessor());

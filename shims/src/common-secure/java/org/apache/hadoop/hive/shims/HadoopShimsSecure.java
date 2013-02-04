@@ -39,6 +39,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hive.io.HiveIOExceptionHandlerUtil;
+import org.apache.hadoop.hive.thrift.DelegationTokenIdentifier;
 import org.apache.hadoop.hive.thrift.DelegationTokenSelector;
 import org.apache.hadoop.http.HtmlQuoting;
 import org.apache.hadoop.io.Text;
@@ -539,8 +540,27 @@ public abstract class HadoopShimsSecure implements HadoopShims {
   }
 
   @Override
+  public void setTokenStr(UserGroupInformation ugi, String tokenStr, String tokenService) throws IOException {
+    Token<DelegationTokenIdentifier> delegationToken = new Token<DelegationTokenIdentifier>();
+    delegationToken.decodeFromUrlString(tokenStr);
+    delegationToken.setService(new Text(tokenService));
+    ugi.addToken(delegationToken);
+  }
+
+  @Override
   public <T> T doAs(UserGroupInformation ugi, PrivilegedExceptionAction<T> pvea) throws IOException, InterruptedException {
     return ugi.doAs(pvea);
+  }
+
+  @Override
+  public UserGroupInformation createProxyUser(String userName) throws IOException {
+    return UserGroupInformation.createProxyUser(
+        userName, UserGroupInformation.getLoginUser());
+  }
+
+  @Override
+  public boolean isSecurityEnabled() {
+    return UserGroupInformation.isSecurityEnabled();
   }
 
   @Override
