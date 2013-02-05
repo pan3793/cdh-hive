@@ -18,6 +18,7 @@
 
 package org.apache.hive.service.cli;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hive.service.CompositeService;
 import org.apache.hive.service.ServiceException;
+import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.session.HiveSession;
 import org.apache.hive.service.cli.session.SessionManager;
 
@@ -54,11 +56,11 @@ public class CLIService extends CompositeService implements ICLIService {
 
     sessionManager = new SessionManager();
     addService(sessionManager);
-    /*try {
+    try {
       HiveAuthFactory.loginFromKeytab(hiveConf);
     } catch (IOException e) {
       throw new ServiceException("Unable to login to kerberos with given principal/keytab", e);
-    }*/
+    }
     super.init(hiveConf);
   }
 
@@ -306,12 +308,4 @@ public class CLIService extends CompositeService implements ICLIService {
     }
   }
 
-  public void setUserName(SessionHandle sessionHandle, String userName) {
-    try {
-      HiveSession session = sessionManager.getSession(sessionHandle);
-      session.setUserName(userName);
-    } catch (HiveSQLException e) {
-      LOG.error("Unable to set userName in sessions", e);
-    }
-  }
 }
