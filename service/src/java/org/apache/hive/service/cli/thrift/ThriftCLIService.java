@@ -120,6 +120,9 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       }
       SessionHandle sessionHandle = cliService
           .openSession(userName, req.getPassword(), req.getConfiguration());
+      if (userName != null) {
+        cliService.setUserName(sessionHandle, userName);
+      }
       // Cannot break the b/w compatibility of API to accept ipAddress as another parameter in
       // openSession call. Hence making this call
       if (ipAddress != null) {

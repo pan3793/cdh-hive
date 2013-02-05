@@ -308,4 +308,12 @@ public class CLIService extends CompositeService implements ICLIService {
     }
   }
 
+  public void setUserName(SessionHandle sessionHandle, String userName) {
+    try {
+      HiveSession session = sessionManager.getSession(sessionHandle);
+      session.setUserName(userName);
+    } catch (HiveSQLException e) {
+      LOG.error("Unable to set userName in sessions", e);
+    }
+  }
 }
