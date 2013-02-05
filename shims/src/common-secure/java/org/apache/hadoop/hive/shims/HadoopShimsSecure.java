@@ -59,6 +59,7 @@ import org.apache.hadoop.mapred.TaskID;
 import org.apache.hadoop.mapred.lib.CombineFileInputFormat;
 import org.apache.hadoop.mapred.lib.CombineFileSplit;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
@@ -558,7 +559,8 @@ public abstract class HadoopShimsSecure implements HadoopShims {
 
   @Override
   public void loginUserFromKeytab(String principal, String keytabFile) throws IOException {
-    UserGroupInformation.loginUserFromKeytab(principal, keytabFile);
+    String hostPrincipal = SecurityUtil.getServerPrincipal(principal, "0.0.0.0");
+    UserGroupInformation.loginUserFromKeytab(hostPrincipal, keytabFile);
   }
 
   @Override
