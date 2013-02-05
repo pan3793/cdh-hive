@@ -49,7 +49,7 @@ import org.apache.hive.service.cli.operation.OperationManager;
 public class HiveSession {
 
   private final SessionHandle sessionHandle = new SessionHandle();
-  private final String username;
+  private String username;
   private final String password;
   private final Map<String, String> sessionConf = new HashMap<String, String>();
   private final HiveConf hiveConf = new HiveConf();
@@ -270,6 +270,10 @@ public class HiveSession {
 
   public String setIpAddress(String ipAddress) {
     return this.ipAddress = ipAddress;
+  }
+
+  public void setUserName(String userName) {
+    this.username = userName;
   }
 
   public String getUserName() {
