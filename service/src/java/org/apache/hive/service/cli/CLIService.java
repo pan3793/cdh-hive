@@ -267,7 +267,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public void cancelOperation(OperationHandle opHandle)
       throws HiveSQLException {
-    sessionManager.getOperationManager().cancelOperation(opHandle);
+    sessionManager.getOperationManager().getOperation(opHandle).
+        getParentSession().cancelOperation(opHandle);
     LOG.info(opHandle + ": cancelOperation()");
     sessionManager.clearThreadLocals();
     }
@@ -278,7 +279,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public void closeOperation(OperationHandle opHandle)
       throws HiveSQLException {
-    sessionManager.getOperationManager().closeOperation(opHandle);
+    sessionManager.getOperationManager().getOperation(opHandle).
+        getParentSession().closeOperation(opHandle);
     LOG.info(opHandle + ": closeOperation");
     sessionManager.clearThreadLocals();
   }
@@ -289,8 +291,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public TableSchema getResultSetMetadata(OperationHandle opHandle)
       throws HiveSQLException {
-    TableSchema tableSchema = sessionManager.getOperationManager()
-        .getOperationResultSetSchema(opHandle);
+    TableSchema tableSchema = sessionManager.getOperationManager().getOperation(opHandle).
+        getParentSession().getResultSetMetadata(opHandle);
     LOG.info(opHandle + ": getResultSetMetadata()");
     sessionManager.clearThreadLocals();
     return tableSchema;
@@ -302,8 +304,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public RowSet fetchResults(OperationHandle opHandle, FetchOrientation orientation, long maxRows)
       throws HiveSQLException {
-    RowSet rowSet = sessionManager.getOperationManager()
-        .getOperationNextRowSet(opHandle, orientation, maxRows);
+    RowSet rowSet = sessionManager.getOperationManager().getOperation(opHandle).
+        getParentSession().fetchResults(opHandle, orientation, maxRows);
     LOG.info(opHandle + ": fetchResults()");
     sessionManager.clearThreadLocals();
     return rowSet;
@@ -315,7 +317,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public RowSet fetchResults(OperationHandle opHandle)
       throws HiveSQLException {
-    RowSet rowSet = sessionManager.getOperationManager().getOperationNextRowSet(opHandle);
+    RowSet rowSet = sessionManager.getOperationManager().getOperation(opHandle).
+        getParentSession().fetchResults(opHandle);
     LOG.info(opHandle + ": fetchResults()");
     sessionManager.clearThreadLocals();
     return rowSet;

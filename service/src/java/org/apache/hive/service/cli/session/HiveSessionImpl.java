@@ -27,11 +27,14 @@ import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.GetInfoType;
 import org.apache.hive.service.cli.GetInfoValue;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationHandle;
+import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
+import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.operation.ExecuteStatementOperation;
 import org.apache.hive.service.cli.operation.GetCatalogsOperation;
 import org.apache.hive.service.cli.operation.GetColumnsOperation;
@@ -161,7 +164,7 @@ public class HiveSessionImpl implements HiveSession {
     acquire();
     try {
       ExecuteStatementOperation operation = getOperationManager()
-          .newExecuteStatementOperation(this, statement, confOverlay);
+          .newExecuteStatementOperation(getSession(), statement, confOverlay);
       operation.run();
       return operation.getHandle();
     } finally {
@@ -173,7 +176,7 @@ public class HiveSessionImpl implements HiveSession {
       throws HiveSQLException {
     acquire();
     try {
-      GetTypeInfoOperation operation = getOperationManager().newGetTypeInfoOperation(this);
+      GetTypeInfoOperation operation = getOperationManager().newGetTypeInfoOperation(getSession());
       operation.run();
       return operation.getHandle();
     } finally {
@@ -185,7 +188,7 @@ public class HiveSessionImpl implements HiveSession {
       throws HiveSQLException {
     acquire();
     try {
-      GetCatalogsOperation operation = getOperationManager().newGetCatalogsOperation(this);
+      GetCatalogsOperation operation = getOperationManager().newGetCatalogsOperation(getSession());
       operation.run();
       return operation.getHandle();
     } finally {
@@ -198,7 +201,7 @@ public class HiveSessionImpl implements HiveSession {
       acquire();
     try {
       GetSchemasOperation operation =
-          getOperationManager().newGetSchemasOperation(this, catalogName, schemaName);
+          getOperationManager().newGetSchemasOperation(getSession(), catalogName, schemaName);
       operation.run();
       return operation.getHandle();
     } finally {
@@ -212,7 +215,7 @@ public class HiveSessionImpl implements HiveSession {
       acquire();
     try {
       MetadataOperation operation =
-          getOperationManager().newGetTablesOperation(this, catalogName, schemaName, tableName, tableTypes);
+          getOperationManager().newGetTablesOperation(getSession(), catalogName, schemaName, tableName, tableTypes);
       operation.run();
       return operation.getHandle();
     } finally {
@@ -224,7 +227,7 @@ public class HiveSessionImpl implements HiveSession {
       throws HiveSQLException {
       acquire();
     try {
-      GetTableTypesOperation operation = getOperationManager().newGetTableTypesOperation(this);
+      GetTableTypesOperation operation = getOperationManager().newGetTableTypesOperation(getSession());
       operation.run();
       return operation.getHandle();
     } finally {
@@ -236,7 +239,7 @@ public class HiveSessionImpl implements HiveSession {
       String tableName, String columnName)  throws HiveSQLException {
     acquire();
     try {
-    GetColumnsOperation operation = getOperationManager().newGetColumnsOperation(this,
+    GetColumnsOperation operation = getOperationManager().newGetColumnsOperation(getSession(),
         catalogName, schemaName, tableName, columnName);
     operation.run();
     return operation.getHandle();
@@ -250,7 +253,7 @@ public class HiveSessionImpl implements HiveSession {
     acquire();
     try {
       GetFunctionsOperation operation = getOperationManager()
-          .newGetFunctionsOperation(this, catalogName, schemaName, functionName);
+          .newGetFunctionsOperation(getSession(), catalogName, schemaName, functionName);
       operation.run();
       return operation.getHandle();
     } finally {
@@ -291,5 +294,61 @@ public class HiveSessionImpl implements HiveSession {
   }
   public void setUserName(String userName) {
     this.username = userName;
+  }
+
+  @Override
+  public void cancelOperation(OperationHandle opHandle) throws HiveSQLException {
+    acquire();
+    try {
+      sessionManager.getOperationManager().cancelOperation(opHandle);
+    } finally {
+      release();
+    }
+  }
+
+  @Override
+  public void closeOperation(OperationHandle opHandle) throws HiveSQLException {
+    acquire();
+    try {
+      sessionManager.getOperationManager().closeOperation(opHandle);
+    } finally {
+      release();
+    }
+  }
+
+  @Override
+  public TableSchema getResultSetMetadata(OperationHandle opHandle) throws HiveSQLException {
+    acquire();
+    try {
+      return sessionManager.getOperationManager().getOperationResultSetSchema(opHandle);
+    } finally {
+      release();
+    }
+  }
+
+  @Override
+  public RowSet fetchResults(OperationHandle opHandle, FetchOrientation orientation, long maxRows)
+      throws HiveSQLException {
+    acquire();
+    try {
+      return sessionManager.getOperationManager()
+          .getOperationNextRowSet(opHandle, orientation, maxRows);
+    } finally {
+      release();
+    }
+  }
+
+  @Override
+  public RowSet fetchResults(OperationHandle opHandle) throws HiveSQLException {
+    acquire();
+    try {
+      return sessionManager.getOperationManager().getOperationNextRowSet(opHandle);
+    } finally {
+      release();
+    }
+  }
+
+  protected HiveSession getSession() {
+    return this;
   }
 }

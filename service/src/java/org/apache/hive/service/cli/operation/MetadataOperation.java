@@ -22,7 +22,7 @@ import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.TableSchema;
-import org.apache.hive.service.cli.session.HiveSessionImpl;
+import org.apache.hive.service.cli.session.HiveSession;
 
 /**
  * MetadataOperation.
@@ -34,7 +34,7 @@ public abstract class MetadataOperation extends Operation {
   protected static TableSchema RESULT_SET_SCHEMA;
   private static final char SEARCH_STRING_ESCAPE = '\\';
 
-  protected MetadataOperation(HiveSessionImpl parentSession, OperationType opType) {
+  protected MetadataOperation(HiveSession parentSession, OperationType opType) {
     super(parentSession, opType);
     setHasResultSet(true);
   }

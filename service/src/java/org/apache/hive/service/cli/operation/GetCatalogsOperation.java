@@ -24,7 +24,7 @@ import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
-import org.apache.hive.service.cli.session.HiveSessionImpl;
+import org.apache.hive.service.cli.session.HiveSession;
 
 /**
  * GetCatalogsOperation.
@@ -36,7 +36,7 @@ public class GetCatalogsOperation extends MetadataOperation {
 
   private final RowSet rowSet = new RowSet();
 
-  protected GetCatalogsOperation(HiveSessionImpl parentSession) {
+  protected GetCatalogsOperation(HiveSession parentSession) {
     super(parentSession, OperationType.GET_CATALOGS);
   }
 

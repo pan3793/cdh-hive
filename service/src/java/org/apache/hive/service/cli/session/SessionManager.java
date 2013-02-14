@@ -75,6 +75,7 @@ public class SessionManager extends CompositeService {
           HiveSessionImplwithUGI hiveSessionUgi = new HiveSessionImplwithUGI(username, password, sessionConf,
               threadLocalIpAddress.get(), delegationToken);
           session = (HiveSession)HiveSessionProxy.getProxy(hiveSessionUgi, hiveSessionUgi.getSessionUgi());
+          hiveSessionUgi.setProxySession(session);
     } else {
       session = new HiveSessionImpl(username, password, sessionConf, threadLocalIpAddress.get());
     }

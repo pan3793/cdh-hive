@@ -23,15 +23,15 @@ import java.util.Set;
 
 import org.apache.hadoop.hive.ql.exec.FunctionInfo;
 import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
+import org.apache.hive.service.cli.CLIServiceUtils;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.RowSet;
-import org.apache.hive.service.cli.CLIServiceUtils;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.Type;
-import org.apache.hive.service.cli.session.HiveSessionImpl;
+import org.apache.hive.service.cli.session.HiveSession;
 
 /**
  * GetFunctionsOperation.
@@ -58,7 +58,7 @@ public class GetFunctionsOperation extends MetadataOperation {
 
   private final RowSet rowSet = new RowSet();
 
-  public GetFunctionsOperation(HiveSessionImpl parentSession,
+  public GetFunctionsOperation(HiveSession parentSession,
       String catalogName, String schemaName, String functionName) {
     super(parentSession, OperationType.GET_FUNCTIONS);
     this.catalogName = catalogName;
