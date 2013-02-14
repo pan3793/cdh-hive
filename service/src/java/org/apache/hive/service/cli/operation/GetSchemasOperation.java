@@ -25,7 +25,7 @@ import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
-import org.apache.hive.service.cli.session.HiveSessionImpl;
+import org.apache.hive.service.cli.session.HiveSession;
 
 /**
  * GetSchemasOperation.
@@ -41,7 +41,7 @@ public class GetSchemasOperation extends MetadataOperation {
 
   private RowSet rowSet;
 
-  protected GetSchemasOperation(HiveSessionImpl parentSession,
+  protected GetSchemasOperation(HiveSession parentSession,
       String catalogName, String schemaName) {
     super(parentSession, OperationType.GET_SCHEMAS);
     this.catalogName = catalogName;

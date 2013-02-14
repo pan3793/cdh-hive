@@ -29,7 +29,7 @@ import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
-import org.apache.hive.service.cli.session.HiveSessionImpl;
+import org.apache.hive.service.cli.session.HiveSession;
 
 /**
  * GetTablesOperation.
@@ -51,7 +51,7 @@ public class GetTablesOperation extends MetadataOperation {
   .addStringColumn("TABLE_TYPE", "The table type, e.g. \"TABLE\", \"VIEW\", etc.")
   .addStringColumn("REMARKS", "Comments about the table.");
 
-  protected GetTablesOperation(HiveSessionImpl parentSession,
+  protected GetTablesOperation(HiveSession parentSession,
       String catalogName, String schemaName, String tableName,
       List<String> tableTypes) {
     super(parentSession, OperationType.GET_TABLES);

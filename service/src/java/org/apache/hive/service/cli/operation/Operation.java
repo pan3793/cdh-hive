@@ -27,12 +27,12 @@ import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
-import org.apache.hive.service.cli.session.HiveSessionImpl;
+import org.apache.hive.service.cli.session.HiveSession;
 
 
 
 public abstract class Operation {
-  private final HiveSessionImpl parentSession;
+  private final HiveSession parentSession;
   private OperationState state = OperationState.INITIALIZED;
   private final OperationHandle opHandle;
   private HiveConf configuration;
@@ -40,7 +40,7 @@ public abstract class Operation {
   public static final long DEFAULT_FETCH_MAX_ROWS = 100;
   protected boolean hasResultSet;
 
-  protected Operation(HiveSessionImpl parentSession, OperationType opType) {
+  protected Operation(HiveSession parentSession, OperationType opType) {
     super();
     this.parentSession = parentSession;
     opHandle = new OperationHandle(opType);
@@ -54,7 +54,7 @@ public abstract class Operation {
     return new HiveConf(configuration);
   }
 
-  public HiveSessionImpl getParentSession() {
+  public HiveSession getParentSession() {
     return parentSession;
   }
 

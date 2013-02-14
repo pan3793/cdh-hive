@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.hive.service.cli.OperationType;
-import org.apache.hive.service.cli.session.HiveSessionImpl;
+import org.apache.hive.service.cli.session.HiveSession;
 
 public abstract class ExecuteStatementOperation extends Operation {
   protected String statement = null;
   protected Map<String, String> confOverlay = new HashMap<String, String>();
 
-  public ExecuteStatementOperation(HiveSessionImpl parentSession, String statement, Map<String, String> confOverlay) {
+  public ExecuteStatementOperation(HiveSession parentSession, String statement, Map<String, String> confOverlay) {
     super(parentSession, OperationType.EXECUTE_STATEMENT);
     this.statement = statement;
     this.confOverlay = confOverlay;
@@ -40,7 +40,7 @@ public abstract class ExecuteStatementOperation extends Operation {
   }
 
   public static ExecuteStatementOperation newExecuteStatementOperation(
-      HiveSessionImpl parentSession, String statement, Map<String, String> confOverlay) {
+      HiveSession parentSession, String statement, Map<String, String> confOverlay) {
     String[] tokens = statement.trim().split("\\s+");
     String command = tokens[0].toLowerCase();
 

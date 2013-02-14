@@ -157,6 +157,16 @@ public class HiveConf extends Configuration {
   };
 
   /**
+   * The conf variables that depends on current user
+   */
+  public static final HiveConf.ConfVars[] userVars = {
+    HiveConf.ConfVars.SCRATCHDIR,
+    HiveConf.ConfVars.LOCALSCRATCHDIR,
+    HiveConf.ConfVars.DOWNLOADED_RESOURCES_DIR,
+    HiveConf.ConfVars.HIVEHISTORYFILELOC
+  };
+
+  /**
    * ConfVars.
    *
    * These are the default configuration properties for Hive. Each HiveConf

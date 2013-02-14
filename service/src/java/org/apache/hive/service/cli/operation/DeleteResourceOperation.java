@@ -21,7 +21,7 @@ package org.apache.hive.service.cli.operation;
 import java.util.Map;
 
 import org.apache.hadoop.hive.ql.processors.DeleteResourceProcessor;
-import org.apache.hive.service.cli.session.HiveSessionImpl;
+import org.apache.hive.service.cli.session.HiveSession;
 
 /**
  * HiveDeleteResourceOperation.
@@ -29,7 +29,7 @@ import org.apache.hive.service.cli.session.HiveSessionImpl;
  */
 public class DeleteResourceOperation extends HiveCommandOperation {
 
-  protected DeleteResourceOperation(HiveSessionImpl parentSession, String statement,
+  protected DeleteResourceOperation(HiveSession parentSession, String statement,
       Map<String, String> confOverlay) {
     super(parentSession, statement, confOverlay);
     setCommandProcessor(new DeleteResourceProcessor());

@@ -24,11 +24,14 @@ import java.util.Map;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.GetInfoType;
 import org.apache.hive.service.cli.GetInfoValue;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationHandle;
+import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
+import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.operation.OperationManager;
 
 public interface HiveSession {
@@ -143,6 +146,18 @@ public interface HiveSession {
    * @throws HiveSQLException
    */
   public void close() throws HiveSQLException;
+
+  public void cancelOperation(OperationHandle opHandle) throws HiveSQLException;
+
+  public void closeOperation(OperationHandle opHandle) throws HiveSQLException;
+
+  public TableSchema getResultSetMetadata(OperationHandle opHandle)
+      throws HiveSQLException;
+
+  public RowSet fetchResults(OperationHandle opHandle, FetchOrientation orientation, long maxRows)
+      throws HiveSQLException;
+
+  public RowSet fetchResults(OperationHandle opHandle) throws HiveSQLException;
 
   public SessionState getSessionState();
 
