@@ -693,6 +693,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_PLAIN_LDAP_BASEDN("hive.server2.authentication.ldap.baseDN", null),
     HIVE_SERVER2_KERBEROS_IMPERSONATION("hive.server2.enable.impersonation", false),
     HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS("hive.server2.custom.authentication.class", null),
+    HIVE_SERVER2_BLOCKING_QUERY("hive.server2.blocking.query", true),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),
 

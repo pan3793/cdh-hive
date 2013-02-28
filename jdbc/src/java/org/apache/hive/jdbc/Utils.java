@@ -20,6 +20,7 @@ package org.apache.hive.jdbc;
 
 import java.net.URI;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
@@ -246,6 +247,15 @@ public class Utils {
     }
 
     return connParams;
+  }
+
+  public static SQLWarning addWarning(SQLWarning warningChain, SQLWarning newWarning) {
+    if (warningChain == null) {
+      return newWarning;
+    } else {
+      warningChain.setNextWarning(newWarning);
+      return warningChain;
+    }
   }
 
 

@@ -43,11 +43,13 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.hive.service.cli.thrift.TCLIService;
+import org.apache.hive.service.cli.thrift.TCloseOperationReq;
 import org.apache.hive.service.cli.thrift.TExecuteStatementReq;
 import org.apache.hive.service.cli.thrift.TExecuteStatementResp;
 import org.apache.hive.service.cli.thrift.TOperationHandle;
-import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TSessionHandle;
+import org.apache.hive.service.cli.thrift.TStatusCode;
 
 /**
  * HivePreparedStatement.
@@ -172,7 +174,7 @@ public class HivePreparedStatement implements PreparedStatement {
 
   protected ResultSet executeImmediate(String sql) throws SQLException {
     if (isClosed) {
-      throw new SQLException("Can't execute after statement has been closed");
+      throw new SQLException("Can't execute after statement has been closed", "24000");
     }
 
     try {
@@ -184,7 +186,12 @@ public class HivePreparedStatement implements PreparedStatement {
       TExecuteStatementReq execReq = new TExecuteStatementReq(sessHandle, sql);
       execReq.setConfOverlay(sessConf);
       TExecuteStatementResp execResp = client.ExecuteStatement(execReq);
-      Utils.verifySuccessWithInfo(execResp.getStatus());
+      if (execResp.getStatus().getStatusCode().equals(TStatusCode.STILL_EXECUTING_STATUS)) {
+        warningChain = Utils.addWarning(warningChain, new SQLWarning("Query execuing asynchronously"));
+      } else {
+        Utils.verifySuccessWithInfo(execResp.getStatus());
+      }
+
       stmtHandle = execResp.getOperationHandle();
     } catch (SQLException es) {
       throw es;
@@ -858,6 +865,22 @@ public class HivePreparedStatement implements PreparedStatement {
      warningChain=null;
   }
 
+  private void closeClientOperation() throws SQLException {
+    try {
+      clearWarnings();
+      if (stmtHandle != null) {
+        TCloseOperationReq closeReq = new TCloseOperationReq();
+        closeReq.setOperationHandle(stmtHandle);
+        client.CloseOperation(closeReq);
+      }
+    } catch (SQLException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new SQLException(e.getMessage(), "08S01", e);
+    }
+    stmtHandle = null;
+  }
+
   /**
    *  Closes the prepared statement.
    *
@@ -865,11 +888,12 @@ public class HivePreparedStatement implements PreparedStatement {
    */
 
   public void close() throws SQLException {
-    client = null;
     if (resultSet!=null) {
       resultSet.close();
       resultSet = null;
     }
+    closeClientOperation();
+    client = null;
     isClosed = true;
   }
 

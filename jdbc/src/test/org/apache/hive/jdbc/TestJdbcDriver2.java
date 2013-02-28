@@ -35,11 +35,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import junit.framework.TestCase;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.hooks.ExecuteWithHookContext;
+import org.apache.hadoop.hive.ql.hooks.HookContext;
 
 /**
  * TestJdbcDriver2
@@ -57,6 +60,7 @@ public class TestJdbcDriver2 extends TestCase {
   private static final String partitionedTableComment = "Partitioned table";
   private static final String dataTypeTableName = "testDataTypeTable";
   private static final String dataTypeTableComment = "Table with many column data types";
+  private static final String QueryTag = "myQueryTag";
   private final HiveConf conf;
   private final Path dataFilePath;
   private final Path dataTypeDataFilePath;
@@ -171,6 +175,8 @@ public class TestJdbcDriver2 extends TestCase {
     // drop table
     Statement stmt = con.createStatement();
     assertNotNull("Statement is null", stmt);
+    stmt.execute("set hive.server2.blocking.query=true");
+    QueryBlockHook.clearAll();
     stmt.execute("drop table " + tableName);
     stmt.execute("drop table " + partitionedTableName);
     stmt.execute("drop table " + dataTypeTableName);
@@ -1252,4 +1258,278 @@ public class TestJdbcDriver2 extends TestCase {
     assertFalse(res.next());
   }
 
+  /**
+   * run DDLs with async mode
+   * @throws SQLException
+   */
+  public void testAsyncStmts() throws SQLException {
+    String fooQueryTag = "foo";
+    Statement stmt = con.createStatement();
+    stmt.execute("DROP TABLE IF EXISTS tabz");
+    stmt.close();
+    stmt = con.createStatement();
+    stmt.execute("set hive.server2.blocking.query=false");
+    stmt.execute("set " + QueryTag + " = " + fooQueryTag);
+    stmt.close();
+    stmt = con.createStatement();
+    stmt.execute("set hive.exec.post.hooks = org.apache.hive.jdbc.TestJdbcDriver2$QueryBlockHook");
+    stmt.close();
+    QueryBlockHook.setupBlock(fooQueryTag);
+    stmt = con.createStatement();
+    stmt.execute("CREATE TABLE tabz (id INT)");
+    assertNotNull(stmt.getWarnings());
+    QueryBlockHook.clearBlock(fooQueryTag);
+    stmt.close();
+    stmt = con.createStatement();
+    QueryBlockHook.setupBlock(fooQueryTag);
+    stmt.execute("DROP TABLE IF EXISTS tabz");
+    assertNotNull(stmt.getWarnings());
+    QueryBlockHook.clearBlock(fooQueryTag);
+    stmt.close();
+  }
+
+  /**
+   * run queries in async mode
+   * @throws SQLException
+   */
+  public void testAsyncQuery() throws SQLException {
+    String fooQueryTag = "foo";
+    Statement stmt = con.createStatement();
+    stmt.execute("set hive.server2.blocking.query=false");
+    stmt.close();
+    stmt = con.createStatement();
+    stmt.execute("set hive.exec.post.hooks = org.apache.hive.jdbc.TestJdbcDriver2$QueryBlockHook");
+    stmt.close();
+    stmt = con.createStatement();
+    stmt.execute("set " + QueryTag + " = " + fooQueryTag);
+    QueryBlockHook.setupBlock(fooQueryTag);
+    ResultSet res = stmt.executeQuery("select c1 from " + dataTypeTableName +
+          " where c1 = 1");
+    assertNotNull(stmt.getWarnings());
+    ResultSetMetaData md = res.getMetaData();
+    // sanity check metadata
+    assertEquals(md.getColumnCount(), 1); // only one result column
+    assertEquals(md.getColumnLabel(1), "c1" ); // verify the column name
+    try {
+      res.next();
+      assertTrue(false);
+    } catch (SQLException e) {
+      // verify that the fetch fails with query still running error
+      assertEquals("HY010", e.getSQLState());
+    }
+    QueryBlockHook.clearBlock(fooQueryTag); // continue query
+    // verify that we can now fetch data
+    // the query could be still be running and might take a few more iteration to finish
+    do {
+      try {
+        res.next();
+        break;
+      } catch (SQLException e) {
+        if (e.getSQLState().equals("HY010")) {
+          // if query is not complete, then try next time
+          continue;
+        } else {
+          throw e;
+        }
+      }
+    } while (true);
+    assertEquals(1, res.getInt(1));
+    stmt.close();
+  }
+
+  /**
+   * Run multiple queries in async mode
+   */
+  /**
+   * run queries in async mode
+   * @throws SQLException
+   */
+  public void testMultiAsyncQueries() throws SQLException {
+    String fooQueryTag = "foo";
+    String barQueryTag = "bar";
+
+    Statement stmt = con.createStatement();
+    stmt.execute("set hive.server2.blocking.query=false");
+    stmt.close();
+    stmt = con.createStatement();
+    stmt.execute("set hive.exec.post.hooks = org.apache.hive.jdbc.TestJdbcDriver2$QueryBlockHook");
+    stmt.close();
+
+    // start foo query
+    stmt = con.createStatement();
+    stmt.execute("set " + QueryTag + " = " + fooQueryTag);
+    QueryBlockHook.setupBlock(fooQueryTag);
+    ResultSet res = stmt.executeQuery("select c1 from " + dataTypeTableName +
+          " where c1 = 1");
+    assertNotNull(stmt.getWarnings());
+    ResultSetMetaData md = res.getMetaData();
+    // sanity check metadata
+    assertEquals(md.getColumnCount(), 1); // only one result column
+    assertEquals(md.getColumnLabel(1), "c1" ); // verify the column name
+    try {
+      res.next();
+      assertTrue(false);
+    } catch (SQLException e) {
+      // verify that the fetch fails with query still running error
+      assertEquals("HY010", e.getSQLState());
+    }
+
+    // start bar query
+    Statement stmt2 = con.createStatement();
+    stmt2.execute("set " + QueryTag + " = " + barQueryTag);
+    QueryBlockHook.setupBlock(barQueryTag);
+    ResultSet res2 = stmt2.executeQuery("select c1 from " + dataTypeTableName +
+    " where c1 = 1");
+    assertNotNull(stmt2.getWarnings());
+    ResultSetMetaData md2 = res2.getMetaData();
+    // sanity check metadata
+    assertEquals(md2.getColumnCount(), 1); // only one result column
+    assertEquals(md2.getColumnLabel(1), "c1" ); // verify the column name
+    try {
+      res2.next();
+      assertTrue(false);
+    } catch (SQLException e) {
+      // verify that the fetch fails with query still running error
+      assertEquals("HY010", e.getSQLState());
+    }
+
+    QueryBlockHook.clearBlock(fooQueryTag); // continue foo query
+    // verify that we can now fetch data
+    // the query could be still be running and might take a few more iteration to finish
+    do {
+      try {
+        res.next();
+        break;
+      } catch (SQLException e) {
+        if (e.getSQLState().equals("HY010")) {
+          // if query is not complete, then try next time
+          continue;
+        } else {
+          throw e;
+        }
+      }
+    } while (true);
+    assertEquals(1, res.getInt(1));
+    stmt.close();
+
+    // verify that the bar query is still blocked
+    try {
+      res2.next();
+      assertTrue(false);
+    } catch (SQLException e) {
+      // verify that the fetch fails with query still running error
+      assertEquals("HY010", e.getSQLState());
+    }
+
+    QueryBlockHook.clearBlock(barQueryTag); // continue bar query
+    // verify that we can now fetch data for bar query
+    // the query could be still be running and might take a few more iteration to finish
+    do {
+      try {
+        res2.next();
+        break;
+      } catch (SQLException e) {
+        if (e.getSQLState().equals("HY010")) {
+          // if query is not complete, then try next time
+          continue;
+        } else {
+          throw e;
+        }
+      }
+    } while (true);
+    assertEquals(1, res2.getInt(1));
+    stmt2.close();
+  }
+
+  /**
+   * run prepared statement in async mode
+   * @throws SQLException
+   */
+  public void testAsyncPreparedStmt() throws SQLException {
+    String fooQueryTag = "foo";
+
+    Statement stmt = con.createStatement();
+    stmt.execute("set hive.server2.blocking.query=false");
+    stmt.execute("set hive.exec.post.hooks = org.apache.hive.jdbc.TestJdbcDriver2$QueryBlockHook");
+    stmt.execute("set " + QueryTag + " = " + fooQueryTag);
+    stmt.close();
+    QueryBlockHook.setupBlock(fooQueryTag);
+    PreparedStatement pStmt = con.prepareStatement("select c1 from " + dataTypeTableName +
+          " where c1 = 1") ;
+    ResultSet res = pStmt.executeQuery();
+    assertNotNull(pStmt.getWarnings());
+    ResultSetMetaData md = res.getMetaData();
+    // sanity check metadata
+    assertEquals(md.getColumnCount(), 1); // only one result column
+    assertEquals(md.getColumnLabel(1), "c1" ); // verify the column name
+    try {
+      res.next();
+      assertTrue(false);
+    } catch (SQLException e) {
+      // verify that the fetch fails with query still running error
+      assertEquals("HY010", e.getSQLState());
+    }
+    QueryBlockHook.clearBlock(fooQueryTag); // continue query
+    // verify that we can now fetch data
+    // the query could be still be running and might take a few more iteration to finish
+    do {
+      try {
+        res.next();
+        break;
+      } catch (SQLException e) {
+        if (e.getSQLState().equals("HY010")) {
+          // if query is not complete, then try next time
+          continue;
+        } else {
+          throw e;
+        }
+      }
+    } while (true);
+    assertEquals(1, res.getInt(1));
+    pStmt.close();
+  }
+
+  /**
+   *  Post execute hook that blocks the execution
+   *  Used for async query testing
+   */
+  public static class QueryBlockHook implements ExecuteWithHookContext {
+
+    private static Map<String, Boolean> triggerMap = new ConcurrentHashMap<String, Boolean>();
+
+    public void run(HookContext hookContext) {
+      String myTag = hookContext.getConf().get(QueryTag, "");
+      if (myTag.isEmpty() || !triggerMap.containsKey(myTag)) {
+        return;
+      }
+      while (triggerMap.get(myTag)) {
+        try {
+          Thread.sleep(200);
+        } catch (InterruptedException e) {
+          break;
+        }
+      }
+    }
+
+    // enable the post hook wait
+    public static void setupBlock(String queryTag) {
+      if (triggerMap.containsKey(queryTag)) {
+        triggerMap.put(queryTag, true);
+      }
+    }
+
+    // resume the post hook
+    public static void clearBlock(String queryTag) {
+      if (triggerMap.containsKey(queryTag)) {
+        triggerMap.put(queryTag, false);
+      }
+    }
+
+    public static void clearAll() {
+      for (Map.Entry<String, Boolean> entry : triggerMap.entrySet()) {
+        entry.setValue(false);
+      }
+    }
+
+  }
 }

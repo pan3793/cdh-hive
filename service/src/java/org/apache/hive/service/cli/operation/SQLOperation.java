@@ -60,57 +60,68 @@ public class SQLOperation extends ExecuteStatementOperation {
   private TableSchema resultSchema = null;
   private Schema mResultSchema = null;
   private SerDe serde = null;
-
+  private boolean isPrepared = false;
+  private String subStatement = null;
 
   public SQLOperation(HiveSession parentSession, String statement, Map<String, String> confOverlay) {
     // TODO: call setRemoteUser in ExecuteStatementOperation or higher.
     super(parentSession, statement, confOverlay);
   }
 
-
+  // Compile the current statement
+  @Override
   public void prepare() throws HiveSQLException {
+    prepare(null);
+  }
+
+  // Compile the current statement with the give configuration
+  @Override
+  public void prepare(HiveConf conf) throws HiveSQLException {
+    setState(OperationState.RUNNING);
+    HiveConf queryConf = conf;
+    if (queryConf == null) {
+      queryConf = getParentSession().getHiveConf();
+    }
+    driver = new Driver(queryConf, getParentSession().getIpAddress(),
+                            getParentSession().getUsername());
+    // In Hive server mode, we are not able to retry in the FetchTask
+    // case, when calling fetch queries since execute() has returned.
+    // For now, we disable the test attempts.
+    driver.setTryCount(Integer.MAX_VALUE);
+    subStatement = new VariableSubstitution().substitute(getParentSession().getHiveConf(),
+            statement);
+    response = driver.compileAndRespond(subStatement);
+    if (0 != response.getResponseCode()) {
+      throw new HiveSQLException("Error while processing statement: "
+          + response.getErrorMessage(), response.getSQLState(), response.getResponseCode());
+    }
+    mResultSchema = driver.getSchema();
+    if (mResultSchema != null && mResultSchema.isSetFieldSchemas()) {
+      resultSchema = new TableSchema(mResultSchema);
+      setHasResultSet(true);
+    } else {
+      setHasResultSet(false);
+    }
+    setPrepared();
   }
 
   @Override
   public void run() throws HiveSQLException {
-    setState(OperationState.RUNNING);
-    String statement_trimmed = statement.trim();
-    String[] tokens = statement_trimmed.split("\\s");
-    String cmd_1 = statement_trimmed.substring(tokens[0].length()).trim();
-
-    int ret = 0;
-    String errorMessage = "";
-    String SQLState = null;
-
     try {
-      driver = new Driver(getParentSession().getHiveConf(), getParentSession().getIpAddress(),
-                            getParentSession().getUsername());
-      // In Hive server mode, we are not able to retry in the FetchTask
-      // case, when calling fetch queries since execute() has returned.
-      // For now, we disable the test attempts.
-      driver.setTryCount(Integer.MAX_VALUE);
-
-      String subStatement = new VariableSubstitution().substitute(getParentSession().getHiveConf(), statement);
-
-      response = driver.run(subStatement);
+      if (!isPrepared()) {
+        prepare();
+      }
+      response = driver.run(subStatement, false);
       if (0 != response.getResponseCode()) {
         throw new HiveSQLException("Error while processing statement: "
             + response.getErrorMessage(), response.getSQLState(), response.getResponseCode());
-      }
-
-      mResultSchema = driver.getSchema();
-      if (mResultSchema != null && mResultSchema.isSetFieldSchemas()) {
-        resultSchema = new TableSchema(mResultSchema);
-        setHasResultSet(true);
-      } else {
-        setHasResultSet(false);
       }
     } catch (HiveSQLException e) {
       setState(OperationState.ERROR);
       throw e;
     } catch (Exception e) {
       setState(OperationState.ERROR);
-      throw new HiveSQLException("Error running query: " + e.toString());
+      throw new HiveSQLException("Error running query: " + e.getMessage(), "07000", e);
     }
     setState(OperationState.FINISHED);
   }
@@ -145,7 +156,7 @@ public class SQLOperation extends ExecuteStatementOperation {
 
   @Override
   public TableSchema getResultSetSchema() throws HiveSQLException {
-    assertState(OperationState.FINISHED);
+    assertAtLeastState(OperationState.RUNNING);
     if (resultSchema == null) {
       resultSchema = new TableSchema(driver.getSchema());
     }
@@ -254,4 +265,12 @@ public class SQLOperation extends ExecuteStatementOperation {
     return serde;
   }
 
+  @Override
+  public boolean isPrepared() {
+    return isPrepared;
+  }
+
+  private void setPrepared() {
+    isPrepared = true;
+  }
 }

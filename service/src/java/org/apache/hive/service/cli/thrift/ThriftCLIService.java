@@ -59,6 +59,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
   protected CLIService cliService;
   private static final TStatus OK_STATUS = new TStatus(TStatusCode.SUCCESS_STATUS);
   private static final TStatus ERROR_STATUS = new TStatus(TStatusCode.ERROR_STATUS);
+  private static final TStatus STILL_EXECUTING_STATUS = new TStatus(TStatusCode.STILL_EXECUTING_STATUS);
 
   private static HiveAuthFactory hiveAuthFactory;
 
@@ -190,7 +191,11 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       OperationHandle operationHandle =
           cliService.executeStatement(sessionHandle, statement, confOverlay);
       resp.setOperationHandle(operationHandle.toTOperationHandle());
-      resp.setStatus(OK_STATUS);
+      if (cliService.getOperationStatus(operationHandle).equals(OperationState.RUNNING)) {
+        resp.setStatus(STILL_EXECUTING_STATUS);
+      } else {
+        resp.setStatus(OK_STATUS);
+      }
     } catch (Exception e) {
       e.printStackTrace();
       resp.setStatus(HiveSQLException.toTStatus(e));

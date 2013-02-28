@@ -21,7 +21,9 @@ package org.apache.hive.service.cli.operation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.session.HiveSession;
 
@@ -44,16 +46,31 @@ public abstract class ExecuteStatementOperation extends Operation {
     String[] tokens = statement.trim().split("\\s+");
     String command = tokens[0].toLowerCase();
 
-    if ("set".equals(command)) {
-      return new SetOperation(parentSession, statement, confOverlay);
-    } else if ("dfs".equals(command)) {
-      return new DfsOperation(parentSession, statement, confOverlay);
-    } else if ("add".equals(command)) {
-      return new AddResourceOperation(parentSession, statement, confOverlay);
-    } else if ("delete".equals(command)) {
-      return new DeleteResourceOperation(parentSession, statement, confOverlay);
-    } else {
-      return new SQLOperation(parentSession, statement, confOverlay);
+    for (Entry<String, String> opConf : confOverlay.entrySet()) {
+      parentSession.getHiveConf().set(opConf.getKey(), opConf.getValue());
     }
+
+    ExecuteStatementOperation newExecOP;
+    if ("set".equals(command)) {
+      newExecOP = new SetOperation(parentSession, statement, confOverlay);
+    } else if ("dfs".equals(command)) {
+      newExecOP = new DfsOperation(parentSession, statement, confOverlay);
+    } else if ("add".equals(command)) {
+      newExecOP = new AddResourceOperation(parentSession, statement, confOverlay);
+    } else if ("delete".equals(command)) {
+      newExecOP = new DeleteResourceOperation(parentSession, statement, confOverlay);
+    } else {
+      newExecOP = new SQLOperation(parentSession, statement, confOverlay);
+      // check if this is needs to be run asynchronously
+      boolean isAsyncOP = (parentSession.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_BLOCKING_QUERY) == false);
+      if(confOverlay.containsKey(ConfVars.HIVE_SERVER2_BLOCKING_QUERY.toString())) {
+        isAsyncOP = confOverlay.get(ConfVars.HIVE_SERVER2_BLOCKING_QUERY.toString()).equalsIgnoreCase("false");
+      }
+      if (isAsyncOP) {
+        newExecOP = AsyncExecStmtOperation.wrapExecStmtOperation(newExecOP);
+      }
+    }
+
+    return newExecOP;
   }
 }

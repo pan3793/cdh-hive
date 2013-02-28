@@ -347,6 +347,17 @@ public class Driver implements CommandProcessor {
     return compile(command, true);
   }
 
+  public CommandProcessorResponse compileAndRespond(String command) {
+    int ret;
+    synchronized (compileMonitor) {
+      ret = compile(command);
+    }
+    if (ret != 0) {
+      releaseLocks(ctx.getHiveLocks());
+      // console.printError("Compilation failed for statement '" + command + "'");
+    }
+    return new CommandProcessorResponse(ret, errorMessage, SQLState);
+  }
   /**
    * Hold state variables specific to each query being executed, that may not
    * be consistent in the overall SessionState
@@ -875,6 +886,11 @@ public class Driver implements CommandProcessor {
   }
 
   public CommandProcessorResponse run(String command) throws CommandNeedRetryException {
+    return run(command, true);
+  }
+
+  public CommandProcessorResponse run(String command, boolean compileQuery)
+        throws CommandNeedRetryException {
     errorMessage = null;
     SQLState = null;
 
@@ -904,12 +920,14 @@ public class Driver implements CommandProcessor {
     perfLogger.PerfLogBegin(LOG, PerfLogger.TIME_TO_SUBMIT);
 
     int ret;
-    synchronized (compileMonitor) {
-      ret = compile(command);
-    }
-    if (ret != 0) {
-      releaseLocks(ctx.getHiveLocks());
-      return new CommandProcessorResponse(ret, errorMessage, SQLState);
+    if (compileQuery) {
+      synchronized (compileMonitor) {
+        ret = compile(command);
+      }
+      if (ret != 0) {
+        releaseLocks(ctx.getHiveLocks());
+        return new CommandProcessorResponse(ret, errorMessage, SQLState);
+      }
     }
 
     boolean requireLock = false;

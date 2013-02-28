@@ -91,6 +91,12 @@ public abstract class Operation {
     }
   }
 
+  protected final void assertAtLeastState(OperationState state) throws HiveSQLException {
+    if (this.state.compareTo(state) < 0) {
+      throw new HiveSQLException("Expected state " + state + ", but found " + this.state);
+    }
+  }
+
   public boolean isRunning() {
     return OperationState.RUNNING.equals(getState());
   }
@@ -108,6 +114,19 @@ public abstract class Operation {
   }
 
   public abstract void run() throws HiveSQLException;
+
+  public void prepare() throws HiveSQLException {
+    prepare(null);
+  }
+
+  public void prepare(HiveConf conf) throws HiveSQLException {
+    setState(OperationState.INITIALIZED);
+    throw new UnsupportedOperationException("SQLOperation.prepare()");
+  }
+
+  public boolean isPrepared () {
+    return false;
+  }
 
   // TODO: make this abstract and implement in subclasses.
   public void cancel() throws HiveSQLException {
