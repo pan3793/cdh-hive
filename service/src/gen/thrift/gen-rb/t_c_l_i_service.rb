@@ -251,6 +251,21 @@ module TCLIService
       raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'FetchResults failed: unknown result')
     end
 
+    def GetLog(req)
+      send_GetLog(req)
+      return recv_GetLog()
+    end
+
+    def send_GetLog(req)
+      send_message('GetLog', GetLog_args, :req => req)
+    end
+
+    def recv_GetLog()
+      result = receive_message(GetLog_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'GetLog failed: unknown result')
+    end
+
   end
 
   class Processor
@@ -366,6 +381,13 @@ module TCLIService
       result = FetchResults_result.new()
       result.success = @handler.FetchResults(args.req)
       write_result(result, oprot, 'FetchResults', seqid)
+    end
+
+    def process_GetLog(seqid, iprot, oprot)
+      args = read_args(iprot, GetLog_args)
+      result = GetLog_result.new()
+      result.success = @handler.GetLog(args.req)
+      write_result(result, oprot, 'GetLog', seqid)
     end
 
   end
@@ -874,6 +896,38 @@ module TCLIService
 
     FIELDS = {
       SUCCESS => {:type => ::Thrift::Types::STRUCT, :name => 'success', :class => ::TFetchResultsResp}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class GetLog_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    REQ = 1
+
+    FIELDS = {
+      REQ => {:type => ::Thrift::Types::STRUCT, :name => 'req', :class => ::TGetLogReq}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class GetLog_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::STRUCT, :name => 'success', :class => ::TGetLogResp}
     }
 
     def struct_fields; FIELDS; end

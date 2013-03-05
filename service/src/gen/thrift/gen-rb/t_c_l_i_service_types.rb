@@ -1407,3 +1407,40 @@ class TFetchResultsResp
   ::Thrift::Struct.generate_accessors self
 end
 
+class TGetLogReq
+  include ::Thrift::Struct, ::Thrift::Struct_Union
+  OPERATIONHANDLE = 1
+
+  FIELDS = {
+    OPERATIONHANDLE => {:type => ::Thrift::Types::STRUCT, :name => 'operationHandle', :class => ::TOperationHandle}
+  }
+
+  def struct_fields; FIELDS; end
+
+  def validate
+    raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Required field operationHandle is unset!') unless @operationHandle
+  end
+
+  ::Thrift::Struct.generate_accessors self
+end
+
+class TGetLogResp
+  include ::Thrift::Struct, ::Thrift::Struct_Union
+  STATUS = 1
+  LOG = 2
+
+  FIELDS = {
+    STATUS => {:type => ::Thrift::Types::STRUCT, :name => 'status', :class => ::TStatus},
+    LOG => {:type => ::Thrift::Types::STRING, :name => 'log'}
+  }
+
+  def struct_fields; FIELDS; end
+
+  def validate
+    raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Required field status is unset!') unless @status
+    raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Required field log is unset!') unless @log
+  end
+
+  ::Thrift::Struct.generate_accessors self
+end
+

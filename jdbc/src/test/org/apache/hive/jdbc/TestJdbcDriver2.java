@@ -597,6 +597,30 @@ public class TestJdbcDriver2 extends TestCase {
         exceptionFound);
   }
 
+  public void testGetLog() throws Exception {
+    HiveStatement stmt = (HiveStatement)con.createStatement();
+    assertNotNull("Statement is null", stmt);
+
+    ResultSet res = stmt.executeQuery("select count(*) from " + tableName);
+    ResultSetMetaData meta = res.getMetaData();
+
+    boolean moreRow = res.next();
+    while (moreRow) {
+      try {
+        moreRow = res.next();
+      } catch (SQLException e) {
+        throw e;
+      }
+    }
+
+    String log = stmt.getLog();
+    assertTrue("Operation Log looks incorrect" ,
+        log.contains("Parsing command: select count(*) from testHiveJdbcDriver_Table"));
+    assertTrue("Operation Log looks incorrect",
+        log.contains( "select count(*) from testHiveJdbcDriver_Table"));
+
+  }
+
   public void testShowTables() throws SQLException {
     Statement stmt = con.createStatement();
     assertNotNull("Statement is null", stmt);
@@ -1294,13 +1318,13 @@ public class TestJdbcDriver2 extends TestCase {
    */
   public void testAsyncQuery() throws SQLException {
     String fooQueryTag = "foo";
-    Statement stmt = con.createStatement();
+    HiveStatement stmt = (HiveStatement)con.createStatement();
     stmt.execute("set hive.server2.blocking.query=false");
     stmt.close();
-    stmt = con.createStatement();
+    stmt = (HiveStatement)con.createStatement();
     stmt.execute("set hive.exec.post.hooks = org.apache.hive.jdbc.TestJdbcDriver2$QueryBlockHook");
     stmt.close();
-    stmt = con.createStatement();
+    stmt = (HiveStatement)con.createStatement();
     stmt.execute("set " + QueryTag + " = " + fooQueryTag);
     QueryBlockHook.setupBlock(fooQueryTag);
     ResultSet res = stmt.executeQuery("select c1 from " + dataTypeTableName +
@@ -1317,6 +1341,15 @@ public class TestJdbcDriver2 extends TestCase {
       // verify that the fetch fails with query still running error
       assertEquals("HY010", e.getSQLState());
     }
+
+    //test log retrieval
+    String log = stmt.getLog();
+    assertTrue(log.length() > 1);
+    assertTrue("Operation log looks incorrect",
+        log.contains("Parsing command: select c1 from testDataTypeTable where c1 = 1"));
+    assertTrue("Operation log looks incorrect",
+        log.contains("Starting command: select c1 from testDataTypeTable where c1 = 1"));
+
     QueryBlockHook.clearBlock(fooQueryTag); // continue query
     // verify that we can now fetch data
     // the query could be still be running and might take a few more iteration to finish
@@ -1334,6 +1367,12 @@ public class TestJdbcDriver2 extends TestCase {
       }
     } while (true);
     assertEquals(1, res.getInt(1));
+
+    log = stmt.getLog();
+    assertTrue(log.length() > 1);
+    assertTrue("Operation log looks incorrect",
+        log.contains("Execution completed successfully"));
+
     stmt.close();
   }
 
@@ -1348,15 +1387,15 @@ public class TestJdbcDriver2 extends TestCase {
     String fooQueryTag = "foo";
     String barQueryTag = "bar";
 
-    Statement stmt = con.createStatement();
+    HiveStatement stmt = (HiveStatement)con.createStatement();
     stmt.execute("set hive.server2.blocking.query=false");
     stmt.close();
-    stmt = con.createStatement();
+    stmt = (HiveStatement)con.createStatement();
     stmt.execute("set hive.exec.post.hooks = org.apache.hive.jdbc.TestJdbcDriver2$QueryBlockHook");
     stmt.close();
 
     // start foo query
-    stmt = con.createStatement();
+    stmt = (HiveStatement)con.createStatement();
     stmt.execute("set " + QueryTag + " = " + fooQueryTag);
     QueryBlockHook.setupBlock(fooQueryTag);
     ResultSet res = stmt.executeQuery("select c1 from " + dataTypeTableName +
@@ -1375,16 +1414,16 @@ public class TestJdbcDriver2 extends TestCase {
     }
 
     // start bar query
-    Statement stmt2 = con.createStatement();
+    HiveStatement stmt2 = (HiveStatement)con.createStatement();
     stmt2.execute("set " + QueryTag + " = " + barQueryTag);
     QueryBlockHook.setupBlock(barQueryTag);
-    ResultSet res2 = stmt2.executeQuery("select c1 from " + dataTypeTableName +
+    ResultSet res2 = stmt2.executeQuery("select c3 from " + dataTypeTableName +
     " where c1 = 1");
     assertNotNull(stmt2.getWarnings());
     ResultSetMetaData md2 = res2.getMetaData();
     // sanity check metadata
     assertEquals(md2.getColumnCount(), 1); // only one result column
-    assertEquals(md2.getColumnLabel(1), "c1" ); // verify the column name
+    assertEquals(md2.getColumnLabel(1), "c3" ); // verify the column name
     try {
       res2.next();
       assertTrue(false);
@@ -1392,6 +1431,14 @@ public class TestJdbcDriver2 extends TestCase {
       // verify that the fetch fails with query still running error
       assertEquals("HY010", e.getSQLState());
     }
+
+    //test log retrieval
+    String log = stmt.getLog();
+    assertTrue(log.length() > 1);
+    assertTrue("Operation log looks incorrect",
+        log.contains("Parsing command: select c1 from testDataTypeTable where c1 = 1"));
+    assertTrue("Operation log looks incorrect",
+        log.contains("Starting command: select c1 from testDataTypeTable where c1 = 1"));
 
     QueryBlockHook.clearBlock(fooQueryTag); // continue foo query
     // verify that we can now fetch data
@@ -1409,7 +1456,12 @@ public class TestJdbcDriver2 extends TestCase {
         }
       }
     } while (true);
-    assertEquals(1, res.getInt(1));
+
+    //get log again
+    log = stmt.getLog();
+    assertTrue(log.length() > 1);
+    assertTrue("Operation log looks incorrect",
+        log.contains("Execution completed successfully"));
     stmt.close();
 
     // verify that the bar query is still blocked
@@ -1420,6 +1472,14 @@ public class TestJdbcDriver2 extends TestCase {
       // verify that the fetch fails with query still running error
       assertEquals("HY010", e.getSQLState());
     }
+
+   //test log retrieval
+   log = stmt2.getLog();
+   assertTrue(log.length() > 1);
+   assertTrue("Operation log looks incorrect",
+        log.contains("Parsing command: select c3 from testDataTypeTable where c1 = 1"));
+   assertTrue("Operation log looks incorrect",
+        log.contains("Starting command: select c3 from testDataTypeTable where c1 = 1"));
 
     QueryBlockHook.clearBlock(barQueryTag); // continue bar query
     // verify that we can now fetch data for bar query
@@ -1438,6 +1498,11 @@ public class TestJdbcDriver2 extends TestCase {
       }
     } while (true);
     assertEquals(1, res2.getInt(1));
+    //get log again
+    log = stmt2.getLog();
+    assertTrue(log.length() > 1);
+    assertTrue("Operation log looks incorrect",
+        log.contains("Execution completed successfully"));
     stmt2.close();
   }
 

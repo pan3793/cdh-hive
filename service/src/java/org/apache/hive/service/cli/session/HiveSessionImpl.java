@@ -21,7 +21,6 @@ package org.apache.hive.service.cli.session;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
@@ -36,6 +35,7 @@ import org.apache.hive.service.cli.OperationHandle;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.TableSchema;
+import org.apache.hive.service.cli.log.LogManager;
 import org.apache.hive.service.cli.operation.ExecuteStatementOperation;
 import org.apache.hive.service.cli.operation.GetCatalogsOperation;
 import org.apache.hive.service.cli.operation.GetColumnsOperation;
@@ -64,6 +64,7 @@ public class HiveSessionImpl implements HiveSession {
 
   private SessionManager sessionManager;
   private OperationManager operationManager;
+  private LogManager logManager;
   private IMetaStoreClient metastoreClient = null;
   private String ipAddress;
 
@@ -81,7 +82,7 @@ public class HiveSessionImpl implements HiveSession {
     sessionState = new SessionState(hiveConf);
   }
 
-  private SessionManager getSessionManager() {
+  public SessionManager getSessionManager() {
     return sessionManager;
   }
 
@@ -123,6 +124,14 @@ public class HiveSessionImpl implements HiveSession {
     return hiveConf;
   }
 
+  public LogManager getLogManager() {
+    return logManager;
+  }
+
+  public void setLogManager(LogManager logManager) {
+    this.logManager = logManager;
+  }
+
   public IMetaStoreClient getMetaStoreClient() throws HiveSQLException {
     if (metastoreClient == null) {
       try {
@@ -153,7 +162,7 @@ public class HiveSessionImpl implements HiveSession {
         return new GetInfoValue(128);
       case CLI_TXN_CAPABLE:
       default:
-        throw new HiveSQLException("Unrecognized GetInfoType value: " + getInfoType.toString());
+        throw new HiveSQLException("Unrecognized GetInfoType value: "  + getInfoType.toString());
       }
     } finally {
       release();
@@ -162,12 +171,21 @@ public class HiveSessionImpl implements HiveSession {
 
   public OperationHandle executeStatement(String statement, Map<String, String> confOverlay)
       throws HiveSQLException {
+    OperationHandle operationHandle;
     acquire();
     try {
       ExecuteStatementOperation operation = getOperationManager()
-          .newExecuteStatementOperation(getSession(), statement, confOverlay);
+          .newExecuteStatementOperation(this, statement, confOverlay);
+      //Log capture
+      getLogManager().unregisterCurrentThread();
+      operationHandle = operation.getHandle();
+      getLogManager().registerCurrentThread(operationHandle);
+
       operation.run();
-      return operation.getHandle();
+
+      // unregister the current thread after capturing the log
+      getLogManager().unregisterCurrentThread();
+      return operationHandle;
     } finally {
       release();
     }
@@ -175,23 +193,40 @@ public class HiveSessionImpl implements HiveSession {
 
   public OperationHandle getTypeInfo()
       throws HiveSQLException {
+    OperationHandle operationHandle;
     acquire();
     try {
-      GetTypeInfoOperation operation = getOperationManager().newGetTypeInfoOperation(getSession());
+      GetTypeInfoOperation operation = getOperationManager().newGetTypeInfoOperation(this);
+      getLogManager().unregisterCurrentThread();
+
+      //Log Capture
+      operationHandle = operation.getHandle();
+      getLogManager().registerCurrentThread(operationHandle);
       operation.run();
-      return operation.getHandle();
+
+      // unregister the current thread after capturing the log
+      getLogManager().unregisterCurrentThread();
+      return operationHandle;
     } finally {
       release();
     }
   }
 
-  public OperationHandle getCatalogs()
-      throws HiveSQLException {
+  public OperationHandle getCatalogs() throws HiveSQLException {
+    OperationHandle operationHandle;
     acquire();
     try {
-      GetCatalogsOperation operation = getOperationManager().newGetCatalogsOperation(getSession());
+      GetCatalogsOperation operation = getOperationManager().newGetCatalogsOperation(this);
+      getLogManager().unregisterCurrentThread();
+
+      //Log Capture
+      operationHandle = operation.getHandle();
+      getLogManager().registerCurrentThread(operationHandle);
       operation.run();
-      return operation.getHandle();
+
+      // unregister the current thread after capturing the log
+      getLogManager().unregisterCurrentThread();
+      return operationHandle;
     } finally {
       release();
     }
@@ -199,38 +234,60 @@ public class HiveSessionImpl implements HiveSession {
 
   public OperationHandle getSchemas(String catalogName, String schemaName)
       throws HiveSQLException {
-      acquire();
+    OperationHandle operationHandle;
+    acquire();
     try {
       GetSchemasOperation operation =
-          getOperationManager().newGetSchemasOperation(getSession(), catalogName, schemaName);
+          getOperationManager().newGetSchemasOperation(this, catalogName, schemaName);
+      getLogManager().unregisterCurrentThread();
+
+      //Log Capture
+      operationHandle = operation.getHandle();
+      getLogManager().registerCurrentThread(operationHandle);
       operation.run();
-      return operation.getHandle();
+
+      // unregister the current thread after capturing the log
+      getLogManager().unregisterCurrentThread();
+      return operationHandle;
     } finally {
       release();
     }
   }
 
   public OperationHandle getTables(String catalogName, String schemaName, String tableName,
-      List<String> tableTypes)
-      throws HiveSQLException {
-      acquire();
+      List<String> tableTypes) throws HiveSQLException {
+    OperationHandle operationHandle;
+    acquire();
     try {
       MetadataOperation operation =
-          getOperationManager().newGetTablesOperation(getSession(), catalogName, schemaName, tableName, tableTypes);
+        getOperationManager().newGetTablesOperation(this, catalogName, schemaName, tableName, tableTypes);
+      getLogManager().unregisterCurrentThread();
+
+      //Log Capture
+      operationHandle = operation.getHandle();
+      getLogManager().registerCurrentThread(operationHandle);
       operation.run();
-      return operation.getHandle();
+
+      // unregister the current thread after capturing the log
+      getLogManager().unregisterCurrentThread();
+      return operationHandle;
     } finally {
-      release();
+     release();
     }
   }
 
-  public OperationHandle getTableTypes()
-      throws HiveSQLException {
-      acquire();
+  public OperationHandle getTableTypes() throws HiveSQLException {
+    OperationHandle operationHandle;
+    acquire();
     try {
-      GetTableTypesOperation operation = getOperationManager().newGetTableTypesOperation(getSession());
+      GetTableTypesOperation operation = getOperationManager().newGetTableTypesOperation(this);
+      //Log Capture
+      operationHandle = operation.getHandle();
+      getLogManager().registerCurrentThread(operationHandle);
       operation.run();
-      return operation.getHandle();
+      // unregister the current thread after capturing the log
+      getLogManager().unregisterCurrentThread();
+      return operationHandle;
     } finally {
       release();
     }
@@ -238,12 +295,19 @@ public class HiveSessionImpl implements HiveSession {
 
   public OperationHandle getColumns(String catalogName, String schemaName,
       String tableName, String columnName)  throws HiveSQLException {
+        OperationHandle operationHandle;
     acquire();
     try {
-    GetColumnsOperation operation = getOperationManager().newGetColumnsOperation(getSession(),
+    GetColumnsOperation operation = getOperationManager().newGetColumnsOperation(this,
         catalogName, schemaName, tableName, columnName);
+    //Log Capture
+    operationHandle = operation.getHandle();
+    getLogManager().registerCurrentThread(operationHandle);
     operation.run();
-    return operation.getHandle();
+
+    // unregister the current thread after capturing the log
+    getLogManager().unregisterCurrentThread();
+    return operationHandle;
     } finally {
       release();
     }
@@ -251,12 +315,19 @@ public class HiveSessionImpl implements HiveSession {
 
   public OperationHandle getFunctions(String catalogName, String schemaName, String functionName)
       throws HiveSQLException {
+    OperationHandle operationHandle;
     acquire();
     try {
       GetFunctionsOperation operation = getOperationManager()
-          .newGetFunctionsOperation(getSession(), catalogName, schemaName, functionName);
+          .newGetFunctionsOperation(this, catalogName, schemaName, functionName);
+      //Log Capture
+      operationHandle = operation.getHandle();
+      getLogManager().registerCurrentThread(operationHandle);
       operation.run();
-      return operation.getHandle();
+
+      // unregister the current thread after capturing the log
+      getLogManager().unregisterCurrentThread();
+      return operationHandle;
     } finally {
       release();
     }

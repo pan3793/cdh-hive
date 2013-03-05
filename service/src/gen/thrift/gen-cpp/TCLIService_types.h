@@ -3194,6 +3194,87 @@ class TFetchResultsResp {
 
 void swap(TFetchResultsResp &a, TFetchResultsResp &b);
 
+
+class TGetLogReq {
+ public:
+
+  static const char* ascii_fingerprint; // = "414FA38522AE6B9CEC1438B56CA1DE5A";
+  static const uint8_t binary_fingerprint[16]; // = {0x41,0x4F,0xA3,0x85,0x22,0xAE,0x6B,0x9C,0xEC,0x14,0x38,0xB5,0x6C,0xA1,0xDE,0x5A};
+
+  TGetLogReq() {
+  }
+
+  virtual ~TGetLogReq() throw() {}
+
+  TOperationHandle operationHandle;
+
+  void __set_operationHandle(const TOperationHandle& val) {
+    operationHandle = val;
+  }
+
+  bool operator == (const TGetLogReq & rhs) const
+  {
+    if (!(operationHandle == rhs.operationHandle))
+      return false;
+    return true;
+  }
+  bool operator != (const TGetLogReq &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const TGetLogReq & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(TGetLogReq &a, TGetLogReq &b);
+
+
+class TGetLogResp {
+ public:
+
+  static const char* ascii_fingerprint; // = "08A7F68AF7400F358E5CF08185165CB7";
+  static const uint8_t binary_fingerprint[16]; // = {0x08,0xA7,0xF6,0x8A,0xF7,0x40,0x0F,0x35,0x8E,0x5C,0xF0,0x81,0x85,0x16,0x5C,0xB7};
+
+  TGetLogResp() : log() {
+  }
+
+  virtual ~TGetLogResp() throw() {}
+
+  TStatus status;
+  std::string log;
+
+  void __set_status(const TStatus& val) {
+    status = val;
+  }
+
+  void __set_log(const std::string& val) {
+    log = val;
+  }
+
+  bool operator == (const TGetLogResp & rhs) const
+  {
+    if (!(status == rhs.status))
+      return false;
+    if (!(log == rhs.log))
+      return false;
+    return true;
+  }
+  bool operator != (const TGetLogResp &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const TGetLogResp & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(TGetLogResp &a, TGetLogResp &b);
+
 }}}}} // namespace
 
 #endif

@@ -149,4 +149,7 @@ public abstract class CLIServiceClient implements ICLIService {
     return fetchResults(opHandle, FetchOrientation.FETCH_NEXT, 1000);
   }
 
+  @Override
+  public abstract String getLog(OperationHandle opHandle) throws HiveSQLException;
+
 }

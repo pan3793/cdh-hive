@@ -360,7 +360,7 @@ public class TUnionTypeEntry implements org.apache.thrift.TBase<TUnionTypeEntry,
                 for (int _i11 = 0; _i11 < _map10.size; ++_i11)
                 {
                   String _key12; // required
-                  int _val13; // required
+                  int _val13; // optional
                   _key12 = iprot.readString();
                   _val13 = iprot.readI32();
                   struct.nameToTypePtr.put(_key12, _val13);
@@ -434,7 +434,7 @@ public class TUnionTypeEntry implements org.apache.thrift.TBase<TUnionTypeEntry,
         for (int _i17 = 0; _i17 < _map16.size; ++_i17)
         {
           String _key18; // required
-          int _val19; // required
+          int _val19; // optional
           _key18 = iprot.readString();
           _val19 = iprot.readI32();
           struct.nameToTypePtr.put(_key18, _val19);

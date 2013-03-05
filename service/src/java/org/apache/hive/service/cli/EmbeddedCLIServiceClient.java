@@ -176,4 +176,9 @@ public class EmbeddedCLIServiceClient extends CLIServiceClient {
     return cliService.fetchResults(opHandle, orientation, maxRows);
   }
 
+  @Override
+  public String getLog(OperationHandle opHandle)
+      throws HiveSQLException {
+    return cliService.getLog(opHandle);
+  }
 }

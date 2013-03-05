@@ -694,6 +694,8 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_KERBEROS_IMPERSONATION("hive.server2.enable.impersonation", false),
     HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS("hive.server2.custom.authentication.class", null),
     HIVE_SERVER2_BLOCKING_QUERY("hive.server2.blocking.query", true),
+    HIVE_SERVER2_IN_MEM_LOGGING("hive.server2.in.mem.logging", true),
+    HIVE_SERVER2_IN_MEM_LOG_SIZE("hive.server2.in.mem.log.size", 128 * 1024),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),
 

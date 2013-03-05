@@ -162,6 +162,4 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
   public void setProxySession(HiveSession proxySession) {
     this.proxySession = proxySession;
   }
-
-
 }

@@ -1701,6 +1701,22 @@
 </property>
 
 <property>
+  <name>hive.server2.in.mem.logging</name>
+  <value>true</value>
+  <description>
+    Whether to turn on hiveserver2 in memory logging
+  </description>
+</property>
+
+<property>
+  <name>hive.server2.in.mem.log.size</name>
+  <value>131072</value>
+  <description>
+    Maximum size of the hiveserver2 in memory query log. Note that the size is per query.
+  </description>
+</property>
+
+<property>
   <name>hive.decode.partition.name</name>
   <value>false</value>
   <description>Whether to show the unquoted partition names in query results.</description>

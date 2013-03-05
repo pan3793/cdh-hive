@@ -31,6 +31,7 @@ import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.session.HiveSession;
+import org.apache.hive.service.cli.session.SessionManager;
 
 /**
  * OperationManager.
@@ -41,6 +42,7 @@ public class OperationManager extends AbstractService {
   private HiveConf hiveConf;
   private final Map<OperationHandle, Operation> handleToOperation =
       new HashMap<OperationHandle, Operation>();
+  private SessionManager sessionManager;
 
   public OperationManager() {
     super("OperationManager");
@@ -65,6 +67,13 @@ public class OperationManager extends AbstractService {
     super.stop();
   }
 
+  public void setSessionManager(SessionManager sessionManager) {
+    this.sessionManager = sessionManager;
+  }
+
+  public SessionManager getSessionManager() {
+    return sessionManager;
+  }
   public ExecuteStatementOperation newExecuteStatementOperation(HiveSession parentSession,
       String statement, Map<String, String> confOverlay) {
     ExecuteStatementOperation executeStatementOperation = ExecuteStatementOperation
@@ -168,5 +177,5 @@ public class OperationManager extends AbstractService {
       FetchOrientation orientation, long maxRows)
       throws HiveSQLException {
     return getOperation(opHandle).getNextRowSet(orientation, maxRows);
-  }
+ }
 }

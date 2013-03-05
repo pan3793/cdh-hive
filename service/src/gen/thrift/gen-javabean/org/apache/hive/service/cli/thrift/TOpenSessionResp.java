@@ -655,7 +655,7 @@ public class TOpenSessionResp implements org.apache.thrift.TBase<TOpenSessionRes
                 for (int _i135 = 0; _i135 < _map134.size; ++_i135)
                 {
                   String _key136; // required
-                  String _val137; // required
+                  String _val137; // optional
                   _key136 = iprot.readString();
                   _val137 = iprot.readString();
                   struct.configuration.put(_key136, _val137);
@@ -775,7 +775,7 @@ public class TOpenSessionResp implements org.apache.thrift.TBase<TOpenSessionRes
           for (int _i141 = 0; _i141 < _map140.size; ++_i141)
           {
             String _key142; // required
-            String _val143; // required
+            String _val143; // optional
             _key142 = iprot.readString();
             _val143 = iprot.readString();
             struct.configuration.put(_key142, _val143);

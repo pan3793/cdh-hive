@@ -32,6 +32,8 @@ import org.apache.hive.service.cli.thrift.TCloseOperationReq;
 import org.apache.hive.service.cli.thrift.TCloseOperationResp;
 import org.apache.hive.service.cli.thrift.TExecuteStatementReq;
 import org.apache.hive.service.cli.thrift.TExecuteStatementResp;
+import org.apache.hive.service.cli.thrift.TGetLogReq;
+import org.apache.hive.service.cli.thrift.TGetLogResp;
 import org.apache.hive.service.cli.thrift.TOperationHandle;
 import org.apache.hive.service.cli.thrift.TSessionHandle;
 import org.apache.hive.service.cli.thrift.TStatusCode;
@@ -284,6 +286,25 @@ public class HiveStatement implements java.sql.Statement {
 
   public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
     throw new SQLException("Method not supported");
+  }
+
+  public String getLog() throws SQLException {
+    if (isClosed) {
+      throw new SQLException("Can't get log for statement after statement has been closed");
+    }
+
+    TGetLogReq getLogReq = new TGetLogReq();
+    TGetLogResp getLogResp;
+    getLogReq.setOperationHandle(stmtHandle);
+    try {
+      getLogResp = client.GetLog(getLogReq);
+      Utils.verifySuccessWithInfo(getLogResp.getStatus());
+    } catch (SQLException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new SQLException(e.toString(), "08S01", e);
+    }
+    return getLogResp.getLog();
   }
 
   /*

@@ -31,6 +31,7 @@ class TCLIServiceIf {
   virtual void CloseOperation(TCloseOperationResp& _return, const TCloseOperationReq& req) = 0;
   virtual void GetResultSetMetadata(TGetResultSetMetadataResp& _return, const TGetResultSetMetadataReq& req) = 0;
   virtual void FetchResults(TFetchResultsResp& _return, const TFetchResultsReq& req) = 0;
+  virtual void GetLog(TGetLogResp& _return, const TGetLogReq& req) = 0;
 };
 
 class TCLIServiceIfFactory {
@@ -106,6 +107,9 @@ class TCLIServiceNull : virtual public TCLIServiceIf {
     return;
   }
   void FetchResults(TFetchResultsResp& /* _return */, const TFetchResultsReq& /* req */) {
+    return;
+  }
+  void GetLog(TGetLogResp& /* _return */, const TGetLogReq& /* req */) {
     return;
   }
 };
@@ -1838,6 +1842,114 @@ class TCLIService_FetchResults_presult {
 
 };
 
+typedef struct _TCLIService_GetLog_args__isset {
+  _TCLIService_GetLog_args__isset() : req(false) {}
+  bool req;
+} _TCLIService_GetLog_args__isset;
+
+class TCLIService_GetLog_args {
+ public:
+
+  TCLIService_GetLog_args() {
+  }
+
+  virtual ~TCLIService_GetLog_args() throw() {}
+
+  TGetLogReq req;
+
+  _TCLIService_GetLog_args__isset __isset;
+
+  void __set_req(const TGetLogReq& val) {
+    req = val;
+  }
+
+  bool operator == (const TCLIService_GetLog_args & rhs) const
+  {
+    if (!(req == rhs.req))
+      return false;
+    return true;
+  }
+  bool operator != (const TCLIService_GetLog_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const TCLIService_GetLog_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class TCLIService_GetLog_pargs {
+ public:
+
+
+  virtual ~TCLIService_GetLog_pargs() throw() {}
+
+  const TGetLogReq* req;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _TCLIService_GetLog_result__isset {
+  _TCLIService_GetLog_result__isset() : success(false) {}
+  bool success;
+} _TCLIService_GetLog_result__isset;
+
+class TCLIService_GetLog_result {
+ public:
+
+  TCLIService_GetLog_result() {
+  }
+
+  virtual ~TCLIService_GetLog_result() throw() {}
+
+  TGetLogResp success;
+
+  _TCLIService_GetLog_result__isset __isset;
+
+  void __set_success(const TGetLogResp& val) {
+    success = val;
+  }
+
+  bool operator == (const TCLIService_GetLog_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const TCLIService_GetLog_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const TCLIService_GetLog_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _TCLIService_GetLog_presult__isset {
+  _TCLIService_GetLog_presult__isset() : success(false) {}
+  bool success;
+} _TCLIService_GetLog_presult__isset;
+
+class TCLIService_GetLog_presult {
+ public:
+
+
+  virtual ~TCLIService_GetLog_presult() throw() {}
+
+  TGetLogResp* success;
+
+  _TCLIService_GetLog_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class TCLIServiceClient : virtual public TCLIServiceIf {
  public:
   TCLIServiceClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) :
@@ -1906,6 +2018,9 @@ class TCLIServiceClient : virtual public TCLIServiceIf {
   void FetchResults(TFetchResultsResp& _return, const TFetchResultsReq& req);
   void send_FetchResults(const TFetchResultsReq& req);
   void recv_FetchResults(TFetchResultsResp& _return);
+  void GetLog(TGetLogResp& _return, const TGetLogReq& req);
+  void send_GetLog(const TGetLogReq& req);
+  void recv_GetLog(TGetLogResp& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -1937,6 +2052,7 @@ class TCLIServiceProcessor : public ::apache::thrift::TDispatchProcessor {
   void process_CloseOperation(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_GetResultSetMetadata(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_FetchResults(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_GetLog(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   TCLIServiceProcessor(boost::shared_ptr<TCLIServiceIf> iface) :
     iface_(iface) {
@@ -1956,6 +2072,7 @@ class TCLIServiceProcessor : public ::apache::thrift::TDispatchProcessor {
     processMap_["CloseOperation"] = &TCLIServiceProcessor::process_CloseOperation;
     processMap_["GetResultSetMetadata"] = &TCLIServiceProcessor::process_GetResultSetMetadata;
     processMap_["FetchResults"] = &TCLIServiceProcessor::process_FetchResults;
+    processMap_["GetLog"] = &TCLIServiceProcessor::process_GetLog;
   }
 
   virtual ~TCLIServiceProcessor() {}
@@ -2141,6 +2258,16 @@ class TCLIServiceMultiface : virtual public TCLIServiceIf {
       ifaces_[i]->FetchResults(_return, req);
     }
     ifaces_[i]->FetchResults(_return, req);
+    return;
+  }
+
+  void GetLog(TGetLogResp& _return, const TGetLogReq& req) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->GetLog(_return, req);
+    }
+    ifaces_[i]->GetLog(_return, req);
     return;
   }
 

@@ -13,6 +13,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.HiveSQLException;
+import org.apache.hive.service.cli.OperationHandle;
 import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
@@ -38,13 +39,25 @@ public class AsyncExecStmtOperation extends ExecuteStatementOperation {
     return newExecOP;
   }
 
+  private void startLogCapture(HiveSession parentSession, OperationHandle opHandle) throws HiveSQLException {
+    parentSession.getSessionManager().getLogManager().registerCurrentThread(opHandle);
+  }
+
+  private void stopLogCapture(HiveSession parentSession) {
+    parentSession.getSessionManager().getLogManager().unregisterCurrentThread();
+  }
+
   @Override
   public void run() throws HiveSQLException {
     prepare();
     final ExecuteStatementOperation currExec = execOP;
+    final HiveSession parentSession = getParentSession();
+    final OperationHandle parentHandle = getHandle();
     execFuture = opExecutor.submit(new Callable<String>() {
       public String  call() throws HiveSQLException {
+        startLogCapture(parentSession, parentHandle);
         currExec.run();
+        stopLogCapture(parentSession);
         return null;
       }
     });
@@ -53,13 +66,17 @@ public class AsyncExecStmtOperation extends ExecuteStatementOperation {
   @Override
   public void prepare() throws HiveSQLException {
     final ExecuteStatementOperation currExec = execOP;
+    final HiveSession parentSession = getParentSession();
+    final OperationHandle parentHandle = getHandle();
     execFuture = opExecutor.submit(new Callable<String>() {
       public String  call() throws HiveSQLException {
         // Clone the current configuration for an async query. we don't want the
         // query to see the config changes after the query starts to execute
+        startLogCapture(parentSession, parentHandle);
         HiveConf queryConf = new HiveConf(getParentSession().getHiveConf());
         SessionState.start(currExec.getParentSession().getSessionState());
         currExec.prepare(queryConf);
+        stopLogCapture(parentSession);
         return null;
       }
     });
@@ -72,9 +89,13 @@ public class AsyncExecStmtOperation extends ExecuteStatementOperation {
     // wait for the async statement to finish
     waitForCompletion(execFuture);
     final ExecuteStatementOperation currExec = execOP;
+    final HiveSession parentSession = getParentSession();
+    final OperationHandle parentHandle = getHandle();
     Future<String> opFuture = opExecutor.submit(new Callable<String>() {
       public String  call() throws HiveSQLException {
+        startLogCapture(parentSession, parentHandle);
         currExec.close();
+        stopLogCapture(parentSession);
         return null;
       }
     });
@@ -85,9 +106,13 @@ public class AsyncExecStmtOperation extends ExecuteStatementOperation {
   @Override
   public void cancel() throws HiveSQLException {
     final ExecuteStatementOperation currExec = execOP;
+    final HiveSession parentSession = getParentSession();
+    final OperationHandle parentHandle = getHandle();
     Future<String> opFuture = opExecutor.submit(new Callable<String>() {
       public String  call() throws HiveSQLException {
+        startLogCapture(parentSession, parentHandle);
         currExec.cancel();
+        stopLogCapture(parentSession);
         return null;
       }
     });
@@ -105,9 +130,14 @@ public class AsyncExecStmtOperation extends ExecuteStatementOperation {
           throws HiveSQLException {
     checkExecutionStatus();
     final ExecuteStatementOperation currExec = execOP;
+    final HiveSession parentSession = getParentSession();
+    final OperationHandle parentHandle = getHandle();
     Future<RowSet> opFuture = opExecutor.submit(new Callable<RowSet>() {
       public RowSet call() throws HiveSQLException {
-        return currExec.getNextRowSet(orientation, maxRows);
+        startLogCapture(parentSession, parentHandle);
+        RowSet rowSet = currExec.getNextRowSet(orientation, maxRows);
+        stopLogCapture(parentSession);
+        return rowSet;
       }
     });
     return waitForCompletion(opFuture);

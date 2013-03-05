@@ -20,9 +20,6 @@ package org.apache.hive.service.cli;
 import java.util.List;
 import java.util.Map;
 
-
-
-
 public interface ICLIService {
 
   public abstract SessionHandle openSession(String username, String password,
@@ -87,4 +84,6 @@ public interface ICLIService {
   public abstract RowSet fetchResults(OperationHandle opHandle)
       throws HiveSQLException;
 
+  public abstract String getLog(OperationHandle opHandle)
+      throws HiveSQLException;
 }
