@@ -289,6 +289,7 @@ public class CLIService extends CompositeService implements ICLIService {
         getParentSession().closeOperation(opHandle);
     LOG.info(opHandle  + ": closeOperation");
     sessionManager.clearThreadLocals();
+    sessionManager.getLogManager().destroyOperationLog(opHandle);
     stopLogCapture();
   }
 
