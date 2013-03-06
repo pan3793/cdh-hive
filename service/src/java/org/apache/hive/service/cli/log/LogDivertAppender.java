@@ -68,6 +68,7 @@ public class LogDivertAppender extends WriterAppender {
     // Filter out messages coming from log processing classes, or we'll run an infinite loop.
     this.addFilter(new NameExclusionFilter(LOG.getName()));
     this.addFilter(new NameExclusionFilter(OperationLog.class.getName()));
+    this.addFilter(new NameExclusionFilter(LogManager.class.getName()));
   }
 
   /**
