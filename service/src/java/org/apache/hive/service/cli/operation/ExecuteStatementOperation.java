@@ -46,10 +46,6 @@ public abstract class ExecuteStatementOperation extends Operation {
     String[] tokens = statement.trim().split("\\s+");
     String command = tokens[0].toLowerCase();
 
-    for (Entry<String, String> opConf : confOverlay.entrySet()) {
-      parentSession.getHiveConf().set(opConf.getKey(), opConf.getValue());
-    }
-
     ExecuteStatementOperation newExecOP;
     if ("set".equals(command)) {
       newExecOP = new SetOperation(parentSession, statement, confOverlay);
