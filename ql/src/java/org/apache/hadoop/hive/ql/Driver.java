@@ -448,6 +448,7 @@ public class Driver implements CommandProcessor {
       if (saHooks != null) {
         HiveSemanticAnalyzerHookContext hookCtx = new HiveSemanticAnalyzerHookContextImpl();
         hookCtx.setConf(conf);
+        hookCtx.setUserName(userName);
         for (AbstractSemanticAnalyzerHook hook : saHooks) {
           tree = hook.preAnalyze(hookCtx, tree);
         }
