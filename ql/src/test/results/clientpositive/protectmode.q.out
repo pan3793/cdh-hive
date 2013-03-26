@@ -111,18 +111,22 @@ POSTHOOK: type: ALTERTABLE_DROPPARTS
 POSTHOOK: Input: default@tbl2
 PREHOOK: query: select * from tbl2 where p='p1'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl2
 PREHOOK: Input: default@tbl2@p=p1
 #### A masked pattern was here ####
 POSTHOOK: query: select * from tbl2 where p='p1'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl2
 POSTHOOK: Input: default@tbl2@p=p1
 #### A masked pattern was here ####
 PREHOOK: query: select * from tbl2 where p='p2'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl2
 PREHOOK: Input: default@tbl2@p=p2
 #### A masked pattern was here ####
 POSTHOOK: query: select * from tbl2 where p='p2'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl2
 POSTHOOK: Input: default@tbl2@p=p2
 #### A masked pattern was here ####
 PREHOOK: query: alter table tbl2 partition (p='p1') enable offline
@@ -216,10 +220,12 @@ p	string
 #### A masked pattern was here ####
 PREHOOK: query: select * from tbl2 where p='p2'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl2
 PREHOOK: Input: default@tbl2@p=p2
 #### A masked pattern was here ####
 POSTHOOK: query: select * from tbl2 where p='p2'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl2
 POSTHOOK: Input: default@tbl2@p=p2
 #### A masked pattern was here ####
 PREHOOK: query: select col from tbl2 where p='p2'
@@ -251,10 +257,12 @@ p	string
 #### A masked pattern was here ####
 PREHOOK: query: select * from tbl2 where p='p1'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl2
 PREHOOK: Input: default@tbl2@p=p1
 #### A masked pattern was here ####
 POSTHOOK: query: select * from tbl2 where p='p1'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl2
 POSTHOOK: Input: default@tbl2@p=p1
 #### A masked pattern was here ####
 PREHOOK: query: select col from tbl2 where p='p1'
