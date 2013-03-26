@@ -106,6 +106,8 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
 
   protected static transient final Log LOG = LogFactory.getLog(ExecDriver.class);
 
+  private RunningJob rj;
+
   /**
    * Constructor when invoked from QL.
    */
@@ -357,7 +359,6 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
       initializeFiles("tmpfiles", addedFiles);
     }
     int returnVal = 0;
-    RunningJob rj = null;
     boolean noName = StringUtils.isEmpty(HiveConf.getVar(job, HiveConf.ConfVars.HADOOPJOBNAME));
 
     if (noName) {
@@ -986,5 +987,18 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
   @Override
   public void logPlanProgress(SessionState ss) throws IOException {
     ss.getHiveHistory().logPlanProgress(queryPlan);
+  }
+
+  @Override
+  public void shutdown() {
+    super.shutdown();
+    if (rj != null) {
+      try {
+        rj.killJob();
+      } catch (Exception e) {
+        LOG.warn("failed to kill job " + rj.getID(), e);
+      }
+      rj = null;
+    }
   }
 }
