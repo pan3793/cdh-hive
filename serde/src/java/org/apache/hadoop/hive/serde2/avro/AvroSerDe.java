@@ -60,8 +60,6 @@ public class AvroSerDe implements SerDe {
     if(configuration == null) {
       LOG.info("Configuration null, not inserting schema");
     } else {
-      // force output files to have a .avro extension
-      configuration.set("hive.output.file.extension", ".avro");
       configuration.set(AvroSerdeUtils.AVRO_SERDE_SCHEMA, schema.toString(false));
     }
 
