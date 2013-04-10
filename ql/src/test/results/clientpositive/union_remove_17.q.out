@@ -230,10 +230,12 @@ ds=1
 ds=2
 PREHOOK: query: select * from outputTbl1 where ds = '1' order by key, values
 PREHOOK: type: QUERY
+PREHOOK: Input: default@outputtbl1
 PREHOOK: Input: default@outputtbl1@ds=1
 #### A masked pattern was here ####
 POSTHOOK: query: select * from outputTbl1 where ds = '1' order by key, values
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@outputtbl1
 POSTHOOK: Input: default@outputtbl1@ds=1
 #### A masked pattern was here ####
 POSTHOOK: Lineage: outputtbl1 PARTITION(ds=1).key EXPRESSION [(inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), (inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), ]
@@ -248,10 +250,12 @@ POSTHOOK: Lineage: outputtbl1 PARTITION(ds=2).values EXPRESSION []
 8	1	1
 PREHOOK: query: select * from outputTbl1 where ds = '2' order by key, values
 PREHOOK: type: QUERY
+PREHOOK: Input: default@outputtbl1
 PREHOOK: Input: default@outputtbl1@ds=2
 #### A masked pattern was here ####
 POSTHOOK: query: select * from outputTbl1 where ds = '2' order by key, values
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@outputtbl1
 POSTHOOK: Input: default@outputtbl1@ds=2
 #### A masked pattern was here ####
 POSTHOOK: Lineage: outputtbl1 PARTITION(ds=1).key EXPRESSION [(inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), (inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), ]
