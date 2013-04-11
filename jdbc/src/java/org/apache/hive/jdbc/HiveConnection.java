@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -305,8 +306,14 @@ public class HiveConnection implements java.sql.Connection {
 
   public Statement createStatement(int resultSetType, int resultSetConcurrency)
       throws SQLException {
-    // TODO Auto-generated method stub
-    throw new SQLException("Method not supported");
+    if (resultSetConcurrency != ResultSet.CONCUR_READ_ONLY) {
+      throw new SQLException("Method not supported");
+    }
+    if (resultSetType == ResultSet.TYPE_SCROLL_SENSITIVE) {
+      throw new SQLException("Method not supported");
+    }
+    return new HiveStatement(client, sessHandle,
+        resultSetType == ResultSet.TYPE_SCROLL_INSENSITIVE);
   }
 
   /*

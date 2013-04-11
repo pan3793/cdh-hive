@@ -19,6 +19,7 @@
 package org.apache.hive.service.cli.operation;
 
 import java.sql.DatabaseMetaData;
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.apache.hadoop.hive.ql.exec.FunctionInfo;
@@ -115,6 +116,11 @@ public class GetFunctionsOperation extends MetadataOperation {
   @Override
   public RowSet getNextRowSet(FetchOrientation orientation, long maxRows) throws HiveSQLException {
     assertState(OperationState.FINISHED);
+    validateFetchOrientation(orientation,
+        EnumSet.of(FetchOrientation.FETCH_NEXT,FetchOrientation.FETCH_FIRST));
+    if (orientation.equals(FetchOrientation.FETCH_FIRST)) {
+      rowSet.setStartOffset(0);
+    }
     return rowSet.extractSubset((int)maxRows);
   }
 }

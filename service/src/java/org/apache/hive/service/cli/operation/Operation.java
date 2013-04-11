@@ -17,6 +17,8 @@
  */
 package org.apache.hive.service.cli.operation;
 
+import java.util.EnumSet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -142,5 +144,22 @@ public abstract class Operation {
 
   public RowSet getNextRowSet() throws HiveSQLException {
     return getNextRowSet(FetchOrientation.FETCH_NEXT, DEFAULT_FETCH_MAX_ROWS);
+  }
+
+  /**
+   * Verify if the given fetch orientation is part of the supported orientation types.
+   * @param orientation
+   * @param supportedOrientations
+   * @throws HiveSQLException
+   */
+  public void validateFetchOrientation(FetchOrientation orientation,
+      EnumSet<FetchOrientation> supportedOrientations) throws HiveSQLException {
+    for (FetchOrientation supportedOrientation : supportedOrientations) {
+      if (supportedOrientation.equals(orientation)) {
+        return; // found the match
+      }
+    }
+    throw new HiveSQLException("The fetch type " + orientation.toString() +
+        " is not supported for this resultset", "HY106");
   }
 }

@@ -21,6 +21,7 @@ package org.apache.hive.service.cli.operation;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -62,6 +63,7 @@ public class SQLOperation extends ExecuteStatementOperation {
   private SerDe serde = null;
   private boolean isPrepared = false;
   private String subStatement = null;
+  private boolean fetchStarted = false;
 
   public SQLOperation(HiveSession parentSession, String statement, Map<String, String> confOverlay) {
     // TODO: call setRemoteUser in ExecuteStatementOperation or higher.
@@ -167,10 +169,19 @@ public class SQLOperation extends ExecuteStatementOperation {
   @Override
   public RowSet getNextRowSet(FetchOrientation orientation, long maxRows) throws HiveSQLException {
     assertState(OperationState.FINISHED);
+    validateFetchOrientation(orientation,
+        EnumSet.of(FetchOrientation.FETCH_NEXT,FetchOrientation.FETCH_FIRST));
     ArrayList<String> rows = new ArrayList<String>();
     driver.setMaxRows((int)maxRows);
 
     try {
+      /* if client is requesting fetch-from-start and its not the first time reading from this operation
+       * then reset the fetch position to beginging
+       */
+      if (orientation.equals(FetchOrientation.FETCH_FIRST) && fetchStarted) {
+        driver.resetFetch();
+      }
+      fetchStarted = true;
       driver.getResults(rows);
 
       getSerDe();

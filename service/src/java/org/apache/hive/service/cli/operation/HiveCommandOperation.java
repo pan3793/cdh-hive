@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -143,6 +144,7 @@ public abstract class HiveCommandOperation extends ExecuteStatementOperation {
     for (String row : rows) {
       rowSet.addRow(resultSchema, new String[] {row});
     }
+    validateFetchOrientation(orientation, EnumSet.of(FetchOrientation.FETCH_NEXT));
     return rowSet;
   }
 

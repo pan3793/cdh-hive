@@ -31,8 +31,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1280,6 +1282,103 @@ public class TestJdbcDriver2 extends TestCase {
     ResultSetMetaData md = res.getMetaData();
     assertEquals(md.getColumnCount(), 14);
     assertFalse(res.next());
+  }
+
+  /**
+   * Test the cursor repositioning to start of resultset
+   * @throws Exception
+   */
+  public void testFetchFirstQuery() throws Exception {
+    execFetchFirst("select c1 from " + dataTypeTableName + " order by c1", false);
+    execFetchFirst("select c1 from " + dataTypeTableName + " order by c1", true);
+  }
+
+  public void testFetchFirstNonMR() throws Exception {
+    execFetchFirst("select * from " + dataTypeTableName, false);
+  }
+
+  /**
+   * Read the results locally. Then reset the read position to start and read the rows again
+   * verify that we get the same results next time.
+   * @param sqlStmt
+   * @param oneRowOnly
+   * @throws Exception
+   */
+  private void execFetchFirst(String sqlStmt, boolean oneRowOnly) throws Exception {
+    Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+          ResultSet.CONCUR_READ_ONLY);
+    ResultSet res = stmt.executeQuery(sqlStmt);
+
+    List<Integer> results = new ArrayList<Integer> ();
+    assertTrue(res.isBeforeFirst());
+    int rowNum = 0;
+    while (res.next()) {
+      results.add(res.getInt(1));
+      assertEquals(++rowNum, res.getRow());
+      assertFalse(res.isBeforeFirst());
+      if (oneRowOnly) {
+        break;
+      }
+    }
+    // reposition at the begining
+    res.beforeFirst();
+    assertTrue(res.isBeforeFirst());
+    rowNum = 0;
+    while (res.next()) {
+      // compare the results fetched last time
+      assertEquals(results.get(rowNum++).intValue(), res.getInt(1));
+      assertEquals(rowNum, res.getRow());
+      assertFalse(res.isBeforeFirst());
+      if (oneRowOnly) {
+        break;
+      }
+    }
+  }
+
+  public void testFetchFirstCmdsNeg() throws Exception {
+    // verify that fetch_first is not supported
+    Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_READ_ONLY);
+    ResultSet res = stmt.executeQuery("set -v");
+    res.next();
+    res.beforeFirst();
+    try {
+      res.next();
+      assertTrue("fetch_first should fail", false);
+    } catch (SQLException e) {
+      // cmd processor does support fetch first at this point
+      assertEquals("HY106", e.getSQLState());
+    }
+  }
+
+  public void testUnsupportedFetchTypes() throws Exception {
+    Statement stmt;
+    try {
+      stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+        ResultSet.CONCUR_READ_ONLY);
+      assertTrue("createStatement with TYPE_SCROLL_SENSITIVE should fail", false);
+    } catch(SQLException e) {
+      assertEquals("Method not supported", e.getMessage());
+    }
+
+    try {
+      stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_UPDATABLE);
+      assertTrue("createStatement with CONCUR_UPDATABLE should fail", false);
+    } catch(SQLException e) {
+      assertEquals("Method not supported", e.getMessage());
+    }
+  }
+
+  public void testFetchFirstError() throws Exception {
+    Statement stmt = con.createStatement();
+    ResultSet res = stmt.executeQuery("select * from " + tableName);
+    try {
+      res.beforeFirst();
+      assertTrue("beforeFirst() should fail for normal resultset", false);
+    } catch (SQLException e) {
+      assertEquals("Method not supported for TYPE_FORWARD_ONLY resultset", e.getMessage());
+    }
   }
 
   /**
