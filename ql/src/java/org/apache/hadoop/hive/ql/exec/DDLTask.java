@@ -151,6 +151,7 @@ import org.apache.hadoop.hive.ql.plan.SwitchDatabaseDesc;
 import org.apache.hadoop.hive.ql.plan.UnlockTableDesc;
 import org.apache.hadoop.hive.ql.plan.api.StageType;
 import org.apache.hadoop.hive.ql.security.authorization.Privilege;
+import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.Deserializer;
 import org.apache.hadoop.hive.serde2.MetadataTypedColumnsetSerDe;
@@ -3517,6 +3518,10 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       throw new HiveException("ERROR: The database " + dbName + " does not exist.");
     }
     db.setCurrentDatabase(dbName);
+    SessionState session = SessionState.get();
+    if (session != null) {
+      session.setCurrentDB(dbName);
+    }
 
     // set database specific parameters
     Database database = db.getDatabase(dbName);

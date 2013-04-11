@@ -44,6 +44,7 @@ import org.apache.hadoop.hive.ql.MapRedStats;
 import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.history.HiveHistory;
+import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.HiveUtils;
 import org.apache.hadoop.hive.ql.plan.HiveOperation;
@@ -132,6 +133,8 @@ public class SessionState {
    * Lineage state.
    */
   LineageState ls;
+
+  private String currentDB;
 
   /**
    * Get the lineage state stored in this session.
@@ -257,6 +260,9 @@ public class SessionState {
 
     tss.set(startSs);
 
+    HiveConf conf = startSs.getConf();
+    Thread.currentThread().setContextClassLoader(conf.getClassLoader());
+
     if (StringUtils.isEmpty(startSs.getConf().getVar(
         HiveConf.ConfVars.HIVESESSIONID))) {
       startSs.getConf()
@@ -282,6 +288,9 @@ public class SessionState {
     }
 
     try {
+      Hive hive = Hive.get(startSs.getConf());
+      hive.setCurrentDatabase(startSs.getCurrentDB());
+
       startSs.authenticator = HiveUtils.getAuthenticator(
           startSs.getConf(),HiveConf.ConfVars.HIVE_AUTHENTICATOR_MANAGER);
       startSs.authorizer = HiveUtils.getAuthorizeProviderManager(
@@ -321,6 +330,14 @@ public class SessionState {
         + String.format("%1$4d%2$02d%3$02d%4$02d%5$02d", gc.get(Calendar.YEAR),
         gc.get(Calendar.MONTH) + 1, gc.get(Calendar.DAY_OF_MONTH), gc
         .get(Calendar.HOUR_OF_DAY), gc.get(Calendar.MINUTE));
+  }
+
+  public String getCurrentDB() {
+    return currentDB;
+  }
+
+  public void setCurrentDB(String currentDB) {
+    this.currentDB = currentDB;
   }
 
   /**
