@@ -18,13 +18,8 @@
 
 package org.apache.hadoop.hive.ql.parse;
 
-import static org.apache.hadoop.hive.ql.parse.HiveParser.TOK_CASCADE;
-import static org.apache.hadoop.hive.ql.parse.HiveParser.TOK_DATABASECOMMENT;
 import static org.apache.hadoop.hive.ql.parse.HiveParser.TOK_DATABASELOCATION;
 import static org.apache.hadoop.hive.ql.parse.HiveParser.TOK_DATABASEPROPERTIES;
-import static org.apache.hadoop.hive.ql.parse.HiveParser.TOK_IFEXISTS;
-import static org.apache.hadoop.hive.ql.parse.HiveParser.TOK_IFNOTEXISTS;
-import static org.apache.hadoop.hive.ql.parse.HiveParser.TOK_SHOWDATABASES;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -687,7 +682,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     if (dbProps != null) {
       createDatabaseDesc.setDatabaseProperties(dbProps);
     }
-
+    saveInputLocationEntity(dbLocation);
     rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
         createDatabaseDesc), conf));
   }
@@ -819,6 +814,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
         shared.serde, shared.serdeProps, rowFormatParams.collItemDelim,
         rowFormatParams.fieldDelim, rowFormatParams.fieldEscape,
         rowFormatParams.lineDelim, rowFormatParams.mapKeyDelim, indexComment);
+    saveInputLocationEntity(location);
     Task<?> createIndex =
         TaskFactory.get(new DDLWork(getInputs(), getOutputs(), crtIndexDesc), conf);
     rootTasks.add(createIndex);
@@ -1154,6 +1150,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     AlterTableDesc alterTblDesc = new AlterTableDesc(tableName, newLocation, partSpec);
 
     addInputsOutputsAlterTable(tableName, partSpec, alterTblDesc);
+    saveInputLocationEntity(newLocation);
     rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
         alterTblDesc), conf));
   }
@@ -2319,6 +2316,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     // add the last one
     if (currentPart != null) {
       validatePartitionValues(currentPart);
+      saveInputLocationEntity(currentLocation);
       AddPartitionDesc addPartitionDesc = new AddPartitionDesc(
           db.getCurrentDatabase(), tblName, currentPart,
           currentLocation, ifNotExists, expectView);
@@ -2969,6 +2967,13 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
       }
     } catch (URISyntaxException e) {
       throw new SemanticException(e);
+    }
+  }
+
+  private void saveInputLocationEntity(String location) {
+    if (conf.getBoolVar(ConfVars.HIVE_ENITITY_CAPTURE_INPUT_URI) &&
+        (location != null)) {
+      inputs.add(new ReadEntity(location));
     }
   }
 

@@ -8764,6 +8764,10 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
     }
 
+    if (conf.getBoolVar(ConfVars.HIVE_ENITITY_CAPTURE_INPUT_URI) &&
+          (location != null)) {
+      inputs.add(new ReadEntity(location));
+    }
     // Handle different types of CREATE TABLE command
     CreateTableDesc crtTblDesc = null;
     switch (command_type) {

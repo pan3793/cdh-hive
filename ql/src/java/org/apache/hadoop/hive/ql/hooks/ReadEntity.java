@@ -87,6 +87,23 @@ public class ReadEntity extends Entity implements Serializable {
   }
 
   /**
+   * Constructor for URI readentity
+   * @param path
+   * @param isLocal
+   */
+  public ReadEntity (String path, boolean isLocal) {
+    super(path, isLocal);
+  }
+
+  /**
+   * Constructor for URI readentity
+   * @param path
+   */
+  public ReadEntity (String path) {
+    super(path, false);
+  }
+
+  /**
    * Equals function.
    */
   @Override

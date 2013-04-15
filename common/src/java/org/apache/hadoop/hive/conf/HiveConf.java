@@ -677,6 +677,7 @@ public class HiveConf extends Configuration {
     HIVE_DRIVER_RUN_HOOKS("hive.exec.driver.run.hooks", ""),
     HIVE_DDL_OUTPUT_FORMAT("hive.ddl.output.format", null),
     HIVE_ENTITY_SEPARATOR("hive.entity.separator", "@"),
+    HIVE_ENITITY_CAPTURE_INPUT_URI("hive.entity.capture.input.URI", false),
 
     HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS("hive.server2.thrift.min.worker.threads", 5),
     HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS("hive.server2.thrift.max.worker.threads", 100),
