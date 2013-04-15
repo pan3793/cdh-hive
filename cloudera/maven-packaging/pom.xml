@@ -58,6 +58,7 @@
   <modules>
     <module>../../cloudera-pom.xml</module>
     <module>hive-anttasks</module>
+    <module>hive-beeline</module>
     <module>hive-builtins</module>
     <module>hive-cli</module>
     <module>hive-common</module>
