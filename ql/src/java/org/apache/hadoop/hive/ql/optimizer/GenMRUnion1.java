@@ -286,6 +286,9 @@ public class GenMRUnion1 implements NodeProcessor {
     if (uPrsCtx.getMapOnlySubq(pos)
         && !uPrsCtx.getMapJoinSubq(pos) && uPrsCtx.getRootTask(pos)) {
       processSubQueryUnionMerge(ctx, uCtxTask, union, stack);
+      if (ctx.getRootTasks().contains(currTask)) {
+        ctx.getRootTasks().remove(currTask);
+      }
     }
     // If it a map-reduce job, create a temporary file
     else {
