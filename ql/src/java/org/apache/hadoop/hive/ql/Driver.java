@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -135,6 +136,7 @@ public class Driver implements CommandProcessor {
   // transport is derived from TSocket
   private String ipAddress;
   private String userName;  // username for the currently executing statement
+  private HiveOperation hiveOperation;
 
   private boolean checkLockManager() {
     boolean supportConcurrency = conf.getBoolVar(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY);
@@ -465,6 +467,8 @@ public class Driver implements CommandProcessor {
 
       // validate the plan
       sem.validate();
+
+      hiveOperation = SessionState.get().getHiveOperation();
 
       plan = new QueryPlan(command, sem, perfLogger.getStartTime(PerfLogger.DRIVER_RUN),
            SessionState.get().getCommandType());
@@ -1416,11 +1420,47 @@ public class Driver implements CommandProcessor {
     }
   }
 
+  private boolean isExecMetadataLookup(HiveOperation hiveOperation) {
+    String[] commands = {"SHOWDATABASES", "SHOWTABLES"};
+    return Arrays.binarySearch(commands, hiveOperation.getOperationName().toUpperCase()) >=0 ;
+  }
+
+  private void fireFilterHooks(List<String> res) throws CommandNeedRetryException {
+    List<HiveDriverFilterHook> filterHooks = null;
+
+    // Invoke filter hooks if a) any specified and b) operation is a metadata operation
+    try {
+      filterHooks = getHooks(HiveConf.ConfVars.HIVE_EXEC_FILTER_HOOK,
+                   HiveDriverFilterHook.class);
+      if (res != null && !res.isEmpty() &&
+           filterHooks != null && !filterHooks.isEmpty() &&
+             isExecMetadataLookup(hiveOperation)) {
+        HiveDriverFilterHookContext hookCtx = new HiveDriverFilterHookContextImpl(conf,
+                                                  hiveOperation, userName, res);
+        HiveDriverFilterHookResult hookResult;
+        for (HiveDriverFilterHook hook : filterHooks) {
+          // result set 'res' is passed to the filter hooks. The filter hooks shouldn't mutate res
+          // directly. They should return a filtered result set instead.
+          hookResult = hook.postDriverFetch(hookCtx);
+          // pass the filtered result set back to the client
+          res.clear();
+          List<String> filteredValues = hookResult.getResult();
+          res.addAll(filteredValues);
+        }
+      }
+    } catch (Exception e) {
+       throw new CommandNeedRetryException(e);
+    }
+
+  }
+
   public boolean getResults(ArrayList<String> res) throws IOException, CommandNeedRetryException {
     if (plan != null && plan.getFetchTask() != null) {
       FetchTask ft = plan.getFetchTask();
       ft.setMaxRows(maxRows);
-      return ft.fetch(res);
+      boolean ret = ft.fetch(res);
+      fireFilterHooks(res);
+      return ret;
     }
 
     if (resStream == null) {
@@ -1462,6 +1502,7 @@ public class Driver implements CommandProcessor {
         return false;
       }
 
+      fireFilterHooks(res);
       if (ss == Utilities.StreamStatus.EOF) {
         resStream = ctx.getStream();
       }
