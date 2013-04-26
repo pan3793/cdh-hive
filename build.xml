@@ -85,6 +85,7 @@
   <property name="checkstyle.build.dir" location="${build.dir.hive}/checkstyle"/>
   <property name="rat.build.dir" location="${build.dir.hive}/rat"/>
   <property name="md5sum.format" value="{0}  {1}"/>
+  <property name="test.e2e.dir" value="${basedir}/e2e"/>
 
   <!-- Ignore Postgres upgrade scripts unless 'include.postgres' is true -->
   <condition property="metastore.excludes"
@@ -966,6 +967,34 @@
     <available property="checkstyle.present" resource="checkstyletask.properties">
       <classpath refid="checkstyle-classpath"/>
     </available>
+  </target>
+
+  <!-- ================================================================== -->
+  <!-- test-e2e                                                         -->
+  <!-- ================================================================== -->
+
+  <target name="test-e2e-deploy">
+    <ant dir="${test.e2e.dir}" target="deploy"/>
+  </target>
+
+  <target name="test-e2e-deploy-local">
+    <ant dir="${test.e2e.dir}" target="deploy-local"/>
+  </target>
+
+  <target name="test-e2e-undeploy">
+    <ant dir="${test.e2e.dir}" target="undeploy"/>
+  </target>
+
+  <target name="test-e2e-undeploy-local">
+    <ant dir="${test.e2e.dir}" target="undeploy-local"/>
+  </target>
+
+  <target name="test-e2e-test">
+    <ant dir="${test.e2e.dir}" target="test"/>
+  </target>
+
+  <target name="test-e2e-test-local">
+    <ant dir="${test.e2e.dir}" target="test-local"/>
   </target>
 
   <!-- ================================================================== -->
