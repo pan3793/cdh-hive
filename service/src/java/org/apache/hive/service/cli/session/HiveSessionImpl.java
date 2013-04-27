@@ -18,13 +18,13 @@
 
 package org.apache.hive.service.cli.session;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -75,6 +75,7 @@ public class HiveSessionImpl implements HiveSession {
   private LogManager logManager;
   private IMetaStoreClient metastoreClient = null;
   private String ipAddress;
+  private final Set<OperationHandle> opHandleSet = new HashSet<OperationHandle>();
 
   public HiveSessionImpl(String username, String password, Map<String, String> sessionConf, String ipAddress) {
     this.username = username;
@@ -195,6 +196,7 @@ public class HiveSessionImpl implements HiveSession {
 
       // unregister the current thread after capturing the log
       getLogManager().unregisterCurrentThread();
+      opHandleSet.add(operationHandle);
       return operationHandle;
     } finally {
       release();
@@ -216,6 +218,7 @@ public class HiveSessionImpl implements HiveSession {
 
       // unregister the current thread after capturing the log
       getLogManager().unregisterCurrentThread();
+      opHandleSet.add(operationHandle);
       return operationHandle;
     } finally {
       release();
@@ -236,6 +239,7 @@ public class HiveSessionImpl implements HiveSession {
 
       // unregister the current thread after capturing the log
       getLogManager().unregisterCurrentThread();
+      opHandleSet.add(operationHandle);
       return operationHandle;
     } finally {
       release();
@@ -258,6 +262,7 @@ public class HiveSessionImpl implements HiveSession {
 
       // unregister the current thread after capturing the log
       getLogManager().unregisterCurrentThread();
+      opHandleSet.add(operationHandle);
       return operationHandle;
     } finally {
       release();
@@ -280,6 +285,7 @@ public class HiveSessionImpl implements HiveSession {
 
       // unregister the current thread after capturing the log
       getLogManager().unregisterCurrentThread();
+      opHandleSet.add(operationHandle);
       return operationHandle;
     } finally {
      release();
@@ -297,6 +303,7 @@ public class HiveSessionImpl implements HiveSession {
       operation.run();
       // unregister the current thread after capturing the log
       getLogManager().unregisterCurrentThread();
+      opHandleSet.add(operationHandle);
       return operationHandle;
     } finally {
       release();
@@ -305,7 +312,7 @@ public class HiveSessionImpl implements HiveSession {
 
   public OperationHandle getColumns(String catalogName, String schemaName,
       String tableName, String columnName)  throws HiveSQLException {
-        OperationHandle operationHandle;
+    OperationHandle operationHandle;
     acquire();
     try {
     GetColumnsOperation operation = getOperationManager().newGetColumnsOperation(this,
@@ -317,6 +324,7 @@ public class HiveSessionImpl implements HiveSession {
 
     // unregister the current thread after capturing the log
     getLogManager().unregisterCurrentThread();
+    opHandleSet.add(operationHandle);
     return operationHandle;
     } finally {
       release();
@@ -337,6 +345,7 @@ public class HiveSessionImpl implements HiveSession {
 
       // unregister the current thread after capturing the log
       getLogManager().unregisterCurrentThread();
+      opHandleSet.add(operationHandle);
       return operationHandle;
     } finally {
       release();
@@ -354,11 +363,17 @@ public class HiveSessionImpl implements HiveSession {
       if (metastoreClient != null) {
         metastoreClient.close();
       }
+
+      // Iterate through the opHandles and close their operations
+      for (OperationHandle opHandle : opHandleSet) {
+        operationManager.closeOperation(opHandle);
+      }
+      opHandleSet.clear();
       sessionState.close();
-      release();
     } catch (IOException ioe) {
-      release();
       throw new HiveSQLException("Failure to close", ioe);
+    } finally {
+      release();
     }
   }
 
@@ -395,7 +410,8 @@ public class HiveSessionImpl implements HiveSession {
   public void closeOperation(OperationHandle opHandle) throws HiveSQLException {
     acquire();
     try {
-      sessionManager.getOperationManager().closeOperation(opHandle);
+      operationManager.closeOperation(opHandle);
+      opHandleSet.remove(opHandle);
     } finally {
       release();
     }
