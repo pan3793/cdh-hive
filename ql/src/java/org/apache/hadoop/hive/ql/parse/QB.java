@@ -51,6 +51,7 @@ public class QB {
   private boolean isQuery;
   private boolean isAnalyzeRewrite;
   private CreateTableDesc tblDesc = null; // table descriptor of the final
+  private CreateTableDesc localDirectoryDesc = null ;
 
   // results
 
@@ -200,6 +201,14 @@ public class QB {
 
   public void setTableDesc(CreateTableDesc desc) {
     tblDesc = desc;
+  }
+
+  public CreateTableDesc getLLocalDirectoryDesc() {
+    return localDirectoryDesc;
+  }
+
+  public void setLocalDirectoryDesc(CreateTableDesc localDirectoryDesc) {
+    this.localDirectoryDesc = localDirectoryDesc;
   }
 
   /**
