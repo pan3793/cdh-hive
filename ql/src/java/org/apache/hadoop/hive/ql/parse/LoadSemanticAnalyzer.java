@@ -191,7 +191,7 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
       throw new SemanticException(ErrorMsg.INVALID_PATH.getMsg(fromTree, e
           .getMessage()), e);
     }
-    if (conf.getBoolVar(ConfVars.HIVE_ENITITY_CAPTURE_INPUT_URI)) {
+    if (conf.getBoolVar(ConfVars.HIVE_EXTENDED_ENITITY_CAPTURE)) {
       inputs.add(new ReadEntity(fromURI.toString(), isLocal));
     }
 

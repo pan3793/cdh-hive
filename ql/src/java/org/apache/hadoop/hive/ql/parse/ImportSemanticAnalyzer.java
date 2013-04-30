@@ -267,7 +267,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
           }
         }
         rootTasks.add(t);
-        if (conf.getBoolVar(ConfVars.HIVE_ENITITY_CAPTURE_INPUT_URI)) {
+        if (conf.getBoolVar(ConfVars.HIVE_EXTENDED_ENITITY_CAPTURE)) {
           inputs.add(new ReadEntity(fromURI.toString(), "hdfs".equals(fromURI.getScheme())));
         }
       }

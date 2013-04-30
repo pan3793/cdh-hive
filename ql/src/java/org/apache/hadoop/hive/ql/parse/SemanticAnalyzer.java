@@ -8764,7 +8764,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
     }
 
-    if (conf.getBoolVar(ConfVars.HIVE_ENITITY_CAPTURE_INPUT_URI) &&
+    if (conf.getBoolVar(ConfVars.HIVE_EXTENDED_ENITITY_CAPTURE) &&
           (location != null)) {
       inputs.add(new ReadEntity(location));
     }
