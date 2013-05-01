@@ -62,6 +62,9 @@ to call at top-level: ant deploy-contrib compile-core-test
      debug="${javac.debug}"
      deprecation="${javac.deprecation}"
      srcdir="${sources}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
+     bootclasspath="${javaBootClasspath}"
      includeantruntime="false">
       <compilerarg line="${javac.args} ${javac.args.warnings}" />
       <classpath refid="shims.classpath"/>

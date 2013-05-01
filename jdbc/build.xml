@@ -43,6 +43,7 @@
 
   <target name="compile" depends="init,ivy-retrieve">
     <echo message="Project: ${ant.project.name}"/>
+    <echo message="JDK source: ${sourceJavaVersion}, target: ${targetJavaVersion}, bootclasspath: ${javaBootClasspath}"/>
     <javac
         encoding="${build.encoding}"
         srcdir="${src.dir}/java"
@@ -50,6 +51,9 @@
         destdir="${build.classes}"
         debug="${javac.debug}"
         deprecation="${javac.deprecation}"
+        bootclasspath="${javaBootClasspath}"
+        source="${sourceJavaVersion}"
+        target="${targetJavaVersion}"
         includeantruntime="false"
         >
       <classpath refid="classpath"/>

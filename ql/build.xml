@@ -179,6 +179,9 @@
      includes="**/*.java"
      destdir="${build.classes}"
      debug="${javac.debug}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
+     bootclasspath="${javaBootClasspath}"
      deprecation="${javac.deprecation}"
      includeantruntime="false">
       <compilerarg line="${javac.args} ${javac.args.warnings}" />

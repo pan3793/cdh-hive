@@ -35,6 +35,9 @@ to call at top-level: ant deploy-contrib compile-core-test
      includes="**/*.java"
      destdir="${build.classes}"
      debug="${javac.debug}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
+     bootclasspath="${javaBootClasspath}"
      deprecation="${javac.deprecation}">
       <compilerarg line="${javac.args} ${javac.args.warnings}" />
       <classpath refid="classpath"/>

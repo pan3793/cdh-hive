@@ -51,6 +51,9 @@
      destdir="${build.classes}"
      debug="${javac.debug}"
      deprecation="${javac.deprecation}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
+     bootclasspath="${javaBootClasspath}"
      includeantruntime="false">
       <classpath refid="classpath"/>
     </javac>
@@ -66,6 +69,9 @@
         srcdir="${model.dir}"
         destdir="${build.classes}"
         debug="${javac.debug}"
+        source="${sourceJavaVersion}"
+        target="${targetJavaVersion}"
+        bootclasspath="${javaBootClasspath}"
         includeantruntime="false">
        <classpath refid="classpath"/>
     </javac>
