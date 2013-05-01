@@ -28,14 +28,16 @@ public class HiveDriverFilterHookContextImpl implements HiveDriverFilterHookCont
   private Configuration conf;
   private final HiveOperation hiveOperation;
   private final String userName;
-  private final List<String> result;
+  private List<String> result;
+  private final String dbName;
 
   public HiveDriverFilterHookContextImpl(Configuration conf, HiveOperation hiveOperation,
-    String userName, List<String> result) {
+    String userName, List<String> result, String dbName) {
     this.conf = conf;
     this.hiveOperation = hiveOperation;
     this.userName = userName;
     this.result = result;
+    this.dbName = dbName;
   }
 
   @Override
@@ -57,6 +59,14 @@ public class HiveDriverFilterHookContextImpl implements HiveDriverFilterHookCont
 
   public void setConf(Configuration conf) {
     this.conf = conf;
+  }
+
+  public String getDbName() {
+    return dbName;
+  }
+
+  public void setResult(List<String> result) {
+    this.result = result;
   }
 
 }

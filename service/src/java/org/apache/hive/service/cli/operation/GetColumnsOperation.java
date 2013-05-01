@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.ql.metadata.Hive;
+import org.apache.hadoop.hive.ql.plan.HiveOperation;
 import org.apache.hive.service.cli.ColumnDescriptor;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -130,11 +132,14 @@ public class GetColumnsOperation extends MetadataOperation {
       }
 
       List<String> dbNames = metastoreClient.getDatabases(schemaPattern);
-      Collections.sort(dbNames);
-      for (String dbName : dbNames) {
+      String currentDbName = Hive.get().getCurrentDatabase();
+      List<String> filteredDbNames = filterResultSet(dbNames, HiveOperation.SHOWDATABASES, currentDbName);
+      Collections.sort(filteredDbNames);
+      for (String dbName : filteredDbNames) {
         List<String> tableNames = metastoreClient.getTables(dbName, tablePattern);
-        Collections.sort(tableNames);
-        for (Table table : metastoreClient.getTableObjectsByName(dbName, tableNames)) {
+        List<String> filteredTableNames = filterResultSet(tableNames, HiveOperation.SHOWTABLES, dbName);
+        Collections.sort(filteredTableNames);
+        for (Table table : metastoreClient.getTableObjectsByName(dbName, filteredTableNames)) {
           TableSchema schema = new TableSchema(metastoreClient.getSchema(dbName, table.getTableName()));
           for (ColumnDescriptor column : schema.getColumnDescriptors()) {
             if (columnPattern != null && !columnPattern.matcher(column.getName()).matches()) {

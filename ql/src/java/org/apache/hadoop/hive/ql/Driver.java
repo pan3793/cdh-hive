@@ -1435,18 +1435,22 @@ public class Driver implements CommandProcessor {
       if (res != null && !res.isEmpty() &&
            filterHooks != null && !filterHooks.isEmpty() &&
              isExecMetadataLookup(hiveOperation)) {
+        String currentDbName = Hive.get().getCurrentDatabase();
         HiveDriverFilterHookContext hookCtx = new HiveDriverFilterHookContextImpl(conf,
-                                                  hiveOperation, userName, res);
+                                                  hiveOperation, userName, res, currentDbName);
         HiveDriverFilterHookResult hookResult;
+        List<String> filteredValues = null;
         for (HiveDriverFilterHook hook : filterHooks) {
           // result set 'res' is passed to the filter hooks. The filter hooks shouldn't mutate res
           // directly. They should return a filtered result set instead.
           hookResult = hook.postDriverFetch(hookCtx);
           // pass the filtered result set back to the client
-          res.clear();
-          List<String> filteredValues = hookResult.getResult();
-          res.addAll(filteredValues);
+          filteredValues = hookResult.getResult();
+          ((HiveDriverFilterHookContextImpl)hookCtx).setResult(filteredValues);
+
         }
+        res.clear();
+        res.addAll(filteredValues);
       }
     } catch (Exception e) {
        throw new CommandNeedRetryException(e);

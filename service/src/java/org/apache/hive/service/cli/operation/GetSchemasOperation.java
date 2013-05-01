@@ -19,8 +19,11 @@
 package org.apache.hive.service.cli.operation;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+import org.apache.hadoop.hive.ql.metadata.Hive;
+import org.apache.hadoop.hive.ql.plan.HiveOperation;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationState;
@@ -60,7 +63,14 @@ public class GetSchemasOperation extends MetadataOperation {
     try {
       IMetaStoreClient metastoreClient = getParentSession().getMetaStoreClient();
       String schemaPattern = convertSchemaPattern(schemaName);
-      for (String dbName : metastoreClient.getDatabases(schemaPattern)) {
+      List<String > dbNames = metastoreClient.getDatabases(schemaPattern);
+
+      // filter the list of dbnames
+      HiveOperation hiveOperation = HiveOperation.SHOWDATABASES;
+      String currentDbName = Hive.get().getCurrentDatabase();
+      List<String> filteredDbNames = filterResultSet(dbNames, hiveOperation, currentDbName);
+
+      for (String dbName : filteredDbNames) {
         rowSet.addRow(RESULT_SET_SCHEMA, new Object[] {dbName, DEFAULT_HIVE_CATALOG});
       }
       setState(OperationState.FINISHED);

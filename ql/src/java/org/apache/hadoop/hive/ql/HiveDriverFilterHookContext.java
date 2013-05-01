@@ -31,4 +31,5 @@ public interface HiveDriverFilterHookContext extends Configurable{
   public HiveOperation getHiveOperation ();
   public String getUserName();
   public List<String> getResult();
+  public String getDbName();
 }
