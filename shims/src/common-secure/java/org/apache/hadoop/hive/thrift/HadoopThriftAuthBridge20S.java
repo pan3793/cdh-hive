@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hive.thrift;
 
+import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_SECURITY_AUTHENTICATION;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -40,14 +42,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.Client;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hive.thrift.client.TUGIAssumingTransport;
 import org.apache.hadoop.security.SaslRpcServer;
 import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.UserGroupInformation.AuthenticationMethod;
+import org.apache.hadoop.security.authentication.util.KerberosName;
 import org.apache.hadoop.security.authorize.AuthorizationException;
 import org.apache.hadoop.security.authorize.ProxyUsers;
 import org.apache.hadoop.security.token.SecretManager.InvalidToken;
@@ -63,8 +64,6 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.apache.thrift.transport.TTransportFactory;
-
-import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHENTICATION;
 
  /**
   * Functions that bridge Thrift's SASL transports to Hadoop's
@@ -428,7 +427,7 @@ import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHE
      public String getRemoteUser() {
        return remoteUser.get();
      }
-     
+
     /** CallbackHandler for SASL DIGEST-MD5 mechanism */
     // This code is pretty much completely based on Hadoop's
     // SaslRpcServer.SaslDigestCallbackHandler - the only reason we could not
@@ -561,7 +560,14 @@ import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHE
                  }
                });
            } else {
-             remoteUser.set(endUser);
+             // check for kerberos v5
+             if ("GSSAPI".equalsIgnoreCase(saslServer.getMechanismName())) {
+               KerberosName kerberosName = new KerberosName(endUser);
+               String shortName = kerberosName.getShortName();
+               remoteUser.set(shortName);
+             } else {
+               remoteUser.set(endUser);
+             }
              return wrapped.process(inProt, outProt);
            }
          } catch (RuntimeException rte) {
