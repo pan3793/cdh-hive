@@ -43,6 +43,7 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
+import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.udf.UDAFPercentile;
 import org.apache.hadoop.hive.ql.udf.UDFAbs;
 import org.apache.hadoop.hive.ql.udf.UDFAcos;
@@ -504,7 +505,7 @@ public final class FunctionRegistry {
     if (UDF.class.isAssignableFrom(UDFClass)) {
       FunctionInfo fI = new FunctionInfo(isNative, displayName,
           new GenericUDFBridge(displayName, isOperator, UDFClass));
-      mFunctions.put(functionName.toLowerCase(), fI);
+      getFunctionRegistry().put(functionName.toLowerCase(), fI);
     } else {
       throw new RuntimeException("Registering UDF Class " + UDFClass
           + " which does not extend " + UDF.class);
@@ -526,7 +527,7 @@ public final class FunctionRegistry {
     if (GenericUDF.class.isAssignableFrom(genericUDFClass)) {
       FunctionInfo fI = new FunctionInfo(isNative, functionName,
           (GenericUDF) ReflectionUtils.newInstance(genericUDFClass, null));
-      mFunctions.put(functionName.toLowerCase(), fI);
+      getFunctionRegistry().put(functionName.toLowerCase(), fI);
     } else {
       throw new RuntimeException("Registering GenericUDF Class "
           + genericUDFClass + " which does not extend " + GenericUDF.class);
@@ -548,7 +549,7 @@ public final class FunctionRegistry {
     if (GenericUDTF.class.isAssignableFrom(genericUDTFClass)) {
       FunctionInfo fI = new FunctionInfo(isNative, functionName,
           (GenericUDTF) ReflectionUtils.newInstance(genericUDTFClass, null));
-      mFunctions.put(functionName.toLowerCase(), fI);
+      getFunctionRegistry().put(functionName.toLowerCase(), fI);
     } else {
       throw new RuntimeException("Registering GenericUDTF Class "
           + genericUDTFClass + " which does not extend " + GenericUDTF.class);
@@ -556,7 +557,7 @@ public final class FunctionRegistry {
   }
 
   public static FunctionInfo getFunctionInfo(String functionName) {
-    return mFunctions.get(functionName.toLowerCase());
+    return getFunctionRegistry().get(functionName.toLowerCase());
   }
 
   /**
@@ -566,7 +567,7 @@ public final class FunctionRegistry {
    * @return set of strings contains function names
    */
   public static Set<String> getFunctionNames() {
-    return mFunctions.keySet();
+    return getFunctionRegistry().keySet();
   }
 
   /**
@@ -586,7 +587,7 @@ public final class FunctionRegistry {
     } catch (PatternSyntaxException e) {
       return funcNames;
     }
-    for (String funcName : mFunctions.keySet()) {
+    for (String funcName : getFunctionRegistry().keySet()) {
       if (funcPattern.matcher(funcName).matches()) {
         funcNames.add(funcName);
       }
@@ -610,11 +611,11 @@ public final class FunctionRegistry {
     }
 
     Class<?> funcClass = funcInfo.getFunctionClass();
-    for (String name : mFunctions.keySet()) {
+    for (String name : getFunctionRegistry().keySet()) {
       if (name.equals(funcName)) {
         continue;
       }
-      if (mFunctions.get(name).getFunctionClass().equals(funcClass)) {
+      if (getFunctionRegistry().get(name).getFunctionClass().equals(funcClass)) {
         synonyms.add(name);
       }
     }
@@ -822,7 +823,7 @@ public final class FunctionRegistry {
 
   public static void registerGenericUDAF(boolean isNative, String functionName,
       GenericUDAFResolver genericUDAFResolver) {
-    mFunctions.put(functionName.toLowerCase(), new FunctionInfo(isNative,
+    getFunctionRegistry().put(functionName.toLowerCase(), new FunctionInfo(isNative,
         functionName.toLowerCase(), genericUDAFResolver));
   }
 
@@ -837,16 +838,16 @@ public final class FunctionRegistry {
 
   public static void registerUDAF(boolean isNative, String functionName,
       Class<? extends UDAF> udafClass) {
-    mFunctions.put(functionName.toLowerCase(), new FunctionInfo(isNative,
+    getFunctionRegistry().put(functionName.toLowerCase(), new FunctionInfo(isNative,
         functionName.toLowerCase(), new GenericUDAFBridge(
         (UDAF) ReflectionUtils.newInstance(udafClass, null))));
   }
 
   public static void unregisterTemporaryUDF(String functionName) throws HiveException {
-    FunctionInfo fi = mFunctions.get(functionName.toLowerCase());
+    FunctionInfo fi = getFunctionRegistry().get(functionName.toLowerCase());
     if (fi != null) {
       if (!fi.isNative()) {
-        mFunctions.remove(functionName.toLowerCase());
+        getFunctionRegistry().remove(functionName.toLowerCase());
       } else {
         throw new HiveException("Function " + functionName
             + " is hive native, it can't be dropped");
@@ -858,12 +859,24 @@ public final class FunctionRegistry {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Looking up GenericUDAF: " + functionName);
     }
-    FunctionInfo finfo = mFunctions.get(functionName.toLowerCase());
+    FunctionInfo finfo = getFunctionRegistry().get(functionName.toLowerCase());
     if (finfo == null) {
       return null;
     }
     GenericUDAFResolver result = finfo.getGenericUDAFResolver();
     return result;
+  }
+
+  private static Map<String, FunctionInfo> getFunctionRegistry() {
+    if (SessionState.get() == null) {
+      return mFunctions;
+    } else {
+      return SessionState.get().getSessionFunctionRegistry();
+    }
+  }
+
+  public static  Map<String, FunctionInfo> getStaticFunctionRegistry() {
+    return Collections.unmodifiableMap(mFunctions);
   }
 
   public static Object invoke(Method m, Object thisObject, Object... arguments)
@@ -1027,36 +1040,36 @@ public final class FunctionRegistry {
     }
     if (udfMethods.size() > 1) {
 
-      // if the only difference is numeric types, pick the method 
+      // if the only difference is numeric types, pick the method
       // with the smallest overall numeric type.
       int lowestNumericType = Integer.MAX_VALUE;
       boolean multiple = true;
       Method candidate = null;
       List<TypeInfo> referenceArguments = null;
-      
+
       for (Method m: udfMethods) {
         int maxNumericType = 0;
-        
+
         List<TypeInfo> argumentsAccepted = TypeInfoUtils.getParameterTypeInfos(m, argumentsPassed.size());
-        
+
         if (referenceArguments == null) {
-          // keep the arguments for reference - we want all the non-numeric 
+          // keep the arguments for reference - we want all the non-numeric
           // arguments to be the same
           referenceArguments = argumentsAccepted;
         }
-        
+
         Iterator<TypeInfo> referenceIterator = referenceArguments.iterator();
-        
+
         for (TypeInfo accepted: argumentsAccepted) {
           TypeInfo reference = referenceIterator.next();
-          
+
           if (numericTypes.containsKey(accepted)) {
             // We're looking for the udf with the smallest maximum numeric type.
             int typeValue = numericTypes.get(accepted);
             maxNumericType = typeValue > maxNumericType ? typeValue : maxNumericType;
           } else if (!accepted.equals(reference)) {
             // There are non-numeric arguments that don't match from one UDF to
-            // another. We give up at this point. 
+            // another. We give up at this point.
             throw new AmbiguousMethodException(udfClass, argumentsPassed, mlist);
           }
         }

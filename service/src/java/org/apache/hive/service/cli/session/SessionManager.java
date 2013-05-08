@@ -21,6 +21,7 @@ package org.apache.hive.service.cli.session;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.CompositeService;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -94,6 +95,11 @@ public class SessionManager extends CompositeService {
     synchronized(sessionMapLock) {
       handleToSession.put(session.getSessionHandle(), session);
     }
+    try {
+      executeSessionHooks(session);
+    } catch (Exception e) {
+      throw new HiveSQLException("Failed to execute session hooks", e);
+    }
     return session.getSessionHandle();
   }
 
@@ -162,4 +168,20 @@ public class SessionManager extends CompositeService {
     clearIpAddress();
     clearUserName();
   }
+
+  // execute session hooks
+  private void executeSessionHooks(HiveSession session) throws Exception {
+    String hookList = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK).trim();
+    if (hookList == null || hookList.isEmpty()) {
+      return;
+    }
+
+    String[] hookClasses = hookList.split(",");
+    for (String hookClass : hookClasses) {
+      HiveSessionHook sessionHook = (HiveSessionHook)
+          Class.forName(hookClass.trim(), true, JavaUtils.getClassLoader()).newInstance();
+      sessionHook.run(new HiveSessionHookContextImpl(session));
+    }
+  }
+
 }

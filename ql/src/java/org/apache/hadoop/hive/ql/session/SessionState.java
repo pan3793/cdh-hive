@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.MapRedStats;
+import org.apache.hadoop.hive.ql.exec.FunctionInfo;
 import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.history.HiveHistory;
@@ -129,6 +131,9 @@ public class SessionState {
 
   private Map<String, List<String>> localMapRedErrors;
 
+  private final Map<String, FunctionInfo> sessionFunctionRegistry =
+           new LinkedHashMap<String, FunctionInfo>();
+
   /**
    * Lineage state.
    */
@@ -204,6 +209,7 @@ public class SessionState {
         ResourceType.JAR, jarLocation.toString());
       FunctionRegistry.registerFunctionsFromPluginJar(
         jarLocation, pluginClass.getClassLoader());
+      sessionFunctionRegistry.putAll(FunctionRegistry.getStaticFunctionRegistry());
     } catch (Exception ex) {
       throw new RuntimeException("Failed to load Hive builtin functions", ex);
     }
@@ -787,5 +793,9 @@ public class SessionState {
 
   public void setLocalMapRedErrors(Map<String, List<String>> localMapRedErrors) {
     this.localMapRedErrors = localMapRedErrors;
+  }
+
+  public Map<String, FunctionInfo> getSessionFunctionRegistry() {
+    return this.sessionFunctionRegistry;
   }
 }
