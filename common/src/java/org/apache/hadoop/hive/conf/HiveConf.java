@@ -699,6 +699,8 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_IN_MEM_LOGGING("hive.server2.in.mem.logging", true),
     HIVE_SERVER2_IN_MEM_LOG_SIZE("hive.server2.in.mem.log.size", 128 * 1024),
     HIVE_SERVER2_SESSION_HOOK("hive.server2.session.hook", ""),
+    HIVE_SERVER2_AUTHZ_EXTERNAL_EXEC("hive.server2.authorization.external.exec", true),
+
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),
 
     // If this is set all move tasks at the end of a multi-insert query will only begin once all

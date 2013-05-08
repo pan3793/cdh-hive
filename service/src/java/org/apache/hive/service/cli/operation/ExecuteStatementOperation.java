@@ -21,9 +21,10 @@ package org.apache.hive.service.cli.operation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.session.HiveSession;
 
@@ -42,19 +43,34 @@ public abstract class ExecuteStatementOperation extends Operation {
   }
 
   public static ExecuteStatementOperation newExecuteStatementOperation(
-      HiveSession parentSession, String statement, Map<String, String> confOverlay) {
+      HiveSession parentSession, String statement, Map<String, String> confOverlay) throws HiveSQLException {
     String[] tokens = statement.trim().split("\\s+");
     String command = tokens[0].toLowerCase();
 
     ExecuteStatementOperation newExecOP;
+    HiveConf hiveConf = parentSession.getHiveConf();
+    boolean allowExternalExec = hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_AUTHZ_EXTERNAL_EXEC);
     if ("set".equals(command)) {
-      newExecOP = new SetOperation(parentSession, statement, confOverlay);
+       newExecOP = new SetOperation(parentSession, statement, confOverlay);
     } else if ("dfs".equals(command)) {
-      newExecOP = new DfsOperation(parentSession, statement, confOverlay);
+      if (allowExternalExec) {
+        newExecOP = new DfsOperation(parentSession, statement, confOverlay);
+      } else {
+        throw new HiveSQLException("Insufficient privileges to execute dfs", "42000");
+      }
     } else if ("add".equals(command)) {
-      newExecOP = new AddResourceOperation(parentSession, statement, confOverlay);
+      if (allowExternalExec) {
+        newExecOP = new AddResourceOperation(parentSession, statement, confOverlay);
+      } else {
+        throw new HiveSQLException("Insufficient privileges to execute add", "42000");
+      }
     } else if ("delete".equals(command)) {
-      newExecOP = new DeleteResourceOperation(parentSession, statement, confOverlay);
+      if (allowExternalExec) {
+        newExecOP = new DeleteResourceOperation(parentSession, statement, confOverlay);
+      } else {
+        throw new HiveSQLException("Insufficient privileges to execute delete", "42000");
+      }
+
     } else {
       newExecOP = new SQLOperation(parentSession, statement, confOverlay);
       // check if this is needs to be run asynchronously
