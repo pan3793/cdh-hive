@@ -63,6 +63,14 @@
   <property name="mvn.staging.repo.url"
     value="https://repository.apache.org/service/local/staging/deploy/maven2" />
 
+  <!-- Check minimum ant version required -->
+  <fail message="Please use ant version 1.8.0 or greater for building hive.">
+    <condition>
+      <not>
+        <antversion atleast="1.8.0"/>
+      </not>
+    </condition>
+  </fail>
 
   <condition property="is-offline" value="true" else="false">
     <isset property="offline"/>
