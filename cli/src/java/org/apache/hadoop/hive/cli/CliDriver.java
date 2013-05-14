@@ -32,12 +32,12 @@ import java.util.Map;
 import java.util.Set;
 
 import jline.ArgumentCompletor;
+import jline.ArgumentCompletor.AbstractArgumentDelimiter;
+import jline.ArgumentCompletor.ArgumentDelimiter;
 import jline.Completor;
 import jline.ConsoleReader;
 import jline.History;
 import jline.SimpleCompletor;
-import jline.ArgumentCompletor.AbstractArgumentDelimiter;
-import jline.ArgumentCompletor.ArgumentDelimiter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -703,12 +703,16 @@ public class CliDriver {
     cli.processInitFiles(ss);
 
     if (ss.execString != null) {
-      return cli.processLine(ss.execString);
+      int cmdProcessStatus = cli.processLine(ss.execString);
+      ss.close();
+      return cmdProcessStatus;
     }
 
     try {
       if (ss.fileName != null) {
-        return cli.processFile(ss.fileName);
+        int fileProcessStatus = cli.processFile(ss.fileName);
+        ss.close();
+        return fileProcessStatus;
       }
     } catch (FileNotFoundException e) {
       System.err.println("Could not open input file for reading. (" + e.getMessage() + ")");
