@@ -1067,13 +1067,7 @@ public class HiveConf extends Configuration {
     }
 
     // setup list of conf vars that are not allowed to change runtime
-    String restrictListStr = this.get(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
-    if (restrictListStr != null) {
-      for (String entry : restrictListStr.split(",")) {
-        restrictList.add(entry);
-      }
-    }
-    restrictList.add(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
+    setupRestrictList();
   }
 
 
@@ -1187,5 +1181,36 @@ public class HiveConf extends Configuration {
       return Integer.parseInt(m.group(1));
     }
 
+  }
+
+  /**
+   * Append comma separated list of config vars to the restrict List
+   * @param restrictListStr
+   */
+  public void addToRestrictList(String restrictListStr) {
+    if (restrictListStr == null) {
+      return;
+    }
+    String oldList = this.getVar(ConfVars.HIVE_CONF_RESTRICTED_LIST);
+    if (oldList == null || oldList.isEmpty()) {
+      this.setVar(ConfVars.HIVE_CONF_RESTRICTED_LIST, restrictListStr);
+    } else {
+      this.setVar(ConfVars.HIVE_CONF_RESTRICTED_LIST, oldList + "," + restrictListStr);
+    }
+    setupRestrictList();
+  }
+
+  /**
+   * Add the HIVE_CONF_RESTRICTED_LIST values to restrictList. Include HIVE_CONF_RESTRICTED_LIST itself
+   */
+  private void setupRestrictList() {
+    String restrictListStr = this.getVar(ConfVars.HIVE_CONF_RESTRICTED_LIST);
+    restrictList.clear();
+    if (restrictListStr != null) {
+      for (String entry : restrictListStr.split(",")) {
+        restrictList.add(entry.trim());
+      }
+    }
+    restrictList.add(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
   }
 }
