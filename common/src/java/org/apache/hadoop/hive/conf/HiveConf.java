@@ -186,7 +186,7 @@ public class HiveConf extends Configuration {
     PLAN("hive.exec.plan", ""),
     SCRATCHDIR("hive.exec.scratchdir", "/tmp/hive-" + System.getProperty("user.name")),
     LOCALSCRATCHDIR("hive.exec.local.scratchdir", "/tmp/" + System.getProperty("user.name")),
-    SCRATCHDIRPERMISSION("hive.scratch.dir.permission", "700"),
+    SCRATCHDIRPERMISSION("hive.scratch.dir.permission", ""),
     SUBMITVIACHILD("hive.exec.submitviachild", false),
     SCRIPTERRORLIMIT("hive.exec.script.maxerrsize", 100000),
     ALLOWPARTIALCONSUMP("hive.exec.script.allow.partial.consumption", false),

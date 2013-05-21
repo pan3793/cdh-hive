@@ -170,8 +170,10 @@ public class Context {
             throw new RuntimeException("Cannot make directory: "
                                        + dirPath.toString());
           } else {
-            FsPermission fsPermission = new FsPermission(scratchDirPermission);
-            fs.setPermission(dirPath, fsPermission);
+            if (!scratchDirPermission.isEmpty()) {
+              FsPermission fsPermission = new FsPermission(scratchDirPermission);
+              fs.setPermission(dirPath, fsPermission);
+            }
           }
           if (isHDFSCleanup) {
             fs.deleteOnExit(dirPath);
