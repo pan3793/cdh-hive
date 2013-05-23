@@ -98,6 +98,8 @@ import jline.ConsoleReader;
 import jline.FileNameCompletor;
 import jline.SimpleCompletor;
 
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 
 /**
  * A console SQL shell with command completion.
@@ -751,7 +753,7 @@ public class BeeLine {
       return true;
     }
 
-    line = line.trim();
+    line = new VariableSubstitution().substitute(new HiveConf(BeeLine.class), line.trim());
 
     // save it to the current script, if any
     if (scriptOutputFile != null) {

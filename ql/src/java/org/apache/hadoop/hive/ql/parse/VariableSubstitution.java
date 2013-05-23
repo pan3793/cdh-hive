@@ -55,7 +55,10 @@ public class VariableSubstitution {
       if(var.startsWith(SetProcessor.HIVEVAR_PREFIX)){
         val =  SessionState.get().getHiveVariables().get(var.substring(SetProcessor.HIVEVAR_PREFIX.length()));
       } else {
-        val = SessionState.get().getHiveVariables().get(var);
+        SessionState ss = SessionState.get();
+        if( ss != null ) {
+            val = ss.getHiveVariables().get(var);
+        }
       }
     }
     return val;
