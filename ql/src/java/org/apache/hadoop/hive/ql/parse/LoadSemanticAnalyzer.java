@@ -84,7 +84,7 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
     // directory
     if (!path.startsWith("/")) {
       if (isLocal) {
-        path = new Path(System.getProperty("user.dir"), path).toUri().getPath();
+        path = new Path(System.getProperty("user.dir"), path).toUri().toString();
       } else {
         path = new Path(new Path("/user/" + System.getProperty("user.name")),
           path).toString();
@@ -151,8 +151,8 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
     if (!isLocal
         && (!StringUtils.equals(fromURI.getScheme(), toURI.getScheme()) || !StringUtils
         .equals(fromURI.getAuthority(), toURI.getAuthority()))) {
-      String reason = "Move from: " + fromURI.getPath() + " to: "
-          + toURI.getPath() + " is not valid. "
+      String reason = "Move from: " + fromURI.toString() + " to: "
+          + toURI.toString() + " is not valid. "
           + "Please check that values for params \"default.fs.name\" and "
           + "\"hive.metastore.warehouse.dir\" do not conflict.";
       throw new SemanticException(ErrorMsg.ILLEGAL_PATH.getMsg(ast, reason));
@@ -236,7 +236,7 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
       // that's just a test case.
       String copyURIStr = ctx.getExternalTmpFileURI(toURI);
       URI copyURI = URI.create(copyURIStr);
-      rTask = TaskFactory.get(new CopyWork(fromURI.getPath(), copyURIStr),
+      rTask = TaskFactory.get(new CopyWork(fromURI.toString(), copyURIStr),
           conf);
       fromURI = copyURI;
     }
@@ -266,7 +266,7 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
 
-    LoadTableDesc loadTableWork = new LoadTableDesc(fromURI.getPath(),
+    LoadTableDesc loadTableWork = new LoadTableDesc(fromURI.toString(),
         loadTmpPath, Utilities.getTableDesc(ts.tableHandle), partSpec, isOverWrite);
 
     Task<? extends Serializable> childTask = TaskFactory.get(new MoveWork(getInputs(),

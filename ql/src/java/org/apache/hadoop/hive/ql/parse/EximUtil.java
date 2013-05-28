@@ -155,7 +155,7 @@ public class EximUtil {
       } catch (URISyntaxException e) {
         throw new SemanticException(ErrorMsg.INVALID_PATH.getMsg(), e);
       }
-      return uri.getPath();
+      return uri.toString();
     } else {
       //no-op for non-test mode for now
       return location;
