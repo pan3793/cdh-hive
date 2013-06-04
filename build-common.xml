@@ -355,6 +355,7 @@
   <!-- target to compile tests -->
   <target name="compile-test" depends="compile,ivy-retrieve-test,set-test-classpath">
     <echo message="Project: ${ant.project.name}"/>
+    <echo message="JDK source: ${sourceJavaVersion}, target: ${targetJavaVersion}, bootclasspath: ${javaBootClasspath}"/>
     <javac
      encoding="${build.encoding}"
      srcdir="${test.src.dir}"
@@ -363,8 +364,9 @@
      destdir="${test.build.classes}"
      debug="${javac.debug}"
      optimize="${javac.optimize}"
-     target="${javac.version}"
-     source="${javac.version}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
+     bootclasspath="${javaBootClasspath}"
      deprecation="${javac.deprecation}"
      includeantruntime="false">
       <compilerarg line="${javac.args} ${javac.args.warnings}" />
@@ -377,8 +379,9 @@
      destdir="${test.build.classes}"
      debug="${javac.debug}"
      optimize="${javac.optimize}"
-     target="${javac.version}"
-     source="${javac.version}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
+     bootclasspath="${javaBootClasspath}"
      deprecation="${javac.deprecation}"
      includeantruntime="false">
       <compilerarg line="${javac.args} ${javac.args.warnings}" />
