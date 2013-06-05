@@ -881,6 +881,11 @@ public class HivePreparedStatement implements PreparedStatement {
     stmtHandle = null;
   }
 
+  public void closeOnCompletion() throws SQLException {
+    // JDK 1.7
+    throw new SQLException("Method not supported");
+  }
+
   /**
    *  Closes the prepared statement.
    *
@@ -1176,6 +1181,11 @@ public class HivePreparedStatement implements PreparedStatement {
 
   public boolean isClosed() throws SQLException {
     return isClosed;
+  }
+
+  public boolean isCloseOnCompletion() throws SQLException {
+    //JDK 1.7
+    throw new SQLException("Method not supported");
   }
 
   /*
