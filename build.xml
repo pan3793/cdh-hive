@@ -151,9 +151,6 @@
       <subant target="@{target}">
 	<property name="thrift.home" value="${thrift.home}"/>
         <property name="build.dir.hive" location="${build.dir.hive}"/>
-        <property name="sourceJavaVersion" value="${sourceJavaVersion}" />
-        <property name="targetJavaVersion" value="${targetJavaVersion}" />
-        <property name="javaBootClasspath" value="${javaBootClasspath}" />
         <filelist dir="." files="ql/build.xml,contrib/build.xml,hbase-handler/build.xml,hwi/build.xml,jdbc/build.xml,metastore/build.xml,odbc/build.xml,serde/build.xml,service/build.xml"/>
       </subant>
     </sequential>
@@ -187,9 +184,6 @@
       <subant target="@{target}">
         <property name="build.dir.hive" location="${build.dir.hive}"/>
         <property name="is-offline" value="${is-offline}"/>
-        <property name="sourceJavaVersion" value="${sourceJavaVersion}" />
-        <property name="targetJavaVersion" value="${targetJavaVersion}" />
-        <property name="javaBootClasspath" value="${javaBootClasspath}" />
         <filelist dir="." files="shims/build.xml,common/build.xml,serde/build.xml,metastore/build.xml,ql/build.xml,contrib/build.xml,service/build.xml,cli/build.xml,jdbc/build.xml,beeline/build.xml,hwi/build.xml,hbase-handler/build.xml,pdk/build.xml,builtins/build.xml,testutils/build.xml"/>
       </subant>
     </sequential>
@@ -226,7 +220,7 @@
 
   <!-- JVM version validation -->
   <target name="jvm-check">
-      <property name="javaVersion" value="1.6"/>
+      <property name="javaVersion" value="1.7"/>
 
       <property name="requiredJavaVersion" value="xx${javaVersion}"/>
       <property name="currentJavaVersion" value="xx${java.version}"/>
@@ -383,9 +377,6 @@
         <ant antfile="@{file}" target="test" inheritAll="false" inheritRefs="true">
           <property name="build.dir.hive" location="${build.dir.hive}"/>
           <property name="is-offline" value="${is-offline}"/>
-          <property name="sourceJavaVersion" value="${sourceJavaVersion}" />
-          <property name="targetJavaVersion" value="${targetJavaVersion}" />
-          <property name="javaBootClasspath" value="${javaBootClasspath}" />
         </ant>
       </sequential>
     </for>
