@@ -70,12 +70,12 @@
     <dependency org="org.apache.derby" name="derby" rev="${derby.version}"/>
     <dependency org="com.googlecode.javaewah" name="JavaEWAH" rev="${javaewah.version}"/>
     <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="${jackson.version}"/>
-
-    <dependency org="org.datanucleus" name="datanucleus-connectionpool" rev="${datanucleus-connectionpool.version}"
-                transitive="false"/>
+    <dependency org="org.datanucleus" name="datanucleus-api-jdo" rev="${datanucleus-api-jdo.version}">
+       <exclude org="javax.jdo" module="jdo2-api"/>
+       <exclude org="junit" module="junit"/>
+       <exclude org="log4j" module="log4j"/>
+    </dependency>
     <dependency org="org.datanucleus" name="datanucleus-core" rev="${datanucleus-core.version}"
-                transitive="false"/>
-    <dependency org="org.datanucleus" name="datanucleus-enhancer" rev="${datanucleus-enhancer.version}"
                 transitive="false"/>
     <dependency org="org.datanucleus" name="datanucleus-rdbms" rev="${datanucleus-rdbms.version}"
                 transitive="false"/>
