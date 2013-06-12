@@ -93,7 +93,6 @@ STAGE PLANS:
                 MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -256,7 +255,6 @@ STAGE PLANS:
                   MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -375,6 +373,102 @@ POSTHOOK: Output: default@dest_j1
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+PREHOOK: query: select * from dest_j1 x order by x.value
+PREHOOK: type: QUERY
+PREHOOK: Input: default@dest_j1
+#### A masked pattern was here ####
+POSTHOOK: query: select * from dest_j1 x order by x.value
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dest_j1
+#### A masked pattern was here ####
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+150 val_150 val_150
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+66  val_66  val_66
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
 PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE dest_j1
 SELECT x.key, z.value, y.value
@@ -467,7 +561,6 @@ STAGE PLANS:
                 MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -661,7 +754,6 @@ STAGE PLANS:
                   MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -899,7 +991,6 @@ STAGE PLANS:
                   MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -1106,7 +1197,6 @@ STAGE PLANS:
                   MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -1261,7 +1351,6 @@ STAGE PLANS:
               value expressions:
                     expr: value
                     type: string
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -1365,6 +1454,11 @@ STAGE PLANS:
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.src1
             name: default.src1
+      Truncated Path -> Alias:
+        /src [y]
+        /src1 [z]
+#### A masked pattern was here ####
+      Needs Tagging: true
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -1414,108 +1508,131 @@ STAGE PLANS:
               TotalFiles: 1
               GatherStats: true
               MultiFileSpray: false
-      Truncated Path -> Alias:
-        /src [y]
-        /src1 [z]
-#### A masked pattern was here ####
 
 
-PREHOOK: query: select * from dest_j1 x order by x.key
+PREHOOK: query: INSERT OVERWRITE TABLE dest_j1
+SELECT x.key, z.value, y.value
+FROM src w JOIN src1 x ON (x.value = w.value) 
+JOIN src y ON (x.key = y.key) 
+JOIN src1 z ON (x.key = z.key)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+PREHOOK: Output: default@dest_j1
+POSTHOOK: query: INSERT OVERWRITE TABLE dest_j1
+SELECT x.key, z.value, y.value
+FROM src w JOIN src1 x ON (x.value = w.value) 
+JOIN src y ON (x.key = y.key) 
+JOIN src1 z ON (x.key = z.key)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+POSTHOOK: Output: default@dest_j1
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
+PREHOOK: query: select * from dest_j1 x order by x.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@dest_j1
 #### A masked pattern was here ####
-POSTHOOK: query: select * from dest_j1 x order by x.key
+POSTHOOK: query: select * from dest_j1 x order by x.value
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@dest_j1
 #### A masked pattern was here ####
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
-146	val_146	val_146
-146	val_146	val_146
-146	val_146	val_146
-146	val_146	val_146
-150	val_150	val_150
-213	val_213	val_213
-213	val_213	val_213
-213	val_213	val_213
-213	val_213	val_213
-238	val_238	val_238
-238	val_238	val_238
-238	val_238	val_238
-238	val_238	val_238
-255	val_255	val_255
-255	val_255	val_255
-255	val_255	val_255
-255	val_255	val_255
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-278	val_278	val_278
-278	val_278	val_278
-278	val_278	val_278
-278	val_278	val_278
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-66	val_66	val_66
-98	val_98	val_98
-98	val_98	val_98
-98	val_98	val_98
-98	val_98	val_98
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+150 val_150 val_150
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+66  val_66  val_66
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
 PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE dest_j2
 SELECT res.key, z.value, res.value
@@ -1529,8 +1646,11 @@ FROM (select x.key, x.value from src1 x JOIN src y ON (x.key = y.key)) res
 JOIN srcpart z ON (res.value = z.value and z.ds='2008-04-08' and z.hr=11)
 POSTHOOK: type: QUERY
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
 ABSTRACT SYNTAX TREE:
   (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_SUBQUERY (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME src1) x) (TOK_TABREF (TOK_TABNAME src) y) (= (. (TOK_TABLE_OR_COL x) key) (. (TOK_TABLE_OR_COL y) key)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL x) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL x) value))))) res) (TOK_TABREF (TOK_TABNAME srcpart) z) (and (and (= (. (TOK_TABLE_OR_COL res) value) (. (TOK_TABLE_OR_COL z) value)) (= (. (TOK_TABLE_OR_COL z) ds) '2008-04-08')) (= (. (TOK_TABLE_OR_COL z) hr) 11)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME dest_j2))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL res) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL z) value)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL res) value)))))
 
@@ -1607,7 +1727,6 @@ STAGE PLANS:
                   MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -1770,7 +1889,6 @@ STAGE PLANS:
                   MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -1887,110 +2005,116 @@ POSTHOOK: Input: default@srcpart
 POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
 POSTHOOK: Output: default@dest_j2
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
-PREHOOK: query: select * from dest_j2 x order by x.key
+PREHOOK: query: select * from dest_j2 x order by x.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@dest_j2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from dest_j2 x order by x.key
+POSTHOOK: query: select * from dest_j2 x order by x.value
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@dest_j2
 #### A masked pattern was here ####
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
-146	val_146	val_146
-146	val_146	val_146
-146	val_146	val_146
-146	val_146	val_146
-150	val_150	val_150
-213	val_213	val_213
-213	val_213	val_213
-213	val_213	val_213
-213	val_213	val_213
-238	val_238	val_238
-238	val_238	val_238
-238	val_238	val_238
-238	val_238	val_238
-255	val_255	val_255
-255	val_255	val_255
-255	val_255	val_255
-255	val_255	val_255
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-278	val_278	val_278
-278	val_278	val_278
-278	val_278	val_278
-278	val_278	val_278
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-66	val_66	val_66
-98	val_98	val_98
-98	val_98	val_98
-98	val_98	val_98
-98	val_98	val_98
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+150 val_150 val_150
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+66  val_66  val_66
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
 PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE dest_j2
 SELECT res.key, z.value, res.value
@@ -2004,8 +2128,11 @@ FROM (select x.key, x.value from src1 x LEFT OUTER JOIN src y ON (x.key = y.key)
 JOIN srcpart z ON (res.value = z.value and z.ds='2008-04-08' and z.hr=11)
 POSTHOOK: type: QUERY
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
@@ -2085,7 +2212,6 @@ STAGE PLANS:
                   MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -2253,7 +2379,6 @@ STAGE PLANS:
                   MultiFileSpray: false
       Local Work:
         Map Reduce Local Work
-      Needs Tagging: true
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -2375,128 +2500,134 @@ POSTHOOK: Input: default@srcpart
 POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
 POSTHOOK: Output: default@dest_j2
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
-PREHOOK: query: select * from dest_j2 x order by x.key
+PREHOOK: query: select * from dest_j2 x order by x.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@dest_j2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from dest_j2 x order by x.key
+POSTHOOK: query: select * from dest_j2 x order by x.value
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@dest_j2
 #### A masked pattern was here ####
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
-	val_27	val_27
-	val_165	val_165
-	val_409	val_409
-	val_409	val_409
-	val_409	val_409
-	val_165	val_165
-	val_484	val_484
-	val_265	val_265
-	val_265	val_265
-	val_193	val_193
-	val_193	val_193
-	val_193	val_193
-146	val_146	val_146
-146	val_146	val_146
-146	val_146	val_146
-146	val_146	val_146
-150	val_150	val_150
-213	val_213	val_213
-213	val_213	val_213
-213	val_213	val_213
-213	val_213	val_213
-238	val_238	val_238
-238	val_238	val_238
-238	val_238	val_238
-238	val_238	val_238
-255	val_255	val_255
-255	val_255	val_255
-255	val_255	val_255
-255	val_255	val_255
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-273	val_273	val_273
-278	val_278	val_278
-278	val_278	val_278
-278	val_278	val_278
-278	val_278	val_278
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-311	val_311	val_311
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-401	val_401	val_401
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-406	val_406	val_406
-66	val_66	val_66
-98	val_98	val_98
-98	val_98	val_98
-98	val_98	val_98
-98	val_98	val_98
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+150 val_150 val_150
+  val_165 val_165
+  val_165 val_165
+  val_193 val_193
+  val_193 val_193
+  val_193 val_193
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+  val_265 val_265
+  val_265 val_265
+  val_27  val_27
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+  val_409 val_409
+  val_409 val_409
+  val_409 val_409
+  val_484 val_484
+66  val_66  val_66
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
 PREHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE dest_j2
 SELECT res.key, x.value, res.value  
@@ -2510,8 +2641,11 @@ FROM (select x.key, x.value from src1 x JOIN src y ON (x.key = y.key)) res
 JOIN srcpart x ON (res.value = x.value and x.ds='2008-04-08' and x.hr=11)
 POSTHOOK: type: QUERY
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
@@ -2654,6 +2788,149 @@ STAGE PLANS:
     Stats-Aggr Operator
 
 
+PREHOOK: query: INSERT OVERWRITE TABLE dest_j2
+SELECT res.key, x.value, res.value  
+FROM (select x.key, x.value from src1 x JOIN src y ON (x.key = y.key)) res 
+JOIN srcpart x ON (res.value = x.value and x.ds='2008-04-08' and x.hr=11)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Output: default@dest_j2
+POSTHOOK: query: INSERT OVERWRITE TABLE dest_j2
+SELECT res.key, x.value, res.value  
+FROM (select x.key, x.value from src1 x JOIN src y ON (x.key = y.key)) res 
+JOIN srcpart x ON (res.value = x.value and x.ds='2008-04-08' and x.hr=11)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@dest_j2
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)x.FieldSchema(name:value, type:string, comment:default), ]
+PREHOOK: query: select * from dest_j2 x order by x.value
+PREHOOK: type: QUERY
+PREHOOK: Input: default@dest_j2
+#### A masked pattern was here ####
+POSTHOOK: query: select * from dest_j2 x order by x.value
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dest_j2
+#### A masked pattern was here ####
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)x.FieldSchema(name:value, type:string, comment:default), ]
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+150 val_150 val_150
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+66  val_66  val_66
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
 PREHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE dest_j2
 SELECT res.key, y.value, res.value
@@ -2667,14 +2944,20 @@ FROM (select x.key, x.value from src1 x JOIN src y ON (x.key = y.key)) res
 JOIN srcpart y ON (res.value = y.value and y.ds='2008-04-08' and y.hr=11)
 POSTHOOK: type: QUERY
 POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)x.FieldSchema(name:value, type:string, comment:default), ]
 ABSTRACT SYNTAX TREE:
   (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_SUBQUERY (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME src1) x) (TOK_TABREF (TOK_TABNAME src) y) (= (. (TOK_TABLE_OR_COL x) key) (. (TOK_TABLE_OR_COL y) key)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL x) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL x) value))))) res) (TOK_TABREF (TOK_TABNAME srcpart) y) (and (and (= (. (TOK_TABLE_OR_COL res) value) (. (TOK_TABLE_OR_COL y) value)) (= (. (TOK_TABLE_OR_COL y) ds) '2008-04-08')) (= (. (TOK_TABLE_OR_COL y) hr) 11)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME dest_j2))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL res) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL y) value)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL res) value)))))
 
@@ -2811,3 +3094,152 @@ STAGE PLANS:
     Stats-Aggr Operator
 
 
+PREHOOK: query: INSERT OVERWRITE TABLE dest_j2
+SELECT res.key, y.value, res.value
+FROM (select x.key, x.value from src1 x JOIN src y ON (x.key = y.key)) res 
+JOIN srcpart y ON (res.value = y.value and y.ds='2008-04-08' and y.hr=11)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Output: default@dest_j2
+POSTHOOK: query: INSERT OVERWRITE TABLE dest_j2
+SELECT res.key, y.value, res.value
+FROM (select x.key, x.value from src1 x JOIN src y ON (x.key = y.key)) res 
+JOIN srcpart y ON (res.value = y.value and y.ds='2008-04-08' and y.hr=11)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@dest_j2
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)y.FieldSchema(name:value, type:string, comment:default), ]
+PREHOOK: query: select * from dest_j2 x order by x.value
+PREHOOK: type: QUERY
+PREHOOK: Input: default@dest_j2
+#### A masked pattern was here ####
+POSTHOOK: query: select * from dest_j2 x order by x.value
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dest_j2
+#### A masked pattern was here ####
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 EXPRESSION [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.val2 SIMPLE [(src)y.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j1.value SIMPLE [(src1)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.key SIMPLE [(src1)x.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.val2 SIMPLE [(src1)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)z.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)x.FieldSchema(name:value, type:string, comment:default), ]
+POSTHOOK: Lineage: dest_j2.value SIMPLE [(srcpart)y.FieldSchema(name:value, type:string, comment:default), ]
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+146 val_146 val_146
+150 val_150 val_150
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+213 val_213 val_213
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+238 val_238 val_238
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+255 val_255 val_255
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+273 val_273 val_273
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+278 val_278 val_278
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+311 val_311 val_311
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+401 val_401 val_401
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+406 val_406 val_406
+66  val_66  val_66
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
+98  val_98  val_98
