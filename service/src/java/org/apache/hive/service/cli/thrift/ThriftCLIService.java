@@ -73,6 +73,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
 
   private int minWorkerThreads;
   private int maxWorkerThreads;
+  private int requestTimeout;
 
 
 
@@ -408,6 +409,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
 
       minWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS);
       maxWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS);
+      requestTimeout = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT);
 
 
       TThreadPoolServer.Args sargs = new TThreadPoolServer.Args(new TServerSocket(serverAddress))
@@ -415,7 +417,8 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       .transportFactory(transportFactory)
       .protocolFactory(new TBinaryProtocol.Factory())
       .minWorkerThreads(minWorkerThreads)
-      .maxWorkerThreads(maxWorkerThreads);
+      .maxWorkerThreads(maxWorkerThreads)
+      .requestTimeout(requestTimeout);
 
       server = new TThreadPoolServer(sargs);
 
