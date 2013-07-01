@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -374,6 +375,13 @@ public class FetchOperator implements Serializable {
         partDesc = new PartitionDesc(currTbl, null);
       }
 
+      // Use table properties in case of unpartitioned tables,
+      // and the union of table properties and partition properties, with partition
+      // taking precedence
+      Properties partProps =
+          (partDesc.getPartSpec() == null || partDesc.getPartSpec().isEmpty()) ?
+              partDesc.getTableDesc().getProperties() : partDesc.getOverlayedProperties();
+
       Class<? extends InputFormat> formatter = partDesc.getInputFileFormatClass();
       inputFormat = getInputFormatFromCache(formatter, job);
       Utilities.copyTableJobPropertiesToConf(partDesc.getTableDesc(), job);
@@ -389,7 +397,7 @@ public class FetchOperator implements Serializable {
 
       splitNum = 0;
       serde = partDesc.getDeserializerClass().newInstance();
-      serde.initialize(job, partDesc.getProperties());
+      serde.initialize(job, partProps);
 
       if (currTbl != null) {
         tblSerde = serde;
@@ -409,7 +417,7 @@ public class FetchOperator implements Serializable {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Creating fetchTask with deserializer typeinfo: "
             + serde.getObjectInspector().getTypeName());
-        LOG.debug("deserializer properties: " + partDesc.getProperties());
+        LOG.debug("deserializer properties: " + partProps);
       }
 
       if (currPart != null) {
@@ -618,7 +626,7 @@ public class FetchOperator implements Serializable {
       for (PartitionDesc listPart : listParts) {
         partition = listPart;
         Deserializer partSerde = listPart.getDeserializerClass().newInstance();
-        partSerde.initialize(job, listPart.getProperties());
+        partSerde.initialize(job, listPart.getOverlayedProperties());
 
         partitionedTableOI = ObjectInspectorConverters.getConvertedOI(
             partSerde.getObjectInspector(), tableOI);
