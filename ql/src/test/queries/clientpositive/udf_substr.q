@@ -2,7 +2,7 @@ DESCRIBE FUNCTION substr;
 DESCRIBE FUNCTION EXTENDED substr;
 
 SELECT
-  substr(null, 1), substr(null, 1, 1),
+  substr(CAST(null AS string), 1), substr(CAST(null AS string), 1, 1),
   substr('ABC', null), substr('ABC', null, 1),
   substr('ABC', 1, null)
 FROM src LIMIT 1;
@@ -50,7 +50,7 @@ FROM src LIMIT 1;
 
 -- test for binary substr
 SELECT
-  substr(null, 1), substr(null, 1, 1),
+  substr(CAST(null AS binary), 1), substr(CAST(null AS binary), 1, 1),
   substr(ABC, null), substr(ABC, null, 1),
   substr(ABC, 1, null),
   substr(ABC, 0, 1), substr(ABC, 0, 2), substr(ABC, 0, 3), substr(ABC, 0, 4),

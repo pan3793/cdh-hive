@@ -297,6 +297,10 @@ public class PrimitiveObjectInspectorConverter {
 
     @Override
     public Object convert(Object input) {
+      if (input == null) {
+        return null;
+      }
+
       return outputOI.set(r, PrimitiveObjectInspectorUtils.getBinary(input,
           inputOI));
     }
