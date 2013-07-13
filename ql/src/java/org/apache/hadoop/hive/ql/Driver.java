@@ -427,6 +427,8 @@ public class Driver implements CommandProcessor {
         hookCtx.setConf(conf);
         hookCtx.setUserName(userName);
         for (HiveSemanticAnalyzerHook hook : saHooks) {
+          hookCtx.setIpAddress(ipAddress);
+          hookCtx.setCommand(command);
           tree = hook.preAnalyze(hookCtx, tree);
         }
         sem.analyze(tree, ctx);
