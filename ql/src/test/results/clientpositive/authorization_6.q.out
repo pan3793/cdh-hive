@@ -61,7 +61,7 @@ database	default
 table	authorization_part	
 principalName	hive_test_user	
 principalType	USER	
-privilege	Update	
+privilege	Drop	
 #### A masked pattern was here ####
 grantor	hive_test_user	
 
@@ -69,7 +69,7 @@ database	default
 table	authorization_part	
 principalName	hive_test_user	
 principalType	USER	
-privilege	Drop	
+privilege	Update	
 #### A masked pattern was here ####
 grantor	hive_test_user	
 PREHOOK: query: grant select(key) on table authorization_part to user hive_test_user
