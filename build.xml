@@ -576,10 +576,16 @@
         </copy>
       </then>
     </if>
-    <chmod perm="ugo+x" type="file">
-      <fileset dir="${target.dir}/hcatalog/bin"/>
-      <fileset dir="${target.dir}/hcatalog/sbin"/>
-    </chmod>
+    <!--fix permissions since 'copy' looses them (known ant/Java issue)-->
+    <if>
+      <matches string="${iterate.hive.all}" pattern="hcatalog"/>
+      <then>
+        <chmod perm="ugo+x" type="file">
+          <fileset dir="${target.dir}/hcatalog/bin"/>
+          <fileset dir="${target.dir}/hcatalog/sbin"/>
+        </chmod>
+      </then>
+    </if>
   </target>
 
 
