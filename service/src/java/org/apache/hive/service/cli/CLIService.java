@@ -399,4 +399,31 @@ public class CLIService extends CompositeService implements ICLIService {
   private void stopLogCapture() {
     sessionManager.getLogManager().unregisterCurrentThread();
   }
+
+  @Override
+  public String getDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String owner, String renewer) throws HiveSQLException {
+    String delegationToken = sessionManager.getSession(sessionHandle).
+        getDelegationToken(authFactory, owner, renewer);
+    LOG.info(sessionHandle  + ": getDelegationToken()");
+    sessionManager.clearThreadLocals();
+    return delegationToken;
+  }
+
+  @Override
+  public void cancelDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String tokenStr) throws HiveSQLException {
+    sessionManager.getSession(sessionHandle).
+        cancelDelegationToken(authFactory, tokenStr);
+    LOG.info(sessionHandle  + ": cancelDelegationToken()");
+    sessionManager.clearThreadLocals();
+  }
+
+  @Override
+  public void renewDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String tokenStr) throws HiveSQLException {
+    sessionManager.getSession(sessionHandle).renewDelegationToken(authFactory, tokenStr);
+    LOG.info(sessionHandle  + ": renewDelegationToken()");
+    sessionManager.clearThreadLocals();
+  }
 }

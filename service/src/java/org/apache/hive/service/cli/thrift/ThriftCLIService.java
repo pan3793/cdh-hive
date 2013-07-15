@@ -398,6 +398,72 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
     return resp;
   }
 
+  @Override
+  public TGetDelegationTokenResp GetDelegationToken(TGetDelegationTokenReq req)
+      throws TException {
+    TGetDelegationTokenResp resp = new TGetDelegationTokenResp();
+
+    if (hiveAuthFactory == null) {
+      resp.setStatus(unsecureTokenErrorStatus());
+    } else {
+      try {
+        String token = cliService.getDelegationToken(
+            new SessionHandle(req.getSessionHandle()),
+            hiveAuthFactory, req.getOwner(), req.getRenewer());
+        resp.setDelegationToken(token);
+        resp.setStatus(OK_STATUS);
+      } catch (HiveSQLException e) {
+        e.printStackTrace();
+        resp.setStatus(HiveSQLException.toTStatus(e));
+      }
+    }
+    return resp;
+  }
+
+  @Override
+  public TCancelDelegationTokenResp CancelDelegationToken(TCancelDelegationTokenReq req)
+      throws TException {
+    TCancelDelegationTokenResp resp = new TCancelDelegationTokenResp();
+
+    if (hiveAuthFactory == null) {
+      resp.setStatus(unsecureTokenErrorStatus());
+    } else {
+      try {
+        cliService.cancelDelegationToken(new SessionHandle(req.getSessionHandle()),
+            hiveAuthFactory, req.getDelegationToken());
+      } catch (HiveSQLException e) {
+        e.printStackTrace();
+        resp.setStatus(HiveSQLException.toTStatus(e));
+      }
+    }
+    return resp;
+  }
+
+  @Override
+  public TRenewDelegationTokenResp RenewDelegationToken(TRenewDelegationTokenReq req)
+      throws TException {
+    TRenewDelegationTokenResp resp = new TRenewDelegationTokenResp();
+    if (hiveAuthFactory == null) {
+      resp.setStatus(unsecureTokenErrorStatus());
+    } else {
+      try {
+        cliService.renewDelegationToken(new SessionHandle(req.getSessionHandle()),
+            hiveAuthFactory, req.getDelegationToken());
+      } catch (HiveSQLException e) {
+        e.printStackTrace();
+        resp.setStatus(HiveSQLException.toTStatus(e));
+      }
+    }
+    return resp;
+
+  }
+
+  private TStatus unsecureTokenErrorStatus() {
+    TStatus errorStatus = new TStatus(TStatusCode.ERROR_STATUS);
+    errorStatus.setErrorMessage("Delegation token only supported over remote " +
+    		"client with kerberos authentication");
+    return errorStatus;
+  }
 
   @Override
   public void run() {
@@ -447,7 +513,5 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       t.printStackTrace();
     }
   }
-
-
 
 }

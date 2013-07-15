@@ -31,28 +31,28 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteStatementReq, TExecuteStatementReq._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TExecuteStatementReq");
+public class TGetDelegationTokenReq implements org.apache.thrift.TBase<TGetDelegationTokenReq, TGetDelegationTokenReq._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TGetDelegationTokenReq");
 
   private static final org.apache.thrift.protocol.TField SESSION_HANDLE_FIELD_DESC = new org.apache.thrift.protocol.TField("sessionHandle", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-  private static final org.apache.thrift.protocol.TField STATEMENT_FIELD_DESC = new org.apache.thrift.protocol.TField("statement", org.apache.thrift.protocol.TType.STRING, (short)2);
-  private static final org.apache.thrift.protocol.TField CONF_OVERLAY_FIELD_DESC = new org.apache.thrift.protocol.TField("confOverlay", org.apache.thrift.protocol.TType.MAP, (short)3);
+  private static final org.apache.thrift.protocol.TField OWNER_FIELD_DESC = new org.apache.thrift.protocol.TField("owner", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField RENEWER_FIELD_DESC = new org.apache.thrift.protocol.TField("renewer", org.apache.thrift.protocol.TType.STRING, (short)3);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new TExecuteStatementReqStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new TExecuteStatementReqTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TGetDelegationTokenReqStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TGetDelegationTokenReqTupleSchemeFactory());
   }
 
   private TSessionHandle sessionHandle; // required
-  private String statement; // required
-  private Map<String,String> confOverlay; // optional
+  private String owner; // required
+  private String renewer; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     SESSION_HANDLE((short)1, "sessionHandle"),
-    STATEMENT((short)2, "statement"),
-    CONF_OVERLAY((short)3, "confOverlay");
+    OWNER((short)2, "owner"),
+    RENEWER((short)3, "renewer");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -69,10 +69,10 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
       switch(fieldId) {
         case 1: // SESSION_HANDLE
           return SESSION_HANDLE;
-        case 2: // STATEMENT
-          return STATEMENT;
-        case 3: // CONF_OVERLAY
-          return CONF_OVERLAY;
+        case 2: // OWNER
+          return OWNER;
+        case 3: // RENEWER
+          return RENEWER;
         default:
           return null;
       }
@@ -113,70 +113,57 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
   }
 
   // isset id assignments
-  private _Fields optionals[] = {_Fields.CONF_OVERLAY};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.SESSION_HANDLE, new org.apache.thrift.meta_data.FieldMetaData("sessionHandle", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TSessionHandle.class)));
-    tmpMap.put(_Fields.STATEMENT, new org.apache.thrift.meta_data.FieldMetaData("statement", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+    tmpMap.put(_Fields.OWNER, new org.apache.thrift.meta_data.FieldMetaData("owner", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.CONF_OVERLAY, new org.apache.thrift.meta_data.FieldMetaData("confOverlay", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
+    tmpMap.put(_Fields.RENEWER, new org.apache.thrift.meta_data.FieldMetaData("renewer", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TExecuteStatementReq.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TGetDelegationTokenReq.class, metaDataMap);
   }
 
-  public TExecuteStatementReq() {
+  public TGetDelegationTokenReq() {
   }
 
-  public TExecuteStatementReq(
+  public TGetDelegationTokenReq(
     TSessionHandle sessionHandle,
-    String statement)
+    String owner,
+    String renewer)
   {
     this();
     this.sessionHandle = sessionHandle;
-    this.statement = statement;
+    this.owner = owner;
+    this.renewer = renewer;
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public TExecuteStatementReq(TExecuteStatementReq other) {
+  public TGetDelegationTokenReq(TGetDelegationTokenReq other) {
     if (other.isSetSessionHandle()) {
       this.sessionHandle = new TSessionHandle(other.sessionHandle);
     }
-    if (other.isSetStatement()) {
-      this.statement = other.statement;
+    if (other.isSetOwner()) {
+      this.owner = other.owner;
     }
-    if (other.isSetConfOverlay()) {
-      Map<String,String> __this__confOverlay = new HashMap<String,String>();
-      for (Map.Entry<String, String> other_element : other.confOverlay.entrySet()) {
-
-        String other_element_key = other_element.getKey();
-        String other_element_value = other_element.getValue();
-
-        String __this__confOverlay_copy_key = other_element_key;
-
-        String __this__confOverlay_copy_value = other_element_value;
-
-        __this__confOverlay.put(__this__confOverlay_copy_key, __this__confOverlay_copy_value);
-      }
-      this.confOverlay = __this__confOverlay;
+    if (other.isSetRenewer()) {
+      this.renewer = other.renewer;
     }
   }
 
-  public TExecuteStatementReq deepCopy() {
-    return new TExecuteStatementReq(this);
+  public TGetDelegationTokenReq deepCopy() {
+    return new TGetDelegationTokenReq(this);
   }
 
   @Override
   public void clear() {
     this.sessionHandle = null;
-    this.statement = null;
-    this.confOverlay = null;
+    this.owner = null;
+    this.renewer = null;
   }
 
   public TSessionHandle getSessionHandle() {
@@ -202,60 +189,49 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
     }
   }
 
-  public String getStatement() {
-    return this.statement;
+  public String getOwner() {
+    return this.owner;
   }
 
-  public void setStatement(String statement) {
-    this.statement = statement;
+  public void setOwner(String owner) {
+    this.owner = owner;
   }
 
-  public void unsetStatement() {
-    this.statement = null;
+  public void unsetOwner() {
+    this.owner = null;
   }
 
-  /** Returns true if field statement is set (has been assigned a value) and false otherwise */
-  public boolean isSetStatement() {
-    return this.statement != null;
+  /** Returns true if field owner is set (has been assigned a value) and false otherwise */
+  public boolean isSetOwner() {
+    return this.owner != null;
   }
 
-  public void setStatementIsSet(boolean value) {
+  public void setOwnerIsSet(boolean value) {
     if (!value) {
-      this.statement = null;
+      this.owner = null;
     }
   }
 
-  public int getConfOverlaySize() {
-    return (this.confOverlay == null) ? 0 : this.confOverlay.size();
+  public String getRenewer() {
+    return this.renewer;
   }
 
-  public void putToConfOverlay(String key, String val) {
-    if (this.confOverlay == null) {
-      this.confOverlay = new HashMap<String,String>();
-    }
-    this.confOverlay.put(key, val);
+  public void setRenewer(String renewer) {
+    this.renewer = renewer;
   }
 
-  public Map<String,String> getConfOverlay() {
-    return this.confOverlay;
+  public void unsetRenewer() {
+    this.renewer = null;
   }
 
-  public void setConfOverlay(Map<String,String> confOverlay) {
-    this.confOverlay = confOverlay;
+  /** Returns true if field renewer is set (has been assigned a value) and false otherwise */
+  public boolean isSetRenewer() {
+    return this.renewer != null;
   }
 
-  public void unsetConfOverlay() {
-    this.confOverlay = null;
-  }
-
-  /** Returns true if field confOverlay is set (has been assigned a value) and false otherwise */
-  public boolean isSetConfOverlay() {
-    return this.confOverlay != null;
-  }
-
-  public void setConfOverlayIsSet(boolean value) {
+  public void setRenewerIsSet(boolean value) {
     if (!value) {
-      this.confOverlay = null;
+      this.renewer = null;
     }
   }
 
@@ -269,19 +245,19 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
       }
       break;
 
-    case STATEMENT:
+    case OWNER:
       if (value == null) {
-        unsetStatement();
+        unsetOwner();
       } else {
-        setStatement((String)value);
+        setOwner((String)value);
       }
       break;
 
-    case CONF_OVERLAY:
+    case RENEWER:
       if (value == null) {
-        unsetConfOverlay();
+        unsetRenewer();
       } else {
-        setConfOverlay((Map<String,String>)value);
+        setRenewer((String)value);
       }
       break;
 
@@ -293,11 +269,11 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
     case SESSION_HANDLE:
       return getSessionHandle();
 
-    case STATEMENT:
-      return getStatement();
+    case OWNER:
+      return getOwner();
 
-    case CONF_OVERLAY:
-      return getConfOverlay();
+    case RENEWER:
+      return getRenewer();
 
     }
     throw new IllegalStateException();
@@ -312,10 +288,10 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
     switch (field) {
     case SESSION_HANDLE:
       return isSetSessionHandle();
-    case STATEMENT:
-      return isSetStatement();
-    case CONF_OVERLAY:
-      return isSetConfOverlay();
+    case OWNER:
+      return isSetOwner();
+    case RENEWER:
+      return isSetRenewer();
     }
     throw new IllegalStateException();
   }
@@ -324,12 +300,12 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof TExecuteStatementReq)
-      return this.equals((TExecuteStatementReq)that);
+    if (that instanceof TGetDelegationTokenReq)
+      return this.equals((TGetDelegationTokenReq)that);
     return false;
   }
 
-  public boolean equals(TExecuteStatementReq that) {
+  public boolean equals(TGetDelegationTokenReq that) {
     if (that == null)
       return false;
 
@@ -342,21 +318,21 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
         return false;
     }
 
-    boolean this_present_statement = true && this.isSetStatement();
-    boolean that_present_statement = true && that.isSetStatement();
-    if (this_present_statement || that_present_statement) {
-      if (!(this_present_statement && that_present_statement))
+    boolean this_present_owner = true && this.isSetOwner();
+    boolean that_present_owner = true && that.isSetOwner();
+    if (this_present_owner || that_present_owner) {
+      if (!(this_present_owner && that_present_owner))
         return false;
-      if (!this.statement.equals(that.statement))
+      if (!this.owner.equals(that.owner))
         return false;
     }
 
-    boolean this_present_confOverlay = true && this.isSetConfOverlay();
-    boolean that_present_confOverlay = true && that.isSetConfOverlay();
-    if (this_present_confOverlay || that_present_confOverlay) {
-      if (!(this_present_confOverlay && that_present_confOverlay))
+    boolean this_present_renewer = true && this.isSetRenewer();
+    boolean that_present_renewer = true && that.isSetRenewer();
+    if (this_present_renewer || that_present_renewer) {
+      if (!(this_present_renewer && that_present_renewer))
         return false;
-      if (!this.confOverlay.equals(that.confOverlay))
+      if (!this.renewer.equals(that.renewer))
         return false;
     }
 
@@ -372,26 +348,26 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
     if (present_sessionHandle)
       builder.append(sessionHandle);
 
-    boolean present_statement = true && (isSetStatement());
-    builder.append(present_statement);
-    if (present_statement)
-      builder.append(statement);
+    boolean present_owner = true && (isSetOwner());
+    builder.append(present_owner);
+    if (present_owner)
+      builder.append(owner);
 
-    boolean present_confOverlay = true && (isSetConfOverlay());
-    builder.append(present_confOverlay);
-    if (present_confOverlay)
-      builder.append(confOverlay);
+    boolean present_renewer = true && (isSetRenewer());
+    builder.append(present_renewer);
+    if (present_renewer)
+      builder.append(renewer);
 
     return builder.toHashCode();
   }
 
-  public int compareTo(TExecuteStatementReq other) {
+  public int compareTo(TGetDelegationTokenReq other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    TExecuteStatementReq typedOther = (TExecuteStatementReq)other;
+    TGetDelegationTokenReq typedOther = (TGetDelegationTokenReq)other;
 
     lastComparison = Boolean.valueOf(isSetSessionHandle()).compareTo(typedOther.isSetSessionHandle());
     if (lastComparison != 0) {
@@ -403,22 +379,22 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetStatement()).compareTo(typedOther.isSetStatement());
+    lastComparison = Boolean.valueOf(isSetOwner()).compareTo(typedOther.isSetOwner());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetStatement()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.statement, typedOther.statement);
+    if (isSetOwner()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.owner, typedOther.owner);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetConfOverlay()).compareTo(typedOther.isSetConfOverlay());
+    lastComparison = Boolean.valueOf(isSetRenewer()).compareTo(typedOther.isSetRenewer());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetConfOverlay()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.confOverlay, typedOther.confOverlay);
+    if (isSetRenewer()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.renewer, typedOther.renewer);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -440,7 +416,7 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("TExecuteStatementReq(");
+    StringBuilder sb = new StringBuilder("TGetDelegationTokenReq(");
     boolean first = true;
 
     sb.append("sessionHandle:");
@@ -451,23 +427,21 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("statement:");
-    if (this.statement == null) {
+    sb.append("owner:");
+    if (this.owner == null) {
       sb.append("null");
     } else {
-      sb.append(this.statement);
+      sb.append(this.owner);
     }
     first = false;
-    if (isSetConfOverlay()) {
-      if (!first) sb.append(", ");
-      sb.append("confOverlay:");
-      if (this.confOverlay == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.confOverlay);
-      }
-      first = false;
+    if (!first) sb.append(", ");
+    sb.append("renewer:");
+    if (this.renewer == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.renewer);
     }
+    first = false;
     sb.append(")");
     return sb.toString();
   }
@@ -478,8 +452,12 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'sessionHandle' is unset! Struct:" + toString());
     }
 
-    if (!isSetStatement()) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'statement' is unset! Struct:" + toString());
+    if (!isSetOwner()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'owner' is unset! Struct:" + toString());
+    }
+
+    if (!isSetRenewer()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'renewer' is unset! Struct:" + toString());
     }
 
     // check for sub-struct validity
@@ -504,15 +482,15 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
     }
   }
 
-  private static class TExecuteStatementReqStandardSchemeFactory implements SchemeFactory {
-    public TExecuteStatementReqStandardScheme getScheme() {
-      return new TExecuteStatementReqStandardScheme();
+  private static class TGetDelegationTokenReqStandardSchemeFactory implements SchemeFactory {
+    public TGetDelegationTokenReqStandardScheme getScheme() {
+      return new TGetDelegationTokenReqStandardScheme();
     }
   }
 
-  private static class TExecuteStatementReqStandardScheme extends StandardScheme<TExecuteStatementReq> {
+  private static class TGetDelegationTokenReqStandardScheme extends StandardScheme<TGetDelegationTokenReq> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, TExecuteStatementReq struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TGetDelegationTokenReq struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -531,30 +509,18 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // STATEMENT
+          case 2: // OWNER
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.statement = iprot.readString();
-              struct.setStatementIsSet(true);
+              struct.owner = iprot.readString();
+              struct.setOwnerIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // CONF_OVERLAY
-            if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
-              {
-                org.apache.thrift.protocol.TMap _map144 = iprot.readMapBegin();
-                struct.confOverlay = new HashMap<String,String>(2*_map144.size);
-                for (int _i145 = 0; _i145 < _map144.size; ++_i145)
-                {
-                  String _key146; // required
-                  String _val147; // required
-                  _key146 = iprot.readString();
-                  _val147 = iprot.readString();
-                  struct.confOverlay.put(_key146, _val147);
-                }
-                iprot.readMapEnd();
-              }
-              struct.setConfOverlayIsSet(true);
+          case 3: // RENEWER
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.renewer = iprot.readString();
+              struct.setRenewerIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -568,7 +534,7 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, TExecuteStatementReq struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TGetDelegationTokenReq struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -577,25 +543,15 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
         struct.sessionHandle.write(oprot);
         oprot.writeFieldEnd();
       }
-      if (struct.statement != null) {
-        oprot.writeFieldBegin(STATEMENT_FIELD_DESC);
-        oprot.writeString(struct.statement);
+      if (struct.owner != null) {
+        oprot.writeFieldBegin(OWNER_FIELD_DESC);
+        oprot.writeString(struct.owner);
         oprot.writeFieldEnd();
       }
-      if (struct.confOverlay != null) {
-        if (struct.isSetConfOverlay()) {
-          oprot.writeFieldBegin(CONF_OVERLAY_FIELD_DESC);
-          {
-            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.confOverlay.size()));
-            for (Map.Entry<String, String> _iter148 : struct.confOverlay.entrySet())
-            {
-              oprot.writeString(_iter148.getKey());
-              oprot.writeString(_iter148.getValue());
-            }
-            oprot.writeMapEnd();
-          }
-          oprot.writeFieldEnd();
-        }
+      if (struct.renewer != null) {
+        oprot.writeFieldBegin(RENEWER_FIELD_DESC);
+        oprot.writeString(struct.renewer);
+        oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
@@ -603,60 +559,32 @@ public class TExecuteStatementReq implements org.apache.thrift.TBase<TExecuteSta
 
   }
 
-  private static class TExecuteStatementReqTupleSchemeFactory implements SchemeFactory {
-    public TExecuteStatementReqTupleScheme getScheme() {
-      return new TExecuteStatementReqTupleScheme();
+  private static class TGetDelegationTokenReqTupleSchemeFactory implements SchemeFactory {
+    public TGetDelegationTokenReqTupleScheme getScheme() {
+      return new TGetDelegationTokenReqTupleScheme();
     }
   }
 
-  private static class TExecuteStatementReqTupleScheme extends TupleScheme<TExecuteStatementReq> {
+  private static class TGetDelegationTokenReqTupleScheme extends TupleScheme<TGetDelegationTokenReq> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, TExecuteStatementReq struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TGetDelegationTokenReq struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       struct.sessionHandle.write(oprot);
-      oprot.writeString(struct.statement);
-      BitSet optionals = new BitSet();
-      if (struct.isSetConfOverlay()) {
-        optionals.set(0);
-      }
-      oprot.writeBitSet(optionals, 1);
-      if (struct.isSetConfOverlay()) {
-        {
-          oprot.writeI32(struct.confOverlay.size());
-          for (Map.Entry<String, String> _iter149 : struct.confOverlay.entrySet())
-          {
-            oprot.writeString(_iter149.getKey());
-            oprot.writeString(_iter149.getValue());
-          }
-        }
-      }
+      oprot.writeString(struct.owner);
+      oprot.writeString(struct.renewer);
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, TExecuteStatementReq struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TGetDelegationTokenReq struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       struct.sessionHandle = new TSessionHandle();
       struct.sessionHandle.read(iprot);
       struct.setSessionHandleIsSet(true);
-      struct.statement = iprot.readString();
-      struct.setStatementIsSet(true);
-      BitSet incoming = iprot.readBitSet(1);
-      if (incoming.get(0)) {
-        {
-          org.apache.thrift.protocol.TMap _map150 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.confOverlay = new HashMap<String,String>(2*_map150.size);
-          for (int _i151 = 0; _i151 < _map150.size; ++_i151)
-          {
-            String _key152; // required
-            String _val153; // required
-            _key152 = iprot.readString();
-            _val153 = iprot.readString();
-            struct.confOverlay.put(_key152, _val153);
-          }
-        }
-        struct.setConfOverlayIsSet(true);
-      }
+      struct.owner = iprot.readString();
+      struct.setOwnerIsSet(true);
+      struct.renewer = iprot.readString();
+      struct.setRenewerIsSet(true);
     }
   }
 

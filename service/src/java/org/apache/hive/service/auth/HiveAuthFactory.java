@@ -25,6 +25,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge;
+import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.thrift.ThriftCLIService;
 import org.apache.thrift.TProcessorFactory;
 import org.apache.thrift.transport.TTransportException;
@@ -53,7 +54,9 @@ public class HiveAuthFactory {
 
   private HadoopThriftAuthBridge.Server saslServer = null;
   private String authTypeStr;
-  HiveConf conf;
+  private final HiveConf conf;
+
+  public static final String HS2_PROXY_USER = "hive.server2.proxy.user";
 
   public HiveAuthFactory() throws TTransportException {
     conf = new HiveConf();
@@ -68,6 +71,13 @@ public class HiveAuthFactory {
         conf.getVar(ConfVars.HIVE_SERVER2_KERBEROS_KEYTAB),
         conf.getVar(ConfVars.HIVE_SERVER2_KERBEROS_PRINCIPAL)
         );
+      // start delegation token manager
+      try {
+        saslServer.startDelegationTokenSecretManager(conf);
+      } catch (IOException e) {
+        throw new TTransportException("Failed to start token manager", e);
+      }
+
     }
   }
 
@@ -128,6 +138,48 @@ public class HiveAuthFactory {
     } else {
       throw new IOException ("HiveServer2 kerberos principal or keytab is not correctly configured");
     }
+  }
+
+  // retrieve delegation token for the given user
+  public String getDelegationToken(String owner, String renewer) throws HiveSQLException {
+    if (saslServer == null) {
+      throw new HiveSQLException(
+          "Delegation token only supported over kerberos authentication");
+    }
+
+    try {
+      return saslServer.getDelegationToken(owner, renewer);
+    } catch (IOException e) {
+      throw new HiveSQLException("Error retrieving delegation token for user " + owner, e);
+    } catch (InterruptedException e) {
+      throw new HiveSQLException("delegation token retrieval interrupted", e);
+    }
+  }
+
+  // cancel given delegation token
+  public void cancelDelegationToken(String delegationToken) throws HiveSQLException {
+    if (saslServer == null) {
+      throw new HiveSQLException(
+          "Delegation token only supported over kerberos authentication");
+    }
+    try {
+      saslServer.cancelDelegationToken(delegationToken);
+    } catch (IOException e) {
+      throw new HiveSQLException("Error canceling delegation token " + delegationToken, e);
+    }
+  }
+
+  public void renewDelegationToken(String delegationToken) throws HiveSQLException {
+    if (saslServer == null) {
+      throw new HiveSQLException(
+          "Delegation token only supported over kerberos authentication");
+    }
+    try {
+      saslServer.renewDelegationToken(delegationToken);
+    } catch (IOException e) {
+      throw new HiveSQLException("Error renewing delegation token " + delegationToken, e);
+    }
+
   }
 
 }

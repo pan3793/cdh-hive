@@ -316,7 +316,14 @@ public interface HadoopShims {
    * @param userName
    * @return
    */
-  UserGroupInformation createProxyUser(String userName) throws IOException;
+  public UserGroupInformation createProxyUser(String userName) throws IOException;
+
+  /***
+   * Verify proxy access to given UGI for given user
+   * @param ugi
+   */
+  public void authorizeProxyAccess(String proxyUser, UserGroupInformation realUserUgi,
+      String ipAddress, Configuration conf) throws IOException;
 
   /**
    * InputSplitShim.

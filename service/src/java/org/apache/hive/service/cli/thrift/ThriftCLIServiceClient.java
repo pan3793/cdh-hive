@@ -21,6 +21,7 @@ package org.apache.hive.service.cli.thrift;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.CLIServiceClient;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.GetInfoType;
@@ -31,6 +32,7 @@ import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.TableSchema;
+import org.apache.thrift.TException;
 
 /**
  * ThriftCLIServiceClient.
@@ -381,6 +383,50 @@ public class ThriftCLIServiceClient extends CLIServiceClient {
       return new String(resp.getLog());
     } catch (HiveSQLException e) {
       throw e;
+    } catch (Exception e) {
+      throw new HiveSQLException(e);
+    }
+  }
+
+  @Override
+  public String getDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String owner, String renewer) throws HiveSQLException {
+    TGetDelegationTokenReq req = new TGetDelegationTokenReq(
+        sessionHandle.toTSessionHandle(), owner, renewer);
+    try {
+      TGetDelegationTokenResp tokenResp = cliService.GetDelegationToken(req);
+      checkStatus(tokenResp.getStatus());
+      return tokenResp.getDelegationToken();
+    } catch (Exception e) {
+      throw new HiveSQLException(e);
+    }
+  }
+
+  @Override
+  public void cancelDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String tokenStr) throws HiveSQLException {
+    TCancelDelegationTokenReq cancelReq = new TCancelDelegationTokenReq(
+          sessionHandle.toTSessionHandle(), tokenStr);
+    try {
+      TCancelDelegationTokenResp cancelResp =
+        cliService.CancelDelegationToken(cancelReq);
+      checkStatus(cancelResp.getStatus());
+      return;
+    } catch (TException e) {
+      throw new HiveSQLException(e);
+    }
+  }
+
+  @Override
+  public void renewDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String tokenStr) throws HiveSQLException {
+    TRenewDelegationTokenReq cancelReq = new TRenewDelegationTokenReq(
+        sessionHandle.toTSessionHandle(), tokenStr);
+    try {
+      TRenewDelegationTokenResp renewResp =
+        cliService.RenewDelegationToken(cancelReq);
+      checkStatus(renewResp.getStatus());
+      return;
     } catch (Exception e) {
       throw new HiveSQLException(e);
     }

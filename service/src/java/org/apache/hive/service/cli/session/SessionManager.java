@@ -18,12 +18,16 @@
 
 package org.apache.hive.service.cli.session;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hive.service.CompositeService;
+import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.log.LogManager;
@@ -80,6 +84,7 @@ public class SessionManager extends CompositeService {
       username = threadLocalUserName.get();
     }
 
+    username = getProxyUser(username, sessionConf, threadLocalIpAddress.get());
     if (withImpersonation) {
           HiveSessionImplwithUGI hiveSessionUgi = new HiveSessionImplwithUGI(username, password, sessionConf,
               threadLocalIpAddress.get(), delegationToken);
@@ -184,4 +189,38 @@ public class SessionManager extends CompositeService {
     }
   }
 
+  /**
+   * If the proxy user name is provided then check privileges to substitute the user.
+   * @param realUser
+   * @param sessionConf
+   * @param ipAddress
+   * @return
+   * @throws HiveSQLException
+   */
+  private String getProxyUser(String realUser, Map<String, String> sessionConf, String ipAddress)
+      throws HiveSQLException {
+    if (sessionConf == null || !sessionConf.containsKey(HiveAuthFactory.HS2_PROXY_USER)) {
+      return realUser;
+    }
+
+    // Extract the proxy user name and check if we are allowed to do the substitution
+    String proxyUser = sessionConf.get(HiveAuthFactory.HS2_PROXY_USER);
+    if (!hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ALLOW_USER_SUBSTITUTION)) {
+      throw new HiveSQLException("Proxy user substitution is not allowed");
+    }
+    if (!ShimLoader.getHadoopShims().isSecurityEnabled()) {
+      throw new HiveSQLException("Proxy user substitution is not supported for unsecure hadoop");
+    }
+
+    // Verify proxy user privilege of the realUser for the proxyUser
+    try {
+      UserGroupInformation sessionUgi = ShimLoader.getHadoopShims().createProxyUser(realUser);
+      ShimLoader.getHadoopShims().
+          authorizeProxyAccess(proxyUser, sessionUgi, ipAddress, hiveConf);
+      return proxyUser;
+    } catch (IOException e) {
+      throw new HiveSQLException("Failed to validate proxy privilage of " + realUser +
+          " for " + proxyUser, e);
+    }
+  }
 }
