@@ -330,6 +330,7 @@ public class HiveConf extends Configuration {
     METASTORE_CACHE_LEVEL2("datanucleus.cache.level2", false),
     METASTORE_CACHE_LEVEL2_TYPE("datanucleus.cache.level2.type", "none"),
     METASTORE_IDENTIFIER_FACTORY("datanucleus.identifierFactory", "datanucleus1"),
+    METASTORE_USE_LEGACY_VALUE_STRATEGY("datanucleus.rdbms.useLegacyNativeValueStrategy", true),
     METASTORE_PLUGIN_REGISTRY_BUNDLE_CHECK("datanucleus.plugin.pluginRegistryBundleCheck", "LOG"),
     METASTORE_BATCH_RETRIEVE_MAX("hive.metastore.batch.retrieve.max", 300),
     METASTORE_BATCH_RETRIEVE_TABLE_PARTITION_MAX(
