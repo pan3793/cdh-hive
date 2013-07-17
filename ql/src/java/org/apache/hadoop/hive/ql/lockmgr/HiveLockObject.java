@@ -18,8 +18,10 @@
 
 package org.apache.hadoop.hive.ql.lockmgr;
 
-import org.apache.hadoop.hive.ql.metadata.Partition;
+import java.util.Arrays;
+
 import org.apache.hadoop.hive.ql.metadata.DummyPartition;
+import org.apache.hadoop.hive.ql.metadata.Partition;
 import org.apache.hadoop.hive.ql.metadata.Table;
 
 public class HiveLockObject {
@@ -32,19 +34,31 @@ public class HiveLockObject {
     // mode of the lock: EXPLICIT(lock command)/IMPLICIT(query)
     private String lockMode;
     private String queryStr;
-    private String clientIp; 
+    private String clientIp;
 
+    /**
+     * Constructor
+     *
+     * Note: The parameters are used to uniquely identify a HiveLockObject.
+     * The parameters will be stripped off any ':' characters in order not
+     * to interfere with the way the data is serialized (':' delimited string).
+     */
     public HiveLockObjectData(String queryId,
                               String lockTime,
                               String lockMode,
                               String queryStr) {
-      this.queryId  = queryId;
-      this.lockTime = lockTime;
-      this.lockMode = lockMode;
-      this.queryStr = queryStr.trim();
+      this.queryId = removeDelimiter(queryId);
+      this.lockTime = removeDelimiter(lockTime);
+      this.lockMode = removeDelimiter(lockMode);
+      this.queryStr = removeDelimiter(queryStr.trim());
     }
 
-
+    /**
+     * Constructor
+     *
+     * @param data String of the form "queryId:lockTime:lockMode:queryStr".
+     * No ':' characters are allowed in any of the components.
+     */
     public HiveLockObjectData(String data) {
       if (data == null) {
         return;
@@ -73,15 +87,16 @@ public class HiveLockObject {
       return queryStr;
     }
 
+    @Override
     public String toString() {
       return queryId + ":" + lockTime + ":" + lockMode + ":" + queryStr + ":"
           + clientIp;
     }
-    
+
     public String getClientIp() {
       return this.clientIp;
     }
-    
+
     public void setClientIp(String clientIp) {
       this.clientIp = clientIp;
     }
@@ -167,4 +182,23 @@ public class HiveLockObject {
     this.data = data;
   }
 
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof HiveLockObject)) {
+      return false;
+    }
+
+    HiveLockObject tgt = (HiveLockObject) o;
+    return Arrays.equals(pathNames, tgt.pathNames) &&
+        data == null ? tgt.getData() == null :
+        tgt.getData() != null && data.equals(tgt.getData());
+  }
+
+  private static String removeDelimiter(String in) {
+    if (in == null) {
+      return null;
+    }
+    return in.replaceAll(":","");
+  }
 }
