@@ -394,14 +394,9 @@ public class CommonJoinTaskDispatcher extends AbstractJoinTaskDispatcher impleme
         MapRedTask newTask = newTaskAlias.getFirst();
         bigTableAlias = newTaskAlias.getSecond();
 
-        Long aliasKnownSize = aliasToSize.get(bigTableAlias);
-        if (aliasKnownSize != null && aliasKnownSize.longValue() > 0) {
-          long smallTblTotalKnownSize = aliasTotalKnownInputSize
-              - aliasKnownSize.longValue();
-          if (smallTblTotalKnownSize > ThresholdOfSmallTblSizeSum) {
-            // this table is not good to be a big table.
-            continue;
-          }
+        if (cannotConvert(bigTableAlias, aliasToSize,
+            aliasTotalKnownInputSize, ThresholdOfSmallTblSizeSum)) {
+          continue;
         }
 
         // add into conditional task
