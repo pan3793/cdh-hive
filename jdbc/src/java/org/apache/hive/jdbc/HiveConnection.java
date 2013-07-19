@@ -35,13 +35,13 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
-import java.util.concurrent.Executor;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import javax.security.sasl.SaslException;
 
@@ -78,7 +78,6 @@ public class HiveConnection implements java.sql.Connection {
   private static final String HIVE_AUTH_TYPE= "auth";
   private static final String HIVE_AUTH_SIMPLE = "noSasl";
   private static final String HIVE_AUTH_TOKEN = "delegationToken";
-  public static final String HIVE_CONF_TOKEN= "hive.server2.delegation.token";
   private static final String HIVE_AUTH_USER = "user";
   private static final String HIVE_AUTH_PRINCIPAL = "principal";
   private static final String HIVE_AUTH_PASSWD = "password";
@@ -192,7 +191,7 @@ public class HiveConnection implements java.sql.Connection {
     } else {
       // check delegation token in job conf if any
       try {
-        tokenStr = ShimLoader.getHadoopShims().getTokenStrForm(HIVE_CONF_TOKEN);
+        tokenStr = ShimLoader.getHadoopShims().getTokenStrForm(HiveAuthFactory.HS2_CLIENT_TOKEN);
       } catch (IOException e) {
         throw new SQLException("Error reading token ", e);
       }

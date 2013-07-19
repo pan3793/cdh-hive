@@ -42,6 +42,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.thrift.client.TUGIAssumingTransport;
 import org.apache.hadoop.security.SaslRpcServer;
 import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
@@ -382,6 +383,13 @@ import org.apache.thrift.transport.TTransportFactory;
      }
 
      @Override
+     public String getDelegationTokenWithService(String owner, String renewer, String service)
+         throws IOException, InterruptedException {
+       String token = getDelegationToken(owner, renewer);
+       return ShimLoader.getHadoopShims().addServiceToToken(token, service);
+     }
+
+     @Override
      public long renewDelegationToken(String tokenStrForm) throws IOException {
        if (!authenticationMethod.get().equals(AuthenticationMethod.KERBEROS)) {
          throw new AuthorizationException(
@@ -619,5 +627,6 @@ import org.apache.thrift.transport.TTransportFactory;
          });
        }
      }
+
    }
  }

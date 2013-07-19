@@ -57,6 +57,7 @@ public class HiveAuthFactory {
   private final HiveConf conf;
 
   public static final String HS2_PROXY_USER = "hive.server2.proxy.user";
+  public static final String HS2_CLIENT_TOKEN = "hiveserver2ClientToken";
 
   public HiveAuthFactory() throws TTransportException {
     conf = new HiveConf();
@@ -148,7 +149,7 @@ public class HiveAuthFactory {
     }
 
     try {
-      return saslServer.getDelegationToken(owner, renewer);
+      return saslServer.getDelegationTokenWithService(owner, renewer, HS2_CLIENT_TOKEN);
     } catch (IOException e) {
       throw new HiveSQLException("Error retrieving delegation token for user " + owner, e);
     } catch (InterruptedException e) {

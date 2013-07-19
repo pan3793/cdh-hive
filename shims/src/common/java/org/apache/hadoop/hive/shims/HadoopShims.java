@@ -246,7 +246,7 @@ public interface HadoopShims {
    * @return the string form of the token found
    * @throws IOException
    */
-  String getTokenStrForm(String tokenSignature) throws IOException;
+  public String getTokenStrForm(String tokenSignature) throws IOException;
 
   /**
    * Add a delegation token to the given ugi
@@ -255,9 +255,19 @@ public interface HadoopShims {
    * @param tokenService
    * @throws IOException
    */
-  void setTokenStr(UserGroupInformation ugi, String tokenStr, String tokenService)
+  public void setTokenStr(UserGroupInformation ugi, String tokenStr, String tokenService)
     throws IOException;
 
+
+  /**
+   * Add given service to the string format token
+   * @param tokenStr
+   * @param tokenService
+   * @return
+   * @throws IOException
+   */
+  public String addServiceToToken(String tokenStr, String tokenService)
+    throws IOException;
 
   enum JobTrackerState { INITIALIZING, RUNNING };
 
