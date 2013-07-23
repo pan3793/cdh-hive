@@ -34,6 +34,7 @@ import org.apache.hadoop.mapred.TaskLogServlet;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.util.Progressable;
+import org.apache.hadoop.security.KerberosName;
 
 /**
  * Implemention of shims against Hadoop 0.20 with Security.
@@ -73,6 +74,11 @@ public class Hadoop20SShims extends HadoopShimsSecure {
         progressable.progress();
       }
     };
+  }
+
+  public String getKerberosShortName(String kerberosLongName) throws IOException {
+    KerberosName kerberosName = new KerberosName(kerberosLongName);
+    return kerberosName.getShortName();
   }
 
   @Override

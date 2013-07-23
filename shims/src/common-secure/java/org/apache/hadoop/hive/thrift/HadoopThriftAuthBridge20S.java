@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.thrift;
 
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -40,8 +41,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.Client;
 import org.apache.hadoop.fs.FileSystem;
+
 import org.apache.hadoop.hive.thrift.client.TUGIAssumingTransport;
 import org.apache.hadoop.security.SaslRpcServer;
 import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
@@ -430,7 +433,7 @@ import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHE
      public String getRemoteUser() {
        return remoteUser.get();
      }
-     
+
     /** CallbackHandler for SASL DIGEST-MD5 mechanism */
     // This code is pretty much completely based on Hadoop's
     // SaslRpcServer.SaslDigestCallbackHandler - the only reason we could not
@@ -563,7 +566,13 @@ import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHE
                  }
                });
            } else {
-             remoteUser.set(endUser);
+             // check for kerberos v5
+             if (saslServer.getMechanismName().equals("GSSAPI")) {
+               String shortName = ShimLoader.getHadoopShims().getKerberosShortName(endUser);
+               remoteUser.set(shortName);
+             } else {
+               remoteUser.set(endUser);
+             }
              return wrapped.process(inProt, outProt);
            }
          } catch (RuntimeException rte) {

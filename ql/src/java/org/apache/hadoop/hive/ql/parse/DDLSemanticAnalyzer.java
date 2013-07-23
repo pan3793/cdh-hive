@@ -763,7 +763,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     if (dbProps != null) {
       createDatabaseDesc.setDatabaseProperties(dbProps);
     }
-
+    saveInputLocationEntity(dbLocation);
     rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
         createDatabaseDesc), conf));
   }
@@ -1079,6 +1079,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
         shared.serde, shared.serdeProps, rowFormatParams.collItemDelim,
         rowFormatParams.fieldDelim, rowFormatParams.fieldEscape,
         rowFormatParams.lineDelim, rowFormatParams.mapKeyDelim, indexComment);
+    saveInputLocationEntity(location);
     Task<?> createIndex =
         TaskFactory.get(new DDLWork(getInputs(), getOutputs(), crtIndexDesc), conf);
     rootTasks.add(createIndex);
@@ -1424,6 +1425,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     AlterTableDesc alterTblDesc = new AlterTableDesc(tableName, newLocation, partSpec);
 
     addInputsOutputsAlterTable(tableName, partSpec, alterTblDesc);
+    saveInputLocationEntity(newLocation);
     rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
         alterTblDesc), conf));
   }
@@ -1955,6 +1957,19 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
       descTblDesc.setFormatted(descOptions == HiveParser.KW_FORMATTED);
       descTblDesc.setExt(descOptions == HiveParser.KW_EXTENDED);
       descTblDesc.setPretty(descOptions == HiveParser.KW_PRETTY);
+    }
+
+    // store the read entity for the table being described
+    if (conf.getBoolVar(ConfVars.HIVE_EXTENDED_ENITITY_CAPTURE)) {
+      Table table;
+      // table name could be db.tab format
+      if (tableName.contains(".")) {
+        String[] tokens = tableName.split("\\.");
+        table = new Table (tokens[0], tokens[1]);
+      } else {
+        table = new Table (db.getCurrentDatabase(), tableName);
+      }
+    inputs.add(new ReadEntity(table));
     }
     rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
         descTblDesc), conf));
@@ -2612,6 +2627,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     // add the last one
     if (currentPart != null) {
       validatePartitionValues(currentPart);
+      saveInputLocationEntity(currentLocation);
       AddPartitionDesc addPartitionDesc = new AddPartitionDesc(
           db.getCurrentDatabase(), tblName, currentPart,
           currentLocation, ifNotExists, expectView);
@@ -3287,4 +3303,12 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
   private String toMessage(ErrorMsg message, Object detail) {
     return detail == null ? message.getMsg() : message.getMsg(detail.toString());
   }
+
+  private void saveInputLocationEntity(String location) {
+    if (conf.getBoolVar(ConfVars.HIVE_EXTENDED_ENITITY_CAPTURE) &&
+        (location != null)) {
+      inputs.add(new ReadEntity(location));
+    }
+  }
+
 }

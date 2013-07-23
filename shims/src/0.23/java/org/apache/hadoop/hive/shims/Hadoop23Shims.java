@@ -40,6 +40,7 @@ import org.apache.hadoop.mapreduce.task.JobContextImpl;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.hadoop.mapreduce.util.HostUtil;
 import org.apache.hadoop.util.Progressable;
+import org.apache.hadoop.security.authentication.util.KerberosName;
 
 /**
  * Implemention of shims against Hadoop 0.23.0.
@@ -114,6 +115,11 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       conf.set("mapreduce.framework.name", "yarn");
       conf.set("yarn.resourcemanager.address", val);
     }
+  }
+
+  public String getKerberosShortName(String kerberosLongName) throws IOException {
+    KerberosName kerberosName = new KerberosName(kerberosLongName);
+    return kerberosName.getShortName();
   }
 
   @Override

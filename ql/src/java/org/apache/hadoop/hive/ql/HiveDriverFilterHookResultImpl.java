@@ -16,28 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hive.ql.parse;
+package org.apache.hadoop.hive.ql;
 
-import java.util.Set;
+import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.hooks.ReadEntity;
-import org.apache.hadoop.hive.ql.hooks.WriteEntity;
-import org.apache.hadoop.hive.ql.metadata.Hive;
-import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.ql.plan.HiveOperation;
 
-public class HiveSemanticAnalyzerHookContextImpl implements HiveSemanticAnalyzerHookContext {
+public class HiveDriverFilterHookResultImpl implements HiveDriverFilterHookResult {
 
-  Configuration conf;
-  Set<ReadEntity> inputs = null;
-  Set<WriteEntity> outputs = null;
+  private Configuration conf;
+  private HiveOperation hiveOperation;
   private String userName;
+  private List<String> result;
 
-  @Override
-  public Hive getHive() throws HiveException {
+  public HiveDriverFilterHookResultImpl(Configuration conf, HiveOperation hiveOperation,
+    String userName, List<String> result) {
+    this.conf = conf;
+    this.hiveOperation = hiveOperation;
+    this.userName = userName;
+    this.result = result;
+  }
 
-    return Hive.get((HiveConf)conf);
+  public HiveDriverFilterHookResultImpl() {
   }
 
   @Override
@@ -50,27 +51,27 @@ public class HiveSemanticAnalyzerHookContextImpl implements HiveSemanticAnalyzer
     this.conf = conf;
   }
 
-  @Override
-  public void update(BaseSemanticAnalyzer sem) {
-    this.inputs = sem.getInputs();
-    this.outputs = sem.getOutputs();
-  }
-
-  @Override
-  public Set<ReadEntity> getInputs() {
-    return inputs;
-  }
-
-  @Override
-  public Set<WriteEntity> getOutputs() {
-    return outputs;
-  }
-
   public String getUserName() {
     return userName;
   }
 
   public void setUserName(String userName) {
     this.userName = userName;
+  }
+
+  public List<String> getResult() {
+    return result;
+  }
+
+  public void setResult(List<String> result) {
+    this.result = result;
+  }
+
+  public HiveOperation getHiveOperation() {
+    return hiveOperation;
+  }
+
+  public void setHiveOperation(HiveOperation hiveOperation) {
+    this.hiveOperation = hiveOperation;
   }
 }

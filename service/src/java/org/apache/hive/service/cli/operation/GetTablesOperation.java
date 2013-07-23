@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.ql.metadata.Hive;
+import org.apache.hadoop.hive.ql.plan.HiveOperation;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationState;
@@ -73,9 +75,17 @@ public class GetTablesOperation extends MetadataOperation {
       IMetaStoreClient metastoreClient = getParentSession().getMetaStoreClient();
       String schemaPattern = convertSchemaPattern(schemaName);
       String tablePattern = convertIdentifierPattern(tableName, true);
-      for (String dbName : metastoreClient.getDatabases(schemaPattern)) {
+
+      HiveOperation hiveOperation = HiveOperation.SHOWDATABASES;
+      String currentDbName = Hive.get().getCurrentDatabase();
+      List<String> dbNames = metastoreClient.getDatabases(schemaPattern);
+      List<String> filteredDbNames = filterResultSet(dbNames, hiveOperation, currentDbName);
+
+      for (String dbName : filteredDbNames) {
         List<String> tableNames = metastoreClient.getTables(dbName, tablePattern);
-        for (Table table : metastoreClient.getTableObjectsByName(dbName, tableNames)) {
+        hiveOperation = HiveOperation.SHOWTABLES;
+        List <String> filteredTableNames = filterResultSet(tableNames, hiveOperation, dbName);
+        for (Table table : metastoreClient.getTableObjectsByName(dbName, filteredTableNames)) {
           Object[] rowData = new Object[] {
               DEFAULT_HIVE_CATALOG,
               table.getDbName(),

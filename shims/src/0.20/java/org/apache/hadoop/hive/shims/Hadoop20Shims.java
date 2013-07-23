@@ -101,6 +101,11 @@ public class Hadoop20Shims implements HadoopShims {
     // gone in 20+
   }
 
+   public String getKerberosShortName(String kerberosName) throws IOException {
+    // raise an exception
+    throw new IOException("Authentication is not supported with 0.20");
+  }
+
 
   /**
    * Returns a shim to wrap MiniMrCluster

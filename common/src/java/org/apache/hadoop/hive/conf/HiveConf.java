@@ -663,6 +663,7 @@ public class HiveConf extends Configuration {
     HIVECONFVALIDATION("hive.conf.validation", true),
 
     SEMANTIC_ANALYZER_HOOK("hive.semantic.analyzer.hook", ""),
+    HIVE_EXEC_FILTER_HOOK("hive.exec.filter.hook",""),
 
     HIVE_AUTHORIZATION_ENABLED("hive.security.authorization.enabled", false),
     HIVE_AUTHORIZATION_MANAGER("hive.security.authorization.manager",
@@ -721,6 +722,7 @@ public class HiveConf extends Configuration {
     HIVE_DRIVER_RUN_HOOKS("hive.exec.driver.run.hooks", ""),
     HIVE_DDL_OUTPUT_FORMAT("hive.ddl.output.format", null),
     HIVE_ENTITY_SEPARATOR("hive.entity.separator", "@"),
+    HIVE_EXTENDED_ENITITY_CAPTURE("hive.entity.capture.input.URI", false),
 
     HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS("hive.server2.thrift.min.worker.threads", 5),
     HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS("hive.server2.thrift.max.worker.threads", 100),
@@ -738,6 +740,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_PLAIN_LDAP_DOMAIN("hive.server2.authentication.ldap.Domain", null),
     HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS("hive.server2.custom.authentication.class", null),
     HIVE_SERVER2_ENABLE_DOAS("hive.server2.enable.doAs", true),
+    HIVE_SERVER2_SESSION_HOOK("hive.server2.session.hook", ""),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),
 
@@ -1126,13 +1129,7 @@ public class HiveConf extends Configuration {
     }
 
     // setup list of conf vars that are not allowed to change runtime
-    String restrictListStr = this.get(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
-    if (restrictListStr != null) {
-      for (String entry : restrictListStr.split(",")) {
-        restrictList.add(entry);
-      }
-    }
-    restrictList.add(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
+    setupRestrictList();
   }
 
 
@@ -1246,5 +1243,36 @@ public class HiveConf extends Configuration {
       return Integer.parseInt(m.group(1));
     }
 
+  }
+
+  /**
+   * Append comma separated list of config vars to the restrict List
+   * @param restrictListStr
+   */
+  public void addToRestrictList(String restrictListStr) {
+    if (restrictListStr == null) {
+      return;
+    }
+    String oldList = this.getVar(ConfVars.HIVE_CONF_RESTRICTED_LIST);
+    if (oldList == null || oldList.isEmpty()) {
+      this.setVar(ConfVars.HIVE_CONF_RESTRICTED_LIST, restrictListStr);
+    } else {
+      this.setVar(ConfVars.HIVE_CONF_RESTRICTED_LIST, oldList + "," + restrictListStr);
+    }
+    setupRestrictList();
+  }
+
+  /**
+   * Add the HIVE_CONF_RESTRICTED_LIST values to restrictList. Include HIVE_CONF_RESTRICTED_LIST itself
+   */
+  private void setupRestrictList() {
+    String restrictListStr = this.getVar(ConfVars.HIVE_CONF_RESTRICTED_LIST);
+    restrictList.clear();
+    if (restrictListStr != null) {
+      for (String entry : restrictListStr.split(",")) {
+        restrictList.add(entry.trim());
+      }
+    }
+    restrictList.add(ConfVars.HIVE_CONF_RESTRICTED_LIST.toString());
   }
 }
