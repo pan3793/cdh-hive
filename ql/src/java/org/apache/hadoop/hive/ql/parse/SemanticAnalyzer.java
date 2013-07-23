@@ -8365,6 +8365,11 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       // skip the rest of this method.
       ctx.setResDir(null);
       ctx.setResFile(null);
+      if (conf.getBoolVar(ConfVars.HIVE_EXTENDED_ENITITY_CAPTURE)) {
+        for (Table tab : topToTable.values()) {
+          getInputs().add(new ReadEntity(tab));
+        }
+      }
       return;
     }
 
@@ -9008,6 +9013,10 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
     }
 
+    if (conf.getBoolVar(ConfVars.HIVE_EXTENDED_ENITITY_CAPTURE) &&
+          (location != null)) {
+      inputs.add(new ReadEntity(location));
+    }
     // Handle different types of CREATE TABLE command
     CreateTableDesc crtTblDesc = null;
     switch (command_type) {

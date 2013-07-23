@@ -120,6 +120,14 @@ public interface HadoopShims {
   long getAccessTime(FileStatus file);
 
   /**
+   * return the Kerberos short name
+   * @param full Kerberos name
+   * @return short Kerberos name
+   * @throws IOException
+   */
+  String getKerberosShortName(String kerberosName) throws IOException;
+
+  /**
    * Returns a shim to wrap MiniMrCluster
    */
   public MiniMrShim getMiniMrCluster(Configuration conf, int numberOfTaskTrackers,

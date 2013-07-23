@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,32 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.hive.service.cli.session;
+package org.apache.hadoop.hive.ql;
 
-import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.hooks.Hook;
 
 /**
- * HiveSessionHookContext.
- * Interface passed to the HiveServer2 session hook execution. This enables
- * the hook implementation to accesss session config, user and session handle
+ * HiveDriverFilterHook allows Hive to be extended with custom
+ * logic for processing commands.
+ *
+ * Note that the lifetime of an instantiated hook object is scoped to
+ * the analysis of a single statement; hook instances are never reused.
  */
-public interface HiveSessionHookContext {
-
+public interface HiveDriverFilterHook extends Hook {
   /**
-   * Retrieve session conf
-   * @return
+   * Invoked after Hive finishes processing a command, fetches results and before the results
+   * are returned to the client.
    */
-  public HiveConf getSessionConf();
+  public HiveDriverFilterHookResult postDriverFetch(HiveDriverFilterHookContext hookContext)
+      throws Exception;
 
-  /**
-   * The get the username starting the session
-   * @return
-   */
-  public String getSessionUser();
-
-  /**
-   * Retrieve handle for the session
-   * @return
-   */
-  public String getSessionHandle();
 }

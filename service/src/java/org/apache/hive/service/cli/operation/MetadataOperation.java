@@ -18,6 +18,18 @@
 
 package org.apache.hive.service.cli.operation;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.hadoop.hive.common.JavaUtils;
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.HiveDriverFilterHook;
+import org.apache.hadoop.hive.ql.HiveDriverFilterHookContext;
+import org.apache.hadoop.hive.ql.HiveDriverFilterHookContextImpl;
+import org.apache.hadoop.hive.ql.HiveDriverFilterHookResult;
+import org.apache.hadoop.hive.ql.hooks.Hook;
+import org.apache.hadoop.hive.ql.plan.HiveOperation;
+import org.apache.hadoop.util.StringUtils;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.OperationType;
@@ -96,4 +108,66 @@ public abstract class MetadataOperation extends Operation {
           .replaceAll("([^\\\\])_", "$1.").replaceAll("\\\\_", "_").replaceAll("^_", ".");
   }
 
+  private <T extends Hook> List<T> getHooks(HiveConf.ConfVars hookConfVar, Class<T> clazz)
+      throws Exception {
+    HiveConf conf = getParentSession().getHiveConf();
+    List<T> hooks = new ArrayList<T>();
+    String csHooks = conf.getVar(hookConfVar);
+    if (csHooks == null) {
+      return hooks;
+    }
+
+    csHooks = csHooks.trim();
+    if (csHooks.equals("")) {
+      return hooks;
+    }
+
+    String[] hookClasses = csHooks.split(",");
+
+    for (String hookClass : hookClasses) {
+      try {
+        T hook =
+            (T) Class.forName(hookClass.trim(), true, JavaUtils.getClassLoader()).newInstance();
+        hooks.add(hook);
+      } catch (ClassNotFoundException e) {
+        LOG.error(hookConfVar.varname + " Class not found:" + e.getMessage());
+        throw e;
+      }
+    }
+    return hooks;
+  }
+
+  protected List<String> filterResultSet(List<String> inputResultSet, HiveOperation hiveOperation, String dbName)
+    throws Exception {
+    List<String> filteredResultSet = new ArrayList<String>();
+    HiveConf conf = getParentSession().getHiveConf();
+    String userName = getParentSession().getUserName();
+    List<HiveDriverFilterHook> filterHooks = null;
+
+    try {
+      filterHooks = getHooks(HiveConf.ConfVars.HIVE_EXEC_FILTER_HOOK,
+          HiveDriverFilterHook.class);
+    } catch (Exception e) {
+      LOG.error("Failed to obtain filter hooks");
+      LOG.error(StringUtils.stringifyException(e));
+    }
+
+    // if the result set is non null, non empty and exec filter hooks are present
+    // invoke the hooks to filter the result set
+    if (inputResultSet != null && !inputResultSet.isEmpty() && filterHooks != null && !filterHooks.isEmpty() )  {
+      HiveDriverFilterHookContext hookCtx = new HiveDriverFilterHookContextImpl(conf,
+                                                           hiveOperation, userName, inputResultSet, dbName);
+      HiveDriverFilterHookResult hookResult = null;
+      for (HiveDriverFilterHook hook : filterHooks) {
+        // result set 'inputResultSet' is passed to the filter hooks. The filter hooks shouldn't
+        // mutate inputResultSet directly. They should return a filtered result set instead.
+        hookResult = hook.postDriverFetch(hookCtx);
+        ((HiveDriverFilterHookContextImpl)hookCtx).setResult(hookResult.getResult());
+      }
+      filteredResultSet.addAll(hookResult.getResult());
+      return filteredResultSet;
+    } else {
+      return inputResultSet;
+    }
+  }
 }

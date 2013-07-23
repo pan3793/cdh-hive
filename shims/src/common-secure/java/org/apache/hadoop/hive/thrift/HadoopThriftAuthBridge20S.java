@@ -43,6 +43,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.Client;
 import org.apache.hadoop.hive.thrift.client.TUGIAssumingTransport;
 import org.apache.hadoop.security.SaslRpcServer;
 import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
@@ -581,7 +583,13 @@ import org.apache.thrift.transport.TTransportFactory;
                  }
                });
            } else {
-             remoteUser.set(endUser);
+             // check for kerberos v5
+             if (saslServer.getMechanismName().equals("GSSAPI")) {
+               String shortName = ShimLoader.getHadoopShims().getKerberosShortName(endUser);
+               remoteUser.set(shortName);
+             } else {
+               remoteUser.set(endUser);
+             }
              return wrapped.process(inProt, outProt);
            }
          } catch (RuntimeException rte) {
