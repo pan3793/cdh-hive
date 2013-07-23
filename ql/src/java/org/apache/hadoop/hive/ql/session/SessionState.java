@@ -341,6 +341,7 @@ public class SessionState {
 
   public void setCurrentDB(String currentDB) {
     this.currentDB = currentDB;
+    this.getConf().setVar(HiveConf.ConfVars.HIVE_CURRENT_DB, currentDB);
   }
 
   /**

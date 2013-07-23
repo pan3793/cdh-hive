@@ -727,8 +727,9 @@ public class HiveConf extends Configuration {
     // This will be removed once the rest of the DML changes are committed.
     HIVEOPTLISTBUCKETING("hive.optimize.listbucketing", false),
 
-    // Allow TCP Keep alive socket option for for HiveServer or a maximum timeout for the socket.
-
+    HIVE_CURRENT_DB("hive.current.db", "default"),
+    
+    // Allow TCP Keep alive socket option for for HiveServer or a maximum timeout for the socket.  
     SERVER_READ_SOCKET_TIMEOUT("hive.server.read.socket.timeout", 10),
     SERVER_TCP_KEEP_ALIVE("hive.server.tcp.keepalive", true),
 
