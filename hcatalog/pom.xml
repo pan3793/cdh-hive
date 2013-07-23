@@ -21,14 +21,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+  <parent>
+      <groupId>com.cloudera.cdh</groupId>
+      <artifactId>cdh-root</artifactId>
+      <version>5.0.0-SNAPSHOT</version>
+  </parent>
+
   <properties>
       <activemq.version>5.5.0</activemq.version>
       <commons-exec.version>1.1</commons-exec.version>
       <commons-io.version>2.4</commons-io.version>
       <guava.version>11.0.2</guava.version>
-      <hadoop20.version>1.0.3</hadoop20.version>
-      <hadoop23.version>2.0.3-alpha</hadoop23.version>
-      <hbase.version>0.94.5</hbase.version>
+      <hadoop20.version>no-such-version</hadoop20.version>
+      <hadoop23.version>${cdh.hadoop.version}</hadoop23.version>
+      <hbase.hadoop1.version>no-such-version</hbase.hadoop1.version>
+      <hbase.hadoop2.version>${cdh.hbase.version}</hbase.hadoop2.version>
       <hcatalog.version>${project.version}</hcatalog.version>
       <hive.version>${project.version}</hive.version>
       <jackson.version>1.9.2</jackson.version>
@@ -38,14 +45,14 @@
       <pig.version>0.10.1</pig.version>
       <slf4j.version>1.6.1</slf4j.version>
       <wadl-resourcedoc-doclet.version>1.4</wadl-resourcedoc-doclet.version>
-      <zookeeper.version>3.4.3</zookeeper.version>
+      <zookeeper.version>${cdh.zookeeper.version}</zookeeper.version>
       <metrics-core.version>2.1.2</metrics-core.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.hcatalog</groupId>
   <artifactId>hcatalog</artifactId>
-  <version>0.11.0</version>
+  <version>0.11.0-cdh5.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <build>
@@ -214,6 +221,36 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
+    </repository>
+
+    <repository>
+      <id>apache.snapshot.repo</id>
+      <url>https://repository.apache.org/content/groups/snapshots/</url>
+      <name>Apache Snapshots</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+     <repository>
+      <id>cdh.repo</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
+      <name>Cloudera Repositories</name>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    
+    <repository>
+      <id>cdh.snapshots.repo</id>
+      <url>https://repository.cloudera.com/artifactory/libs-snapshot-local</url>
+      <name>Cloudera Snapshots Repository</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </repository>
 
   </repositories>

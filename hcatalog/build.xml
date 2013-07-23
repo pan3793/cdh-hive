@@ -25,6 +25,19 @@
        definitions yet. -->
   <!-- <import file="../build-common.xml"/> -->
 
+    <!-- triggered if not building from top level -->
+    <condition property="build.dir.hive" value="build">
+      <not>  
+        <isset property="build.dir.hive"/>
+      </not>
+    </condition>
+
+    <condition property="hadoop.mr.rev" value="23">
+      <not>  
+        <isset property="hadoop.mr.rev"/>
+      </not>
+    </condition>
+
     <property name="path.to.basedir" location="${basedir}"/>
     <property name="test.result.dir" location="${build.dir.hive}/hcatalog/test"
               description="location to place TEST-*.xml files so that hive's testreport includes them"/>

@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<ivy-module version="2.0">
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
   <info organisation="${hive.ivy.org}" module="hive-common" revision="${version}">
     <license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt" />
     <description homepage="http://hive.apache.org">
@@ -34,8 +34,48 @@
       <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
       <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
     </dependency>
-    <dependency org="org.apache.avro" name="avro" rev="${avro.version}"
-                conf="hadoop23.compile->default" transitive="false" />
+    <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-core"
+                rev="${hadoop-0.23.version}"
+                conf="hadoop23.compile->default" transitive="false">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-archives"
+                rev="${hadoop-0.23.version}"
+                conf="hadoop23.compile->default" transitive="false">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+
+    <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
+                conf="hadoop23.compile->default">
+        <artifact name="avro-mapred" type="jar" ext="jar" m:classifier="hadoop2"/>
+    </dependency>
+    
+    <dependency org="org.apache.hadoop" name="hadoop-core"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop20.compile->default" transitive="false">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+
+    <dependency org="org.apache.hadoop" name="hadoop-test"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop20.compile->default" transitive="false">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-tools"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop20.compile->default" transitive="false">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
 
     <dependency org="org.apache.hive" name="hive-shims" rev="${version}"
                 conf="compile->default" transitive="false" />
