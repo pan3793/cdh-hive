@@ -73,17 +73,31 @@ public class SQLOperation extends ExecuteStatementOperation {
   // Compile the current statement
   @Override
   public void prepare() throws HiveSQLException {
-    prepare(null);
+    HiveConf queryConf = getParentSession().getHiveConf();
+    // If there are query specific settings to overlay, then create a copy of config
+    if (confOverlay != null && confOverlay.size() > 0) {
+      queryConf = new HiveConf(queryConf );
+    }
+    prepare(queryConf);
   }
 
   // Compile the current statement with the give configuration
   @Override
-  public void prepare(HiveConf conf) throws HiveSQLException {
+  public void prepare(HiveConf queryConf) throws HiveSQLException {
+    assert (queryConf != null);
     setState(OperationState.RUNNING);
-    HiveConf queryConf = conf;
-    if (queryConf == null) {
-      queryConf = getParentSession().getHiveConf();
+    // apply query specific configs
+    if (confOverlay != null) {
+      for (Map.Entry<String, String> confEntry : confOverlay.entrySet()) {
+        try {
+          queryConf.verifyAndSet(confEntry.getKey(), confEntry.getValue());
+        } catch (IllegalArgumentException e) {
+          throw new HiveSQLException("Error applying statement specific settings", e);
+        }
+      }
     }
+    setConfiguration(queryConf);
+
     driver = new Driver(queryConf, getParentSession().getIpAddress(),
                             getParentSession().getUsername());
     // In Hive server mode, we are not able to retry in the FetchTask

@@ -23,7 +23,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.hive.service.Service;
+import org.apache.hive.service.cli.operation.Operation;
+import org.apache.hive.service.cli.session.HiveSession;
+import org.apache.hive.service.cli.session.SessionManager;
+import org.apache.hive.service.cli.thrift.EmbeddedThriftCLIService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +40,15 @@ import org.junit.Test;
  */
 public abstract class CLIServiceTest {
 
+  // Wrapper class to expose the CLIService
+  public static class EmbeddedCLIServiceForTest extends EmbeddedThriftCLIService {
+    public CLIService getCliService() {
+      return cliService;
+    }
+  }
+
   protected static CLIServiceClient client;
+  protected static EmbeddedCLIServiceForTest service;
 
   /**
    * @throws java.lang.Exception
@@ -113,4 +127,51 @@ public abstract class CLIServiceTest {
 
     client.closeSession(sessionHandle);
   }
+
+  /**
+   * Test per statement configuration overlay
+   * @throws Exception
+   */
+  @Test
+  public void testConfOverlay() throws Exception {
+    SessionHandle sessionHandle = client.openSession("tom", "password", new HashMap<String, String>());
+    assertNotNull(sessionHandle);
+    String statement = "show databases";
+    Map <String, String> confOverlay = new HashMap<String, String>();
+
+    // set a pass a property to operation and check if its set the query config
+    confOverlay.put("test.foo", "bar");
+    OperationHandle opHandle = client.executeStatement(sessionHandle, statement, confOverlay);
+    assertNotNull(opHandle);
+    Operation sqlOperation = getOperationFromHandle(opHandle);
+    assertNotNull(sqlOperation.getConfiguration());
+    assertEquals("bar", sqlOperation.getConfiguration().get("test.foo"));
+    client.closeOperation(opHandle);
+
+    client.closeSession(sessionHandle);
+  }
+
+  // extract the session manager from CLI Service
+  protected SessionManager getSessionManager()
+      throws HiveSQLException {
+    SessionManager sessionManager = null;
+    for (Service hiveService : service.getCliService().getServices()) {
+      if (hiveService instanceof SessionManager ) {
+        sessionManager = (SessionManager)hiveService;
+      }
+    }
+    assertNotNull(sessionManager);
+    return sessionManager;
+  }
+
+  protected HiveSession getSessionFromHandle(SessionHandle sessionHandle)
+      throws HiveSQLException {
+    return getSessionManager().getSession(sessionHandle);
+  }
+
+  protected Operation getOperationFromHandle(OperationHandle opHandle)
+      throws HiveSQLException {
+    return getSessionManager().getOperationManager().getOperation(opHandle);
+  }
+
 }

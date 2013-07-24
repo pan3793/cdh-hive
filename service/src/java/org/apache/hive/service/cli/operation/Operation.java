@@ -37,7 +37,7 @@ public abstract class Operation {
   private final HiveSession parentSession;
   private OperationState state = OperationState.INITIALIZED;
   private final OperationHandle opHandle;
-  private HiveConf configuration;
+  private HiveConf configuration = null;
   public static final Log LOG = LogFactory.getLog(Operation.class.getName());
   public static final long DEFAULT_FETCH_MAX_ROWS = 100;
   protected boolean hasResultSet;
