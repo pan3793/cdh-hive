@@ -129,6 +129,20 @@ public abstract class CLIServiceTest {
   }
 
   /**
+   * Test that execute doesn't fail when confOverlay is null
+   * @throws Exception
+   */
+  @Test
+  public void testNullConfOverlay() throws Exception {
+    SessionHandle sessionHandle = client.openSession("tom", "password", new HashMap<String, String>());
+    assertNotNull(sessionHandle);
+    String statement = "show databases";
+    OperationHandle opHandle = client.executeStatement(sessionHandle, statement, null);
+    client.closeOperation(opHandle);
+    client.closeSession(sessionHandle);
+  }
+
+  /**
    * Test per statement configuration overlay
    * @throws Exception
    */

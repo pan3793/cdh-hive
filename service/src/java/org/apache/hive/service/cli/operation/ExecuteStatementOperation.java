@@ -75,7 +75,7 @@ public abstract class ExecuteStatementOperation extends Operation {
       newExecOP = new SQLOperation(parentSession, statement, confOverlay);
       // check if this is needs to be run asynchronously
       boolean isAsyncOP = (parentSession.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_BLOCKING_QUERY) == false);
-      if(confOverlay.containsKey(ConfVars.HIVE_SERVER2_BLOCKING_QUERY.toString())) {
+      if ((confOverlay != null)  && confOverlay.containsKey(ConfVars.HIVE_SERVER2_BLOCKING_QUERY.toString())) {
         isAsyncOP = confOverlay.get(ConfVars.HIVE_SERVER2_BLOCKING_QUERY.toString()).equalsIgnoreCase("false");
       }
       if (isAsyncOP) {
