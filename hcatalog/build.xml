@@ -45,6 +45,10 @@
             description="where all hive build artifacts are placed to make binary tar ball"/>
     <loadproperties srcfile="${basedir}/build.properties"/>
 
+    <condition property="mvn.hadoop.profile" value="hadoop23" else="hadoop20">
+      <equals arg1="${hadoop.mr.rev}" arg2="23"/>
+    </condition>
+
     <!--
     ================================================================================
     Properties and Classpaths Section
@@ -78,23 +82,25 @@
     ================================================================================
     -->
     <target name="jar" depends="init" description="build all jars">
+        <echo message="Top Level Jar"/>
+
         <ant target="jar" dir="core" inheritAll="false">
-          <property name="_mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
+          <property name="mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
         </ant>
         <ant target="jar" dir="hcatalog-pig-adapter" inheritAll="false">
-          <property name="_mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
+          <property name="mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
         </ant>
         <ant target="jar" dir="server-extensions" inheritAll="false">
-          <property name="_mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
+          <property name="mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
         </ant>
         <ant target="jar" dir="webhcat/svr" inheritAll="false">
-          <property name="_mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
+          <property name="mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
         </ant>
         <ant target="jar" dir="webhcat/java-client" inheritAll="false">
-          <property name="_mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
+          <property name="mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
         </ant>
         <ant target="jar" dir="storage-handlers/hbase" inheritAll="false">
-          <property name="_mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
+          <property name="mvn.hadoop.profile" value="${mvn.hadoop.profile}"/>
         </ant>
     </target>
 

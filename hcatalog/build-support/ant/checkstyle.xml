@@ -33,6 +33,7 @@
       <fileset dir="${basedir}">
           <exclude name="**/.*"/>
           <exclude name="**/build/**"/>
+          <exclude name="**/.settings/**"/>
           <exclude name=".idea/**"/>
           <exclude name="historical/**"/>
           <exclude name="build-support/checkstyle/apache_header.txt"/>
@@ -47,6 +48,12 @@
           <exclude name="storage-handlers/hbase/src/test/excluded-tests"/>
           <exclude name="storage-handlers/hbase/partitions*"/>
           <exclude name="storage-handlers/hbase/.partitions*"/>
+          <exclude name="hcatalog-pig-adapter/target/**"/>
+          <exclude name="server-extensions/target/**"/>
+          <exclude name="core/target/**"/>
+          <exclude name="webhcat/java-client/target/**"/>
+          <exclude name="storage-handlers/hbase/target/**"/>
+          <exclude name="webhcat/svr/target/**"/>
           <exclude name="KEYS"/>
           <exclude name="LICENSE.txt"/>
           <exclude name="NOTICE.txt"/>
@@ -54,6 +61,7 @@
           <exclude name="RELEASE_NOTES.txt"/>
           <exclude name="*.patch"/>
           <exclude name="tags"/>
+          <exclude name="**/*.proto"/> <!-- protocol buffer def files -->
           <exclude name="**/*.swp"/> <!-- vim swap files -->
           <exclude name="**/*.orig"/> <!-- files created by patch -->
           <exclude name="**/*.rej"/> <!-- files created by patch -->

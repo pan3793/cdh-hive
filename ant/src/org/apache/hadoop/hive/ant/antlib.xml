@@ -23,4 +23,6 @@
            classname="org.apache.hadoop.hive.ant.QTestGenTask" />
   <taskdef name="getversionpref"
            classname="org.apache.hadoop.hive.ant.GetVersionPref" />
+  <taskdef name="setsystemproperty"
+           classname="org.apache.hadoop.hive.ant.SetSystemProperty" />
 </antlib>

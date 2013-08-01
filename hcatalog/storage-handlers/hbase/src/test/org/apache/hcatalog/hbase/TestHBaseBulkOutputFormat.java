@@ -19,6 +19,15 @@
 
 package org.apache.hcatalog.hbase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -65,19 +74,9 @@ import org.apache.hcatalog.hbase.snapshot.Transaction;
 import org.apache.hcatalog.mapreduce.HCatInputFormat;
 import org.apache.hcatalog.mapreduce.HCatOutputFormat;
 import org.apache.hcatalog.mapreduce.OutputJobInfo;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests components of HBaseHCatStorageHandler using ManyMiniCluster.
@@ -101,7 +100,6 @@ public class TestHBaseBulkOutputFormat extends SkeletonHBaseTest {
             allConf.set(el.getKey(), el.getValue());
         for (Map.Entry<String, String> el : getJobConf())
             allConf.set(el.getKey(), el.getValue());
-
         HBaseConfiguration.merge(
             allConf,
             RevisionManagerConfiguration.create());
@@ -252,6 +250,7 @@ public class TestHBaseBulkOutputFormat extends SkeletonHBaseTest {
             }
             index++;
         }
+        table.close();
         //test if load count is the same
         assertEquals(data.length, index);
         //test if scratch directory was erased
@@ -291,6 +290,7 @@ public class TestHBaseBulkOutputFormat extends SkeletonHBaseTest {
 
 
         //create job
+        HBaseHCatStorageHandler.setHBaseSerializers(conf);
         Job job = new Job(conf, testName);
         job.setWorkingDirectory(new Path(methodTestDir, "mr_work"));
         job.setJarByClass(this.getClass());
@@ -329,6 +329,7 @@ public class TestHBaseBulkOutputFormat extends SkeletonHBaseTest {
             }
             index++;
         }
+        table.close();
         //test if load count is the same
         assertEquals(data.length, index);
         //test if scratch directory was erased
@@ -426,6 +427,7 @@ public class TestHBaseBulkOutputFormat extends SkeletonHBaseTest {
             }
             index++;
         }
+        table.close();
         //test if load count is the same
         assertEquals(data.length, index);
     }
@@ -508,6 +510,7 @@ public class TestHBaseBulkOutputFormat extends SkeletonHBaseTest {
             }
             index++;
         }
+        table.close();
         //test if load count is the same
         assertEquals(data.length, index);
     }
@@ -602,6 +605,7 @@ public class TestHBaseBulkOutputFormat extends SkeletonHBaseTest {
         job.setOutputKeyClass(BytesWritable.class);
         job.setOutputValueClass(Text.class);
         job.setNumReduceTasks(0);
+        table.close();
         assertTrue(job.waitForCompletion(true));
     }
 

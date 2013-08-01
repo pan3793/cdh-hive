@@ -28,11 +28,40 @@
   <dependencies>
     <dependency org="org.apache.hive" name="hive-exec" rev="${version}"
                 conf="compile->default" />
-    <dependency org="org.apache.hbase" name="hbase" rev="${hbase.version}"
+    <dependency org="org.apache.hbase" name="hbase-client" rev="${hbase.version.with.hadoop.version}"
+                transitive="true">
+      <artifact name="hbase-client" type="jar"/>
+    </dependency>
+    <dependency org="org.apache.hbase" name="hbase-common" rev="${hbase.version.with.hadoop.version}"
                 transitive="false">
-      <artifact name="hbase" type="jar"/>
-      <artifact name="hbase" type="test-jar" ext="jar"
-                m:classifier="tests"/>
+      <artifact name="hbase-common" type="jar"/>
+    </dependency>
+    <dependency org="org.apache.hbase" name="hbase-common" rev="${hbase.version.with.hadoop.version}"
+                conf="test->default" transitive="false">
+      <artifact name="hbase-common" type="jar" m:classifier="tests" />
+    </dependency>
+    <dependency org="org.apache.hbase" name="hbase-hadoop-compat" rev="${hbase.version.with.hadoop.version}"
+                conf="test->default" transitive="false">
+      <artifact name="hbase-hadoop-compat" type="jar" m:classifier="tests"/>
+      <artifact name="hbase-hadoop-compat" type="jar"/>
+    </dependency>
+    <dependency org="org.apache.hbase" name="hbase-server" rev="${hbase.version.with.hadoop.version}"
+                conf="compile, test->default" transitive="true">
+      <artifact name="hbase-server" type="jar"/>
+    </dependency>
+    <dependency org="org.apache.hbase" name="hbase-server" rev="${hbase.version.with.hadoop.version}"
+                conf="test->default" transitive="false">
+      <artifact name="hbase-server" type="jar" m:classifier="tests"/>
+    </dependency>
+    <dependency org="org.apache.hbase" name="hbase-hadoop2-compat" rev="${hbase.version.with.hadoop.version}"
+                conf="hadoop23.compile->default" transitive="false">
+      <artifact name="hbase-hadoop2-compat" type="jar" m:classifier="tests"/>
+      <artifact name="hbase-hadoop2-compat" type="jar"/>
+    </dependency>
+    <dependency org="org.apache.hbase" name="hbase-hadoop1-compat" rev="${hbase.version.with.hadoop.version}"
+                conf="hadoop20.compile,hadoop20S.compile->default" transitive="false">
+      <artifact name="hbase-hadoop1-compat" type="jar" m:classifier="tests"/>
+      <artifact name="hbase-hadoop1-compat" type="jar"/>
     </dependency>
     <dependency org="com.github.stephenc.high-scale-lib" name="high-scale-lib" rev="1.1.1"
                 transitive="false"/>

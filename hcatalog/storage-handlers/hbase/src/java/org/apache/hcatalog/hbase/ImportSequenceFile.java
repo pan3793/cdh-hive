@@ -19,23 +19,22 @@
 
 package org.apache.hcatalog.hbase;
 
-import org.apache.hadoop.filecache.DistributedCache;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat;
-import org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles;
-import org.apache.hadoop.hbase.mapreduce.PutSortReducer;
-import org.apache.hadoop.hbase.mapreduce.hadoopbackport.TotalOrderPartitioner;
-
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
+import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat;
+import org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles;
+import org.apache.hadoop.hbase.mapreduce.PutSortReducer;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.JobStatus;
@@ -46,10 +45,11 @@ import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.partition.TotalOrderPartitioner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.hadoop.hbase.mapreduce.hadoopbackport.TotalOrderPartitioner.DEFAULT_PATH;
+
 
 
 /**
@@ -70,12 +70,8 @@ class ImportSequenceFile {
         @Override
         public void map(ImmutableBytesWritable rowKey, Put value,
                         Context context)
-            throws IOException {
-            try {
-                context.write(new ImmutableBytesWritable(value.getRow()), value);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            throws IOException, InterruptedException {
+            context.write(new ImmutableBytesWritable(value.getRow()), value);
         }
     }
 
@@ -157,6 +153,7 @@ class ImportSequenceFile {
 
     private static Job createSubmittableJob(Configuration conf, String tableName, Path inputDir, Path scratchDir, boolean localMode)
         throws IOException {
+        HBaseHCatStorageHandler.setHBaseSerializers(conf);
         Job job = new Job(conf, NAME + "_" + tableName);
         job.setJarByClass(SequenceFileImporter.class);
         FileInputFormat.setInputPaths(job, inputDir);
@@ -169,17 +166,36 @@ class ImportSequenceFile {
         job.setMapOutputKeyClass(ImmutableBytesWritable.class);
         job.setMapOutputValueClass(Put.class);
         HFileOutputFormat.configureIncrementalLoad(job, table);
+        URI partitionURI;
+        try {
+            partitionURI = new URI(TotalOrderPartitioner.getPartitionFile(job.getConfiguration())
+                + "#" + TotalOrderPartitioner.DEFAULT_PATH);
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
+        DistributedCache.addCacheFile(partitionURI, job.getConfiguration());
+        DistributedCache.createSymlink(job.getConfiguration());
         //override OutputFormatClass with our own so we can include cleanup in the committer
         job.setOutputFormatClass(ImporterOutputFormat.class);
 
+
+        
         //local mode doesn't support symbolic links so we have to manually set the actual path
         if (localMode) {
             String partitionFile = null;
-            for (URI uri : DistributedCache.getCacheFiles(job.getConfiguration())) {
-                if (DEFAULT_PATH.equals(uri.getFragment())) {
+            URI[] uris = DistributedCache.getCacheFiles(job.getConfiguration());
+            if(uris == null) {
+                throw new IllegalStateException("No cache file existed in job configuration");
+            }
+            for (URI uri : uris) {
+                if (TotalOrderPartitioner.DEFAULT_PATH.equals(uri.getFragment())) {
                     partitionFile = uri.toString();
                     break;
                 }
+            }
+            if(partitionFile == null) {
+                throw new IllegalStateException("Unable to find " + 
+                    TotalOrderPartitioner.DEFAULT_PATH + " in cache");
             }
             partitionFile = partitionFile.substring(0, partitionFile.lastIndexOf("#"));
             job.getConfiguration().set(TotalOrderPartitioner.PARTITIONER_PATH, partitionFile.toString());
@@ -201,10 +217,12 @@ class ImportSequenceFile {
         Configuration parentConf = parentContext.getConfiguration();
         Configuration conf = new Configuration();
         for (Map.Entry<String, String> el : parentConf) {
-            if (el.getKey().startsWith("hbase."))
+            if (el.getKey().startsWith("hbase.")) {
                 conf.set(el.getKey(), el.getValue());
-            if (el.getKey().startsWith("mapred.cache.archives"))
+            }
+            if (el.getKey().startsWith("mapred.cache.archives")) {
                 conf.set(el.getKey(), el.getValue());
+            }
         }
 
         //Inherit jar dependencies added to distributed cache loaded by parent job

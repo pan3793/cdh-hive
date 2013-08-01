@@ -61,7 +61,12 @@ public class TableSnapshot implements Serializable {
     public List<String> getColumnFamilies(){
         return  new ArrayList<String>(this.cfRevisionMap.keySet());
     }
-
+    /**
+     * For wire serialization only
+     */
+    Map<String, Long> getColumnFamilyRevisionMap() {
+        return cfRevisionMap;
+    }
     /**
      * Gets the revision.
      *

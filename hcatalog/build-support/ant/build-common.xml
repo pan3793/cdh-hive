@@ -24,11 +24,15 @@
 
   <loadproperties srcfile="${path.to.basedir}/build.properties"/>
 
+  <condition property="mvn.hadoop.profile" value="hadoop23" else="hadoop20">
+    <equals arg1="${hadoop.mr.rev}" arg2="23"/>
+  </condition>
+
   <condition property="hadoopversion" value="20">
-    <equals arg1="${_mvn.hadoop.profile}" arg2="hadoop20"/>
+    <equals arg1="${mvn.hadoop.profile}" arg2="hadoop20"/>
   </condition>
   <condition property="hadoopversion" value="23">
-    <equals arg1="${_mvn.hadoop.profile}" arg2="hadoop23"/>
+    <equals arg1="${mvn.hadoop.profile}" arg2="hadoop23"/>
   </condition>
 
   <import file="checkstyle.xml"/>

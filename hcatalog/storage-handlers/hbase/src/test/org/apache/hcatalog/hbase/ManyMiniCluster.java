@@ -121,7 +121,7 @@ public class ManyMiniCluster {
 
     protected synchronized void stop() {
         if (hbaseCluster != null) {
-            HConnectionManager.deleteAllConnections(true);
+            HConnectionManager.deleteAllConnections();
             try {
                 hbaseCluster.shutdown();
             } catch (Exception e) {

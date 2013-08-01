@@ -38,13 +38,13 @@ import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hive.cli.CliSessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.hbase.ResultWritable;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse;
 import org.apache.hadoop.hive.ql.session.SessionState;
@@ -94,7 +94,6 @@ public class TestHBaseInputFormat extends SkeletonHBaseTest {
         hcatConf.set(ConfVars.METASTOREWAREHOUSE.varname, whPath.toString());
 
         //Add hbase properties
-
         for (Map.Entry<String, String> el : getHbaseConf()) {
             if (el.getKey().startsWith("hbase.")) {
                 hcatConf.set(el.getKey(), el.getValue());
@@ -540,7 +539,7 @@ public class TestHBaseInputFormat extends SkeletonHBaseTest {
     }
 
     static class MapReadProjectionHTable
-        implements org.apache.hadoop.mapred.Mapper<ImmutableBytesWritable, Result, WritableComparable<?>, Text> {
+        implements org.apache.hadoop.mapred.Mapper<ImmutableBytesWritable, ResultWritable, WritableComparable<?>, Text> {
 
         static boolean error = false;
         static int count = 0;
@@ -554,11 +553,11 @@ public class TestHBaseInputFormat extends SkeletonHBaseTest {
         }
 
         @Override
-        public void map(ImmutableBytesWritable key, Result result,
+        public void map(ImmutableBytesWritable key, ResultWritable result,
                         OutputCollector<WritableComparable<?>, Text> output, Reporter reporter)
             throws IOException {
             System.out.println("Result " + result.toString());
-            List<KeyValue> list = result.list();
+            List<KeyValue> list = result.getResult().list();
             boolean correctValues = (list.size() == 1)
                 && (Bytes.toString(list.get(0).getRow())).equalsIgnoreCase("testRow")
                 && (Bytes.toString(list.get(0).getValue())).equalsIgnoreCase("textValue-5")

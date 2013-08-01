@@ -83,7 +83,7 @@
             <dependency groupId="org.apache.hcatalog" artifactId="hcatalog" version="${hcatalog.version}" scope="system" systemPath="${path.to.basedir}/pom.xml"/>
         </artifact:dependencies>
         <artifact:pom id="mvn.pom" file="pom.xml">
-            <profile id="${_mvn.hadoop.profile}"/>
+            <profile id="${mvn.hadoop.profile}"/>
         </artifact:pom>
         <property name="mvn-init.complete" value="true"/>
     </target>
@@ -97,6 +97,11 @@
             depends="mvn-init,_check-mvn-dependencies"
             unless="mvn-dependencies.complete">
         <echo message="${ant.project.name}"/>
+        <echo message="hadoop.mr.rev = ${hadoop.mr.rev}"/>
+        <echo message="hadoop.profile = ${hadoop.profile}"/>
+        <echo message="hadoopversion = ${hadoopversion}"/>
+        <echo message="mvn.hadoop.profile = ${mvn.hadoop.profile}"/>
+        <echo message="mvn.hadoop.profile = ${mvn.hadoop.profile}"/>
 
         <artifact:dependencies pathId="mvn.compile.classpath"
           scopes="compile" pomRefId="mvn.pom">

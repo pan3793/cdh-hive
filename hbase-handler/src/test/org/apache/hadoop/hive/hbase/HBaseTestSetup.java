@@ -153,7 +153,7 @@ public class HBaseTestSetup extends TestSetup {
   @Override
   protected void tearDown() throws Exception {
     if (hbaseCluster != null) {
-      HConnectionManager.deleteAllConnections(true);
+      HConnectionManager.deleteAllConnections();
       hbaseCluster.shutdown();
       hbaseCluster = null;
     }

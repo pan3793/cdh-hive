@@ -148,8 +148,10 @@
     <fileset dir="${hive.root}/build/ivy/lib/test" includes="hive-contrib*.jar" erroronmissingdir="false"/>
   </path>
 
-
   <loadproperties srcfile="${ivy.conf.dir}/libraries.properties"/>
+  <condition property="hbase.version.with.hadoop.version" value="${hbase.version}" else="${hbase.version}">
+    <equals arg1="${hadoop.mr.rev}" arg2="23" />
+  </condition>
 
   <osfamily property="os.family"/>
 
@@ -171,6 +173,7 @@
 
   <target name="ivy-resolve" depends="ivy-init-settings" unless="offline">
     <echo message="Project: ${ant.project.name}"/>
+    <echo message="HBase: ${hbase.version.with.hadoop.version}"/>
     <ivy:resolve settingsRef="${ant.project.name}.ivy.settings"
       conf="default" log="${ivyresolvelog}"/>
     <ivy:report todir="${build.ivy.report.dir}" settingsRef="${ant.project.name}.ivy.settings"

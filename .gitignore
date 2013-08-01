@@ -16,5 +16,11 @@ common/src/gen
 ql/derby.log
 derby.log
 .arc
+hcatalog/hcatalog-pig-adapter/target
+hcatalog/server-extensions/target
+hcatalog/core/target
+hcatalog/webhcat/java-client/target
+hcatalog/storage-handlers/hbase/target
+hcatalog/webhcat/svr/target
 ql/TempStatsStore
 cdh.build.properties

@@ -34,11 +34,10 @@
                 conf="test->default" transitive="false"/>
     <dependency org="org.apache.hive" name="hive-testutils" rev="${version}"
                 conf="test->default" transitive="false"/>
-    <dependency org="org.apache.hbase" name="hbase" rev="${hbase.version}"
-                conf="test->default" transitive="false">
-      <artifact name="hbase" type="jar"/>
-      <artifact name="hbase" type="test-jar" ext="jar"
-                m:classifier="tests"/>
+    <dependency org="org.apache.hbase" name="hbase-server" rev="${hbase.version.with.hadoop.version}"
+                conf="test->default" transitive="true">
+      <artifact name="hbase-server" type="jar" m:classifier="tests"/>
+      <artifact name="hbase-server" type="jar"/>
     </dependency>
     <dependency org="com.google.protobuf" name="protobuf-java" 
                 rev="${protobuf.version}" transitive="false"/>

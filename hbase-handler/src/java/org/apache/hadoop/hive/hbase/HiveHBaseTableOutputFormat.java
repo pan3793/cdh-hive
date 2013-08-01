@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
@@ -93,8 +94,12 @@ public class HiveHBaseTableOutputFormat extends
 
       @Override
       public void write(Writable w) throws IOException {
-        Put put = (Put) w;
-        put.setWriteToWAL(walEnabled);
+        Put put = ((PutWritable) w).getPut();
+        if(walEnabled) {
+          put.setDurability(Durability.SYNC_WAL);
+        } else {
+          put.setDurability(Durability.SKIP_WAL);
+        }
         table.put(put);
       }
     };

@@ -183,6 +183,7 @@ public class TestHBaseDirectOutputFormat extends SkeletonHBaseTest {
             }
             index++;
         }
+        table.close();
         assertEquals(data.length, index);
     }
 
@@ -350,6 +351,7 @@ public class TestHBaseDirectOutputFormat extends SkeletonHBaseTest {
             }
             count++;
         }
+        table.close();
         assertEquals(data.length - 1, count);
 
         // verify that the inputformat returns empty results.
