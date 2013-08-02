@@ -1074,13 +1074,8 @@
           todir="${mvn.jar.dir}" />
     <copy file="${build.dir.hive}/metastore/hive-metastore-${version}.jar"
           todir="${mvn.jar.dir}" />
-<<<<<<< HEAD
-=======
     <copy file="${build.dir.hive}/hcatalog/hive-hcatalog-${hcatalog.version}.jar"
           todir="${mvn.jar.dir}" />
-    <copy file="${build.dir.hive}/pdk/hive-pdk-${version}.jar"
-          todir="${mvn.jar.dir}" />
->>>>>>> 715cc34... HIVE-4339 : build fails after branch (hcatalog version not updated) (Gunther Hagleitner via Ashutosh Chauhan)
     <copy file="${build.dir.hive}/ql/hive-exec-${version}.jar"
           todir="${mvn.jar.dir}" />
     <copy file="${build.dir.hive}/serde/hive-serde-${version}.jar"
@@ -1109,13 +1104,8 @@
           tofile="${mvn.pom.dir}/hive-jdbc-${version}.pom" />
     <copy file="${build.dir.hive}/metastore/pom.xml"
           tofile="${mvn.pom.dir}/hive-metastore-${version}.pom" />
-<<<<<<< HEAD
-=======
     <copy file="${build.dir.hive}/hcatalog/pom.xml"
           tofile="${mvn.pom.dir}/hive-hcatalog-${hcatalog.version}.pom" />
-    <copy file="${build.dir.hive}/pdk/pom.xml"
-          tofile="${mvn.pom.dir}/hive-pdk-${version}.pom" />
->>>>>>> 715cc34... HIVE-4339 : build fails after branch (hcatalog version not updated) (Gunther Hagleitner via Ashutosh Chauhan)
     <copy file="${build.dir.hive}/ql/pom.xml"
           tofile="${mvn.pom.dir}/hive-exec-${version}.pom" />
     <copy file="${build.dir.hive}/serde/pom.xml"
@@ -1383,8 +1373,6 @@
         output.file="${mvn.jar.dir}/hive-metastore-${version}.pom.asc"
         gpg.passphrase="${gpg.passphrase}"/>
 
-<<<<<<< HEAD
-=======
     <!-- hive-hcatalog -->
     <sign-artifact
         input.file="${mvn.pom.dir}/hive-hcatalog-${hcatalog.version}.jar"
@@ -1395,17 +1383,6 @@
         output.file="${mvn.pom.dir}/hive-hcatalog-${hcatalog.version}.pom.asc"
         gpg.passphrase="${gpg.passphrase}"/>
 
-    <!-- hive-pdk -->
-    <sign-artifact
-        input.file="${mvn.pom.dir}/hive-pdk-${version}.jar"
-        output.file="${mvn.pom.dir}/hive-pdk-${version}.jar.asc"
-        gpg.passphrase="${gpg.passphrase}"/>
-    <sign-artifact
-        input.file="${mvn.pom.dir}/hive-pdk-${version}.pom"
-        output.file="${mvn.pom.dir}/hive-pdk-${version}.pom.asc"
-        gpg.passphrase="${gpg.passphrase}"/>
-
->>>>>>> 715cc34... HIVE-4339 : build fails after branch (hcatalog version not updated) (Gunther Hagleitner via Ashutosh Chauhan)
     <!-- hive-serde -->
     <sign-artifact
         input.file="${mvn.jar.dir}/hive-serde-${version}.jar"
