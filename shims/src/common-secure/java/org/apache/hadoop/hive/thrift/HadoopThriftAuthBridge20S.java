@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.thrift;
 
+import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHENTICATION;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -66,8 +67,6 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.apache.thrift.transport.TTransportFactory;
-
-import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHENTICATION;
 
  /**
   * Functions that bridge Thrift's SASL transports to Hadoop's
@@ -362,7 +361,9 @@ import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHE
      throws IOException, InterruptedException {
        if (!authenticationMethod.get().equals(AuthenticationMethod.KERBEROS)) {
          throw new AuthorizationException(
-         "Delegation Token can be issued only with kerberos authentication");
+         "Delegation Token can be issued only with kerberos authentication. " +
+         "Current AuthenticationMethod: " + authenticationMethod.get()
+             );
        }
        //if the user asking the token is same as the 'owner' then don't do
        //any proxy authorization checks. For cases like oozie, where it gets
@@ -391,7 +392,9 @@ import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_SECURITY_AUTHE
      public long renewDelegationToken(String tokenStrForm) throws IOException {
        if (!authenticationMethod.get().equals(AuthenticationMethod.KERBEROS)) {
          throw new AuthorizationException(
-         "Delegation Token can be issued only with kerberos authentication");
+         "Delegation Token can be issued only with kerberos authentication. " +
+         "Current AuthenticationMethod: " + authenticationMethod.get()
+             );
        }
        return secretManager.renewDelegationToken(tokenStrForm);
      }
