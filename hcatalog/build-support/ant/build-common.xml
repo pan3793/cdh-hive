@@ -28,10 +28,7 @@
     <equals arg1="${hadoop.mr.rev}" arg2="23"/>
   </condition>
 
-  <condition property="hadoopversion" value="20">
-    <equals arg1="${mvn.hadoop.profile}" arg2="hadoop20"/>
-  </condition>
-  <condition property="hadoopversion" value="23">
+  <condition property="hadoopversion" value="23" else="20">
     <equals arg1="${mvn.hadoop.profile}" arg2="hadoop23"/>
   </condition>
 

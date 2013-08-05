@@ -775,7 +775,7 @@ public class TestHBaseSerDe extends TestCase {
 
     List<? extends StructField> fieldRefs = soi.getAllStructFieldRefs();
 
-    Object row = serDe.deserialize(r);
+    Object row = serDe.deserialize(new ResultWritable(r));
 
     int j = 0;
 
@@ -803,7 +803,7 @@ public class TestHBaseSerDe extends TestCase {
     SerDeUtils.getJSONString(row, soi);
 
     // Now serialize
-    Put put = (Put) serDe.serialize(row, soi);
+    Put put = ((PutWritable)serDe.serialize(row, soi)).getPut();
 
     if (p != null) {
       assertEquals("Serialized put:", p.toString(), put.toString());
