@@ -707,6 +707,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_SESSION_HOOK("hive.server2.session.hook", ""),
     HIVE_SERVER2_AUTHZ_EXTERNAL_EXEC("hive.server2.authorization.external.exec", true),
     HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true),
+    HIVE_SERVER2_TABLE_TYPE_MAPPING("hive.server2.table.type.mapping", "HIVE"),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),
 

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.ql.metadata.Hive;
@@ -45,6 +46,7 @@ public class GetTablesOperation extends MetadataOperation {
   private final String tableName;
   private final List<String> tableTypes = new ArrayList<String>();
   private final RowSet rowSet = new RowSet();
+  private final TableTypeMapping tableTypeMapping;
 
 
   private static final TableSchema RESULT_SET_SCHEMA = new TableSchema()
@@ -61,6 +63,10 @@ public class GetTablesOperation extends MetadataOperation {
     this.catalogName = catalogName;
     this.schemaName = schemaName;
     this.tableName = tableName;
+    String tableMappingStr = getParentSession().getHiveConf().
+        getVar(HiveConf.ConfVars.HIVE_SERVER2_TABLE_TYPE_MAPPING);
+    tableTypeMapping =
+        TableTypeMappingFactory.getTableTypeMapping(tableMappingStr);
     if (tableTypes != null) {
       this.tableTypes.addAll(tableTypes);
     }
@@ -91,10 +97,11 @@ public class GetTablesOperation extends MetadataOperation {
               DEFAULT_HIVE_CATALOG,
               table.getDbName(),
               table.getTableName(),
-              table.getTableType(),
+              tableTypeMapping.mapToClientType(table.getTableType()),
               table.getParameters().get("comment")
               };
-          if (tableTypes.isEmpty() || tableTypes.contains(table.getTableType())) {
+          if (tableTypes.isEmpty() || tableTypes.contains(
+                tableTypeMapping.mapToClientType(table.getTableType()))) {
             rowSet.addRow(RESULT_SET_SCHEMA, rowData);
           }
         }
