@@ -114,15 +114,11 @@
     </dependency>
     <dependency>
       <groupId>org.datanucleus</groupId>
-      <artifactId>datanucleus-connectionpool</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.datanucleus</groupId>
       <artifactId>datanucleus-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.datanucleus</groupId>
-      <artifactId>datanucleus-enhancer</artifactId>
+      <artifactId>datanucleus-api-jdo</artifactId>
     </dependency>
     <dependency>
       <groupId>org.datanucleus</groupId>
