@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.serde2.lazy;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -539,11 +540,13 @@ public class LazySimpleSerDe extends AbstractSerDe {
       if (list == null) {
         out.write(nullSequence.getBytes(), 0, nullSequence.getLength());
       } else {
-        for (int i = 0; i < list.size(); i++) {
+        List<Object> structFieldDataList = new ArrayList<Object>();
+        structFieldDataList.addAll(list);
+        for (int i = 0; i < structFieldDataList.size(); i++) {
           if (i > 0) {
             out.write(separator);
           }
-          serialize(out, list.get(i), fields.get(i).getFieldObjectInspector(),
+          serialize(out, structFieldDataList.get(i), fields.get(i).getFieldObjectInspector(),
               separators, level + 1, nullSequence, escaped, escapeChar,
               needsEscape);
         }
