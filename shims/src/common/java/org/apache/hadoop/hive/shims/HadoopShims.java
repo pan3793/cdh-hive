@@ -322,6 +322,13 @@ public interface HadoopShims {
   public void loginUserFromKeytab(String principal, String keytabFile) throws IOException;
 
   /**
+   * Perform kerberos re-login using the given principal and keytab, to renew
+   * the credentials
+   * @throws IOException
+   */
+  public void reLoginUserFromKeytab() throws IOException;
+
+  /**
    * Create the proxy ugi for the given userid
    * @param userName
    * @return
