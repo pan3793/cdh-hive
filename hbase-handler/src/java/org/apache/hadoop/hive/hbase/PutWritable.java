@@ -92,7 +92,7 @@ public class PutWritable implements Writable {
       durabilty = Durability.USE_DEFAULT;
     }
     out.writeUTF(durabilty.name());
-    NavigableMap<byte[],List<? extends Cell>> familyMap = put.getFamilyMap();
+    NavigableMap<byte[],List<? extends Cell>> familyMap = put.getFamilyCellMap();
     out.writeInt(familyMap.size());
     for (Map.Entry<byte [], List<? extends Cell>> entry : familyMap.entrySet()) {
       Bytes.writeByteArray(out, entry.getKey());
