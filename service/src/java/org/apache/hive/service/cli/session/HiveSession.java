@@ -157,4 +157,9 @@ public interface HiveSession extends HiveSessionBase {
 
   public void renewDelegationToken(HiveAuthFactory authFactory, String tokenStr)
       throws HiveSQLException;
+
+  public String getIpAddress();
+
+  public void setIpAddress(String ipAddress);
+
 }

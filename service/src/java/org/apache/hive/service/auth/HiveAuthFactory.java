@@ -180,7 +180,7 @@ public class HiveAuthFactory {
     }
   }
 
-  // Perform kerberos login using the hadoop shim API if the configuration is available
+  /* perform kerberos login using the hadoop shim API if the configuration is available */
   public static void loginFromKeytab(HiveConf hiveConf) throws IOException {
     String principal = hiveConf.getVar(ConfVars.HIVE_SERVER2_KERBEROS_PRINCIPAL);
     String keyTabFile = hiveConf.getVar(ConfVars.HIVE_SERVER2_KERBEROS_KEYTAB);
