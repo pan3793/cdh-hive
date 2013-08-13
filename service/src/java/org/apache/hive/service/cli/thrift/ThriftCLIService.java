@@ -128,6 +128,13 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     return resp;
   }
 
+  private String getIpAddress() {
+    if(hiveAuthFactory != null) {
+      return hiveAuthFactory.getIpAddress();
+    }
+    return null;
+  }
+
   private String getUserName(TOpenSessionReq req) {
     if (hiveAuthFactory != null
         && hiveAuthFactory.getRemoteUser() != null) {
@@ -162,6 +169,12 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     } else {
       sessionHandle = cliService.openSession(userName, req.getPassword(),
           req.getConfiguration());
+    }
+    // Cannot break the b/w compatibility of API to accept ipAddress as another parameter in
+    // openSession call. Hence making this call
+    String ipAddress = getIpAddress();
+    if (ipAddress != null) {
+      cliService.setIpAddress(sessionHandle, ipAddress);
     }
     return sessionHandle;
   }

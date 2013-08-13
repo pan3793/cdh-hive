@@ -139,6 +139,9 @@ public class Driver implements CommandProcessor {
   private int maxthreads;
   private static final int SLEEP_TIME = 2000;
   protected int tryCount = Integer.MAX_VALUE;
+  // This value is set only if the operation is launched through HiveServer2 and the underlying
+  // transport is derived from TSocket
+  private String ipAddress;
 
   private String userName;
 
@@ -341,6 +344,12 @@ public class Driver implements CommandProcessor {
     if (SessionState.get() != null) {
       conf = SessionState.get().getConf();
     }
+  }
+
+  public Driver(HiveConf conf, String userName, String ipAddress) {
+    this.conf = conf;
+    this.userName = userName;
+    this.ipAddress = ipAddress;
   }
 
   /**
@@ -1155,7 +1164,7 @@ public class Driver implements CommandProcessor {
       }
       resStream = null;
 
-      HookContext hookContext = new HookContext(plan, conf, ctx.getPathToCS());
+      HookContext hookContext = new HookContext(plan, conf, ctx.getPathToCS(), ipAddress);
       hookContext.setHookType(HookContext.HookType.PRE_EXEC_HOOK);
 
       for (Hook peh : getHooks(HiveConf.ConfVars.PREEXECHOOKS)) {

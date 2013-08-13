@@ -65,6 +65,7 @@ public class HiveSessionImpl implements HiveSession {
   private final Map<String, String> sessionConf = new HashMap<String, String>();
   private final HiveConf hiveConf = new HiveConf();
   private final SessionState sessionState;
+  private String ipAddress;
 
   private static final String FETCH_WORK_SERDE_CLASS =
       "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe";
@@ -76,9 +77,10 @@ public class HiveSessionImpl implements HiveSession {
   private IMetaStoreClient metastoreClient = null;
   private final Set<OperationHandle> opHandleSet = new HashSet<OperationHandle>();
 
-  public HiveSessionImpl(String username, String password, Map<String, String> sessionConf) {
+  public HiveSessionImpl(String username, String password, Map<String, String> sessionConf, String ipAddress) {
     this.username = username;
     this.password = password;
+    this.ipAddress = ipAddress;
 
     if (sessionConf != null) {
       for (Map.Entry<String, String> entry : sessionConf.entrySet()) {
@@ -433,5 +435,15 @@ public class HiveSessionImpl implements HiveSession {
 
   protected HiveSession getSession() {
     return this;
+  }
+
+  @Override
+  public String getIpAddress() {
+    return ipAddress;
+  }
+
+  @Override
+  public void setIpAddress(String ipAddress) {
+    this.ipAddress = ipAddress;
   }
 }
