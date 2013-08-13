@@ -402,6 +402,13 @@ public interface HadoopShims {
   UserGroupInformation createProxyUser(String userName) throws IOException;
 
   /**
+   * The method sets to set the partition file has a different signature between
+   * hadoop versions.
+   * @param jobConf
+   * @param partition
+   */
+  void setTotalOrderPartitionFile(JobConf jobConf, Path partition);
+  /**
    * InputSplitShim.
    *
    */

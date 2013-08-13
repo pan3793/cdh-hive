@@ -35,6 +35,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.util.Progressable;
 import org.apache.hadoop.security.KerberosName;
+import org.apache.hadoop.mapred.lib.TotalOrderPartitioner;
 
 /**
  * Implemention of shims against Hadoop 0.20 with Security.
@@ -126,6 +127,11 @@ public class Hadoop20SShims extends HadoopShimsSecure {
   @Override
   public short getDefaultReplication(FileSystem fs, Path path) {
     return fs.getDefaultReplication();
+  }
+
+  @Override
+  public void setTotalOrderPartitionFile(JobConf jobConf, Path partitionFile){
+    TotalOrderPartitioner.setPartitionFile(jobConf, partitionFile);
   }
 
   /**
