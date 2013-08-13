@@ -1155,7 +1155,7 @@ public class Driver implements CommandProcessor {
       }
       resStream = null;
 
-      HookContext hookContext = new HookContext(plan, conf, ctx.getPathToCS(), ipAddress);
+      HookContext hookContext = new HookContext(plan, conf, ctx.getPathToCS(), userName, ipAddress);
       hookContext.setHookType(HookContext.HookType.PRE_EXEC_HOOK);
 
       for (Hook peh : getHooks(HiveConf.ConfVars.PREEXECHOOKS)) {
