@@ -24,6 +24,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
+import java.util.Map;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -91,6 +92,19 @@ import org.apache.thrift.transport.TTransportFactory;
      return new Server(keytabFile, principalConf);
    }
 
+   /**
+    * Read and return Hadoop SASL configuration which can be configured using
+    * "hadoop.rpc.protection"
+    * @param conf
+    * @return Hadoop SASL configuration
+    */
+   @Override
+   public Map<String, String> getHadoopSaslProperties(Configuration conf) {
+     // Initialize the SaslRpcServer to ensure QOP parameters are read from conf
+     SaslRpcServer.init(conf);
+     return SaslRpcServer.SASL_PROPS;
+   }
+
    public static class Client extends HadoopThriftAuthBridge.Client {
      /**
       * Create a client-side SASL transport that wraps an underlying transport.
@@ -99,13 +113,14 @@ import org.apache.thrift.transport.TTransportFactory;
       *               supported.
       * @param serverPrincipal The Kerberos principal of the target server.
       * @param underlyingTransport The underlying transport mechanism, usually a TSocket.
+      * @param saslProps the sasl properties to create the client with
       */
 
      @Override
      public TTransport createClientTransport(
        String principalConfig, String host,
-        String methodStr, String tokenStrForm, TTransport underlyingTransport)
-       throws IOException {
+       String methodStr, String tokenStrForm, TTransport underlyingTransport,
+       Map<String, String> saslProps) throws IOException {
        AuthMethod method = AuthMethod.valueOf(AuthMethod.class, methodStr);
 
        TTransport saslTransport = null;
@@ -117,7 +132,7 @@ import org.apache.thrift.transport.TTransportFactory;
             method.getMechanismName(),
             null,
             null, SaslRpcServer.SASL_DEFAULT_REALM,
-            SaslRpcServer.SASL_PROPS, new SaslClientCallbackHandler(t),
+            saslProps, new SaslClientCallbackHandler(t),
             underlyingTransport);
            return new TUGIAssumingTransport(saslTransport, UserGroupInformation.getCurrentUser());
 
@@ -134,7 +149,7 @@ import org.apache.thrift.transport.TTransportFactory;
                method.getMechanismName(),
                null,
                names[0], names[1],
-               SaslRpcServer.SASL_PROPS, null,
+               saslProps, null,
                underlyingTransport);
              return new TUGIAssumingTransport(saslTransport, UserGroupInformation.getCurrentUser());
            } catch (SaslException se) {
@@ -142,7 +157,7 @@ import org.apache.thrift.transport.TTransportFactory;
            }
 
          default:
-        throw new IOException("Unsupported authentication method: " + method);
+           throw new IOException("Unsupported authentication method: " + method);
        }
      }
     private static class SaslClientCallbackHandler implements CallbackHandler {
@@ -273,10 +288,11 @@ import org.apache.thrift.transport.TTransportFactory;
       * can be passed as both the input and output transport factory when
       * instantiating a TThreadPoolServer, for example.
       *
+      * @param saslProps Map of SASL properties
       */
      @Override
-     public TTransportFactory createTransportFactory() throws TTransportException
-     {
+     public TTransportFactory createTransportFactory(Map<String, String> saslProps)
+             throws TTransportException {
        // Parse out the kerberos principal, host, realm.
        String kerberosName = realUgi.getUserName();
        final String names[] = SaslRpcServer.splitKerberosName(kerberosName);
@@ -288,11 +304,11 @@ import org.apache.thrift.transport.TTransportFactory;
        transFactory.addServerDefinition(
          AuthMethod.KERBEROS.getMechanismName(),
          names[0], names[1],  // two parts of kerberos principal
-         SaslRpcServer.SASL_PROPS,
+         saslProps,
          new SaslRpcServer.SaslGssCallbackHandler());
        transFactory.addServerDefinition(AuthMethod.DIGEST.getMechanismName(),
           null, SaslRpcServer.SASL_DEFAULT_REALM,
-          SaslRpcServer.SASL_PROPS, new SaslDigestCallbackHandler(secretManager));
+          saslProps, new SaslDigestCallbackHandler(secretManager));
 
        return new TUGIAssumingTransportFactory(transFactory, realUgi);
      }

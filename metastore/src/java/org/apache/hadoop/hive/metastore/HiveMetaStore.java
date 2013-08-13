@@ -4202,7 +4202,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
             conf.getVar(HiveConf.ConfVars.METASTORE_KERBEROS_PRINCIPAL));
         // start delegation token manager
         saslServer.startDelegationTokenSecretManager(conf);
-        transFactory = saslServer.createTransportFactory();
+        transFactory = saslServer.createTransportFactory(
+                MetaStoreUtils.getMetaStoreSaslProperties(conf));
         processor = saslServer.wrapProcessor(new ThriftHiveMetastore.Processor<IHMSHandler>(
             newHMSHandler("new db based metaserver", conf)));
         LOG.info("Starting DB backed MetaStore Server in Secure Mode");

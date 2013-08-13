@@ -43,6 +43,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslException;
 
 import org.apache.hadoop.hive.ql.session.SessionState;
@@ -50,6 +51,7 @@ import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.auth.KerberosSaslHelper;
 import org.apache.hive.service.auth.PlainSaslHelper;
+import org.apache.hive.service.auth.SaslQOP;
 import org.apache.hive.service.cli.thrift.EmbeddedThriftCLIService;
 import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TCancelDelegationTokenReq;
@@ -76,6 +78,7 @@ import org.apache.thrift.transport.TTransportException;
  */
 public class HiveConnection implements java.sql.Connection {
   private static final String HIVE_AUTH_TYPE= "auth";
+  private static final String HIVE_AUTH_QOP = "sasl.qop";
   private static final String HIVE_AUTH_SIMPLE = "noSasl";
   private static final String HIVE_AUTH_TOKEN = "delegationToken";
   private static final String HIVE_AUTH_USER = "user";
@@ -150,9 +153,20 @@ public class HiveConnection implements java.sql.Connection {
       try {
         String tokenStr;
         if (sessConf.containsKey(HIVE_AUTH_PRINCIPAL)) {
+          Map<String, String> saslProps = new HashMap<String, String>();
+          SaslQOP saslQOP = SaslQOP.AUTH;
+          if(sessConf.containsKey(HIVE_AUTH_QOP)) {
+            try {
+              saslQOP = SaslQOP.fromString(sessConf.get(HIVE_AUTH_QOP));
+            } catch (IllegalArgumentException e) {
+              throw new SQLException("Invalid " + HIVE_AUTH_QOP + " parameter. " + e.getMessage(), "42000", e);
+            }
+          }
+          saslProps.put(Sasl.QOP, saslQOP.toString());
+          saslProps.put(Sasl.SERVER_AUTH, "true");
           transport = KerberosSaslHelper.getKerberosTransport(
-                  sessConf.get(HIVE_AUTH_PRINCIPAL), host, transport);
-        } else if ((tokenStr = getClientDelegationToken(sessConf)) != null){
+                  sessConf.get(HIVE_AUTH_PRINCIPAL), host, transport, saslProps);
+        } else if ((tokenStr = getClientDelegationToken(sessConf)) != null) {
           transport = KerberosSaslHelper.getTokenTransport(tokenStr,
                   host, transport);
         } else {
