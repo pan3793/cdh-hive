@@ -36,7 +36,7 @@ public class TestHiveSession {
   @Test
   public void checkOperationClosing() throws Exception {
     OperationManager opMgr = new OperationManager();
-    HiveSession session = new HiveSessionImpl("user", "passw", null);
+    HiveSession session = new HiveSessionImpl("user", "passw", null, null);
 
     session.setOperationManager(opMgr);
 
