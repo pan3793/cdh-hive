@@ -74,6 +74,7 @@ public class HiveConf extends Configuration {
     for (ConfVars confVar : ConfVars.values()) {
       vars.put(confVar.varname, confVar);
     }
+    Configuration.addDeprecation("hive.server2.enable.impersonation", "hive.server2.enable.doAs");
   }
 
   /**
