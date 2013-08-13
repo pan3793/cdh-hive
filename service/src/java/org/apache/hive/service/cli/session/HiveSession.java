@@ -164,4 +164,9 @@ public interface HiveSession {
   public String getUserName();
 
   public void setUserName(String userName);
+
+  public String getIpAddress();
+
+  public void setIpAddress(String ipAddress);
+
 }
