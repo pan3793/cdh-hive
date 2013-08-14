@@ -410,11 +410,16 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
         String token = cliService.getDelegationToken(
             new SessionHandle(req.getSessionHandle()),
             hiveAuthFactory, req.getOwner(), req.getRenewer());
+        if (token == null || token.isEmpty()) {
+          throw new HiveSQLException("Got empty token");
+        }
         resp.setDelegationToken(token);
         resp.setStatus(OK_STATUS);
       } catch (HiveSQLException e) {
         e.printStackTrace();
-        resp.setStatus(HiveSQLException.toTStatus(e));
+        TStatus tokenErrorStatus = HiveSQLException.toTStatus(e);
+        tokenErrorStatus.setSqlState("42000");
+        resp.setStatus(tokenErrorStatus);
       }
     }
     return resp;
@@ -462,6 +467,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
     TStatus errorStatus = new TStatus(TStatusCode.ERROR_STATUS);
     errorStatus.setErrorMessage("Delegation token only supported over remote " +
     		"client with kerberos authentication");
+    errorStatus.setSqlState("42000");
     return errorStatus;
   }
 
