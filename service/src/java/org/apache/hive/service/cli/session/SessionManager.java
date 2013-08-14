@@ -220,7 +220,7 @@ public class SessionManager extends CompositeService {
       return proxyUser;
     } catch (IOException e) {
       throw new HiveSQLException("Failed to validate proxy privilage of " + realUser +
-          " for " + proxyUser, e);
+          " for " + proxyUser, " 08004", e);
     }
   }
 }

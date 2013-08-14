@@ -113,6 +113,9 @@ public class HiveConnection implements java.sql.Connection {
             connParams.getSessionVars().put(HIVE_AUTH_PASSWD, info.getProperty(HIVE_AUTH_PASSWD));
         }
       }
+      if (info.containsKey(HIVE_AUTH_TYPE)) {
+        connParams.getSessionVars().put(HIVE_AUTH_TYPE, info.getProperty(HIVE_AUTH_TYPE));
+      }
 
       openTransport(uri, connParams.getHost(), connParams.getPort(), connParams.getSessionVars());
     }
@@ -200,9 +203,7 @@ public class HiveConnection implements java.sql.Connection {
   private String getClientDelegationToken(Map<String, String> jdbcConnConf)
       throws SQLException {
     String tokenStr = null;
-    if (jdbcConnConf.get(HIVE_AUTH_TOKEN) != null) {
-      tokenStr = jdbcConnConf.get(HIVE_AUTH_TOKEN);
-    } else {
+    if (HIVE_AUTH_TOKEN.equalsIgnoreCase(jdbcConnConf.get(HIVE_AUTH_TYPE))) {
       // check delegation token in job conf if any
       try {
         tokenStr = ShimLoader.getHadoopShims().getTokenStrForm(HiveAuthFactory.HS2_CLIENT_TOKEN);

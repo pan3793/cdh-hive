@@ -864,7 +864,7 @@ public class Commands {
 
 
   public boolean connect(String line) throws Exception {
-    String example = "Usage: connect <url> <username> <password> [driver]"
+    String example = "Usage: connect <url> <username> <password> [driver] [auth]"
         + BeeLine.getSeparator();
 
     String[] parts = beeLine.split(line);
@@ -880,6 +880,7 @@ public class Commands {
     String user = parts.length < 3 ? null : parts[2];
     String pass = parts.length < 4 ? null : parts[3];
     String driver = parts.length < 5 ? null : parts[4];
+    String auth = parts.length < 6 ? null : parts[5];
 
     Properties props = new Properties();
     if (url != null) {
@@ -894,6 +895,10 @@ public class Commands {
     if (pass != null) {
       props.setProperty("password", pass);
     }
+    if (auth != null) {
+      props.setProperty("auth", auth);
+    }
+
     return connect(props);
   }
 
@@ -962,7 +967,7 @@ public class Commands {
 
     try {
       beeLine.getDatabaseConnections().setConnection(
-          new DatabaseConnection(beeLine, driver, url, username, password));
+          new DatabaseConnection(beeLine, driver, url, props));
       beeLine.getDatabaseConnection().getConnection();
 
       beeLine.setCompletions();
