@@ -64,7 +64,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${basedir}/../../../hcatalog/webhcat/svr/build/webhcat-${project.version}.jar</file>
+                  <file>${basedir}/../../../hcatalog/webhcat/java-client/build/webhcat-java-client-${project.version}.jar</file>
                   <type>jar</type>
                 </artifact>
                 <artifact>
@@ -91,7 +91,7 @@
               <target>
                 <mkdir dir="${basedir}/target" />
                 <jar destfile="${basedir}/target/${project.artifactId}-${project.version}-sources.jar">
-                  <fileset dir="${basedir}/../../../hcatalog/webhcat/svr/src">
+                  <fileset dir="${basedir}/../../../hcatalog/webhcat/java-client/src">
                     <include name="**/*" />
                   </fileset>
                 </jar>
