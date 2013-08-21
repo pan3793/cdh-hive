@@ -554,6 +554,7 @@ public class BeeLine {
         user = args[i++ + 1];
       } else if (args[i].equals("-a")) {
         auth = args[i++ + 1];
+        getOpts().setAuthType(auth);
       } else if (args[i].equals("-p")) {
         pass = args[i++ + 1];
       } else if (args[i].equals("-u")) {
