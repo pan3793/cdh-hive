@@ -864,7 +864,7 @@ public class Commands {
 
 
   public boolean connect(String line) throws Exception {
-    String example = "Usage: connect <url> <username> <password> [driver] [auth]"
+    String example = "Usage: connect <url> <username> <password> [driver]"
         + BeeLine.getSeparator();
 
     String[] parts = beeLine.split(line);
@@ -894,9 +894,6 @@ public class Commands {
     }
     if (pass != null) {
       props.setProperty("password", pass);
-    }
-    if (auth != null) {
-      props.setProperty("auth", auth);
     }
 
     return connect(props);
@@ -945,6 +942,7 @@ public class Commands {
         "javax.jdo.option.ConnectionPassword",
         "ConnectionPassword",
     });
+    String auth = getProperty(props, new String[] {"auth"});
 
     if (url == null || url.length() == 0) {
       return beeLine.error("Property \"url\" is required");
@@ -960,9 +958,18 @@ public class Commands {
     if (username == null) {
       username = beeLine.getConsoleReader().readLine("Enter username for " + url + ": ");
     }
+    props.setProperty("user", username);
     if (password == null) {
       password = beeLine.getConsoleReader().readLine("Enter password for " + url + ": ",
           new Character('*'));
+    }
+    props.setProperty("password", password);
+
+    if (auth == null) {
+      auth = beeLine.getOpts().getAuthType();
+    }
+    if (auth != null) {
+      props.setProperty("auth", auth);
     }
 
     try {
