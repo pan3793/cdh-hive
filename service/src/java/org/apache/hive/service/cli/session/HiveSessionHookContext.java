@@ -22,6 +22,10 @@ import org.apache.hadoop.hive.conf.HiveConf;
 
 public interface HiveSessionHookContext {
 
+  /**
+   * Retrieve session conf
+   * @return
+   */
   public HiveConf getSessionConf();
 
   public String getSessionUser();

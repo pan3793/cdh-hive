@@ -159,12 +159,12 @@ public class SessionManager extends CompositeService {
 
   // execute session hooks
   private void executeSessionHooks(HiveSession session) throws Exception {
-    String hookList = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK).trim();
-    if (hookList == null || hookList.isEmpty()) {
+    String hookList = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK);
+    if (hookList == null || hookList.trim().isEmpty()) {
       return;
     }
 
-    String[] hookClasses = hookList.split(",");
+    String[] hookClasses = hookList.trim().split(",");
     for (String hookClass : hookClasses) {
       HiveSessionHook sessionHook = (HiveSessionHook)
           Class.forName(hookClass.trim(), true, JavaUtils.getClassLoader()).newInstance();
