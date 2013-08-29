@@ -33,6 +33,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.MiniMRCluster;
+import org.apache.hadoop.hbase.TableName;
 
 import java.io.File;
 import java.io.IOException;
@@ -265,7 +266,7 @@ public class ManyMiniCluster {
             hbaseCluster = new MiniHBaseCluster(hbaseConf, numRegionServers);
             hbaseConf.set("hbase.master", hbaseCluster.getMaster().getServerName().getHostAndPort());
             //opening the META table ensures that cluster is running
-            new HTable(hbaseConf, HConstants.META_TABLE_NAME);
+            new HTable(hbaseConf, TableName.META_TABLE_NAME);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to setup HBase Cluster", e);
         }

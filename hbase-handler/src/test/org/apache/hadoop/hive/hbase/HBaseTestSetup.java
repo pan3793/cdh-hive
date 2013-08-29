@@ -34,6 +34,7 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.MiniHBaseCluster;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -98,7 +99,7 @@ public class HBaseTestSetup extends TestSetup {
     hbaseCluster = new MiniHBaseCluster(hbaseConf, NUM_REGIONSERVERS);
     conf.set("hbase.master", hbaseCluster.getMaster().getServerName().getHostAndPort());
     // opening the META table ensures that cluster is running
-    new HTable(hbaseConf, HConstants.META_TABLE_NAME);
+    new HTable(hbaseConf, TableName.META_TABLE_NAME);
     createHBaseTable(hbaseConf);
   }
 
