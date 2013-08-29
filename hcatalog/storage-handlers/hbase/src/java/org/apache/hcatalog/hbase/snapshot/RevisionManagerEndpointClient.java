@@ -27,6 +27,7 @@ import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.coprocessor.Batch;
 import org.apache.hadoop.hbase.ipc.BlockingRpcCallback;
 import org.apache.hadoop.hbase.ipc.ServerRpcController;
@@ -78,7 +79,7 @@ public class RevisionManagerEndpointClient implements RevisionManager, Configura
         // clone to adjust RPC settings unique to proxy
         Configuration clonedConf = new Configuration(conf);
         clonedConf.setInt(HConstants.HBASE_CLIENT_RETRIES_NUMBER, 1); // do not retry RPC
-        htable = new HTable(clonedConf, HConstants.META_TABLE_NAME);
+        htable = new HTable(clonedConf, TableName.META_TABLE_NAME);
     }
 
     @Override

@@ -29,6 +29,7 @@ import java.util.TreeMap;
 
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.KeyValueUtil;
 import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -60,7 +61,7 @@ public class PutWritable implements Writable {
     long ts = in.readLong();
     Durability durability = Durability.valueOf(in.readUTF());
     int numFamilies = in.readInt();
-    NavigableMap<byte[],List<? extends Cell>> familyMap = new TreeMap<byte[],List<? extends Cell>>();
+    NavigableMap<byte[],List<Cell>> familyMap = new TreeMap<byte[],List<Cell>>();
     for(int i = 0; i < numFamilies; i++) {
       byte [] family = Bytes.readByteArray(in);
       int numKeys = in.readInt();
@@ -74,7 +75,12 @@ public class PutWritable implements Writable {
         keys.add(new KeyValue(buf, offset, keyLength));
         offset += keyLength;
       }
-      familyMap.put(family, keys);
+      List<Cell> cellKeys = new ArrayList<Cell>(numKeys);
+      for (KeyValue key: keys) {
+        cellKeys.add(key);
+      }
+      
+      familyMap.put(family, cellKeys);
     }
     put = new Put(row, ts);
     put.setFamilyMap(familyMap);
@@ -92,11 +98,14 @@ public class PutWritable implements Writable {
       durabilty = Durability.USE_DEFAULT;
     }
     out.writeUTF(durabilty.name());
-    NavigableMap<byte[],List<? extends Cell>> familyMap = put.getFamilyCellMap();
+    NavigableMap<byte[],List<Cell>> familyMap = put.getFamilyCellMap();
     out.writeInt(familyMap.size());
-    for (Map.Entry<byte [], List<? extends Cell>> entry : familyMap.entrySet()) {
+    for (Map.Entry<byte [], List<Cell>> entry : familyMap.entrySet()) {
       Bytes.writeByteArray(out, entry.getKey());
-      List<KeyValue> keys = (List<KeyValue>)entry.getValue();
+      List<KeyValue> keys = new ArrayList<KeyValue>();
+      for (Cell c: entry.getValue()) {
+        keys.add(KeyValueUtil.ensureKeyValue(c));
+      }
       out.writeInt(keys.size());
       int totalLen = 0;
       for(KeyValue kv : keys) {
