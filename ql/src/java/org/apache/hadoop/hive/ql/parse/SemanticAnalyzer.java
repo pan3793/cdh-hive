@@ -3528,7 +3528,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
     if (!mapAggrDone) {
       getReduceValuesForReduceSinkNoMapAgg(parseInfo, dest, reduceSinkInputRowResolver,
-          reduceSinkOutputRowResolver, outputValueColumnNames, reduceValues);
+          reduceSinkOutputRowResolver, outputValueColumnNames, reduceValues, colExprMap);
     } else {
       // Put partial aggregation results in reduceValues
       int inputField = reduceKeys.size();
@@ -3537,14 +3537,16 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
         TypeInfo type = reduceSinkInputRowResolver.getColumnInfos().get(
             inputField).getType();
-        reduceValues.add(new ExprNodeColumnDesc(type,
-            getColumnInternalName(inputField), "", false));
+        ExprNodeColumnDesc exprDesc = new ExprNodeColumnDesc(type,
+            getColumnInternalName(inputField), "", false);
+        reduceValues.add(exprDesc);
         inputField++;
         outputValueColumnNames.add(getColumnInternalName(reduceValues.size() - 1));
         String field = Utilities.ReduceField.VALUE.toString() + "."
             + getColumnInternalName(reduceValues.size() - 1);
         reduceSinkOutputRowResolver.putExpression(entry.getValue(),
             new ColumnInfo(field, type, null, false));
+        colExprMap.put(field, exprDesc);
       }
     }
 
@@ -3632,8 +3634,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
               + "." + name;
           ColumnInfo colInfo = new ColumnInfo(field, expr.getTypeInfo(), null, false);
           reduceSinkOutputRowResolver.putExpression(parameter, colInfo);
+          colExprMap.put(field, expr);
           numExprs++;
-          colExprMap.put(colInfo.getInternalName(), expr);
         }
         distinctColIndices.add(distinctIndices);
       }
@@ -3644,8 +3646,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
   private void getReduceValuesForReduceSinkNoMapAgg(QBParseInfo parseInfo, String dest,
       RowResolver reduceSinkInputRowResolver, RowResolver reduceSinkOutputRowResolver,
-      List<String> outputValueColumnNames, ArrayList<ExprNodeDesc> reduceValues)
-      throws SemanticException {
+      List<String> outputValueColumnNames, ArrayList<ExprNodeDesc> reduceValues,
+      Map<String, ExprNodeDesc> colExprMap) throws SemanticException {
     HashMap<String, ASTNode> aggregationTrees = parseInfo
         .getAggregationExprsForClause(dest);
 
@@ -3656,8 +3658,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       for (int i = 1; i < value.getChildCount(); i++) {
         ASTNode parameter = (ASTNode) value.getChild(i);
         if (reduceSinkOutputRowResolver.getExpression(parameter) == null) {
-          reduceValues.add(genExprNodeDesc(parameter,
-              reduceSinkInputRowResolver));
+          ExprNodeDesc exprDesc = genExprNodeDesc(parameter, reduceSinkInputRowResolver);
+          reduceValues.add(exprDesc);
           outputValueColumnNames
               .add(getColumnInternalName(reduceValues.size() - 1));
           String field = Utilities.ReduceField.VALUE.toString() + "."
@@ -3665,6 +3667,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           reduceSinkOutputRowResolver.putExpression(parameter, new ColumnInfo(field,
               reduceValues.get(reduceValues.size() - 1).getTypeInfo(), null,
               false));
+          colExprMap.put(field, exprDesc);
         }
       }
     }
@@ -3705,7 +3708,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     for (String destination : dests) {
 
       getReduceValuesForReduceSinkNoMapAgg(parseInfo, destination, reduceSinkInputRowResolver,
-          reduceSinkOutputRowResolver, outputValueColumnNames, reduceValues);
+          reduceSinkOutputRowResolver, outputValueColumnNames, reduceValues, colExprMap);
 
       // Need to pass all of the columns used in the where clauses as reduce values
       ASTNode whereClause = parseInfo.getWhrForClause(destination);
@@ -3734,6 +3737,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           outputValueColumnNames.add(internalName);
           reduceSinkOutputRowResolver.putExpression(parameter,
               new ColumnInfo(field, expression.getTypeInfo(), null, false));
+          colExprMap.put(field, expression);
         }
       }
     }
@@ -3840,13 +3844,15 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       ASTNode t = entry.getValue();
       TypeInfo typeInfo = reduceSinkInputRowResolver2.getExpression(t)
           .getType();
-      reduceValues.add(new ExprNodeColumnDesc(typeInfo, field, "", false));
+      ExprNodeColumnDesc exprDesc = new ExprNodeColumnDesc(typeInfo, field, "", false);
+      reduceValues.add(exprDesc);
       inputField++;
       String col = getColumnInternalName(reduceValues.size() - 1);
       outputColumnNames.add(col);
       reduceSinkOutputRowResolver2.putExpression(t, new ColumnInfo(
           Utilities.ReduceField.VALUE.toString() + "." + col, typeInfo, "",
           false));
+      colExprMap.put(col, exprDesc);
     }
 
     ReduceSinkOperator rsOp = (ReduceSinkOperator) putOpInsertMap(
@@ -6981,7 +6987,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
               reduceValues.size() - 1).getTypeInfo(), "", false);
           reduceSinkOutputRowResolver.putExpression(grpbyExpr, colInfo);
           outputColumnNames.add(getColumnInternalName(reduceValues.size() - 1));
-          colExprMap.put(colInfo.getInternalName(), grpByExprNode);
+          colExprMap.put(field, grpByExprNode);
         }
       }
 
@@ -7007,6 +7013,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
             reduceSinkOutputRowResolver.putExpression(paraExpr, colInfo);
             outputColumnNames
                 .add(getColumnInternalName(reduceValues.size() - 1));
+            colExprMap.put(field, paraExprNode);
           }
         }
       }
