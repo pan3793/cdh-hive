@@ -45,6 +45,7 @@ import org.apache.hadoop.mapreduce.TaskID;
 import org.apache.hadoop.util.Progressable;
 import org.apache.hadoop.security.KerberosName;
 import org.apache.hadoop.mapred.lib.TotalOrderPartitioner;
+import org.apache.hadoop.security.UserGroupInformation;
 
 /**
  * Implemention of shims against Hadoop 0.20 with Security.
@@ -331,7 +332,7 @@ public class Hadoop20SShims extends HadoopShimsSecure {
     }
   }
   @Override
-  public WebHCatJTShim getWebHCatShim(Configuration conf) throws IOException {
-    return new WebHCatJTShim20S(conf);//this has state, so can't be cached
+  public WebHCatJTShim getWebHCatShim(Configuration conf, UserGroupInformation ugi) throws IOException {
+    return new WebHCatJTShim20S(conf, ugi);//this has state, so can't be cached
   }
 }
