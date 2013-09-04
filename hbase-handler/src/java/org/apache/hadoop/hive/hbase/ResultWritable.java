@@ -17,19 +17,20 @@
  */
 
 package org.apache.hadoop.hive.hbase;
-import java.io.ByteArrayInputStream;
 import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.KeyValueUtil;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.hbase.protobuf.ProtobufUtil;
+import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
 import org.apache.hadoop.io.Writable;
 
 public class ResultWritable implements Writable {
-  private static final byte RESULT_VERSION = (byte)0;
 
   private Result result;
 
@@ -46,51 +47,28 @@ public class ResultWritable implements Writable {
   public void setResult(Result result) {
     this.result = result;
   }
-  //Writable
+  @Override
   public void readFields(final DataInput in)
-  throws IOException {
-    int version = in.readByte();
-    if (version > RESULT_VERSION) {
-      throw new IOException("version not supported");
-    }
+  throws IOException {    
+    ClientProtos.Result protosResult = ClientProtos.Result.parseDelimitedFrom(DataInputInputStream.from(in));
     int size = in.readInt();
     if(size < 0) {
       throw new IOException("Invalid size " + size);
     }
-    KeyValue[] kvs = new KeyValue[size];
-    int totalBuffer = in.readInt();
-    if(totalBuffer > 0) {
-      byte [] raw = new byte[totalBuffer];
-      DataInputStream kvIn = new DataInputStream(new ByteArrayInputStream(raw));
-      for (int i = 0; i < kvs.length; i++) {
-        int kvLength = kvIn.readInt();
-        if(kvLength < 0) {
-          throw new IOException("Invalid length " + kvLength);
-        }
-        byte[] kvBuff = new byte[kvLength];
-        kvIn.readFully(kvBuff);
-        kvs[i] = new KeyValue(kvBuff);
-      }
+    Cell[] kvs = new Cell[size];
+    for (int i = 0; i < kvs.length; i++) {
+      kvs[i] = KeyValue.create(in);
     }
-    result = new Result(kvs);
+    result = ProtobufUtil.toResult(protosResult, CellUtil.createCellScanner(kvs));
   }
-
+  @Override
   public void write(final DataOutput out)
-  throws IOException {
-    out.writeByte(RESULT_VERSION);
-    if(result.isEmpty()) {
-      out.writeInt(0);
-    } else {
-      out.writeInt(result.size());
-      int totalLen = 0;
-      for(KeyValue kv : result.list()) {
-        totalLen += kv.getLength() + Bytes.SIZEOF_INT;
-      }
-      out.writeInt(totalLen);
-      for(KeyValue kv : result.list()) {
-        out.writeInt(kv.getLength());
-        out.write(kv.getBuffer(), kv.getOffset(), kv.getLength());
-      }
+  throws IOException {    
+    ProtobufUtil.toResultNoData(result).writeDelimitedTo(DataOutputOutputStream.from(out));
+    out.writeInt(result.size());
+    for(Cell c : result.list()) {
+      KeyValue kv = KeyValueUtil.ensureKeyValue(c);
+      KeyValue.write(kv, out);
     }
   }
 

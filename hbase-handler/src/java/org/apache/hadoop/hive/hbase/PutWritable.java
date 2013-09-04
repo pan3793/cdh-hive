@@ -20,24 +20,19 @@ package org.apache.hadoop.hive.hbase;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellScanner;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.KeyValueUtil;
-import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.hbase.protobuf.ProtobufUtil;
+import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
+import org.apache.hadoop.hbase.protobuf.generated.ClientProtos.MutationProto.MutationType;
 import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.io.WritableUtils;
 
 public class PutWritable implements Writable {
-  private static final byte PUT_VERSION = (byte)0;
 
   private Put put;
 
@@ -50,98 +45,29 @@ public class PutWritable implements Writable {
   public Put getPut() {
     return put;
   }
-  //Writable
+  @Override
   public void readFields(final DataInput in)
-  throws IOException {
-    int version = in.readByte();
-    if (version > PUT_VERSION) {
-      throw new IOException("version not supported");
+  throws IOException {    
+    ClientProtos.MutationProto putProto = ClientProtos.MutationProto.parseDelimitedFrom(DataInputInputStream.from(in));
+    int size = in.readInt();
+    if(size < 0) {
+      throw new IOException("Invalid size " + size);
     }
-    byte[] row = Bytes.readByteArray(in);
-    long ts = in.readLong();
-    Durability durability = Durability.valueOf(in.readUTF());
-    int numFamilies = in.readInt();
-    NavigableMap<byte[],List<Cell>> familyMap = new TreeMap<byte[],List<Cell>>();
-    for(int i = 0; i < numFamilies; i++) {
-      byte [] family = Bytes.readByteArray(in);
-      int numKeys = in.readInt();
-      List<KeyValue> keys = new ArrayList<KeyValue>(numKeys);
-      int totalLen = in.readInt();
-      byte [] buf = new byte[totalLen];
-      int offset = 0;
-      for (int j = 0; j < numKeys; j++) {
-        int keyLength = in.readInt();
-        in.readFully(buf, offset, keyLength);
-        keys.add(new KeyValue(buf, offset, keyLength));
-        offset += keyLength;
-      }
-      List<Cell> cellKeys = new ArrayList<Cell>(numKeys);
-      for (KeyValue key: keys) {
-        cellKeys.add(key);
-      }
-      
-      familyMap.put(family, cellKeys);
+    Cell[] kvs = new Cell[size];
+    for (int i = 0; i < kvs.length; i++) {
+      kvs[i] = KeyValue.create(in);
     }
-    put = new Put(row, ts);
-    put.setFamilyMap(familyMap);
-    put.setDurability(durability);
-    readAttributes(in);
+    put = ProtobufUtil.toPut(putProto, CellUtil.createCellScanner(kvs));
   }
-
+  @Override
   public void write(final DataOutput out)
   throws IOException {
-    out.writeByte(PUT_VERSION);
-    Bytes.writeByteArray(out, put.getRow());
-    out.writeLong(put.getTimeStamp());
-    Durability durabilty = put.getDurability();
-    if(durabilty == null) {
-      durabilty = Durability.USE_DEFAULT;
-    }
-    out.writeUTF(durabilty.name());
-    NavigableMap<byte[],List<Cell>> familyMap = put.getFamilyCellMap();
-    out.writeInt(familyMap.size());
-    for (Map.Entry<byte [], List<Cell>> entry : familyMap.entrySet()) {
-      Bytes.writeByteArray(out, entry.getKey());
-      List<KeyValue> keys = new ArrayList<KeyValue>();
-      for (Cell c: entry.getValue()) {
-        keys.add(KeyValueUtil.ensureKeyValue(c));
-      }
-      out.writeInt(keys.size());
-      int totalLen = 0;
-      for(KeyValue kv : keys) {
-        totalLen += kv.getLength();
-      }
-      out.writeInt(totalLen);
-      for(KeyValue kv : keys) {
-        out.writeInt(kv.getLength());
-        out.write(kv.getBuffer(), kv.getOffset(), kv.getLength());
-      }
-    }
-    writeAttributes(out);
-  }
-
-  private void writeAttributes(final DataOutput out) throws IOException {
-    Map<String, byte[]> attributes = put.getAttributesMap();
-    if (attributes == null) {
-      out.writeInt(0);
-    } else {
-      out.writeInt(attributes.size());
-      for (Map.Entry<String, byte[]> attr : attributes.entrySet()) {
-        WritableUtils.writeString(out, attr.getKey());
-        Bytes.writeByteArray(out, attr.getValue());
-      }
-    }
-  }
-
-  private void readAttributes(final DataInput in) throws IOException {
-    int numAttributes = in.readInt();
-    if (numAttributes > 0) {
-      Map<String, byte[]> attributes = new HashMap<String, byte[]>(numAttributes);
-      for(int i=0; i<numAttributes; i++) {
-        String name = WritableUtils.readString(in);
-        byte[] value = Bytes.readByteArray(in);
-        attributes.put(name, value);
-      }
+    ProtobufUtil.toMutationNoData(MutationType.PUT, put).writeDelimitedTo(DataOutputOutputStream.from(out));
+    out.writeInt(put.size());
+    CellScanner scanner = put.cellScanner();
+    while(scanner.advance()) {
+      KeyValue kv = KeyValueUtil.ensureKeyValue(scanner.current());
+      KeyValue.write(kv, out);
     }
   }
 }
