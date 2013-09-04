@@ -251,7 +251,7 @@
                  noqualifier="all"
                  windowtitle="HCatalog ${hcatalog.version} API"
                  doctitle="HCatalog ${hcatalog.version} API"
-                 failonerror="true"
+                 failonerror="false"
                  useexternalfile="yes">
             <packageset dir="core/src/main/java"/>
             <packageset dir="hcatalog-pig-adapter/src/main/java"/>
@@ -271,12 +271,6 @@
             <group title="hcatalog" packages="org.apache.hcatalog.*"/>
         </javadoc>
         <record name="${build.dir}/javadoc.log" action="stop"/>
-        <condition property="javadoc.warnings">
-            <isfileselected file="${build.dir}/javadoc.log">
-                <contains text="warnings"/>
-            </isfileselected>
-        </condition>
-        <fail if="javadoc.warnings">Javadoc comments contain warnings.</fail>
     </target>
 
     <!--
