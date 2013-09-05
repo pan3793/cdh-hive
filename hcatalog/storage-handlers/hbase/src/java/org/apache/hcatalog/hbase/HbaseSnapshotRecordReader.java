@@ -28,7 +28,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.KeyValueUtil;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -192,7 +194,8 @@ class HbaseSnapshotRecordReader implements RecordReader<ImmutableBytesWritable, 
 
         List<KeyValue> finalKeyVals = new ArrayList<KeyValue>();
         Map<String, List<KeyValue>> qualValMap = new HashMap<String, List<KeyValue>>();
-        for (KeyValue kv : keyvalues) {
+        for (Cell cell : keyvalues) {
+            KeyValue kv = KeyValueUtil.ensureKeyValue(cell);
             byte[] cf = kv.getFamily();
             byte[] qualifier = kv.getQualifier();
             String key = Bytes.toString(cf) + ":" + Bytes.toString(qualifier);
