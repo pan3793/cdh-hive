@@ -190,7 +190,7 @@ class HbaseSnapshotRecordReader implements RecordReader<ImmutableBytesWritable, 
         return false;
     }
 
-    private Result prepareResult(List<KeyValue> keyvalues) {
+    private Result prepareResult(List<Cell> keyvalues) {
 
         List<KeyValue> finalKeyVals = new ArrayList<KeyValue>();
         Map<String, List<KeyValue>> qualValMap = new HashMap<String, List<KeyValue>>();
