@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.hcatalog.hbase;
+package org.apache.hive.hcatalog.hbase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,19 +56,19 @@ import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hadoop.util.StringUtils;
-import org.apache.hcatalog.common.HCatConstants;
-import org.apache.hcatalog.common.HCatUtil;
-import org.apache.hcatalog.data.schema.HCatSchema;
-import org.apache.hcatalog.hbase.HBaseBulkOutputFormat.HBaseBulkOutputCommitter;
-import org.apache.hcatalog.hbase.HBaseDirectOutputFormat.HBaseDirectOutputCommitter;
-import org.apache.hcatalog.hbase.snapshot.RevisionManager;
-import org.apache.hcatalog.hbase.snapshot.RevisionManagerConfiguration;
-import org.apache.hcatalog.hbase.snapshot.Transaction;
-import org.apache.hcatalog.mapreduce.HCatOutputFormat;
-import org.apache.hcatalog.mapreduce.HCatTableInfo;
-import org.apache.hcatalog.mapreduce.InputJobInfo;
-import org.apache.hcatalog.mapreduce.OutputJobInfo;
-import org.apache.hcatalog.mapreduce.HCatStorageHandler;
+import org.apache.hive.hcatalog.common.HCatConstants;
+import org.apache.hive.hcatalog.common.HCatUtil;
+import org.apache.hive.hcatalog.data.schema.HCatSchema;
+import org.apache.hive.hcatalog.hbase.HBaseBulkOutputFormat.HBaseBulkOutputCommitter;
+import org.apache.hive.hcatalog.hbase.HBaseDirectOutputFormat.HBaseDirectOutputCommitter;
+import org.apache.hive.hcatalog.hbase.snapshot.RevisionManager;
+import org.apache.hive.hcatalog.hbase.snapshot.RevisionManagerConfiguration;
+import org.apache.hive.hcatalog.hbase.snapshot.Transaction;
+import org.apache.hive.hcatalog.mapreduce.HCatOutputFormat;
+import org.apache.hive.hcatalog.mapreduce.HCatTableInfo;
+import org.apache.hive.hcatalog.mapreduce.InputJobInfo;
+import org.apache.hive.hcatalog.mapreduce.OutputJobInfo;
+import org.apache.hive.hcatalog.mapreduce.HCatStorageHandler;
 import org.apache.thrift.TBase;
 import org.apache.zookeeper.ZooKeeper;
 
@@ -198,7 +198,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
     *
     * @throws HiveException
     *
-    * @see org.apache.hcatalog.storagehandler.HCatStorageHandler#
+    * @see org.apache.hive.hcatalog.storagehandler.HCatStorageHandler#
     * getAuthorizationProvider()
     */
     @Override
@@ -215,7 +215,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
      *
      * @throws MetaException
      *
-     * @see org.apache.hcatalog.storagehandler.HCatStorageHandler
+     * @see org.apache.hive.hcatalog.storagehandler.HCatStorageHandler
      * #commitCreateTable(org.apache.hadoop.hive.metastore.api.Table)
      */
     @Override
@@ -229,7 +229,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
      *
      * @throws MetaException
      *
-     * @see org.apache.hcatalog.storagehandler.HCatStorageHandler
+     * @see org.apache.hive.hcatalog.storagehandler.HCatStorageHandler
      * #commitDropTable(org.apache.hadoop.hive.metastore.api.Table, boolean)
      */
     @Override
@@ -244,7 +244,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
      *
      * @throws MetaException
      *
-     * @see org.apache.hcatalog.storagehandler.HCatStorageHandler
+     * @see org.apache.hive.hcatalog.storagehandler.HCatStorageHandler
      * #preCreateTable(org.apache.hadoop.hive.metastore.api.Table)
      */
     @Override
@@ -342,7 +342,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
      *
      * @throws MetaException
      *
-     * @see org.apache.hcatalog.storagehandler.HCatStorageHandler
+     * @see org.apache.hive.hcatalog.storagehandler.HCatStorageHandler
      * #preDropTable(org.apache.hadoop.hive.metastore.api.Table)
      */
     @Override
@@ -354,7 +354,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
      *
      * @throws MetaException
      *
-     * @see org.apache.hcatalog.storagehandler.HCatStorageHandler
+     * @see org.apache.hive.hcatalog.storagehandler.HCatStorageHandler
      * #rollbackCreateTable(org.apache.hadoop.hive.metastore.api.Table)
      */
     @Override
@@ -367,7 +367,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
      *
      * @throws MetaException
      *
-     * @see org.apache.hcatalog.storagehandler.HCatStorageHandler
+     * @see org.apache.hive.hcatalog.storagehandler.HCatStorageHandler
      * #rollbackDropTable(org.apache.hadoop.hive.metastore.api.Table)
      */
     @Override
@@ -377,7 +377,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
     /*
      * @return instance of HiveMetaHook
      *
-     * @see org.apache.hcatalog.storagehandler.HCatStorageHandler#getMetaHook()
+     * @see org.apache.hive.hcatalog.storagehandler.HCatStorageHandler#getMetaHook()
      */
     @Override
     public HiveMetaHook getMetaHook() {
@@ -445,7 +445,7 @@ public class HBaseHCatStorageHandler extends HCatStorageHandler implements HiveM
     * @throws UnsupportedOperationException
     *
     * @see
-    * org.apache.hcatalog.storagehandler.HCatStorageHandler#getSerDeClass()
+    * org.apache.hive.hcatalog.storagehandler.HCatStorageHandler#getSerDeClass()
     */
     @Override
     public Class<? extends SerDe> getSerDeClass()
