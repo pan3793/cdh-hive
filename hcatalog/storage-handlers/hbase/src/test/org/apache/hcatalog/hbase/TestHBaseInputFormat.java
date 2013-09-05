@@ -34,7 +34,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
@@ -557,7 +557,7 @@ public class TestHBaseInputFormat extends SkeletonHBaseTest {
                         OutputCollector<WritableComparable<?>, Text> output, Reporter reporter)
             throws IOException {
             System.out.println("Result " + result.toString());
-            List<KeyValue> list = result.getResult().list();
+            List<Cell> list = result.getResult().list();
             boolean correctValues = (list.size() == 1)
                 && (Bytes.toString(list.get(0).getRow())).equalsIgnoreCase("testRow")
                 && (Bytes.toString(list.get(0).getValue())).equalsIgnoreCase("textValue-5")
