@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.hive.hcatalog.hbase;
+package org.apache.hcatalog.hbase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,9 +40,9 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hive.hbase.ResultWritable;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hive.hcatalog.common.HCatUtil;
-import org.apache.hive.hcatalog.hbase.snapshot.FamilyRevision;
-import org.apache.hive.hcatalog.hbase.snapshot.RevisionManager;
-import org.apache.hive.hcatalog.hbase.snapshot.TableSnapshot;
+import org.apache.hcatalog.hbase.snapshot.FamilyRevision;
+import org.apache.hcatalog.hbase.snapshot.RevisionManager;
+import org.apache.hcatalog.hbase.snapshot.TableSnapshot;
 import org.apache.hive.hcatalog.mapreduce.InputJobInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
