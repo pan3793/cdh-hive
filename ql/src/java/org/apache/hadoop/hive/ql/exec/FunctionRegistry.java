@@ -862,6 +862,7 @@ public final class FunctionRegistry {
     return false;
   }
 
+
   /**
    * Get the GenericUDAF evaluator for the name and argumentClasses.
    *

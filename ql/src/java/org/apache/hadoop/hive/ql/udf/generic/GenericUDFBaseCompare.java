@@ -138,9 +138,7 @@ public abstract class GenericUDFBaseCompare extends GenericUDF {
         compareType = CompareType.SAME_TYPE;
       } else {
         compareType = CompareType.NEED_CONVERT;
-        TypeInfo compareType = FunctionRegistry.getCommonClassForComparison(
-            oiTypeInfo0, oiTypeInfo1);
-
+        TypeInfo compareType = FunctionRegistry.getCommonClassForComparison(oiTypeInfo0, oiTypeInfo1);
         // For now, we always convert to double if we can't find a common type
         compareOI = TypeInfoUtils.getStandardWritableObjectInspectorFromTypeInfo(
             (compareType == null) ?

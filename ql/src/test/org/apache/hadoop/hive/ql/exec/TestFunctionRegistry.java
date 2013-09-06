@@ -328,6 +328,33 @@ public class TestFunctionRegistry extends TestCase {
         PrimitiveCategory.DOUBLE));
   }
 
+  private void unionAll(TypeInfo a, TypeInfo b, TypeInfo result) {
+    assertEquals(result, FunctionRegistry.getCommonClassForUnionAll(a,b));
+  }
+
+  public void testCommonClassUnionAll() {
+    unionAll(TypeInfoFactory.intTypeInfo, TypeInfoFactory.decimalTypeInfo,
+        TypeInfoFactory.decimalTypeInfo);
+    unionAll(TypeInfoFactory.stringTypeInfo, TypeInfoFactory.decimalTypeInfo,
+        TypeInfoFactory.decimalTypeInfo);
+    unionAll(TypeInfoFactory.doubleTypeInfo, TypeInfoFactory.decimalTypeInfo,
+        TypeInfoFactory.decimalTypeInfo);
+    unionAll(TypeInfoFactory.doubleTypeInfo, TypeInfoFactory.stringTypeInfo,
+        TypeInfoFactory.stringTypeInfo);
+  }
+
+  public void testGetTypeInfoForPrimitiveCategory() {
+    // non-qualified types should simply return the TypeInfo associated with that type
+    assertEquals(TypeInfoFactory.stringTypeInfo, FunctionRegistry.getTypeInfoForPrimitiveCategory(
+        (PrimitiveTypeInfo) TypeInfoFactory.stringTypeInfo,
+        (PrimitiveTypeInfo) TypeInfoFactory.stringTypeInfo,
+        PrimitiveCategory.STRING));
+    assertEquals(TypeInfoFactory.doubleTypeInfo, FunctionRegistry.getTypeInfoForPrimitiveCategory(
+        (PrimitiveTypeInfo) TypeInfoFactory.doubleTypeInfo,
+        (PrimitiveTypeInfo) TypeInfoFactory.stringTypeInfo,
+        PrimitiveCategory.DOUBLE));
+  }
+
   @Override
   protected void tearDown() {
   }
