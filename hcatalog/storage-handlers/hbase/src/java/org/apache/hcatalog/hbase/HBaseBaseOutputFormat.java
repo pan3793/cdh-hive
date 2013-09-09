@@ -42,52 +42,52 @@ import org.apache.hive.hcatalog.mapreduce.OutputJobInfo;
  * PutWritable. PutWritables will come from Hive's HBase SerDe.
  */
 public class HBaseBaseOutputFormat implements OutputFormat<WritableComparable<?>, Object>,
-    HiveOutputFormat<WritableComparable<?>, Object> {
+  HiveOutputFormat<WritableComparable<?>, Object> {
 
-    @Override
-    public org.apache.hadoop.hive.ql.exec.FileSinkOperator.RecordWriter getHiveRecordWriter(
-        JobConf jc, Path finalOutPath,
-        Class<? extends Writable> valueClass, boolean isCompressed,
-        Properties tableProperties, Progressable progress)
-        throws IOException {
-        throw new UnsupportedOperationException("Not implemented");
-    }
+  @Override
+  public org.apache.hadoop.hive.ql.exec.FileSinkOperator.RecordWriter getHiveRecordWriter(
+    JobConf jc, Path finalOutPath,
+    Class<? extends Writable> valueClass, boolean isCompressed,
+    Properties tableProperties, Progressable progress)
+    throws IOException {
+    throw new UnsupportedOperationException("Not implemented");
+  }
 
-    @Override
-    public void checkOutputSpecs(FileSystem ignored, JobConf job) throws IOException {
-        OutputFormat<WritableComparable<?>, Object> outputFormat = getOutputFormat(job);
-        outputFormat.checkOutputSpecs(ignored, job);
-    }
+  @Override
+  public void checkOutputSpecs(FileSystem ignored, JobConf job) throws IOException {
+    OutputFormat<WritableComparable<?>, Object> outputFormat = getOutputFormat(job);
+    outputFormat.checkOutputSpecs(ignored, job);
+  }
 
-    @Override
-    public RecordWriter<WritableComparable<?>, Object> getRecordWriter(FileSystem ignored,
-                                                                    JobConf job, String name, Progressable progress) throws IOException {
-        HBaseHCatStorageHandler.setHBaseSerializers(job);
-        OutputFormat<WritableComparable<?>, Object> outputFormat = getOutputFormat(job);
-        return outputFormat.getRecordWriter(ignored, job, name, progress);
-    }
+  @Override
+  public RecordWriter<WritableComparable<?>, Object> getRecordWriter(FileSystem ignored,
+                                  JobConf job, String name, Progressable progress) throws IOException {
+    HBaseHCatStorageHandler.setHBaseSerializers(job);
+    OutputFormat<WritableComparable<?>, Object> outputFormat = getOutputFormat(job);
+    return outputFormat.getRecordWriter(ignored, job, name, progress);
+  }
 
-    protected static Put toPut(Object o) {
-        if(o != null) {
-            if(o instanceof Put) {
-                return (Put)o;
-            } else if(o instanceof PutWritable) {
-                return ((PutWritable)o).getPut();
-            }
-        }
-        throw new IllegalArgumentException("Illegal Argument " + (o == null ? "null" : o.getClass().getName()));
+  protected static Put toPut(Object o) {
+    if(o != null) {
+      if(o instanceof Put) {
+        return (Put)o;
+      } else if(o instanceof PutWritable) {
+        return ((PutWritable)o).getPut();
+      }
     }
-    
-    private OutputFormat<WritableComparable<?>, Object> getOutputFormat(JobConf job)
-        throws IOException {
-        String outputInfo = job.get(HCatConstants.HCAT_KEY_OUTPUT_INFO);
-        OutputJobInfo outputJobInfo = (OutputJobInfo) HCatUtil.deserialize(outputInfo);
-        OutputFormat<WritableComparable<?>, Object> outputFormat = null;
-        if (HBaseHCatStorageHandler.isBulkMode(outputJobInfo)) {
-            outputFormat = new HBaseBulkOutputFormat();
-        } else {
-            outputFormat = new HBaseDirectOutputFormat();
-        }
-        return outputFormat;
+    throw new IllegalArgumentException("Illegal Argument " + (o == null ? "null" : o.getClass().getName()));
+  }
+
+  private OutputFormat<WritableComparable<?>, Object> getOutputFormat(JobConf job)
+    throws IOException {
+    String outputInfo = job.get(HCatConstants.HCAT_KEY_OUTPUT_INFO);
+    OutputJobInfo outputJobInfo = (OutputJobInfo) HCatUtil.deserialize(outputInfo);
+    OutputFormat<WritableComparable<?>, Object> outputFormat = null;
+    if (HBaseHCatStorageHandler.isBulkMode(outputJobInfo)) {
+      outputFormat = new HBaseBulkOutputFormat();
+    } else {
+      outputFormat = new HBaseDirectOutputFormat();
     }
+    return outputFormat;
+  }
 }

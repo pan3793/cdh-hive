@@ -58,160 +58,160 @@ import com.google.protobuf.Service;
  */
 public class RevisionManagerEndpoint extends RevisionManagerEndpointService implements Coprocessor, CoprocessorService {
 
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(RevisionManagerEndpoint.class.getName());
+  private static final Logger LOGGER =
+    LoggerFactory.getLogger(RevisionManagerEndpoint.class.getName());
 
-    private final RPCConverter rpcConverter = new RPCConverter();
-    private RevisionManager rmImpl = null;
+  private final RPCConverter rpcConverter = new RPCConverter();
+  private RevisionManager rmImpl = null;
 
-    @Override
-    public void start(CoprocessorEnvironment env) {
-        try {
-            Configuration conf = RevisionManagerConfiguration.create(env.getConfiguration());
-            String className = conf.get(RMConstants.REVISION_MGR_ENDPOINT_IMPL_CLASS,
-                ZKBasedRevisionManager.class.getName());
-            LOGGER.info("Using Revision Manager implementation: {}", className);
-            rmImpl = RevisionManagerFactory.getOpenedRevisionManager(className, conf);
-        } catch (IOException e) {
-            LOGGER.error("Failed to initialize revision manager", e);
-        }
+  @Override
+  public void start(CoprocessorEnvironment env) {
+    try {
+      Configuration conf = RevisionManagerConfiguration.create(env.getConfiguration());
+      String className = conf.get(RMConstants.REVISION_MGR_ENDPOINT_IMPL_CLASS,
+        ZKBasedRevisionManager.class.getName());
+      LOGGER.info("Using Revision Manager implementation: {}", className);
+      rmImpl = RevisionManagerFactory.getOpenedRevisionManager(className, conf);
+    } catch (IOException e) {
+      LOGGER.error("Failed to initialize revision manager", e);
     }
+  }
 
-    @Override
-    public void stop(CoprocessorEnvironment env) {
-        try {
-            if (rmImpl != null) {
-                rmImpl.close();
-            }
-        } catch (IOException e) {
-            LOGGER.warn("Error closing revision manager.", e);
-        }
+  @Override
+  public void stop(CoprocessorEnvironment env) {
+    try {
+      if (rmImpl != null) {
+        rmImpl.close();
+      }
+    } catch (IOException e) {
+      LOGGER.warn("Error closing revision manager.", e);
     }
+  }
 
-    @Override
-    public Service getService() {
-        return this;
+  @Override
+  public Service getService() {
+    return this;
+  }
+
+  @Override
+  public void createTable(RpcController controller,
+    CreateTableRequest request, RpcCallback<CreateTableResponse> done) {
+    if(rmImpl != null) {
+      try {
+        rmImpl.createTable(request.getTableName(), request.getColumnFamiliesList());
+        done.run(CreateTableResponse.newBuilder().build());
+      } catch(IOException e) {
+        ResponseConverter.setControllerException(controller, e);
+      }
     }
+  }
 
-    @Override
-    public void createTable(RpcController controller,
-        CreateTableRequest request, RpcCallback<CreateTableResponse> done) {
-        if(rmImpl != null) {
-            try {
-                rmImpl.createTable(request.getTableName(), request.getColumnFamiliesList());
-                done.run(CreateTableResponse.newBuilder().build());
-            } catch(IOException e) {
-                ResponseConverter.setControllerException(controller, e);
-            }
-        }
+  @Override
+  public void dropTable(RpcController controller, DropTableRequest request,
+    RpcCallback<DropTableResponse> done) {
+    if(rmImpl != null) {
+      try {
+        rmImpl.dropTable(request.getTableName());
+        done.run(DropTableResponse.newBuilder().build());
+      } catch(IOException e) {
+        ResponseConverter.setControllerException(controller, e);
+      }
     }
+  }
 
-    @Override
-    public void dropTable(RpcController controller, DropTableRequest request,
-        RpcCallback<DropTableResponse> done) {
-        if(rmImpl != null) {
-            try {
-                rmImpl.dropTable(request.getTableName());
-                done.run(DropTableResponse.newBuilder().build());
-            } catch(IOException e) {
-                ResponseConverter.setControllerException(controller, e);
-            }
+  @Override
+  public void beginWriteTransaction(RpcController controller,
+    BeginWriteTransactionRequest request,
+    RpcCallback<BeginWriteTransactionResponse> done) {
+    if(rmImpl != null) {
+      try {
+        Transaction transaction;
+        if(request.hasKeepAlive()) {
+          transaction = rmImpl.beginWriteTransaction(request.getTableName(), request.getColumnFamiliesList(),
+              request.getKeepAlive());
+        } else {
+          transaction = rmImpl.beginWriteTransaction(request.getTableName(), request.getColumnFamiliesList());            
         }
+        done.run(BeginWriteTransactionResponse.newBuilder()
+            .setTransaction(rpcConverter.convertTransaction(transaction)).build());
+      } catch(IOException e) {
+        ResponseConverter.setControllerException(controller, e);
+      }
     }
+  }
 
-    @Override
-    public void beginWriteTransaction(RpcController controller,
-        BeginWriteTransactionRequest request,
-        RpcCallback<BeginWriteTransactionResponse> done) {
-        if(rmImpl != null) {
-            try {
-                Transaction transaction;
-                if(request.hasKeepAlive()) {
-                    transaction = rmImpl.beginWriteTransaction(request.getTableName(), request.getColumnFamiliesList(),
-                            request.getKeepAlive());
-                } else {
-                    transaction = rmImpl.beginWriteTransaction(request.getTableName(), request.getColumnFamiliesList());            
-                }
-                done.run(BeginWriteTransactionResponse.newBuilder()
-                        .setTransaction(rpcConverter.convertTransaction(transaction)).build());
-            } catch(IOException e) {
-                ResponseConverter.setControllerException(controller, e);
-            }
-        }
+  @Override
+  public void commitWriteTransaction(RpcController controller,
+    CommitWriteTransactionRequest request,
+    RpcCallback<CommitWriteTransactionResponse> done) {
+    if(rmImpl != null) {
+      try {
+        rmImpl.commitWriteTransaction(rpcConverter.convertTransaction(request.getTransaction()));
+        done.run(CommitWriteTransactionResponse.newBuilder().build());
+      } catch(IOException e) {
+        ResponseConverter.setControllerException(controller, e);
+      }
     }
+  }
 
-    @Override
-    public void commitWriteTransaction(RpcController controller,
-        CommitWriteTransactionRequest request,
-        RpcCallback<CommitWriteTransactionResponse> done) {
-        if(rmImpl != null) {
-            try {
-                rmImpl.commitWriteTransaction(rpcConverter.convertTransaction(request.getTransaction()));
-                done.run(CommitWriteTransactionResponse.newBuilder().build());
-            } catch(IOException e) {
-                ResponseConverter.setControllerException(controller, e);
-            }
-        }
+  @Override
+  public void abortWriteTransaction(RpcController controller,
+    AbortWriteTransactionRequest request,
+    RpcCallback<AbortWriteTransactionResponse> done) {
+    if(rmImpl != null) {
+      try {
+        rmImpl.abortWriteTransaction(rpcConverter.convertTransaction(request.getTransaction()));
+        done.run(AbortWriteTransactionResponse.newBuilder().build());
+      } catch(IOException e) {
+        ResponseConverter.setControllerException(controller, e);
+      }
     }
+  }
 
-    @Override
-    public void abortWriteTransaction(RpcController controller,
-        AbortWriteTransactionRequest request,
-        RpcCallback<AbortWriteTransactionResponse> done) {
-        if(rmImpl != null) {
-            try {
-                rmImpl.abortWriteTransaction(rpcConverter.convertTransaction(request.getTransaction()));
-                done.run(AbortWriteTransactionResponse.newBuilder().build());
-            } catch(IOException e) {
-                ResponseConverter.setControllerException(controller, e);
-            }
-        }
+  @Override
+  public void getAbortedWriteTransactions(RpcController controller,
+    GetAbortedWriteTransactionsRequest request,
+    RpcCallback<GetAbortedWriteTransactionsResponse> done) {
+    if(rmImpl != null) {
+      try {
+        rmImpl.getAbortedWriteTransactions(request.getTableName(), request.getColumnFamily());
+        done.run(GetAbortedWriteTransactionsResponse.newBuilder().build());
+      } catch(IOException e) {
+        ResponseConverter.setControllerException(controller, e);
+      }
     }
+  }
 
-    @Override
-    public void getAbortedWriteTransactions(RpcController controller,
-        GetAbortedWriteTransactionsRequest request,
-        RpcCallback<GetAbortedWriteTransactionsResponse> done) {
-        if(rmImpl != null) {
-            try {
-                rmImpl.getAbortedWriteTransactions(request.getTableName(), request.getColumnFamily());
-                done.run(GetAbortedWriteTransactionsResponse.newBuilder().build());
-            } catch(IOException e) {
-                ResponseConverter.setControllerException(controller, e);
-            }
+  @Override
+  public void createSnapshot(RpcController controller,
+    CreateSnapshotRequest request, RpcCallback<CreateSnapshotResponse> done) {
+    if(rmImpl != null) {
+      try {
+        TableSnapshot snapshot;
+        if(request.hasRevision()) {
+          snapshot = rmImpl.createSnapshot(request.getTableName(), request.getRevision());
+        } else {
+          snapshot = rmImpl.createSnapshot(request.getTableName());
         }
+        done.run(CreateSnapshotResponse.newBuilder()
+            .setTableSnapshot(rpcConverter.convertTableSnapshot(snapshot)).build());
+      } catch(IOException e) {
+        ResponseConverter.setControllerException(controller, e);
+      }
     }
+  }
 
-    @Override
-    public void createSnapshot(RpcController controller,
-        CreateSnapshotRequest request, RpcCallback<CreateSnapshotResponse> done) {
-        if(rmImpl != null) {
-            try {
-                TableSnapshot snapshot;
-                if(request.hasRevision()) {
-                    snapshot = rmImpl.createSnapshot(request.getTableName(), request.getRevision());
-                } else {
-                    snapshot = rmImpl.createSnapshot(request.getTableName());
-                }
-                done.run(CreateSnapshotResponse.newBuilder()
-                        .setTableSnapshot(rpcConverter.convertTableSnapshot(snapshot)).build());
-            } catch(IOException e) {
-                ResponseConverter.setControllerException(controller, e);
-            }
-        }
+  @Override
+  public void keepAliveTransaction(RpcController controller,
+    KeepAliveTransactionRequest request,
+    RpcCallback<KeepAliveTransactionResponse> done) {
+    if(rmImpl != null) {
+      try {
+        rmImpl.keepAlive(rpcConverter.convertTransaction(request.getTransaction()));
+        done.run(KeepAliveTransactionResponse.newBuilder().build());
+      } catch(IOException e) {
+        ResponseConverter.setControllerException(controller, e);
+      }
     }
-
-    @Override
-    public void keepAliveTransaction(RpcController controller,
-        KeepAliveTransactionRequest request,
-        RpcCallback<KeepAliveTransactionResponse> done) {
-        if(rmImpl != null) {
-            try {
-                rmImpl.keepAlive(rpcConverter.convertTransaction(request.getTransaction()));
-                done.run(KeepAliveTransactionResponse.newBuilder().build());
-            } catch(IOException e) {
-                ResponseConverter.setControllerException(controller, e);
-            }
-        }
-    }  
+  }  
 }

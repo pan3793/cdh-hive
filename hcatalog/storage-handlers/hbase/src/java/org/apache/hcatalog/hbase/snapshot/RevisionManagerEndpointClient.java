@@ -55,229 +55,229 @@ import org.apache.hive.hcatalog.hbase.snapshot.RevisionManagerEndpointProtos.Rev
  */
 public class RevisionManagerEndpointClient implements RevisionManager, Configurable {
 
-    private final RPCConverter rpcConverter = new RPCConverter();
-    private Configuration conf;
-    private HTable htable;
-    
-    @Override
-    public Configuration getConf() {
-        return conf;
-    }
+  private final RPCConverter rpcConverter = new RPCConverter();
+  private Configuration conf;
+  private HTable htable;
 
-    @Override
-    public void setConf(Configuration conf) {
-        this.conf = conf;
-    }
+  @Override
+  public Configuration getConf() {
+    return conf;
+  }
 
-    @Override
-    public void initialize(Configuration conf) {
-        // do nothing
-    }
+  @Override
+  public void setConf(Configuration conf) {
+    this.conf = conf;
+  }
 
-    @Override
-    public void open() throws IOException {
-        // clone to adjust RPC settings unique to proxy
-        Configuration clonedConf = new Configuration(conf);
-        clonedConf.setInt(HConstants.HBASE_CLIENT_RETRIES_NUMBER, 1); // do not retry RPC
-        htable = new HTable(clonedConf, TableName.META_TABLE_NAME);
-    }
+  @Override
+  public void initialize(Configuration conf) {
+    // do nothing
+  }
 
-    @Override
-    public void close() throws IOException {
-        htable.close();
-    }
+  @Override
+  public void open() throws IOException {
+    // clone to adjust RPC settings unique to proxy
+    Configuration clonedConf = new Configuration(conf);
+    clonedConf.setInt(HConstants.HBASE_CLIENT_RETRIES_NUMBER, 1); // do not retry RPC
+    htable = new HTable(clonedConf, TableName.META_TABLE_NAME);
+  }
 
-    @Override
-    public void createTable(final String table, final List<String> columnFamilies) throws IOException {
-        call(new Batch.Call<RevisionManagerEndpointService, Void>() {
-            @Override
-            public Void call(RevisionManagerEndpointService service)
-                throws IOException {
-                ServerRpcController controller = new ServerRpcController();
-                BlockingRpcCallback<CreateTableResponse> done = 
-                        new BlockingRpcCallback<CreateTableResponse>();
-                CreateTableRequest request = CreateTableRequest.newBuilder()
-                        .setTableName(table).addAllColumnFamilies(columnFamilies).build();
-                service.createTable(controller, request, done);
-                blockOnResponse(done, controller);
-                return null;
-            }
-        });
-    }
+  @Override
+  public void close() throws IOException {
+    htable.close();
+  }
 
-    @Override
-    public void dropTable(final String table) throws IOException {
-        call(new Batch.Call<RevisionManagerEndpointService, Void>() {
-            @Override
-            public Void call(RevisionManagerEndpointService service)
-                throws IOException {
-                ServerRpcController controller = new ServerRpcController();
-                BlockingRpcCallback<DropTableResponse> done = 
-                        new BlockingRpcCallback<DropTableResponse>();
-                DropTableRequest request = DropTableRequest.newBuilder()
-                        .setTableName(table).build();
-                service.dropTable(null, request, done);
-                blockOnResponse(done, controller);
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public Transaction beginWriteTransaction(final String table, final List<String> families) throws IOException {
-        return beginWriteTransaction(table, families, null);
-    }
-
-    @Override
-    public Transaction beginWriteTransaction(final String table, final List<String> families, final Long keepAlive)
+  @Override
+  public void createTable(final String table, final List<String> columnFamilies) throws IOException {
+    call(new Batch.Call<RevisionManagerEndpointService, Void>() {
+      @Override
+      public Void call(RevisionManagerEndpointService service)
         throws IOException {
-        return call(new Batch.Call<RevisionManagerEndpointService, Transaction>() {
-            @Override
-            public Transaction call(RevisionManagerEndpointService service)
-                throws IOException {
-                ServerRpcController controller = new ServerRpcController();
-                BlockingRpcCallback<BeginWriteTransactionResponse> done = 
-                        new BlockingRpcCallback<BeginWriteTransactionResponse>();
-                BeginWriteTransactionRequest.Builder builder = BeginWriteTransactionRequest.newBuilder()
-                        .setTableName(table)
-                        .addAllColumnFamilies(families);
-                if(keepAlive != null) {
-                    builder.setKeepAlive(keepAlive);
-                }
-                service.beginWriteTransaction(controller, builder.build(), done);
-                return rpcConverter.convertTransaction(blockOnResponse(done, controller).getTransaction());
-            }
-        });
-    }
+        ServerRpcController controller = new ServerRpcController();
+        BlockingRpcCallback<CreateTableResponse> done = 
+            new BlockingRpcCallback<CreateTableResponse>();
+        CreateTableRequest request = CreateTableRequest.newBuilder()
+            .setTableName(table).addAllColumnFamilies(columnFamilies).build();
+        service.createTable(controller, request, done);
+        blockOnResponse(done, controller);
+        return null;
+      }
+    });
+  }
 
-    @Override
-    public void commitWriteTransaction(final Transaction transaction) throws IOException {
-        call(new Batch.Call<RevisionManagerEndpointService, Void>() {
-            @Override
-            public Void call(RevisionManagerEndpointService service)
-                throws IOException {
-                ServerRpcController controller = new ServerRpcController();
-                BlockingRpcCallback<CommitWriteTransactionResponse> done = 
-                        new BlockingRpcCallback<CommitWriteTransactionResponse>();
-                CommitWriteTransactionRequest request = CommitWriteTransactionRequest.newBuilder()
-                        .setTransaction(rpcConverter.convertTransaction(transaction)).build();
-                service.commitWriteTransaction(controller, request, done);
-                blockOnResponse(done, controller);
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public void abortWriteTransaction(final Transaction transaction) throws IOException {
-        call(new Batch.Call<RevisionManagerEndpointService, Void>() {
-            @Override
-            public Void call(RevisionManagerEndpointService service)
-                throws IOException {
-                ServerRpcController controller = new ServerRpcController();
-                BlockingRpcCallback<AbortWriteTransactionResponse> done = 
-                        new BlockingRpcCallback<AbortWriteTransactionResponse>();
-                AbortWriteTransactionRequest request = AbortWriteTransactionRequest.newBuilder()
-                        .setTransaction(rpcConverter.convertTransaction(transaction)).build();
-                service.abortWriteTransaction(controller, request, done);
-                blockOnResponse(done, controller);
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public List<FamilyRevision> getAbortedWriteTransactions(final String table, final String columnFamily)
+  @Override
+  public void dropTable(final String table) throws IOException {
+    call(new Batch.Call<RevisionManagerEndpointService, Void>() {
+      @Override
+      public Void call(RevisionManagerEndpointService service)
         throws IOException {
-        return call(new Batch.Call<RevisionManagerEndpointService, List<FamilyRevision>>() {
-            @Override
-            public List<FamilyRevision> call(RevisionManagerEndpointService service)
-                throws IOException {
-                ServerRpcController controller = new ServerRpcController();
-                BlockingRpcCallback<GetAbortedWriteTransactionsResponse> done = 
-                        new BlockingRpcCallback<GetAbortedWriteTransactionsResponse>();
-                GetAbortedWriteTransactionsRequest request = GetAbortedWriteTransactionsRequest.newBuilder()
-                        .setTableName(table)
-                        .setColumnFamily(columnFamily)
-                        .build();
-                service.getAbortedWriteTransactions(controller, request, done);
-                return rpcConverter.convertFamilyRevisions(blockOnResponse(done, controller).getFamilyRevisionsList());
-            }
-        });
-    }
+        ServerRpcController controller = new ServerRpcController();
+        BlockingRpcCallback<DropTableResponse> done = 
+            new BlockingRpcCallback<DropTableResponse>();
+        DropTableRequest request = DropTableRequest.newBuilder()
+            .setTableName(table).build();
+        service.dropTable(null, request, done);
+        blockOnResponse(done, controller);
+        return null;
+      }
+    });
+  }
 
-    @Override
-    public TableSnapshot createSnapshot(String tableName) throws IOException {
-        return createSnapshot(tableName, null);
-    }
+  @Override
+  public Transaction beginWriteTransaction(final String table, final List<String> families) throws IOException {
+    return beginWriteTransaction(table, families, null);
+  }
 
-    @Override
-    public TableSnapshot createSnapshot(final String tableName, final Long revision) throws IOException {
-        return call(new Batch.Call<RevisionManagerEndpointService, TableSnapshot>() {
-            @Override
-            public TableSnapshot call(RevisionManagerEndpointService service)
-                throws IOException {
-                ServerRpcController controller = new ServerRpcController();
-                BlockingRpcCallback<CreateSnapshotResponse> done = 
-                        new BlockingRpcCallback<CreateSnapshotResponse>();
-                CreateSnapshotRequest.Builder builder = CreateSnapshotRequest.newBuilder()
-                        .setTableName(tableName);
-                if(revision != null) {
-                    builder.setRevision(revision);
-                }
-                service.createSnapshot(controller, builder.build(), done);
-                return rpcConverter.convertTableSnapshot(blockOnResponse(done, controller).getTableSnapshot());
-            }
-        });
-    }
-
-    @Override
-    public void keepAlive(final Transaction transaction) throws IOException {
-        call(new Batch.Call<RevisionManagerEndpointService, Void>() {
-            @Override
-            public Void call(RevisionManagerEndpointService service)
-                throws IOException {
-                ServerRpcController controller = new ServerRpcController();
-                BlockingRpcCallback<KeepAliveTransactionResponse> done = 
-                        new BlockingRpcCallback<KeepAliveTransactionResponse>();
-                KeepAliveTransactionRequest request = KeepAliveTransactionRequest.newBuilder()
-                        .setTransaction(rpcConverter.convertTransaction(transaction)).build();
-                service.keepAliveTransaction(controller, request, done);
-                blockOnResponse(done, controller);
-                return null;
-            }
-        });
-    }
-    private <R> R blockOnResponse(BlockingRpcCallback<R> done, ServerRpcController controller)
+  @Override
+  public Transaction beginWriteTransaction(final String table, final List<String> families, final Long keepAlive)
+    throws IOException {
+    return call(new Batch.Call<RevisionManagerEndpointService, Transaction>() {
+      @Override
+      public Transaction call(RevisionManagerEndpointService service)
         throws IOException {
-        R response = done.get();
-        if(controller.failedOnException()) {
-            throw controller.getFailedOn();
+        ServerRpcController controller = new ServerRpcController();
+        BlockingRpcCallback<BeginWriteTransactionResponse> done = 
+            new BlockingRpcCallback<BeginWriteTransactionResponse>();
+        BeginWriteTransactionRequest.Builder builder = BeginWriteTransactionRequest.newBuilder()
+            .setTableName(table)
+            .addAllColumnFamilies(families);
+        if(keepAlive != null) {
+          builder.setKeepAlive(keepAlive);
         }
-        if(controller.failed()) {
-            String error = controller.errorText();
-            if(error == null) {
-                error = "Server indicated failure but error text was empty";
-            }
-            throw new RuntimeException(error);
+        service.beginWriteTransaction(controller, builder.build(), done);
+        return rpcConverter.convertTransaction(blockOnResponse(done, controller).getTransaction());
+      }
+    });
+  }
+
+  @Override
+  public void commitWriteTransaction(final Transaction transaction) throws IOException {
+    call(new Batch.Call<RevisionManagerEndpointService, Void>() {
+      @Override
+      public Void call(RevisionManagerEndpointService service)
+        throws IOException {
+        ServerRpcController controller = new ServerRpcController();
+        BlockingRpcCallback<CommitWriteTransactionResponse> done = 
+            new BlockingRpcCallback<CommitWriteTransactionResponse>();
+        CommitWriteTransactionRequest request = CommitWriteTransactionRequest.newBuilder()
+            .setTransaction(rpcConverter.convertTransaction(transaction)).build();
+        service.commitWriteTransaction(controller, request, done);
+        blockOnResponse(done, controller);
+        return null;
+      }
+    });
+  }
+
+  @Override
+  public void abortWriteTransaction(final Transaction transaction) throws IOException {
+    call(new Batch.Call<RevisionManagerEndpointService, Void>() {
+      @Override
+      public Void call(RevisionManagerEndpointService service)
+        throws IOException {
+        ServerRpcController controller = new ServerRpcController();
+        BlockingRpcCallback<AbortWriteTransactionResponse> done = 
+            new BlockingRpcCallback<AbortWriteTransactionResponse>();
+        AbortWriteTransactionRequest request = AbortWriteTransactionRequest.newBuilder()
+            .setTransaction(rpcConverter.convertTransaction(transaction)).build();
+        service.abortWriteTransaction(controller, request, done);
+        blockOnResponse(done, controller);
+        return null;
+      }
+    });
+  }
+
+  @Override
+  public List<FamilyRevision> getAbortedWriteTransactions(final String table, final String columnFamily)
+    throws IOException {
+    return call(new Batch.Call<RevisionManagerEndpointService, List<FamilyRevision>>() {
+      @Override
+      public List<FamilyRevision> call(RevisionManagerEndpointService service)
+        throws IOException {
+        ServerRpcController controller = new ServerRpcController();
+        BlockingRpcCallback<GetAbortedWriteTransactionsResponse> done = 
+            new BlockingRpcCallback<GetAbortedWriteTransactionsResponse>();
+        GetAbortedWriteTransactionsRequest request = GetAbortedWriteTransactionsRequest.newBuilder()
+            .setTableName(table)
+            .setColumnFamily(columnFamily)
+            .build();
+        service.getAbortedWriteTransactions(controller, request, done);
+        return rpcConverter.convertFamilyRevisions(blockOnResponse(done, controller).getFamilyRevisionsList());
+      }
+    });
+  }
+
+  @Override
+  public TableSnapshot createSnapshot(String tableName) throws IOException {
+    return createSnapshot(tableName, null);
+  }
+
+  @Override
+  public TableSnapshot createSnapshot(final String tableName, final Long revision) throws IOException {
+    return call(new Batch.Call<RevisionManagerEndpointService, TableSnapshot>() {
+      @Override
+      public TableSnapshot call(RevisionManagerEndpointService service)
+        throws IOException {
+        ServerRpcController controller = new ServerRpcController();
+        BlockingRpcCallback<CreateSnapshotResponse> done = 
+            new BlockingRpcCallback<CreateSnapshotResponse>();
+        CreateSnapshotRequest.Builder builder = CreateSnapshotRequest.newBuilder()
+            .setTableName(tableName);
+        if(revision != null) {
+          builder.setRevision(revision);
         }
-        return response;
+        service.createSnapshot(controller, builder.build(), done);
+        return rpcConverter.convertTableSnapshot(blockOnResponse(done, controller).getTableSnapshot());
+      }
+    });
+  }
+
+  @Override
+  public void keepAlive(final Transaction transaction) throws IOException {
+    call(new Batch.Call<RevisionManagerEndpointService, Void>() {
+      @Override
+      public Void call(RevisionManagerEndpointService service)
+        throws IOException {
+        ServerRpcController controller = new ServerRpcController();
+        BlockingRpcCallback<KeepAliveTransactionResponse> done = 
+            new BlockingRpcCallback<KeepAliveTransactionResponse>();
+        KeepAliveTransactionRequest request = KeepAliveTransactionRequest.newBuilder()
+            .setTransaction(rpcConverter.convertTransaction(transaction)).build();
+        service.keepAliveTransaction(controller, request, done);
+        blockOnResponse(done, controller);
+        return null;
+      }
+    });
+  }
+  private <R> R blockOnResponse(BlockingRpcCallback<R> done, ServerRpcController controller)
+    throws IOException {
+    R response = done.get();
+    if(controller.failedOnException()) {
+      throw controller.getFailedOn();
     }
-    private <R> R call(Batch.Call<RevisionManagerEndpointService, R> callable) throws IOException {
-        try {
-            Map<byte[], R> result = htable.coprocessorService(RevisionManagerEndpointService.class, null, null, callable);
-            if(result.isEmpty()) {
-                return null;
-            }
-            return result.values().iterator().next();
-        } catch(IOException e) {
-            throw (IOException)e;
-        } catch(RuntimeException e) {
-            throw (RuntimeException)e;
-        } catch(Error e) {
-            throw (Error)e;
-        } catch(Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+    if(controller.failed()) {
+      String error = controller.errorText();
+      if(error == null) {
+        error = "Server indicated failure but error text was empty";
+      }
+      throw new RuntimeException(error);
     }
+    return response;
+  }
+  private <R> R call(Batch.Call<RevisionManagerEndpointService, R> callable) throws IOException {
+    try {
+      Map<byte[], R> result = htable.coprocessorService(RevisionManagerEndpointService.class, null, null, callable);
+      if(result.isEmpty()) {
+        return null;
+      }
+      return result.values().iterator().next();
+    } catch(IOException e) {
+      throw (IOException)e;
+    } catch(RuntimeException e) {
+      throw (RuntimeException)e;
+    } catch(Error e) {
+      throw (Error)e;
+    } catch(Throwable throwable) {
+      throw new RuntimeException(throwable);
+    }
+  }
 }

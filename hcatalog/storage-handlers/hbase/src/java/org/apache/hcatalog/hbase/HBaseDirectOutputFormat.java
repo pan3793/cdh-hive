@@ -47,125 +47,125 @@ import org.apache.hcatalog.hbase.snapshot.Transaction;
  */
 class HBaseDirectOutputFormat extends HBaseBaseOutputFormat {
 
-    private TableOutputFormat outputFormat;
+  private TableOutputFormat outputFormat;
 
-    public HBaseDirectOutputFormat() {
-        this.outputFormat = new TableOutputFormat();
+  public HBaseDirectOutputFormat() {
+    this.outputFormat = new TableOutputFormat();
+  }
+
+  @Override
+  public RecordWriter<WritableComparable<?>, Object> getRecordWriter(FileSystem ignored,
+                                  JobConf job, String name, Progressable progress)
+    throws IOException {
+    HBaseHCatStorageHandler.setHBaseSerializers(job);
+    long version = HBaseRevisionManagerUtil.getOutputRevision(job);
+    return new HBaseDirectRecordWriter(outputFormat.getRecordWriter(ignored, job, name,
+      progress), version);
+  }
+
+  @Override
+  public void checkOutputSpecs(FileSystem ignored, JobConf job)
+    throws IOException {
+    outputFormat.checkOutputSpecs(ignored, job);
+    HBaseUtil.addHBaseDelegationToken(job);
+  }
+
+  private static class HBaseDirectRecordWriter implements
+    RecordWriter<WritableComparable<?>, Object> {
+
+    private RecordWriter<WritableComparable<?>, Object> baseWriter;
+    private final Long outputVersion;
+
+    public HBaseDirectRecordWriter(
+      RecordWriter<WritableComparable<?>, Object> baseWriter,
+      Long outputVersion) {
+      this.baseWriter = baseWriter;
+      this.outputVersion = outputVersion;
     }
 
     @Override
-    public RecordWriter<WritableComparable<?>, Object> getRecordWriter(FileSystem ignored,
-                                                                    JobConf job, String name, Progressable progress)
-        throws IOException {
-        HBaseHCatStorageHandler.setHBaseSerializers(job);
-        long version = HBaseRevisionManagerUtil.getOutputRevision(job);
-        return new HBaseDirectRecordWriter(outputFormat.getRecordWriter(ignored, job, name,
-            progress), version);
+    public void write(WritableComparable<?> key, Object value)
+      throws IOException {
+      Put original = toPut(value);
+      Put put = original;
+      if (outputVersion != null) {
+        put = new Put(original.getRow(), outputVersion.longValue());
+        for (List<? extends Cell> row : original.getFamilyMap().values()) {
+          for (Cell cell : row) {
+            KeyValue el = (KeyValue)cell;
+            put.add(el.getFamily(), el.getQualifier(), el.getValue());
+          }
+        }
+      }
+      baseWriter.write(key, put);
     }
 
     @Override
-    public void checkOutputSpecs(FileSystem ignored, JobConf job)
-        throws IOException {
-        outputFormat.checkOutputSpecs(ignored, job);
-        HBaseUtil.addHBaseDelegationToken(job);
+    public void close(Reporter reporter) throws IOException {
+      baseWriter.close(reporter);
     }
 
-    private static class HBaseDirectRecordWriter implements
-        RecordWriter<WritableComparable<?>, Object> {
+  }
 
-        private RecordWriter<WritableComparable<?>, Object> baseWriter;
-        private final Long outputVersion;
+  public static class HBaseDirectOutputCommitter extends OutputCommitter {
 
-        public HBaseDirectRecordWriter(
-            RecordWriter<WritableComparable<?>, Object> baseWriter,
-            Long outputVersion) {
-            this.baseWriter = baseWriter;
-            this.outputVersion = outputVersion;
-        }
-
-        @Override
-        public void write(WritableComparable<?> key, Object value)
-            throws IOException {
-            Put original = toPut(value);
-            Put put = original;
-            if (outputVersion != null) {
-                put = new Put(original.getRow(), outputVersion.longValue());
-                for (List<? extends Cell> row : original.getFamilyMap().values()) {
-                    for (Cell cell : row) {
-                        KeyValue el = (KeyValue)cell;
-                        put.add(el.getFamily(), el.getQualifier(), el.getValue());
-                    }
-                }
-            }
-            baseWriter.write(key, put);
-        }
-
-        @Override
-        public void close(Reporter reporter) throws IOException {
-            baseWriter.close(reporter);
-        }
-
+    public HBaseDirectOutputCommitter() throws IOException {
     }
 
-    public static class HBaseDirectOutputCommitter extends OutputCommitter {
-
-        public HBaseDirectOutputCommitter() throws IOException {
-        }
-
-        @Override
-        public void abortTask(TaskAttemptContext taskContext)
-            throws IOException {
-        }
-
-        @Override
-        public void commitTask(TaskAttemptContext taskContext)
-            throws IOException {
-        }
-
-        @Override
-        public boolean needsTaskCommit(TaskAttemptContext taskContext)
-            throws IOException {
-            return false;
-        }
-
-        @Override
-        public void setupJob(JobContext jobContext) throws IOException {
-        }
-
-        @Override
-        public void setupTask(TaskAttemptContext taskContext)
-            throws IOException {
-        }
-
-        @Override
-        public void abortJob(JobContext jobContext, int status)
-            throws IOException {
-            super.abortJob(jobContext, status);
-            RevisionManager rm = null;
-            try {
-                rm = HBaseRevisionManagerUtil
-                    .getOpenedRevisionManager(jobContext.getConfiguration());
-                Transaction writeTransaction = HBaseRevisionManagerUtil
-                    .getWriteTransaction(jobContext.getConfiguration());
-                rm.abortWriteTransaction(writeTransaction);
-            } finally {
-                if (rm != null)
-                    rm.close();
-            }
-        }
-
-        @Override
-        public void commitJob(JobContext jobContext) throws IOException {
-            RevisionManager rm = null;
-            try {
-                rm = HBaseRevisionManagerUtil
-                    .getOpenedRevisionManager(jobContext.getConfiguration());
-                rm.commitWriteTransaction(HBaseRevisionManagerUtil.getWriteTransaction(jobContext
-                    .getConfiguration()));
-            } finally {
-                if (rm != null)
-                    rm.close();
-            }
-        }
+    @Override
+    public void abortTask(TaskAttemptContext taskContext)
+      throws IOException {
     }
+
+    @Override
+    public void commitTask(TaskAttemptContext taskContext)
+      throws IOException {
+    }
+
+    @Override
+    public boolean needsTaskCommit(TaskAttemptContext taskContext)
+      throws IOException {
+      return false;
+    }
+
+    @Override
+    public void setupJob(JobContext jobContext) throws IOException {
+    }
+
+    @Override
+    public void setupTask(TaskAttemptContext taskContext)
+      throws IOException {
+    }
+
+    @Override
+    public void abortJob(JobContext jobContext, int status)
+      throws IOException {
+      super.abortJob(jobContext, status);
+      RevisionManager rm = null;
+      try {
+        rm = HBaseRevisionManagerUtil
+          .getOpenedRevisionManager(jobContext.getConfiguration());
+        Transaction writeTransaction = HBaseRevisionManagerUtil
+          .getWriteTransaction(jobContext.getConfiguration());
+        rm.abortWriteTransaction(writeTransaction);
+      } finally {
+        if (rm != null)
+          rm.close();
+      }
+    }
+
+    @Override
+    public void commitJob(JobContext jobContext) throws IOException {
+      RevisionManager rm = null;
+      try {
+        rm = HBaseRevisionManagerUtil
+          .getOpenedRevisionManager(jobContext.getConfiguration());
+        rm.commitWriteTransaction(HBaseRevisionManagerUtil.getWriteTransaction(jobContext
+          .getConfiguration()));
+      } finally {
+        if (rm != null)
+          rm.close();
+      }
+    }
+  }
 }

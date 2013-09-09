@@ -26,49 +26,49 @@ import java.util.Map;
 import org.apache.hive.hcatalog.hbase.snapshot.RevisionManagerEndpointProtos;
 
 public class RPCConverter {
-    
-    List<FamilyRevision> convertFamilyRevisions(List<RevisionManagerEndpointProtos.FamilyRevision> revisions) {
-        List<FamilyRevision> result = new ArrayList<FamilyRevision>();
-        for(RevisionManagerEndpointProtos.FamilyRevision revision : revisions) {
-            result.add(new FamilyRevision(revision.getRevision(), revision.getTimestamp()));
-        }
-        return result;
-    }
-    RevisionManagerEndpointProtos.TableSnapshot convertTableSnapshot(TableSnapshot tableSnapshot) {
-        RevisionManagerEndpointProtos.TableSnapshot.Builder builder =
-                RevisionManagerEndpointProtos.TableSnapshot.newBuilder()
-                .setTableName(tableSnapshot.getTableName())
-                .setLatestRevision(tableSnapshot.getLatestRevision());
-        Map<String, Long> cfRevisionMap = tableSnapshot.getColumnFamilyRevisionMap();
-        for(Map.Entry<String, Long> entry : cfRevisionMap.entrySet()) {
-            builder.addColumnFamilyRevision(RevisionManagerEndpointProtos.TableSnapshot.
-                    ColumnFamilyRevision.newBuilder()
-                    .setKey(entry.getKey())
-                    .setValue(entry.getValue()).build());
-        }
-        return builder.build();
-    }
-    
-    TableSnapshot convertTableSnapshot(RevisionManagerEndpointProtos.TableSnapshot tableSnapshot) {
-        Map<String, Long> columnFamilyRevisions = new HashMap<String, Long>();
-        for(RevisionManagerEndpointProtos.TableSnapshot.ColumnFamilyRevision rev : tableSnapshot.getColumnFamilyRevisionList()) {
-            columnFamilyRevisions.put(rev.getKey(), rev.getValue());
-        }
-        return new TableSnapshot(tableSnapshot.getTableName(), columnFamilyRevisions, tableSnapshot.getLatestRevision());
-    }
 
-    RevisionManagerEndpointProtos.Transaction convertTransaction(Transaction transaction) {
-        return RevisionManagerEndpointProtos.Transaction.newBuilder()
-            .setTableName(transaction.getTableName())
-            .addAllColumnFamilies(transaction.getColumnFamilies())
-            .setRevision(transaction.getRevisionNumber())
-            .setTimeStamp(transaction.getTimeStamp())
-            .setKeepAlive(transaction.getKeepAliveValue())
-            .build();        
+  List<FamilyRevision> convertFamilyRevisions(List<RevisionManagerEndpointProtos.FamilyRevision> revisions) {
+    List<FamilyRevision> result = new ArrayList<FamilyRevision>();
+    for(RevisionManagerEndpointProtos.FamilyRevision revision : revisions) {
+      result.add(new FamilyRevision(revision.getRevision(), revision.getTimestamp()));
     }
-    Transaction convertTransaction(RevisionManagerEndpointProtos.Transaction transaction) {
-        Transaction result = new Transaction(transaction.getTableName(), transaction.getColumnFamiliesList(), transaction.getRevision(), transaction.getTimeStamp());
-        result.setKeepAlive(transaction.getKeepAlive());
-        return result;
+    return result;
+  }
+  RevisionManagerEndpointProtos.TableSnapshot convertTableSnapshot(TableSnapshot tableSnapshot) {
+    RevisionManagerEndpointProtos.TableSnapshot.Builder builder =
+        RevisionManagerEndpointProtos.TableSnapshot.newBuilder()
+        .setTableName(tableSnapshot.getTableName())
+        .setLatestRevision(tableSnapshot.getLatestRevision());
+    Map<String, Long> cfRevisionMap = tableSnapshot.getColumnFamilyRevisionMap();
+    for(Map.Entry<String, Long> entry : cfRevisionMap.entrySet()) {
+      builder.addColumnFamilyRevision(RevisionManagerEndpointProtos.TableSnapshot.
+          ColumnFamilyRevision.newBuilder()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue()).build());
     }
+    return builder.build();
+  }
+
+  TableSnapshot convertTableSnapshot(RevisionManagerEndpointProtos.TableSnapshot tableSnapshot) {
+    Map<String, Long> columnFamilyRevisions = new HashMap<String, Long>();
+    for(RevisionManagerEndpointProtos.TableSnapshot.ColumnFamilyRevision rev : tableSnapshot.getColumnFamilyRevisionList()) {
+      columnFamilyRevisions.put(rev.getKey(), rev.getValue());
+    }
+    return new TableSnapshot(tableSnapshot.getTableName(), columnFamilyRevisions, tableSnapshot.getLatestRevision());
+  }
+
+  RevisionManagerEndpointProtos.Transaction convertTransaction(Transaction transaction) {
+    return RevisionManagerEndpointProtos.Transaction.newBuilder()
+      .setTableName(transaction.getTableName())
+      .addAllColumnFamilies(transaction.getColumnFamilies())
+      .setRevision(transaction.getRevisionNumber())
+      .setTimeStamp(transaction.getTimeStamp())
+      .setKeepAlive(transaction.getKeepAliveValue())
+      .build();        
+  }
+  Transaction convertTransaction(RevisionManagerEndpointProtos.Transaction transaction) {
+    Transaction result = new Transaction(transaction.getTableName(), transaction.getColumnFamiliesList(), transaction.getRevision(), transaction.getTimeStamp());
+    result.setKeepAlive(transaction.getKeepAlive());
+    return result;
+  }
 }
