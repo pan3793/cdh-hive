@@ -234,7 +234,6 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-<<<<<<< HEAD
 
     <repository>
       <id>apache.snapshot.repo</id>
