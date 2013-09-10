@@ -36,7 +36,7 @@
       <jetty.webhcat.version>7.6.0.v20120127</jetty.webhcat.version>
       <jms.version>1.1</jms.version>
       <pig.version>0.10.1</pig.version>
-      <slf4j.version>1.6.1</slf4j.version>
+      <slf4j.version>1.7.5</slf4j.version>
       <wadl-resourcedoc-doclet.version>1.4</wadl-resourcedoc-doclet.version>
       <zookeeper.version>3.4.3</zookeeper.version>
       <metrics-core.version>2.1.2</metrics-core.version>
