@@ -43,7 +43,7 @@ public abstract class ExecuteStatementOperation extends Operation {
   }
 
   public static ExecuteStatementOperation newExecuteStatementOperation(
-      HiveSession parentSession, String statement, Map<String, String> confOverlay) throws HiveSQLException {
+      HiveSession parentSession, String statement, Map<String, String> confOverlay, boolean runAsync) throws HiveSQLException {
     String[] tokens = statement.trim().split("\\s+");
     String command = tokens[0].toLowerCase();
 
@@ -72,7 +72,7 @@ public abstract class ExecuteStatementOperation extends Operation {
       }
 
     } else {
-      newExecOP = new SQLOperation(parentSession, statement, confOverlay);
+      return new SQLOperation(parentSession, statement, confOverlay, runAsync);
     }
 
     return newExecOP;
