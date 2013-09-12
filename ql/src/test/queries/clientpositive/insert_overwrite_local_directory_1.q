@@ -86,9 +86,9 @@ insert overwrite local directory '../data/files/local_rctable'
 STORED AS RCFILE
 select value,key from src;
 
-dfs -mkdir ${system:test.tmp.dir}/local_rctable/temp;
+dfs ${system:test.dfs.mkdir} ${system:test.tmp.dir}/local_rctable/temp;
 dfs -rmr ${system:test.tmp.dir}/local_rctable;
-dfs -mkdir ${system:test.tmp.dir}/local_rctable;
+dfs ${system:test.dfs.mkdir} ${system:test.tmp.dir}/local_rctable;
 dfs -put ../data/files/local_rctable/000000_0 ${system:test.tmp.dir}/local_rctable/000000_0;
 
 create external table local_rctable(value string, key string)
