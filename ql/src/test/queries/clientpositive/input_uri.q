@@ -10,7 +10,7 @@ CREATE TABLE tab1( dep_id INT);
 
 LOAD DATA LOCAL INPATH '../data/files/test.dat' INTO TABLE tab1;
 
-dfs -mkdir ../build/ql/test/data/exports/uri1/temp;
+dfs ${system:test.dfs.mkdir} ../build/ql/test/data/exports/uri1/temp;
 dfs -rmr ../build/ql/test/data/exports/uri1;
 EXPORT TABLE tab1 TO 'ql/test/data/exports/uri1';
 
