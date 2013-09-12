@@ -99,6 +99,10 @@ public final class PrimitiveObjectInspectorUtils {
     public Class<?> typeParamsClass;
     public BaseTypeParams typeParams;
 
+    protected PrimitiveTypeEntry() {
+      super();
+    }
+    
     PrimitiveTypeEntry(
         PrimitiveObjectInspector.PrimitiveCategory primitiveCategory,
         String typeName, Class<?> primitiveType, Class<?> javaClass,

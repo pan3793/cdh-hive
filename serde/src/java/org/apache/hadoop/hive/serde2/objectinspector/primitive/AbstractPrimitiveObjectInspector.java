@@ -28,9 +28,12 @@ import org.apache.hadoop.hive.serde2.typeinfo.BaseTypeParams;
 public abstract class AbstractPrimitiveObjectInspector implements
     PrimitiveObjectInspector {
 
-  transient PrimitiveTypeEntry typeEntry;
+  protected PrimitiveTypeEntry typeEntry;
   protected BaseTypeParams typeParams;
 
+  protected AbstractPrimitiveObjectInspector() {
+    super();
+  }
   /**
    * Construct a AbstractPrimitiveObjectInspector.
    */
