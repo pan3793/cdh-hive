@@ -41,6 +41,12 @@ public final class HiveDelegationTokenSupport {
       WritableUtils.writeVInt(out, token.password.length);
       out.write(token.password);
       out.writeLong(token.renewDate);
+      if(token.getTrackingId() == null) {
+        out.writeByte((byte)0);
+      } else {
+        out.writeByte((byte)1);
+        out.writeUTF(token.getTrackingId());
+      }
       out.flush();
       return bos.toByteArray();
     } catch (IOException ex) {
@@ -51,11 +57,15 @@ public final class HiveDelegationTokenSupport {
   public static DelegationTokenInformation decodeDelegationTokenInformation(byte[] tokenBytes)
       throws IOException {
     DataInputStream in = new DataInputStream(new ByteArrayInputStream(tokenBytes));
-    DelegationTokenInformation token = new DelegationTokenInformation(0, null);
     int len = WritableUtils.readVInt(in);
-    token.password = new byte[len];
-    in.readFully(token.password);
-    token.renewDate = in.readLong();
+    byte[] password = new byte[len];
+    in.readFully(password);
+    long renewDate = in.readLong();
+    String trackingId = null;
+    if(in.readByte() == (byte)1) {
+      trackingId = in.readUTF();
+    }
+    DelegationTokenInformation token = new DelegationTokenInformation(renewDate, password, trackingId);
     return token;
   }
 
