@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 public class TestPermsGrp extends TestCase {
 
   private boolean isServerRunning = false;
-  private static final int msPort = 20101;
+  private int msPort;
   private HiveConf hcatConf;
   private Warehouse clientWH;
   private HiveMetaStoreClient msc;
@@ -75,6 +75,7 @@ public class TestPermsGrp extends TestCase {
       return;
     }
 
+    msPort = MetaStoreUtils.findFreePort();
     MetaStoreUtils.startMetaStore(msPort, ShimLoader.getHadoopThriftAuthBridge());
 
     isServerRunning = true;
