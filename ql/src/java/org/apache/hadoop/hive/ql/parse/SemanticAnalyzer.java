@@ -606,7 +606,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
     qb.getParseInfo().setSrcForAlias(alias, tableTree);
 
-    unparseTranslator.addTableNameTranslation(tableTree, db.getCurrentDatabase());
+    unparseTranslator.addTableNameTranslation(tableTree, SessionState.get().getCurrentDatabase());
     if (aliasIndex != 0) {
       unparseTranslator.addIdentifierTranslation((ASTNode) tabref
           .getChild(aliasIndex));
@@ -805,7 +805,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         break;
 
       case HiveParser.TOK_INSERT_INTO:
-        String currentDatabase = db.getCurrentDatabase();
+        String currentDatabase = SessionState.get().getCurrentDatabase();
         String tab_name = getUnescapedName((ASTNode) ast.getChild(0).getChild(0), currentDatabase);
         qbp.addInsertIntoTable(tab_name);
 
@@ -8333,7 +8333,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
       viewSelect = child;
       // prevent view from referencing itself
-      viewsExpanded.add(db.getCurrentDatabase() + "." + createVwDesc.getViewName());
+      viewsExpanded.add(SessionState.get().getCurrentDatabase() + "." + createVwDesc.getViewName());
     }
 
     // continue analyzing from the child ASTNode.
