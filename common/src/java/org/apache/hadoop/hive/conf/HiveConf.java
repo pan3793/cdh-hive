@@ -755,6 +755,7 @@ public class HiveConf extends Configuration {
 
 
     // HiveServer2 auth configuration
+    HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true),
     HIVE_SERVER2_AUTHENTICATION("hive.server2.authentication", "NONE"),
     HIVE_SERVER2_KERBEROS_KEYTAB("hive.server2.authentication.kerberos.keytab", ""),
     HIVE_SERVER2_KERBEROS_PRINCIPAL("hive.server2.authentication.kerberos.principal", ""),

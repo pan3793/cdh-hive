@@ -96,7 +96,7 @@ import jline.SimpleCompletor;
 public class BeeLine {
   private static final ResourceBundle resourceBundle =
       ResourceBundle.getBundle(BeeLine.class.getName());
-  private BeeLineSignalHandler signalHandler = null;
+  private final BeeLineSignalHandler signalHandler = null;
   private static final String separator = System.getProperty("line.separator");
   private boolean exit = false;
   private final DatabaseConnections connections = new DatabaseConnections();
@@ -497,6 +497,7 @@ public class BeeLine {
     List<String> commands = new LinkedList<String>();
     List<String> files = new LinkedList<String>();
     String driver = null, user = null, pass = null, url = null, cmd = null;
+    String auth = null;
 
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("--help") || args[i].equals("-h")) {
@@ -529,6 +530,9 @@ public class BeeLine {
         driver = args[i++ + 1];
       } else if (args[i].equals("-n")) {
         user = args[i++ + 1];
+      } else if (args[i].equals("-a")) {
+        auth = args[i++ + 1];
+        getOpts().setAuthType(auth);
       } else if (args[i].equals("-p")) {
         pass = args[i++ + 1];
       } else if (args[i].equals("-u")) {
@@ -557,7 +561,8 @@ public class BeeLine {
           + url + " "
           + (user == null || user.length() == 0 ? "''" : user) + " "
           + (pass == null || pass.length() == 0 ? "''" : pass) + " "
-          + (driver == null ? "" : driver);
+          + (driver == null ? "" : driver) + " "
+          + (auth == null || auth.length() == 0 ? "''" : auth);
       debug("issuing: " + com);
       dispatch(com);
     }

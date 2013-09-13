@@ -79,6 +79,8 @@ class BeeLineOpts implements Completor {
   private String historyFile = new File(saveDir(), "history").getAbsolutePath();
 
   private String scriptFile = null;
+  private String authType = null;
+
 
   public BeeLineOpts(BeeLine beeLine, Properties props) {
     this.beeLine = beeLine;
@@ -421,4 +423,13 @@ class BeeLineOpts implements Completor {
   public File getPropertiesFile() {
     return rcFile;
   }
+
+  public String getAuthType() {
+    return authType;
+  }
+
+  public void setAuthType(String authType) {
+    this.authType = authType;
+  }
+
 }

@@ -63,6 +63,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.authorize.ProxyUsers;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.security.token.TokenSelector;
@@ -550,6 +551,13 @@ public abstract class HadoopShimsSecure implements HadoopShims {
   public UserGroupInformation createProxyUser(String userName) throws IOException {
     return UserGroupInformation.createProxyUser(
         userName, UserGroupInformation.getLoginUser());
+  }
+
+  @Override
+  public void authorizeProxyAccess(String proxyUser, UserGroupInformation realUserUgi,
+      String ipAddress,  Configuration conf) throws IOException {
+    ProxyUsers.authorize(UserGroupInformation.createProxyUser(proxyUser, realUserUgi),
+        ipAddress, conf);
   }
 
   @Override

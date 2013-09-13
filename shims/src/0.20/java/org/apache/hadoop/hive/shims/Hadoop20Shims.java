@@ -636,6 +636,11 @@ public class Hadoop20Shims implements HadoopShims {
   }
 
   @Override
+  public void authorizeProxyAccess(String proxyUser, UserGroupInformation realUserUgi,
+      String ipAddress, Configuration conf) throws IOException {
+    // This hadoop version doesn't have proxy verification
+  }
+
   public boolean isSecurityEnabled() {
     return false;
   }

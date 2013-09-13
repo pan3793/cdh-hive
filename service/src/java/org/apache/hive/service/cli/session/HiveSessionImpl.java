@@ -35,6 +35,7 @@ import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.history.HiveHistory;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.common.util.HiveVersionInfo;
+import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.GetInfoType;
 import org.apache.hive.service.cli.GetInfoValue;
@@ -405,5 +406,23 @@ public class HiveSessionImpl implements HiveSession {
   @Override
   public void setIpAddress(String ipAddress) {
     this.ipAddress = ipAddress;
+  }
+
+  @Override
+  public String getDelegationToken(HiveAuthFactory authFactory, String owner, String renewer)
+      throws HiveSQLException {
+    throw new HiveSQLException("Delegation token access is only allowed with impersonation");
+  }
+
+  @Override
+  public void cancelDelegationToken(HiveAuthFactory authFactory, String tokenStr)
+      throws HiveSQLException {
+    throw new HiveSQLException("Delegation token access is only allowed with impersonation");
+  }
+
+  @Override
+  public void renewDelegationToken(HiveAuthFactory authFactory, String tokenStr)
+      throws HiveSQLException {
+    throw new HiveSQLException("Delegation token access is only allowed with impersonation");
   }
 }
