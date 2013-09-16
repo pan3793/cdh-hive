@@ -1967,9 +1967,9 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
         String[] tokens = tableName.split("\\.");
         table = new Table (tokens[0], tokens[1]);
       } else {
-        table = new Table (db.getCurrentDatabase(), tableName);
+        table = new Table (SessionState.get().getCurrentDatabase(), tableName);
       }
-    inputs.add(new ReadEntity(table));
+      inputs.add(new ReadEntity(table));
     }
     rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
         descTblDesc), conf));

@@ -27,8 +27,8 @@ import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.session.HiveSession;
 import java.util.List;
-import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.plan.HiveOperation;
+import org.apache.hadoop.hive.ql.session.SessionState;
 
 
 
@@ -67,7 +67,7 @@ public class GetSchemasOperation extends MetadataOperation {
 
       // filter the list of dbnames
       HiveOperation hiveOperation = HiveOperation.SHOWDATABASES;
-      String currentDbName = Hive.get().getCurrentDatabase();
+      String currentDbName = SessionState.get().getCurrentDatabase();
       List<String> filteredDbNames = filterResultSet(dbNames, hiveOperation, currentDbName);
 
       for (String dbName : filteredDbNames) {

@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Table;
-import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.plan.HiveOperation;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -33,6 +32,7 @@ import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.session.HiveSession;
+import org.apache.hadoop.hive.ql.session.SessionState;
 
 /**
  * GetTablesOperation.
@@ -83,7 +83,7 @@ public class GetTablesOperation extends MetadataOperation {
       String tablePattern = convertIdentifierPattern(tableName, true);
 
       HiveOperation hiveOperation = HiveOperation.SHOWDATABASES;
-      String currentDbName = Hive.get().getCurrentDatabase();
+      String currentDbName = SessionState.get().getCurrentDatabase();
       List<String> dbNames = metastoreClient.getDatabases(schemaPattern);
       List<String> filteredDbNames = filterResultSet(dbNames, hiveOperation, currentDbName);
 

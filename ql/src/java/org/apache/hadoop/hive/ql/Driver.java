@@ -1517,7 +1517,7 @@ public class Driver implements CommandProcessor {
                    HiveDriverFilterHook.class);
       if (res != null && !res.isEmpty() && filterHooks != null && !filterHooks.isEmpty()
           && isExecMetadataLookup(hiveOperation)) {
-        String currentDbName = Hive.get().getCurrentDatabase();
+        String currentDbName = SessionState.get().getCurrentDatabase();
         HiveDriverFilterHookContext hookCtx = new HiveDriverFilterHookContextImpl(conf,
                                                 hiveOperation, userName, res, currentDbName);
         HiveDriverFilterHookResult hookResult;
