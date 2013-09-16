@@ -65,6 +65,7 @@ import org.apache.hadoop.mapred.lib.CombineFileInputFormat;
 import org.apache.hadoop.mapred.lib.CombineFileSplit;
 import org.apache.hadoop.mapred.lib.TotalOrderPartitioner;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.JobID;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UnixUserGroupInformation;
@@ -684,6 +685,11 @@ public class Hadoop20Shims implements HadoopShims {
         progressable.progress();
       }
     };
+  }
+
+  @Override
+  public TaskAttemptID newTaskAttemptID(JobID jobId, boolean isMap, int taskId, int id) {
+    return new TaskAttemptID(jobId.getJtIdentifier(), jobId.getId(), isMap, taskId, id);
   }
 
   @Override

@@ -42,8 +42,6 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
-import org.apache.hadoop.mapreduce.TaskID;
-import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hive.hcatalog.HcatTestUtils;
 import org.apache.hive.hcatalog.common.HCatConstants;
 import org.apache.hive.hcatalog.common.HCatContext;
@@ -201,7 +199,7 @@ public class TestE2EScenarios extends TestCase {
 
   private TaskAttemptContext createTaskAttemptContext(Configuration tconf) {
     Configuration conf = (tconf == null) ? (new Configuration()) : tconf;
-    TaskAttemptID taskId = new TaskAttemptID(new TaskID(new JobID("200908190029", 1), TaskType.REDUCE, 1), 1);
+    TaskAttemptID taskId = HCatMapRedUtil.createTaskAttemptID(new JobID("200908190029", 1), false, 1, 1);
     conf.setInt("mapred.task.partition", taskId.getId());
     conf.set("mapred.task.id", taskId.toString());
     TaskAttemptContext rtaskContext = HCatMapRedUtil.createTaskAttemptContext(conf , taskId);
