@@ -38,11 +38,11 @@
       <hbase.hadoop2.version>${cdh.hbase.version}</hbase.hadoop2.version>
       <hcatalog.version>${project.version}</hcatalog.version>
       <hive.version>${project.version}</hive.version>
-      <jackson.version>1.9.2</jackson.version>
+      <jackson.version>1.8.8</jackson.version>
       <jersey.version>1.14</jersey.version>
       <jetty.webhcat.version>7.6.0.v20120127</jetty.webhcat.version>
       <jms.version>1.1</jms.version>
-      <pig.version>0.10.1</pig.version>
+      <pig.version>${cdh.pig.version}</pig.version>
       <slf4j.version>1.7.5</slf4j.version>
       <wadl-resourcedoc-doclet.version>1.4</wadl-resourcedoc-doclet.version>
       <zookeeper.version>${cdh.zookeeper.version}</zookeeper.version>
@@ -176,7 +176,6 @@
           <groupId>org.apache.pig</groupId>
           <artifactId>pig</artifactId>
           <version>${pig.version}</version>
-          <classifier>h2</classifier>
           <scope>compile</scope>
           <exclusions>
             <exclusion>
