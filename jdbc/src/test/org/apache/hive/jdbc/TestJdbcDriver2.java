@@ -213,9 +213,12 @@ public class TestJdbcDriver2 extends TestCase {
   private void checkBadUrl(String url) throws SQLException {
     try{
       DriverManager.getConnection(url, "", "");
-      fail("should have thrown IllegalArgumentException but did not ");
-    }catch(IllegalArgumentException i){
-      assertTrue(i.getMessage().contains("Bad URL format. Hostname not found "
+      fail("should have thrown Exception but did not");
+    }catch(SQLException e) {
+      Throwable t = e.getCause();
+      assertNotNull("Expected nested Throwable", t);
+      assertNotNull("Expected message in nested throwble", t.getMessage());
+      assertTrue(t.getMessage(), t.getMessage().contains("Bad URL format. Hostname not found "
           + " in authority part of the url"));
     }
   }
