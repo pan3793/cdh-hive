@@ -557,7 +557,7 @@ public class TestHBaseInputFormat extends SkeletonHBaseTest {
             OutputCollector<WritableComparable<?>, Text> output, Reporter reporter)
       throws IOException {
       System.out.println("Result " + result.toString());
-      List<Cell> list = result.getResult().list();
+      List<Cell> list = result.getResult().listCells();
       boolean correctValues = (list.size() == 1)
         && (Bytes.toString(list.get(0).getRow())).equalsIgnoreCase("testRow")
         && (Bytes.toString(list.get(0).getValue())).equalsIgnoreCase("textValue-5")

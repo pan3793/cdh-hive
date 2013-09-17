@@ -85,7 +85,7 @@ public class TestHBaseSerDe extends TestCase {
     kvs.add(new KeyValue(rowKey, cfb, qualBool, Bytes.toBytes("true")));
     Collections.sort(kvs, KeyValue.COMPARATOR);
 
-    Result r = new Result(kvs.toArray(new Cell[0]));
+    Result r = Result.create(kvs.toArray(new Cell[0]));
 
     Put p = new Put(rowKey);
 
@@ -179,7 +179,7 @@ public class TestHBaseSerDe extends TestCase {
     kvs.add(new KeyValue(rowKey, cfb, qualBool, Bytes.toBytes("true")));
     Collections.sort(kvs, KeyValue.COMPARATOR);
 
-    Result r = new Result(kvs.toArray(new Cell[0]));
+    Result r = Result.create(kvs.toArray(new Cell[0]));
 
     Put p = new Put(rowKey,putTimestamp);
 
@@ -326,7 +326,7 @@ public class TestHBaseSerDe extends TestCase {
     kvs.add(new KeyValue(rowKey, cfb, qualBool, Bytes.toBytes(false)));
 
     Collections.sort(kvs, KeyValue.COMPARATOR);
-    Result r = new Result(kvs.toArray(new Cell[0]));
+    Result r = Result.create(kvs.toArray(new Cell[0]));
 
     Put p = new Put(rowKey);
 
@@ -466,7 +466,7 @@ public class TestHBaseSerDe extends TestCase {
             columnQualifiersAndValues[i][j]);
       }
 
-      r[i] = new Result(kvs.toArray(new Cell[0]));
+      r[i] = Result.create(kvs.toArray(new Cell[0]));
     }
 
     Object [][] expectedData = {
@@ -603,7 +603,7 @@ public class TestHBaseSerDe extends TestCase {
       p.add(columnFamilies[j], columnQualifiersAndValues[j], columnQualifiersAndValues[j]);
     }
 
-    Result r = new Result(kvs.toArray(new Cell[0]));
+    Result r = Result.create(kvs.toArray(new Cell[0]));
 
     Object [] expectedData = {
         new Text("row-key"), new ByteWritable((byte) 123), new ShortWritable((short) 456),
@@ -727,7 +727,7 @@ public class TestHBaseSerDe extends TestCase {
     kvs.add(new KeyValue(rowKey, cfa, qualC, dataC));
     kvs.add(new KeyValue(rowKey, cfa, qualD, dataD));
 
-    Result r = new Result(kvs.toArray(new Cell[0]));
+    Result r = Result.create(kvs.toArray(new Cell[0]));
 
     Put p = new Put(rowKey);
 

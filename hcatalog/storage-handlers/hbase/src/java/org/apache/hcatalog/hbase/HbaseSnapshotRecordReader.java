@@ -176,7 +176,7 @@ class HbaseSnapshotRecordReader implements RecordReader<ImmutableBytesWritable, 
     } else {
       while (resultItr.hasNext()) {
         Result temp = resultItr.next();
-        Result hbaseRow = prepareResult(temp.list());
+        Result hbaseRow = prepareResult(temp.listCells());
         if (hbaseRow != null) {
           // Update key and value. Currently no way to avoid serialization/de-serialization
           // as no setters are available.
@@ -234,9 +234,9 @@ class HbaseSnapshotRecordReader implements RecordReader<ImmutableBytesWritable, 
     if (finalKeyVals.size() == 0) {
       return null;
     } else {
-      KeyValue[] kvArray = new KeyValue[finalKeyVals.size()];
+      Cell[] kvArray = new Cell[finalKeyVals.size()];
       finalKeyVals.toArray(kvArray);
-      return new Result(kvArray);
+      return Result.create(kvArray);
     }
   }
 
