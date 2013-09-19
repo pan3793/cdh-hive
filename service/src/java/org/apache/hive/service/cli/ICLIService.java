@@ -103,4 +103,6 @@ public interface ICLIService {
       String tokenStr) throws HiveSQLException;
 
 
+  public abstract String getLog(OperationHandle opHandle)
+      throws HiveSQLException;
 }

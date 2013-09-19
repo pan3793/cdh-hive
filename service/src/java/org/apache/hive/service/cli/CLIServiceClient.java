@@ -172,4 +172,7 @@ public abstract class CLIServiceClient implements ICLIService {
   public abstract void renewDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
       String tokenStr) throws HiveSQLException;
 
+  @Override
+  public abstract String getLog(OperationHandle opHandle) throws HiveSQLException;
+
 }

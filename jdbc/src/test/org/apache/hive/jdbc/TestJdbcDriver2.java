@@ -773,6 +773,30 @@ public class TestJdbcDriver2 extends TestCase {
         exceptionFound);
   }
 
+  public void testGetLog() throws Exception {
+    HiveStatement stmt = (HiveStatement)con.createStatement();
+    assertNotNull("Statement is null", stmt);
+
+    ResultSet res = stmt.executeQuery("select count(*) from " + tableName);
+    ResultSetMetaData meta = res.getMetaData();
+
+    boolean moreRow = res.next();
+    while (moreRow) {
+      try {
+        moreRow = res.next();
+      } catch (SQLException e) {
+        throw e;
+      }
+    }
+
+    String log = stmt.getLog();
+    assertTrue("Operation Log looks incorrect" ,
+        log.contains("Parsing command: select count(*) from testHiveJdbcDriver_Table"));
+    assertTrue("Operation Log looks incorrect",
+        log.contains( "select count(*) from testHiveJdbcDriver_Table"));
+
+  }
+
   public void testShowTables() throws SQLException {
     Statement stmt = con.createStatement();
     assertNotNull("Statement is null", stmt);

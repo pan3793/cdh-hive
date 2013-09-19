@@ -58,7 +58,6 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
 
   public static final Log LOG = LogFactory.getLog(ThriftCLIService.class.getName());
 
-
   protected CLIService cliService;
   private static final TStatus OK_STATUS = new TStatus(TStatusCode.SUCCESS_STATUS);
   private static final TStatus ERROR_STATUS = new TStatus(TStatusCode.ERROR_STATUS);
@@ -106,6 +105,20 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       isStarted = false;
     }
     super.stop();
+  }
+
+  @Override
+  public TGetLogResp GetLog(TGetLogReq req) throws TException {
+    TGetLogResp resp = new TGetLogResp();
+    try {
+      String log = cliService.getLog(new OperationHandle(req.getOperationHandle()));
+      resp.setStatus(OK_STATUS);
+      resp.setLog(log);
+    } catch (Exception e) {
+      e.printStackTrace();
+      resp.setStatus(HiveSQLException.toTStatus(e));
+    }
+    return resp;
   }
 
 
@@ -528,5 +541,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       t.printStackTrace();
     }
   }
+
+
 
 }
