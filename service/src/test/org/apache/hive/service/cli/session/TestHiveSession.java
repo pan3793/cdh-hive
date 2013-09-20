@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.cli.OperationHandle;
 import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -41,7 +42,8 @@ public class TestHiveSession {
 
     session.setOperationManager(opMgr);
     LogManager logManager = new LogManager();
-    logManager.init(hiveConf);
+    session.getHiveConf().setVar(HiveConf.ConfVars.HIVE_SERVER2_IN_MEM_LOGGING, false);
+    logManager.init(session.getHiveConf());
     session.setLogManager(logManager);
 
     OperationHandle opHandle1 = session.executeStatement("use default", null);
