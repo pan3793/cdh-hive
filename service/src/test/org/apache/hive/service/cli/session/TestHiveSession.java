@@ -42,7 +42,7 @@ public class TestHiveSession {
 
     session.setOperationManager(opMgr);
     LogManager logManager = new LogManager();
-    session.getHiveConf().setVar(HiveConf.ConfVars.HIVE_SERVER2_IN_MEM_LOGGING, false);
+    session.getHiveConf().setBoolVar(HiveConf.ConfVars.HIVE_SERVER2_IN_MEM_LOGGING, false);
     logManager.init(session.getHiveConf());
     session.setLogManager(logManager);
 
