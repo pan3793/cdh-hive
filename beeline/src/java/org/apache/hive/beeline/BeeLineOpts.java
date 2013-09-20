@@ -31,8 +31,10 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
 
@@ -80,6 +82,8 @@ class BeeLineOpts implements Completor {
   private String historyFile = new File(saveDir(), "history").getAbsolutePath();
 
   private String scriptFile = null;
+
+  private Map<String, String> hiveVariables = new HashMap<String, String>();
 
   public BeeLineOpts(BeeLine beeLine, Properties props) {
     this.beeLine = beeLine;
@@ -431,5 +435,13 @@ class BeeLineOpts implements Completor {
     this.allowMultiLineCommand = allowMultiLineCommand;
   }
 
+
+  public Map<String, String> getHiveVariables() {
+    return hiveVariables;
+  }
+
+  public void setHiveVariables(Map<String, String> hiveVariables) {
+    this.hiveVariables = hiveVariables;
+  }
 
 }
