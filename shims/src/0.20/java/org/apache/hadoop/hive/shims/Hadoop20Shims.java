@@ -550,6 +550,11 @@ public class Hadoop20Shims implements HadoopShims {
   }
 
   @Override
+  public Path createDelegationTokenFile(Configuration conf) throws IOException {
+    throw new UnsupportedOperationException("Tokens are not supported in current hadoop version");
+  }
+
+  @Override
   public UserGroupInformation createRemoteUser(String userName, List<String> groupNames) {
     return new UnixUserGroupInformation(userName, groupNames.toArray(new String[0]));
   }
@@ -640,4 +645,11 @@ public class Hadoop20Shims implements HadoopShims {
   public String getJobLauncherHttpAddress(Configuration conf) {
     return conf.get("mapred.job.tracker.http.address");
   }
+
+  @Override
+  public String getTokenFileLocEnvName() {
+    throw new UnsupportedOperationException(
+        "Kerberos not supported in current hadoop version");
+  }
+
 }

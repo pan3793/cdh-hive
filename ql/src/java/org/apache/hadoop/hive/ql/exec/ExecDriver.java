@@ -586,6 +586,7 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
     boolean noLog = false;
     String files = null;
     boolean localtask = false;
+    String hadoopAuthToken = null;
     try {
       for (int i = 0; i < args.length; i++) {
         if (args[i].equals("-plan")) {
@@ -598,6 +599,9 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
           files = args[++i];
         } else if (args[i].equals("-localtask")) {
           localtask = true;
+        } else if (args[i].equals("-hadooptoken")) {
+          //set with HS2 in secure mode with doAs
+          hadoopAuthToken = args[++i];
         }
       }
     } catch (IndexOutOfBoundsException e) {
@@ -618,6 +622,9 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
 
     if (files != null) {
       conf.set("tmpfiles", files);
+    }
+    if(hadoopAuthToken != null){
+      conf.set("mapreduce.job.credentials.binary", hadoopAuthToken);
     }
 
     boolean isSilent = HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVESESSIONSILENT);
