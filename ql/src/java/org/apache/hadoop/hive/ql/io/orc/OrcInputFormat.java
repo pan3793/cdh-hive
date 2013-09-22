@@ -18,7 +18,10 @@
 
 package org.apache.hadoop.hive.ql.io.orc;
 
-import com.google.common.collect.Lists;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -41,10 +44,6 @@ import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapred.Reporter;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A MapReduce/Hive input format for ORC files.
@@ -95,7 +94,7 @@ public class OrcInputFormat  extends FileInputFormat<NullWritable, OrcStruct>
       } else {
         LOG.info("No ORC pushdown predicate");
       }
-      this.reader = file.rows(offset, length,includeColumn, sarg, columnNames);
+      this.reader = file.rows(offset, length, includeColumn, sarg, columnNames);
       this.offset = offset;
       this.length = length;
     }
@@ -167,9 +166,7 @@ public class OrcInputFormat  extends FileInputFormat<NullWritable, OrcStruct>
    */
   private static boolean[] findIncludedColumns(List<OrcProto.Type> types,
                                                Configuration conf) {
-    String includedStr =
-        conf.get(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR);
-    if (includedStr == null || includedStr.trim().length() == 0) {
+    if (ColumnProjectionUtils.isReadAllColumns(conf)) {
       return null;
     } else {
       int numColumns = types.size();
