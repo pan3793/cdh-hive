@@ -208,9 +208,9 @@ public class ParseDriver {
   /*
    * parse a String as a Select List. This allows table functions to be passed expression Strings
    * that are translated in
-   * the context they define at invocation time. Currently used by NPath to allow users to specify
+   * the context they define at invocation time. Currently used by future to allow users to specify
    * what output they want.
-   * NPath allows expressions n 'tpath' a column that represents the matched set of rows. This
+   * future allows expressions n 'tpath' a column that represents the matched set of rows. This
    * column doesn't exist in
    * the input schema and hence the Result Expression cannot be analyzed by the regular Hive
    * translation process.
