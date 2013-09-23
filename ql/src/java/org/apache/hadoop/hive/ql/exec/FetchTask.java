@@ -76,6 +76,7 @@ public class FetchTask extends Task<FetchWork> implements Serializable {
       sink = work.getSink();
       fetch = new FetchOperator(work, job, source, getVirtualColumns(source));
       source.initialize(conf, new ObjectInspector[]{fetch.getOutputObjectInspector()});
+      totalRows = 0;
 
     } catch (Exception e) {
       // Bail out ungracefully - we should never hit

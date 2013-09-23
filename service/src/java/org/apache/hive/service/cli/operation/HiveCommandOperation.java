@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -146,6 +147,11 @@ public abstract class HiveCommandOperation extends ExecuteStatementOperation {
    */
   @Override
   public RowSet getNextRowSet(FetchOrientation orientation, long maxRows) throws HiveSQLException {
+    validateFetchOrientation(orientation,
+        EnumSet.of(FetchOrientation.FETCH_NEXT,FetchOrientation.FETCH_FIRST));
+    if (orientation.equals(FetchOrientation.FETCH_FIRST)) {
+      resetResultReader();
+    }
     List<String> rows = readResults((int) maxRows);
     RowSet rowSet = new RowSet();
 
@@ -172,7 +178,6 @@ public abstract class HiveCommandOperation extends ExecuteStatementOperation {
         throw new HiveSQLException(e);
       }
     }
-
     List<String> results = new ArrayList<String>();
 
     for (int i = 0; i < nLines || nLines <= 0; ++i) {
@@ -193,11 +198,15 @@ public abstract class HiveCommandOperation extends ExecuteStatementOperation {
   }
 
   private void cleanTmpFile() {
+    resetResultReader();
+    SessionState sessionState = getParentSession().getSessionState();
+    File tmp = sessionState.getTmpOutputFile();
+    tmp.delete();
+  }
+
+  private void resetResultReader() {
     if (resultReader != null) {
-      SessionState sessionState = getParentSession().getSessionState();
-      File tmp = sessionState.getTmpOutputFile();
       IOUtils.cleanup(LOG, resultReader);
-      tmp.delete();
       resultReader = null;
     }
   }

@@ -202,6 +202,7 @@ public class TestJdbcDriver2 extends TestCase {
         expectedException);
   }
 
+
   public void testBadURL() throws Exception {
     checkBadUrl("jdbc:hive2://localhost:10000;principal=test");
     checkBadUrl("jdbc:hive2://localhost:10000;" +
@@ -1523,6 +1524,145 @@ public class TestJdbcDriver2 extends TestCase {
     assertNull(conn);
   }
 
+  /**
+   * Test the cursor repositioning to start of resultset
+   * @throws Exception
+   */
+  public void testFetchFirstQuery() throws Exception {
+    execFetchFirst("select c1 from " + dataTypeTableName + " order by c1", false);
+    execFetchFirst("select c1 from " + dataTypeTableName + " order by c1", true);
+  }
 
+  /**
+   * Test the cursor repositioning to start of resultset from non-mr query
+   * @throws Exception
+   */
+  public void testFetchFirstNonMR() throws Exception {
+    execFetchFirst("select * from " + dataTypeTableName, false);
+  }
+
+  /**
+   *  Test for cursor repositioning to start of resultset for non-sql commands
+   * @throws Exception
+   */
+  public void testFetchFirstSetCmds() throws Exception {
+    // verify that fetch_first is not supported
+    Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_READ_ONLY);
+    ResultSet res = stmt.executeQuery("set -v");
+    String resultStr = null;
+    while(res.next()) {
+      if (resultStr == null) {
+        resultStr = res.getString(1);
+      }
+    }
+    res.beforeFirst();
+    res.next();
+    assertEquals("Values should be same after reposition",
+        resultStr, res.getString(1));
+    res.close();
+    stmt.close();
+  }
+
+  /**
+   *  Test for cursor repositioning to start of resultset for non-sql commands
+   * @throws Exception
+   */
+  public void testFetchFirstDfsCmds() throws Exception {
+    // verify that fetch_first is not supported
+    Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_READ_ONLY);
+    String wareHouseDir = conf.get(HiveConf.ConfVars.METASTOREWAREHOUSE.varname);
+    ResultSet res = stmt.executeQuery("dfs -ls " + wareHouseDir);
+    String resultStr = null;
+    while(res.next()) {
+      if (resultStr == null) {
+        resultStr = res.getString(1);
+      }
+    }
+    res.beforeFirst();
+    res.next();
+    assertEquals("Values should be same after reposition",
+        resultStr, res.getString(1));
+  }
+
+
+  /**
+   * Negative Test for cursor repositioning to start of resultset
+   * Verify unsupported JDBC resultset attributes
+   * @throws Exception
+   */
+  public void testUnsupportedFetchTypes() throws Exception {
+    Statement stmt;
+    try {
+      stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+        ResultSet.CONCUR_READ_ONLY);
+      assertTrue("createStatement with TYPE_SCROLL_SENSITIVE should fail", false);
+    } catch(SQLException e) {
+      assertEquals("Method not supported", e.getMessage());
+    }
+
+    try {
+      stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_UPDATABLE);
+      assertTrue("createStatement with CONCUR_UPDATABLE should fail", false);
+    } catch(SQLException e) {
+      assertEquals("Method not supported", e.getMessage());
+    }
+  }
+
+  /**
+   * Negative Test for cursor repositioning to start of resultset
+   * Verify unsupported JDBC resultset methods
+   * @throws Exception
+   */
+  public void testFetchFirstError() throws Exception {
+    Statement stmt = con.createStatement();
+    ResultSet res = stmt.executeQuery("select * from " + tableName);
+    try {
+      res.beforeFirst();
+      assertTrue("beforeFirst() should fail for normal resultset", false);
+    } catch (SQLException e) {
+      assertEquals("Method not supported for TYPE_FORWARD_ONLY resultset", e.getMessage());
+    }
+  }
+
+  /**
+   * Read the results locally. Then reset the read position to start and read the
+   * rows again verify that we get the same results next time.
+   * @param sqlStmt
+   * @param oneRowOnly
+   * @throws Exception
+   */
+  private void execFetchFirst(String sqlStmt, boolean oneRowOnly) throws Exception {
+    Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+          ResultSet.CONCUR_READ_ONLY);
+    ResultSet res = stmt.executeQuery(sqlStmt);
+
+    List<Integer> results = new ArrayList<Integer> ();
+    assertTrue(res.isBeforeFirst());
+    int rowNum = 0;
+    while (res.next()) {
+      results.add(res.getInt(1));
+      assertEquals(++rowNum, res.getRow());
+      assertFalse(res.isBeforeFirst());
+      if (oneRowOnly) {
+        break;
+      }
+    }
+    // reposition at the begining
+    res.beforeFirst();
+    assertTrue(res.isBeforeFirst());
+    rowNum = 0;
+    while (res.next()) {
+      // compare the results fetched last time
+      assertEquals(results.get(rowNum++).intValue(), res.getInt(1));
+      assertEquals(rowNum, res.getRow());
+      assertFalse(res.isBeforeFirst());
+      if (oneRowOnly) {
+        break;
+      }
+    }
+  }
 
 }

@@ -32,7 +32,7 @@ public class DfsOperation extends HiveCommandOperation {
   protected DfsOperation(HiveSession parentSession, String statement,
       Map<String, String> confOverlay) {
     super(parentSession, statement, confOverlay);
-    setCommandProcessor(new DfsProcessor(parentSession.getHiveConf()));
+    setCommandProcessor(new DfsProcessor(parentSession.getHiveConf(), true));
   }
 
 }
