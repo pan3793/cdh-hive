@@ -50,6 +50,8 @@
   <property name="images.src" value="${docs.src}/images"/>
   <property name="javadoc.link.java"
             value="http://java.sun.com/javase/6/docs/api/"/>
+  <property name="sourceJavaVersion" value="${javac.version}" />
+  <property name="targetJavaVersion" value="${javac.version}" />
   <property name="final.name" value="${name}-${version}"/>
   <property name="tar.final.name" value="${final.name}"/>
   <property name="bin.final.name" value="${final.name}-bin"/>
@@ -169,6 +171,8 @@
             <property name="is-offline" value="${is-offline}"/>
             <property name="thrift.home" value="${thrift.home}"/>
             <property name="build.dir.hive" location="${build.dir.hive}"/>
+            <property name="sourceJavaVersion" value="${sourceJavaVersion}" />
+            <property name="targetJavaVersion" value="${targetJavaVersion}" />
           </subant>
         </sequential>
       </for>
@@ -275,6 +279,8 @@
     <echo message="Project: ${ant.project.name}"/>
     <subant target="compile">
       <fileset dir="." includes="ant/build.xml"/>
+      <property name="sourceJavaVersion" value="${sourceJavaVersion}"/>
+      <property name="targetJavaVersion" value="${targetJavaVersion}"/>
     </subant>
   </target>
 
@@ -370,6 +376,8 @@
         <ant antfile="@{module}/build.xml" target="${test.target.name}" inheritAll="false" inheritRefs="true">
           <property name="build.dir.hive" location="${build.dir.hive}"/>
           <property name="is-offline" value="${is-offline}"/>
+          <property name="sourceJavaVersion" value="${sourceJavaVersion}" />
+          <property name="targetJavaVersion" value="${targetJavaVersion}" />
         </ant>
       </sequential>
     </for>

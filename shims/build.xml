@@ -39,6 +39,8 @@ to call at top-level: ant deploy-contrib compile-core-test
   <property name="shims.0.20.hadoop.ivy.dir" value="${hive.root}/build/ivy/lib/hadoop0.20.shim" />
   <property name="shims.0.20S.hadoop.ivy.dir" value="${hive.root}/build/ivy/lib/hadoop0.20S.shim" />
   <property name="shims.0.23.hadoop.ivy.dir" value="${hive.root}/build/ivy/lib/hadoop0.23.shim" />
+  <property name="sourceJavaVersion" value="${javac.version}" />
+  <property name="targetJavaVersion" value="${javac.version}" />
 
   <target name="build-shims"
           description="Build shims against a particular hadoop version">
@@ -60,6 +62,8 @@ to call at top-level: ant deploy-contrib compile-core-test
      includes="**/*.java"
      destdir="${build.classes}"
      debug="${javac.debug}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
      deprecation="${javac.deprecation}"
      srcdir="${sources}"
      includeantruntime="false">
@@ -98,6 +102,8 @@ to call at top-level: ant deploy-contrib compile-core-test
          includes="org/apache/hadoop/**/*.java"
          excludes="**/TestSerDe.java"
          destdir="${test.build.classes}"
+         source="${sourceJavaVersion}"
+         target="${targetJavaVersion}"
          debug="${javac.debug}"
          optimize="${javac.optimize}"
          deprecation="${javac.deprecation}"

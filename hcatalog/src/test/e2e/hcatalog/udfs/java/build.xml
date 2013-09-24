@@ -45,6 +45,8 @@
     <target name="udf-compile" depends="init">
         <echo>*** Compiling UDFs ***</echo>
         <javac srcdir="${udfs.src.dir}" destdir="${udfs.build.dir}" debug="on">
+		source="${sourceJavaVersion}"
+		target="${targetJavaVersion}"
             <classpath refid="udf-classpath"/>
         </javac>
     </target>

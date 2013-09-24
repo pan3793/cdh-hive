@@ -47,6 +47,8 @@
           deprecation="false"
           sourcepath=""
           includes="**/*.java"
+          source="${sourceJavaVersion}"
+          target="${targetJavaVersion}"
           debug="${javac.debug}"
           encoding="utf-8"
           srcdir="@{srcDir}"

@@ -43,6 +43,8 @@
             depends="init, serde.jar.check, ql.jar.check, hadoop.jar.check">
         <echo>*** Compiling UDFs ***</echo>
         <javac srcdir="${generator.src.dir}" destdir="${generator.build.dir}" debug="on" includeantruntime="false"
+		source="${sourceJavaVersion}"
+		target="${targetJavaVersion}"
                includes="**/*.java">
             <classpath refid="generator-classpath"/>
         </javac>
