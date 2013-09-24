@@ -49,6 +49,8 @@
      srcdir="${src.dir}/java:${src.dir}/gen/thrift/gen-javabean:${build.dir}/gen/antlr/gen-java"
      includes="**/*.java"
      destdir="${build.classes}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
      debug="${javac.debug}"
      deprecation="${javac.deprecation}"
      includeantruntime="false">
@@ -65,6 +67,8 @@
     <javac
         srcdir="${model.dir}"
         destdir="${build.classes}"
+        source="${sourceJavaVersion}"
+        target="${targetJavaVersion}"
         debug="${javac.debug}"
         includeantruntime="false">
        <classpath refid="classpath"/>

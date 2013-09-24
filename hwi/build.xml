@@ -62,6 +62,8 @@
      encoding="${build.encoding}"
      srcdir="${src.dir}"
      includes="**/*.java"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
      destdir="${build.classes}"
      debug="${javac.debug}"
      deprecation="${javac.deprecation}">

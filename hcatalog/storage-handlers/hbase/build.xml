@@ -91,6 +91,8 @@
         <javac encoding="${build.encoding}" srcdir="${src.dir}:${basedir}/src/gen-java:${basedir}/src/resources" excludes="${excludes}"
                includes="**/*.java" destdir="${build.classes}" debug="${javac.debug}"
                optimize="${javac.optimize}"
+               source="${sourceJavaVersion}"
+               target="${targetJavaVersion}"
                deprecation="${javac.deprecation}"
                includeantruntime="false">
             <compilerarg line="${javac.args}"/>
@@ -118,6 +120,8 @@
         <javac encoding="${build.encoding}" srcdir="${test.src.dir}" excludes="${excludes}"
                includes="**/*.java" destdir="${test.build.classes}" debug="${javac.debug}"
                optimize="${javac.optimize}"
+               source="${sourceJavaVersion}"
+               target="${targetJavaVersion}"
                deprecation="${javac.deprecation}"
                includeantruntime="false">
             <compilerarg line="${javac.args}"/>

@@ -30,6 +30,8 @@
      includes="**/*.java"
      destdir="${build.classes}"
      debug="${javac.debug}"
+     source="${sourceJavaVersion}"
+     target="${targetJavaVersion}"
      deprecation="${javac.deprecation}"
      includeantruntime="false">
       <classpath refid="classpath"/>

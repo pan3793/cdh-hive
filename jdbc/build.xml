@@ -46,6 +46,8 @@
         srcdir="${src.dir}/java"
         includes="**/*.java"
         destdir="${build.classes}"
+        source="${sourceJavaVersion}"
+        target="${targetJavaVersion}"
         debug="${javac.debug}"
         deprecation="${javac.deprecation}"
         includeantruntime="false"
