@@ -48,10 +48,10 @@ public class CreateTableDesc extends DDLDesc implements Serializable {
   String databaseName;
   String tableName;
   boolean isExternal;
-  ArrayList<FieldSchema> cols;
-  ArrayList<FieldSchema> partCols;
-  ArrayList<String> bucketCols;
-  ArrayList<Order> sortCols;
+  List<FieldSchema> cols;
+  List<FieldSchema> partCols;
+  List<String> bucketCols;
+  List<Order> sortCols;
   int numBuckets;
   String fieldDelim;
   String fieldEscape;
@@ -125,8 +125,12 @@ public class CreateTableDesc extends DDLDesc implements Serializable {
     this.serdeProps = serdeProps;
     this.tblProps = tblProps;
     this.ifNotExists = ifNotExists;
-    this.skewedColNames = new ArrayList<String>(skewedColNames);
-    this.skewedColValues = new ArrayList<List<String>>(skewedColValues);
+    this.skewedColNames = copyList(skewedColNames);
+    this.skewedColValues = copyList(skewedColValues);
+  }
+
+  private static <T> List<T> copyList(List<T> copy) {
+    return copy == null ? null : new ArrayList<T>(copy);
   }
 
   @Explain(displayName = "columns")
@@ -161,7 +165,7 @@ public class CreateTableDesc extends DDLDesc implements Serializable {
     this.tableName = tableName;
   }
 
-  public ArrayList<FieldSchema> getCols() {
+  public List<FieldSchema> getCols() {
     return cols;
   }
 
@@ -169,7 +173,7 @@ public class CreateTableDesc extends DDLDesc implements Serializable {
     this.cols = cols;
   }
 
-  public ArrayList<FieldSchema> getPartCols() {
+  public List<FieldSchema> getPartCols() {
     return partCols;
   }
 
@@ -178,7 +182,7 @@ public class CreateTableDesc extends DDLDesc implements Serializable {
   }
 
   @Explain(displayName = "bucket columns")
-  public ArrayList<String> getBucketCols() {
+  public List<String> getBucketCols() {
     return bucketCols;
   }
 
@@ -298,7 +302,7 @@ public class CreateTableDesc extends DDLDesc implements Serializable {
    * @return the sortCols
    */
   @Explain(displayName = "sort columns")
-  public ArrayList<Order> getSortCols() {
+  public List<Order> getSortCols() {
     return sortCols;
   }
 
