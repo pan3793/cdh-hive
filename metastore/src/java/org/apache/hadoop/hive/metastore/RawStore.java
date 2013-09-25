@@ -24,6 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
@@ -52,6 +53,7 @@ import org.apache.hadoop.hive.metastore.model.MPartitionPrivilege;
 import org.apache.hadoop.hive.metastore.model.MRoleMap;
 import org.apache.hadoop.hive.metastore.model.MTableColumnPrivilege;
 import org.apache.hadoop.hive.metastore.model.MTablePrivilege;
+import org.apache.thrift.TException;
 
 public interface RawStore extends Configurable {
 
@@ -199,6 +201,10 @@ public interface RawStore extends Configurable {
   public abstract List<Partition> getPartitionsByFilter(
       String dbName, String tblName, String filter, short maxParts)
       throws MetaException, NoSuchObjectException;
+
+  public abstract boolean getPartitionsByExpr(String dbName, String tblName,
+      byte[] expr, String defaultPartitionName, short maxParts, Set<Partition> result)
+      throws TException;
 
   public abstract List<Partition> getPartitionsByNames(
       String dbName, String tblName, List<String> partNames)
@@ -455,5 +461,4 @@ public interface RawStore extends Configurable {
  public abstract String getMetaStoreSchemaVersion() throws  MetaException;
 
  public abstract void setMetaStoreSchemaVersion(String version, String comment) throws MetaException;
-
 }
