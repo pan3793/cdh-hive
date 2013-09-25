@@ -152,7 +152,11 @@ public class SQLOperation extends ExecuteStatementOperation {
         public void run() {
           SessionState.start(ss);
           try {
+            // register the async exec thread with log manager to capture query logs
+            getParentSession().getLogManager().unregisterCurrentThread();
+            getParentSession().getLogManager().registerCurrentThread(getHandle());
             runInternal();
+            getParentSession().getLogManager().unregisterCurrentThread();
           } catch (HiveSQLException e) {
             LOG.error("Error: ", e);
             // TODO: Return a more detailed error to the client,

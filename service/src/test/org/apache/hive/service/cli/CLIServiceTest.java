@@ -20,10 +20,12 @@ package org.apache.hive.service.cli;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -121,10 +123,12 @@ public abstract class CLIServiceTest {
         new HashMap<String, String>());
     assertNotNull(sessionHandle);
 
-    // Change lock manager, otherwise unit-test doesn't go through
-    String setLockMgr = "SET hive.lock.manager=" +
-        "org.apache.hadoop.hive.ql.lockmgr.EmbeddedLockManager";
+    String setLockMgr = "SET " + HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY.varname
+      + " = false";
     client.executeStatement(sessionHandle, setLockMgr, confOverlay);
+
+    String dropTable = "DROP TABLE IF EXISTS TEST_EXEC";
+    client.executeStatement(sessionHandle, dropTable, confOverlay);
 
     String createTable = "CREATE TABLE TEST_EXEC(ID STRING)";
     client.executeStatement(sessionHandle, createTable, confOverlay);
@@ -149,13 +153,18 @@ public abstract class CLIServiceTest {
     OperationState state = null;
     OperationHandle ophandle;
 
-    // Change lock manager, otherwise unit-test doesn't go through
-    String setLockMgr = "SET hive.lock.manager=" +
-        "org.apache.hadoop.hive.ql.lockmgr.EmbeddedLockManager";
+    String setLockMgr = "SET " + HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY.varname
+    + " = false";
     client.executeStatement(sessionHandle, setLockMgr, confOverlay);
 
+    String dropTable = "DROP TABLE IF EXISTS TEST_EXEC";
+    client.executeStatement(sessionHandle, dropTable, confOverlay);
+    dropTable = "DROP TABLE IF EXISTS TEST_EXEC_ASYNC";
+    client.executeStatement(sessionHandle, dropTable, confOverlay);
+
+
     String createTable = "CREATE TABLE TEST_EXEC_ASYNC(ID STRING)";
-    client.executeStatementAsync(sessionHandle, createTable, confOverlay);
+    client.executeStatement(sessionHandle, createTable, confOverlay);
 
     // Test async execution response when query is malformed
     String wrongQuery = "SELECT NAME FROM TEST_EXEC";
@@ -180,6 +189,7 @@ public abstract class CLIServiceTest {
     }
     assertEquals("Query should return an error state",
         OperationState.ERROR, client.getOperationStatus(ophandle));
+    assertTrue(client.getLog(ophandle).contains("SELECT NAME FROM TEST_EXEC"));
 
     // Test async execution when query is well formed
     String select = "SELECT ID FROM TEST_EXEC_ASYNC";
@@ -205,6 +215,7 @@ public abstract class CLIServiceTest {
     }
     assertEquals("Query should be finished",
         OperationState.FINISHED, client.getOperationStatus(ophandle));
+    assertTrue(client.getLog(ophandle).contains("SELECT ID FROM TEST_EXEC_ASYNC"));
 
     // Cancellation test
     ophandle = client.executeStatementAsync(sessionHandle, select, confOverlay);
