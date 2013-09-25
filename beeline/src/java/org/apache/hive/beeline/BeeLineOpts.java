@@ -74,6 +74,7 @@ class BeeLineOpts implements Completor {
   private String isolation = DEFAULT_ISOLATION_LEVEL;
   private String outputFormat = "table";
   private boolean trimScripts = true;
+  private boolean allowMultiLineCommand = true;
 
   private final File rcFile = new File(saveDir(), "beeline.properties");
   private String historyFile = new File(saveDir(), "history").getAbsolutePath();
@@ -432,4 +433,13 @@ class BeeLineOpts implements Completor {
     this.authType = authType;
   }
 
+  public boolean isAllowMultiLineCommand() {
+    return allowMultiLineCommand;
+  }
+
+  public void setAllowMultiLineCommand(boolean allowMultiLineCommand) {
+    this.allowMultiLineCommand = allowMultiLineCommand;
+  }
+
 }
+

@@ -658,7 +658,7 @@ public class BeeLine {
   public ConsoleReader getConsoleReader(InputStream inputStream) throws IOException {
     if (inputStream != null) {
       // ### NOTE: fix for sf.net bug 879425.
-      consoleReader = new ConsoleReader(inputStream, new PrintWriter(System.out, true));
+      consoleReader = new ConsoleReader(inputStream, new PrintWriter(getOutputStream(), true));
     } else {
       consoleReader = new ConsoleReader();
     }
@@ -795,6 +795,11 @@ public class BeeLine {
     if (trimmed.length() == 0) {
       return false;
     }
+
+    if (!getOpts().isAllowMultiLineCommand()) {
+      return false;
+    }
+
     return !trimmed.endsWith(";");
   }
 
@@ -1619,7 +1624,7 @@ public class BeeLine {
     }
   }
 
-  BeeLineOpts getOpts() {
+  public BeeLineOpts getOpts() {
     return opts;
   }
 
