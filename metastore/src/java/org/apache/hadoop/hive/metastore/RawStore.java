@@ -18,6 +18,10 @@
 
 package org.apache.hadoop.hive.metastore;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +55,14 @@ import org.apache.hadoop.hive.metastore.model.MTablePrivilege;
 
 public interface RawStore extends Configurable {
 
+  /***
+   * Annotation to skip retries
+   */
+  @Target(value = ElementType.METHOD)
+  @Retention(value = RetentionPolicy.RUNTIME)
+  public @interface CanNotRetry {
+  }
+
   public abstract void shutdown();
 
   /**
@@ -68,11 +80,13 @@ public interface RawStore extends Configurable {
    *
    * @return true or false
    */
+  @CanNotRetry
   public abstract boolean commitTransaction();
 
   /**
    * Rolls back the current transaction if it is active
    */
+  @CanNotRetry
   public abstract void rollbackTransaction();
 
   public abstract void createDatabase(Database db)
