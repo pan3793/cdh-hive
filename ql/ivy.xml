@@ -56,6 +56,34 @@
     <dependency org="javolution" name="javolution" rev="${javolution.version}"/>
 
     <dependency org="jline" name="jline" rev="${jline.version}" transitive="false"/>
+    <!-- MR1 dependency -->
+    <dependency org="org.apache.hadoop" name="hadoop-core"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-test"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-tools"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+      <include type="jar"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-minicluster"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
 
     <!-- Hack to get jobclient tests dependency in. -->
     <dependency org="org.apache.hadoop" name="hadoop-yarn-server-tests"

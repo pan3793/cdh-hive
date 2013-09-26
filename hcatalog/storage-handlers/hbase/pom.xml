@@ -59,7 +59,66 @@
       <version>${zookeeper.version}</version>
       <scope>compile</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-client</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- server is required due to coproccessors -->
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-server</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-common</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- minihbase is in tests -->
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-server</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-common</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-hadoop-compat</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-hadoop-compat</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-hadoop2-compat</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-hadoop2-compat</artifactId>
+      <version>${hbase.hadoop2.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
     <!-- test scope -->
     <dependency>
       <groupId>commons-io</groupId>
@@ -85,7 +144,7 @@
 
   <profiles>
     <profile>
-      <id>hadoop20</id>
+      <id>hadoop20-not-used</id>
       <dependencies>
         <dependency>
           <groupId>org.apache.hbase</groupId>
@@ -150,7 +209,7 @@
       </dependencies>
     </profile>
     <profile>
-      <id>hadoop23</id>
+      <id>hadoop23-not-used</id>
       <dependencies>
         <dependency>
           <groupId>org.apache.hbase</groupId>

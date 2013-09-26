@@ -40,6 +40,23 @@
                 conf="test->default" transitive="false">
       <artifact name="hbase-common" type="jar" m:classifier="tests" />
     </dependency>
+    <dependency org="org.apache.zookeeper" name="zookeeper" rev="${zookeeper.version}"
+                transitive="false"/>
+    <dependency org="org.apache.hadoop" name="hadoop-minicluster"
+                rev="${hadoop-0.20.version}"
+                conf="hadoop-mr1.test->default">
+                          <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+
+    <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${hadoop-0.23.version}"
+                conf="hadoop23.test->default" transitive="false">
+      <artifact name="hadoop-mapreduce-client-jobclient" ext="jar" />
+      <artifact name="hadoop-mapreduce-client-jobclient" type="tests" ext="jar" m:classifier="tests"/>
+      <exclude org="commons-daemon" module="commons-daemon"/><!--bad POM-->
+      <exclude org="org.apache.commons" module="commons-daemon"/><!--bad POM-->
+    </dependency>
+
     <dependency org="org.apache.hbase" name="hbase-hadoop-compat" rev="${hbase.version.with.hadoop.version}"
                 conf="test->default" transitive="false">
       <artifact name="hbase-hadoop-compat" type="jar" m:classifier="tests"/>

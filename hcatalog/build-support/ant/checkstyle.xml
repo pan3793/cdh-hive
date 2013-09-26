@@ -61,6 +61,7 @@
           <exclude name="RELEASE_NOTES.txt"/>
           <exclude name="*.patch"/>
           <exclude name="tags"/>
+          <exclude name="*.pom"/>
           <exclude name="**/*.proto"/> <!-- protocol buffer def files -->
           <exclude name="**/*.swp"/> <!-- vim swap files -->
           <exclude name="**/*.orig"/> <!-- files created by patch -->

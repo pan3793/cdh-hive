@@ -45,8 +45,8 @@
             description="where all hive build artifacts are placed to make binary tar ball"/>
     <loadproperties srcfile="${basedir}/build.properties"/>
 
-    <condition property="mvn.hadoop.profile" value="hadoop23" else="hadoop20">
-      <equals arg1="${hadoop.mr.rev}" arg2="23"/>
+    <condition property="mvn.hadoop.profile" value="hadoop20" else="hadoop23">
+      <equals arg1="${hadoop.mr.test.rev}" arg2="mr1"/>
     </condition>
 
     <!--

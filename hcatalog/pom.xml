@@ -32,9 +32,9 @@
       <commons-exec.version>1.1</commons-exec.version>
       <commons-io.version>2.4</commons-io.version>
       <guava.version>11.0.2</guava.version>
-      <hadoop20.version>no-such-version</hadoop20.version>
+      <hadoop20.version>${cdh.mr1.version}</hadoop20.version>
       <hadoop23.version>${cdh.hadoop.version}</hadoop23.version>
-      <hbase.hadoop1.version>no-such-version</hbase.hadoop1.version>
+      <hbase.hadoop1.version>${cdh.hbase.version}</hbase.hadoop1.version>
       <hbase.hadoop2.version>${cdh.hbase.version}</hbase.hadoop2.version>
       <hcatalog.version>${project.version}</hcatalog.version>
       <hive.version>${project.version}</hive.version>
@@ -77,13 +77,27 @@
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-core</artifactId>
           <version>${hadoop20.version}</version>
-          <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-common</artifactId>
+          <version>${hadoop23.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-hdfs</artifactId>
+          <version>${hadoop23.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-minicluster</artifactId>
+          <version>${hadoop20.version}</version>
+          <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-tools</artifactId>
           <version>${hadoop20.version}</version>
-          <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.hadoop</groupId>
@@ -95,7 +109,6 @@
           <groupId>org.apache.pig</groupId>
           <artifactId>pig</artifactId>
           <version>${pig.version}</version>
-          <scope>compile</scope>
         </dependency>
       </dependencies>
     </profile>

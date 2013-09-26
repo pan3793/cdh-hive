@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -161,7 +160,7 @@ public class TestHCatMultiOutputFormat {
   @BeforeClass
   public static void setup() throws Exception {
     String testDir = System.getProperty("test.data.dir", "./");
-    testDir = testDir + "/test_multitable_" + Math.abs(new Random().nextLong()) + "/";
+    testDir = testDir + "/test_multitable_" + System.currentTimeMillis() + "/";
     workDir = new File(new File(testDir).getCanonicalPath());
     FileUtil.fullyDelete(workDir);
     workDir.mkdirs();
@@ -254,7 +253,6 @@ public class TestHCatMultiOutputFormat {
 
   @AfterClass
   public static void tearDown() throws IOException {
-    FileUtil.fullyDelete(workDir);
     FileSystem fs = FileSystem.get(mrConf);
     if (fs.exists(warehousedir)) {
       fs.delete(warehousedir, true);
