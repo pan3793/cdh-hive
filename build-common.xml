@@ -95,8 +95,8 @@
   <property name="test.print.classpath" value="false"/>
   <property name="test.lang" value="en_US.UTF-8"/>
 
-  <property name="hadoop.opts.23" value="-D mapreduce.framework.name=local" />
-  <property name="hadoop.opts.20" value="-D mapreduce.framework.name=local" />
+  <property name="hadoop.opts.23" value="-D mapreduce.framework.name=local -D hive.metastore.schema.verification=false" />
+  <property name="hadoop.opts.20" value="-D mapreduce.framework.name=local -D hive.metastore.schema.verification=false" /> 
 
   <condition property="test.halt.on.failure" value="no" else="yes">
     <equals arg1="${test.continue.on.failure}" arg2="true"/>
@@ -476,6 +476,7 @@
   </condition>
 
   <property name="test.warehouse.dir" value="${test.warehouse.scheme}${build.dir}/test/data/warehouse"/>
+  <property name="hive.metastore.schema.verification" value="false"/>
   <property name="fs.default.name" value="file:///"/>
   <property name="mapred.job.tracker" value=""/>
   <property name="mapreduce.framework.name" value=""/>
