@@ -21,11 +21,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.common.type.HiveVarchar;
 import org.apache.hadoop.hive.serde2.io.HiveVarcharWritable;
-import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorUtils.PrimitiveTypeEntry;
-import org.apache.hadoop.hive.serde2.typeinfo.BaseTypeParams;
-import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeParams;
 import org.apache.hadoop.hive.serde2.typeinfo.ParameterizedPrimitiveTypeUtils;
+import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeParams;
 
 public class WritableHiveVarcharObjectInspector
     extends AbstractPrimitiveWritableObjectInspector
@@ -55,6 +53,7 @@ public class WritableHiveVarcharObjectInspector
     return getPrimitiveWithParams(writable);
   }
 
+  @Override
   public HiveVarcharWritable getPrimitiveWritableObject(Object o) {
     // check input object's length, if it doesn't match
     // then output new writable with correct params.
@@ -83,12 +82,7 @@ public class WritableHiveVarcharObjectInspector
 
   private boolean doesWritableMatchTypeParams(HiveVarcharWritable writable) {
     return ParameterizedPrimitiveTypeUtils.doesWritableMatchTypeParams(
-        writable, (VarcharTypeParams) typeParams);
-  }
-
-  private boolean doesPrimitiveMatchTypeParams(HiveVarchar value) {
-    return ParameterizedPrimitiveTypeUtils.doesPrimitiveMatchTypeParams(
-        value, (VarcharTypeParams) typeParams);
+        writable, (VarcharTypeParams)getTypeParams());
   }
 
   @Override
@@ -126,6 +120,8 @@ public class WritableHiveVarcharObjectInspector
   }
 
   public int getMaxLength() {
-    return typeParams != null ? ((VarcharTypeParams) typeParams).length : -1;
+    VarcharTypeParams typeParams = (VarcharTypeParams)getTypeParams();
+    return typeParams != null ? typeParams.length : -1;
   }
+
 }
