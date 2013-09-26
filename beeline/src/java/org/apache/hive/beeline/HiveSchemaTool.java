@@ -49,6 +49,7 @@ import org.apache.hadoop.hive.metastore.HiveMetaException;
 import org.apache.hadoop.hive.metastore.MetaStoreSchemaInfo;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hive.beeline.HiveSchemaHelper.NestedScriptParser;
+import org.apache.hive.common.util.HiveVersionInfo;
 
 public class HiveSchemaTool {
   private String userName = null;
@@ -108,6 +109,8 @@ public class HiveSchemaTool {
   public void showInfo() throws HiveMetaException {
     Connection metastoreConn = getConnectionToMetastore(true);
     System.out.println("Hive distribution version:\t " +
+        HiveVersionInfo.getVersion());
+    System.out.println("Required schema version:\t " +
         MetaStoreSchemaInfo.getHiveSchemaVersion());
     System.out.println("Metastore schema version:\t " +
         getMetaStoreSchemaVersion(metastoreConn));

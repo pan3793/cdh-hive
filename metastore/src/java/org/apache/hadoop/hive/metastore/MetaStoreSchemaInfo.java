@@ -30,6 +30,7 @@ import org.apache.hive.common.util.HiveVersionInfo;
 
 
 public class MetaStoreSchemaInfo {
+  public static String BASE_SCHEMA_VERSION = "0.11.0-c5b1";
   private static String SQL_FILE_EXTENSION=".sql";
   private static String UPGRADE_FILE_PREFIX="upgrade-";
   private static String INIT_FILE_PREFIX="hive-schema-";
@@ -132,7 +133,9 @@ public class MetaStoreSchemaInfo {
 
   // Current hive version, remove the 'SNAPSHOT' part if needed
   public static String getHiveSchemaVersion() {
+    if (!BASE_SCHEMA_VERSION.isEmpty()) {
+      return BASE_SCHEMA_VERSION;
+    }
     return HiveVersionInfo.getVersion().replace("-SNAPSHOT", "");
   }
-
 }
