@@ -76,7 +76,7 @@ public class DfsProcessor implements CommandProcessor {
       }
 
       System.setOut(oldOut);
-      return new CommandProcessorResponse(ret,"", "", dfsSchema);
+      return new CommandProcessorResponse(ret, null, null, dfsSchema);
 
     } catch (Exception e) {
       console.printError("Exception raised from DFSShell.run "
