@@ -179,6 +179,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 /**
  * Utilities.
@@ -805,6 +806,7 @@ public final class Utilities {
     protected synchronized Kryo initialValue() {
       Kryo kryo = new Kryo();
       kryo.setClassLoader(Thread.currentThread().getContextClassLoader());
+      kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
       kryo.register(CommonToken.class, new CommonTokenSerializer());
       kryo.register(java.sql.Date.class, new SqlDateSerializer());
       return kryo;
