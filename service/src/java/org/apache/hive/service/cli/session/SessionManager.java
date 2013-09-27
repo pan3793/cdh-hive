@@ -21,6 +21,7 @@ package org.apache.hive.service.cli.session;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -207,8 +208,8 @@ public class SessionManager extends CompositeService {
     }
   }
 
-  public Future<?> submitBackgroundOperation(Runnable r) {
-    return backgroundOperationPool.submit(r);
+  public Future<?> submitBackgroundOperation(Callable<Void> backgroundOperation) {
+    return backgroundOperationPool.submit(backgroundOperation);
   }
 
   /**

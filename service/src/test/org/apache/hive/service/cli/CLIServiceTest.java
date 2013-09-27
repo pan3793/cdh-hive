@@ -27,6 +27,7 @@ import java.util.HashMap;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -167,7 +168,7 @@ public abstract class CLIServiceTest {
     client.executeStatement(sessionHandle, createTable, confOverlay);
 
     // Test async execution response when query is malformed
-    String wrongQuery = "SELECT NAME FROM TEST_EXEC";
+    String wrongQuery = "SELECT NAME FROM NON_EXISTING_TAB";
     ophandle = client.executeStatementAsync(sessionHandle, wrongQuery, confOverlay);
 
     int count = 0;
@@ -191,6 +192,12 @@ public abstract class CLIServiceTest {
         OperationState.ERROR, client.getOperationStatus(ophandle));
     assertTrue(client.getLog(ophandle).contains("SELECT NAME FROM TEST_EXEC"));
 
+    try {
+      client.fetchResults(ophandle);
+      Assert.fail("Fetch should fail for malformed query");
+    } catch (HiveSQLException e) {
+      assertEquals("42S02", e.getSQLState());
+    }
     // Test async execution when query is well formed
     String select = "SELECT ID FROM TEST_EXEC_ASYNC";
     ophandle =

@@ -26,6 +26,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -69,6 +70,7 @@ public class SQLOperation extends ExecuteStatementOperation {
   private SerDe serde = null;
   private final boolean runAsync;
   private Future<?> backgroundHandle;
+  private HiveSQLException backgroundRunException = null;
   private boolean fetchStarted = false;
 
   public SQLOperation(HiveSession parentSession, String statement, Map<String,
@@ -146,10 +148,10 @@ public class SQLOperation extends ExecuteStatementOperation {
     if (!shouldRunAsync()) {
       runInternal();
     } else {
-      Runnable backgroundOperation = new Runnable() {
+      Callable<Void> backgroundOperation = new Callable<Void>() {
         SessionState ss = SessionState.get();
         @Override
-        public void run() {
+        public Void call() throws HiveSQLException {
           SessionState.start(ss);
           try {
             // register the async exec thread with log manager to capture query logs
@@ -158,10 +160,12 @@ public class SQLOperation extends ExecuteStatementOperation {
             runInternal();
             getParentSession().getLogManager().unregisterCurrentThread();
           } catch (HiveSQLException e) {
-            LOG.error("Error: ", e);
-            // TODO: Return a more detailed error to the client,
-            // currently the async thread only writes to the log and sets the OperationState
+            // save the exception for subsequent client requests
+            setBackgroundRunException(e);
+            setState(OperationState.ERROR);
+            throw e;
           }
+          return null;
         }
       };
       try {
@@ -205,7 +209,7 @@ public class SQLOperation extends ExecuteStatementOperation {
 
   @Override
   public TableSchema getResultSetSchema() throws HiveSQLException {
-    assertState(OperationState.FINISHED);
+    checkExecutionStatus(OperationState.FINISHED);
     if (resultSchema == null) {
       resultSchema = new TableSchema(driver.getSchema());
     }
@@ -215,7 +219,7 @@ public class SQLOperation extends ExecuteStatementOperation {
 
   @Override
   public RowSet getNextRowSet(FetchOrientation orientation, long maxRows) throws HiveSQLException {
-    assertState(OperationState.FINISHED);
+    checkExecutionStatus(OperationState.FINISHED);
     validateFetchOrientation(orientation,
         EnumSet.of(FetchOrientation.FETCH_NEXT,FetchOrientation.FETCH_FIRST));
     ArrayList<String> rows = new ArrayList<String>();
@@ -332,4 +336,33 @@ public class SQLOperation extends ExecuteStatementOperation {
     return runAsync;
   }
 
+  /** check if the query is still running or failed
+   * For async query, check if its still running or finished with error
+   * @param expectedState
+   * @throws HiveSQLException
+   */
+  private void checkExecutionStatus(OperationState expectedState) throws HiveSQLException {
+    if (backgroundHandle != null) {
+      if (getState().equals(OperationState.RUNNING)) {
+        throw new HiveSQLException("Query still runing", "HY010");
+      } else if (getState().equals(OperationState.ERROR)) {
+        throw new HiveSQLException(getBackgroundRunException().getMessage(),
+            getBackgroundRunException().getSQLState(), getBackgroundRunException().getErrorCode(),
+            getBackgroundRunException());
+      } else  if (getState().equals(OperationState.CANCELED) || backgroundHandle.isCancelled()) {
+        // query is already canceled. 'Invalid cursor state' exception
+        throw new HiveSQLException("Query execution was canceled", "24000");
+      }
+    }
+    assertState(expectedState);
+  }
+
+  private void setBackgroundRunException(HiveSQLException backgroundRunException)
+        throws HiveSQLException {
+    this.backgroundRunException = backgroundRunException;
+  }
+
+  private HiveSQLException getBackgroundRunException() {
+    return backgroundRunException;
+  }
 }
