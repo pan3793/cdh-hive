@@ -190,7 +190,7 @@ public abstract class CLIServiceTest {
     }
     assertEquals("Query should return an error state",
         OperationState.ERROR, client.getOperationStatus(ophandle));
-    assertTrue(client.getLog(ophandle).contains("SELECT NAME FROM TEST_EXEC"));
+    assertTrue(client.getLog(ophandle).contains("SELECT NAME FROM NON_EXISTING_TAB"));
 
     try {
       client.fetchResults(ophandle);
