@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaException;
+import org.apache.hadoop.hive.metastore.MetaStoreSchemaInfo;
 import org.apache.hive.beeline.HiveSchemaHelper;
 import org.apache.hive.beeline.HiveSchemaHelper.NestedScriptParser;
 import org.apache.hive.beeline.HiveSchemaTool;
@@ -100,7 +101,8 @@ public class TestSchemaTool extends TestCase {
    * @throws Exception
    */
   public void testSchemaInit() throws Exception {
-    schemaTool.doInit("0.12.0");
+    schemaTool.doInit(MetaStoreSchemaInfo.getHiveSchemaVersion());
+    schemaTool.verifySchemaVersion();
     }
 
   /**
