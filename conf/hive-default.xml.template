@@ -2003,7 +2003,7 @@
 
 <property>
   <name>hive.metastore.schema.verification</name>
-  <value>true</value>
+  <value>false</value>
    <description>
    Enforce metastore schema version consistency.
    True: Verify that version information stored in metastore matches with one from Hive jars.  Also disable automatic
