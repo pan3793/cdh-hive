@@ -70,7 +70,7 @@ to call at top-level: ant deploy-contrib compile-core-test
     </javac>
   </target>
 	
-  <target name="compile" depends="init,ivy-retrieve">
+  <target name="compile" depends="init,ivy-retrieve" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <for param="shimName" list="${shims.include}">
       <sequential>
@@ -170,7 +170,7 @@ to call at top-level: ant deploy-contrib compile-core-test
     </antcall>
   </target>
 
-  <target name="compile-test" depends="compile,ivy-retrieve-test,determine-versions-for-tests">
+  <target name="compile-test" depends="compile,ivy-retrieve-test,determine-versions-for-tests" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <antcall target="compile-common-test" />
     <antcall target="compile-common-secure-test" />

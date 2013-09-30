@@ -28,7 +28,7 @@ to call at top-level: ant deploy-contrib compile-core-test
   <property name="src.gen.dir"  location="${basedir}/src/gen"/>
   <import file="../build-common.xml"/>
 
-  <target name="compile" depends="init, setup, ivy-retrieve">
+  <target name="compile" depends="init, setup, ivy-retrieve" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <exec executable="bash" failonerror="true">
       <arg value="${basedir}/src/scripts/saveVersion.sh"/>

@@ -38,7 +38,7 @@
     </jar>
   </target>
 
-  <target name="gen-test" depends="test-conditions, test-init" >
+  <target name="gen-test" depends="test-conditions, test-init" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <taskdef name="qtestgen" classname="org.apache.hadoop.hive.ant.QTestGenTask"
              classpath="${build.dir.hive}/anttasks/hive-anttasks-${version}.jar:${build.ivy.lib.dir}/default/velocity-${velocity.version}.jar:${build.ivy.lib.dir}/default/commons-collections-${commons-collections.version}.jar:${build.ivy.lib.dir}/default/commons-lang-${commons-lang.version}.jar"/>

@@ -23,7 +23,7 @@
   <import file="../build-common.xml"/>
 
 
-  <target name="dynamic-serde" depends="init" if="javacc.home">
+  <target name="dynamic-serde" depends="init" if="javacc.home" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <jjtree buildnodefiles="true"
       target="${src.dir}/java/org/apache/hadoop/hive/serde2/dynamic_type/thrift_grammar.jjt"
@@ -37,7 +37,7 @@
     />
   </target>
 
-  <target name="compile" depends="init,ivy-retrieve,dynamic-serde">
+  <target name="compile" depends="init,ivy-retrieve,dynamic-serde" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <javac
      encoding="${build.encoding}"
@@ -53,7 +53,7 @@
     </javac>
   </target>
 
-  <target name="gen-testdata" depends="compile-test,test-jar">
+  <target name="gen-testdata" depends="compile-test,test-jar" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <echo>Generating data/files/complex.seq... </echo>
     <java

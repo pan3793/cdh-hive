@@ -116,7 +116,7 @@
     ================================================================================
     -->
     <!-- Build test files -->
-    <target name="compile-test" depends="jar">
+    <target name="compile-test" depends="jar" unless="${skip.source.compile}">
         <javac encoding="${build.encoding}" srcdir="${test.src.dir}" excludes="${excludes}"
                includes="**/*.java" destdir="${test.build.classes}" debug="${javac.debug}"
                optimize="${javac.optimize}"

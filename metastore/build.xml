@@ -58,7 +58,7 @@
     </javac>
   </target>
 
-  <target name="compile" depends="core-compile, model-compile, model-enhance">
+  <target name="compile" depends="core-compile, model-compile, model-enhance" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
   </target>
 

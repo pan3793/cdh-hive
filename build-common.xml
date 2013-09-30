@@ -102,6 +102,7 @@
     <equals arg1="${test.continue.on.failure}" arg2="true"/>
   </condition>
 
+
   <target name="set-test-classpath">
     <if>
       <equals arg1="${hadoop.mr.test.rev}" arg2="mr1" />
@@ -322,7 +323,7 @@
     <echo message="Project: ${ant.project.name}"/>
   </target>
 
-  <target name="compile" depends="init, setup, ivy-retrieve">
+  <target name="compile" depends="init, setup, ivy-retrieve" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <javac
      encoding="${build.encoding}"
@@ -362,7 +363,7 @@
   </target>
 
   <!-- target to compile tests -->
-  <target name="compile-test" depends="compile,ivy-retrieve-test,set-test-classpath">
+  <target name="compile-test" depends="compile,ivy-retrieve-test,set-test-classpath" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <javac
      encoding="${build.encoding}"
@@ -413,6 +414,12 @@
 
   <target name="test-conditions">
     <echo message="Project: ${ant.project.name}"/>
+    <condition property="ptest2.qfiles" value="">
+      <not>
+        <isset property="ptest2.qfiles"/>
+      </not>
+    </condition>
+
     <condition property="qfile" value="">
       <not>
         <isset property="qfile"/>
@@ -555,6 +562,7 @@
       <sysproperty key="hadoop.bin.path" value="${test.hadoop.bin.path}${junit.script.extension}"/>
       <sysproperty key="test.concurrency.num.threads" value="${test.concurrency.num.threads}"/>
       <sysproperty key="hive.home" value="${hive.root}/build/dist"/>
+      <sysproperty key="ptest2.qfiles" value="${ptest2.qfiles}"/>
       <jvmarg line="${junit.jvm.args}"/>
 
       <classpath refid="test.local.classpath"/>

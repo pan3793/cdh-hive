@@ -75,20 +75,20 @@
        specific resource compilation in subprojects.
        Webhcat server overrides it.
   -->
-  <target name="compile-resource">
+  <target name="compile-resource" unless="${skip.source.compile}">
     <echo message="${ant.project.name}"/>
     <echo message="Empty default compile-resource target"/>
   </target>
 
 
-  <target name="compile">
+  <target name="compile" unless="${skip.source.compile}">
     <echo message="${ant.project.name}"/>
     <_javac srcDir="${basedir}/src/main/java"
             destDir="${build.classes}"
             classPathRef="compile.class.path"/>
   </target>
 
-  <target name="compile-test" depends="jar">
+  <target name="compile-test" depends="jar" unless="${skip.source.compile}">
     <echo message="${ant.project.name}"/>
     <_javac srcDir="${basedir}/src/test/java"
             destDir="${test.classes}"

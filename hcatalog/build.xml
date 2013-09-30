@@ -147,7 +147,7 @@
         </parallel>
     </target>
 
-    <target name="compile-test" depends="jar" description="compile unit tests">
+    <target name="compile-test" depends="jar" description="compile unit tests" unless="${skip.source.compile}">
         <ant target="compile-test" dir="core" inheritAll="false"/>
         <ant target="compile-test" dir="hcatalog-pig-adapter" inheritAll="false"/>
         <ant target="compile-test" dir="server-extensions" inheritAll="false"/>

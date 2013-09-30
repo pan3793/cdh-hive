@@ -320,7 +320,7 @@
   </target>
 
   <!-- target to deploy anttasks -->
-  <target name="compile-ant-tasks">
+  <target name="compile-ant-tasks" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <subant target="compile">
       <fileset dir="." includes="ant/build.xml"/>
@@ -341,7 +341,7 @@
   
   <target name="compile-cpp"
           depends="init"
-          description="Build CPP artifacts" >
+          description="Build CPP artifacts" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <fail unless="thrift.home">
       You must set thrift.home to the absolute path of your
@@ -356,7 +356,7 @@
     <iterate target="clean" iterate="${iterate.hive.cpp}"/>
   </target>
 
-  <target name="compile" depends="compile-cpp">
+  <target name="compile" depends="compile-cpp" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <iterate target="compile" iterate="${iterate.hive.modules}"/>
   </target>
@@ -378,7 +378,7 @@
     <iterate target="jar" iterate="${iterate.hive.modules}"/>
   </target>
 
-  <target name="gen-test" depends="jar" description="Generate tests">
+  <target name="gen-test" depends="jar" description="Generate tests" unless="${skip.source.compile}">
     <iterate target="gen-test" iterate="${iterate.hive.tests}"/>
   </target>
   
@@ -436,7 +436,7 @@
   </target>
 
   <target name="clean-test"
-          description="Clean test results">
+          description="Clean test results" unless="${skip.source.compile}">
     <echo message="Project: ${ant.project.name}"/>
     <iterate target="clean-test" iterate="${iterate.hive.modules}"/>
     <delete dir="${build.dir.hive}/test"/>
