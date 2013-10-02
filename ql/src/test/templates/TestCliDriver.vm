@@ -90,7 +90,7 @@ public class $className extends TestCase {
 
   public static Test suite() {
     Set<String> qFilesToExecute = new HashSet<String>();
-    String qFiles = System.getProperty("ptest2.qfiles", "").trim();
+    String qFiles = System.getProperty("qfile", "").trim();
     if(!qFiles.isEmpty()) {
       for(String qFile : qFiles.split(",")) {
         qFile = qFile.trim();

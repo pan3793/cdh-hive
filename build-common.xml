@@ -414,12 +414,6 @@
 
   <target name="test-conditions">
     <echo message="Project: ${ant.project.name}"/>
-    <condition property="ptest2.qfiles" value="">
-      <not>
-        <isset property="ptest2.qfiles"/>
-      </not>
-    </condition>
-
     <condition property="qfile" value="">
       <not>
         <isset property="qfile"/>
@@ -562,7 +556,7 @@
       <sysproperty key="hadoop.bin.path" value="${test.hadoop.bin.path}${junit.script.extension}"/>
       <sysproperty key="test.concurrency.num.threads" value="${test.concurrency.num.threads}"/>
       <sysproperty key="hive.home" value="${hive.root}/build/dist"/>
-      <sysproperty key="ptest2.qfiles" value="${ptest2.qfiles}"/>
+      <sysproperty key="qfile" value="${qfile}"/>
       <jvmarg line="${junit.jvm.args}"/>
 
       <classpath refid="test.local.classpath"/>
