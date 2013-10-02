@@ -76,6 +76,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.antlr.runtime.CommonToken;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
@@ -356,6 +357,7 @@ public final class Utilities {
       return new Expression(dateVal, dateVal.getClass(), "new", args);
     }
 
+    @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
       if (oldInstance == null || newInstance == null) {
         return false;
@@ -369,11 +371,24 @@ public final class Utilities {
    * it is not serialization friendly.
    */
   public static class TimestampPersistenceDelegate extends DatePersistenceDelegate {
+    @Override
     protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
       Timestamp ts = (Timestamp)oldInstance;
       Object[] args = { ts.getNanos() };
       Statement stmt = new Statement(oldInstance, "setNanos", args);
       out.writeStatement(stmt);
+    }
+  }
+
+  /**
+   * Need to serialize org.antlr.runtime.CommonToken
+   */
+  public static class CommonTokenDelegate extends PersistenceDelegate {
+    @Override
+    protected Expression instantiate(Object oldInstance, Encoder out) {
+      CommonToken ct = (CommonToken)oldInstance;
+      Object[] args = {ct.getType(), ct.getText()};
+      return new Expression(ct, ct.getClass(), "new", args);
     }
   }
 
@@ -427,6 +442,7 @@ public final class Utilities {
     XMLEncoder encoder = new XMLEncoder(baos);
     encoder.setPersistenceDelegate(java.sql.Date.class, new DatePersistenceDelegate());
     encoder.setPersistenceDelegate(Timestamp.class, new TimestampPersistenceDelegate());
+    encoder.setPersistenceDelegate(CommonToken.class, new CommonTokenDelegate());
     try {
       encoder.writeObject(expr);
     } finally {
@@ -471,6 +487,7 @@ public final class Utilities {
       e.setPersistenceDelegate(Operator.ProgressCounter.class, new EnumDelegate());
       e.setPersistenceDelegate(java.sql.Date.class, new DatePersistenceDelegate());
       e.setPersistenceDelegate(Timestamp.class, new TimestampPersistenceDelegate());
+      e.setPersistenceDelegate(CommonToken.class, new CommonTokenDelegate());
       e.writeObject(t);
     } finally {
       if (null != e) {
@@ -514,6 +531,7 @@ public final class Utilities {
 
     e.setPersistenceDelegate(org.datanucleus.store.types.backed.Map.class, new MapDelegate());
     e.setPersistenceDelegate(org.datanucleus.store.types.backed.List.class, new ListDelegate());
+    e.setPersistenceDelegate(CommonToken.class, new CommonTokenDelegate());
 
     e.writeObject(plan);
     e.close();
@@ -548,6 +566,7 @@ public final class Utilities {
       e.setPersistenceDelegate(GroupByDesc.Mode.class, new EnumDelegate());
       e.setPersistenceDelegate(java.sql.Date.class, new DatePersistenceDelegate());
       e.setPersistenceDelegate(Timestamp.class, new TimestampPersistenceDelegate());
+      e.setPersistenceDelegate(CommonToken.class, new CommonTokenDelegate());
       e.writeObject(w);
     } finally {
       if (null != e) {
@@ -583,6 +602,7 @@ public final class Utilities {
       e.setPersistenceDelegate(GroupByDesc.Mode.class, new EnumDelegate());
       e.setPersistenceDelegate(java.sql.Date.class, new DatePersistenceDelegate());
       e.setPersistenceDelegate(Timestamp.class, new TimestampPersistenceDelegate());
+      e.setPersistenceDelegate(CommonToken.class, new CommonTokenDelegate());
       e.writeObject(w);
     } finally {
       if (null != e) {
