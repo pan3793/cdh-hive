@@ -84,7 +84,7 @@ public class SQLOperation extends ExecuteStatementOperation {
   public void prepare() throws HiveSQLException {
   }
 
-  private void runInternal() throws HiveSQLException {
+  private void runInternal(HiveConf sqlOperationConf) throws HiveSQLException {
     setState(OperationState.RUNNING);
     String statement_trimmed = statement.trim();
     String[] tokens = statement_trimmed.split("\\s");
@@ -95,13 +95,13 @@ public class SQLOperation extends ExecuteStatementOperation {
     String SQLState = null;
 
     try {
-      driver = new Driver(getParentSession().getHiveConf(), getParentSession().getUsername(), getParentSession().getIpAddress());
+      driver = new Driver(sqlOperationConf, getParentSession().getUsername(), getParentSession().getIpAddress());
       // In Hive server mode, we are not able to retry in the FetchTask
       // case, when calling fetch queries since execute() has returned.
       // For now, we disable the test attempts.
       driver.setTryCount(Integer.MAX_VALUE);
 
-      String subStatement = new VariableSubstitution().substitute(getParentSession().getHiveConf(), statement);
+      String subStatement = new VariableSubstitution().substitute(sqlOperationConf, statement);
 
       response = driver.run(subStatement);
       if (0 != response.getResponseCode()) {
@@ -146,7 +146,7 @@ public class SQLOperation extends ExecuteStatementOperation {
   public void run() throws HiveSQLException {
     setState(OperationState.PENDING);
     if (!shouldRunAsync()) {
-      runInternal();
+      runInternal(getConfigForOperation());
     } else {
       Callable<Void> backgroundOperation = new Callable<Void>() {
         SessionState ss = SessionState.get();
@@ -157,7 +157,7 @@ public class SQLOperation extends ExecuteStatementOperation {
             // register the async exec thread with log manager to capture query logs
             getParentSession().getLogManager().unregisterCurrentThread();
             getParentSession().getLogManager().registerCurrentThread(getHandle());
-            runInternal();
+            runInternal(getConfigForOperation());
             getParentSession().getLogManager().unregisterCurrentThread();
           } catch (HiveSQLException e) {
             // save the exception for subsequent client requests
@@ -364,5 +364,33 @@ public class SQLOperation extends ExecuteStatementOperation {
 
   private HiveSQLException getBackgroundRunException() {
     return backgroundRunException;
+  }
+
+  /**
+   * If there are query specific settings to overlay, then create a copy of config
+   * There are two cases we need to clone the session config that's being passed to hive driver
+   * 1. Async query -
+   *    If the client changes a config setting, that shouldn't reflect in the execution already underway
+   * 2. confOverlay -
+   *    The query specific settings should only be applied to the query config and not session
+   * @return new configuration
+   * @throws HiveSQLException
+   */
+  private HiveConf getConfigForOperation() throws HiveSQLException {
+    HiveConf sqlOperationConf = getParentSession().getHiveConf();
+    if (!getConfOverlay().isEmpty() || shouldRunAsync()) {
+      // clone the partent session config for this query
+      sqlOperationConf = new HiveConf(sqlOperationConf);
+
+      // apply overlay query specific settings, if any
+      for (Map.Entry<String, String> confEntry : getConfOverlay().entrySet()) {
+        try {
+          sqlOperationConf.verifyAndSet(confEntry.getKey(), confEntry.getValue());
+        } catch (IllegalArgumentException e) {
+          throw new HiveSQLException("Error applying statement specific settings", e);
+        }
+      }
+    }
+    return sqlOperationConf;
   }
 }

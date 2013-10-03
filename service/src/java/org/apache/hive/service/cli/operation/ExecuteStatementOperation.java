@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.session.HiveSession;
@@ -35,7 +34,7 @@ public abstract class ExecuteStatementOperation extends Operation {
   public ExecuteStatementOperation(HiveSession parentSession, String statement, Map<String, String> confOverlay) {
     super(parentSession, OperationType.EXECUTE_STATEMENT);
     this.statement = statement;
-    this.confOverlay = confOverlay;
+    setConfOverlay(confOverlay);
   }
 
   public String getStatement() {
@@ -77,4 +76,14 @@ public abstract class ExecuteStatementOperation extends Operation {
 
     return newExecOP;
  }
+
+  protected Map<String, String> getConfOverlay() {
+    return confOverlay;
+  }
+
+  protected void setConfOverlay(Map<String, String> confOverlay) {
+    if (confOverlay != null) {
+      this.confOverlay = confOverlay;
+    }
+  }
 }
