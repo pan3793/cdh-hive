@@ -40,9 +40,9 @@ import org.apache.hadoop.hive.ql.parse.WindowingSpec.WindowExpressionSpec;
 import org.apache.hadoop.hive.ql.plan.ExprNodeColumnDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.PTFDesc;
-import org.apache.hadoop.hive.ql.plan.PTFDesc.PTFExpressionDef;
-import org.apache.hadoop.hive.ql.plan.PTFDesc.PTFInputDef;
-import org.apache.hadoop.hive.ql.plan.PTFDesc.PartitionedTableFunctionDef;
+import org.apache.hadoop.hive.ql.plan.ptf.PTFExpressionDef;
+import org.apache.hadoop.hive.ql.plan.ptf.PTFInputDef;
+import org.apache.hadoop.hive.ql.plan.ptf.PartitionedTableFunctionDef;
 import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorConverters;
@@ -100,8 +100,8 @@ public class MatchPath extends TableFunctionEvaluator
       if (syFnRes.matches )
       {
         int sz = syFnRes.nextRow - (pItr.getIndex() - 1);
-        Object selectListInput = MatchPath.getSelectListInput(iRow,
-            tDef.getInput().getOutputShape().getOI(), pItr, sz);
+        Object selectListInput = NPath.getSelectListInput(iRow,
+            tableDef.getInput().getOutputShape().getOI(), pItr, sz);
         ArrayList<Object> oRow = new ArrayList<Object>();
         for(ExprNodeEvaluator resExprEval : resultExprInfo.resultExprEvals)
         {
@@ -161,7 +161,7 @@ public class MatchPath extends TableFunctionEvaluator
       MatchPath evaluator = (MatchPath) getEvaluator();
       PartitionedTableFunctionDef tDef = evaluator.getTableDef();
 
-      ArrayList<PTFExpressionDef> args = tDef.getArgs();
+      List<PTFExpressionDef> args = tDef.getArgs();
       int argsNum = args == null ? 0 : args.size();
 
       if ( argsNum < 4 )
@@ -198,8 +198,8 @@ public class MatchPath extends TableFunctionEvaluator
     /*
      * validate and setup patternStr
      */
-    private void validateAndSetupPatternStr(MatchPath evaluator,
-        ArrayList<PTFExpressionDef> args) throws SemanticException {
+    private void validateAndSetupPatternStr(NPath evaluator,
+        List<PTFExpressionDef> args) throws SemanticException {
       PTFExpressionDef symboPatternArg = args.get(0);
       ObjectInspector symbolPatternArgOI = symboPatternArg.getOI();
 
@@ -218,8 +218,8 @@ public class MatchPath extends TableFunctionEvaluator
     /*
      * validate and setup SymbolInfo
      */
-    private void validateAndSetupSymbolInfo(MatchPath evaluator,
-        ArrayList<PTFExpressionDef> args,
+    private void validateAndSetupSymbolInfo(NPath evaluator,
+        List<PTFExpressionDef> args,
         int argsNum) throws SemanticException {
       int symbolArgsSz = argsNum - 2;
       if ( symbolArgsSz % 2 != 0)
@@ -262,8 +262,8 @@ public class MatchPath extends TableFunctionEvaluator
     /*
      * validate and setup resultExprStr
      */
-    private void validateAndSetupResultExprStr(MatchPath evaluator,
-        ArrayList<PTFExpressionDef> args,
+    private void validateAndSetupResultExprStr(NPath evaluator,
+        List<PTFExpressionDef> args,
         int argsNum) throws SemanticException {
       PTFExpressionDef resultExprArg = args.get(argsNum - 1);
       ObjectInspector resultExprArgOI = resultExprArg.getOI();
@@ -303,7 +303,7 @@ public class MatchPath extends TableFunctionEvaluator
         MatchPath evaluator = (MatchPath) getEvaluator();
         PartitionedTableFunctionDef tDef = evaluator.getTableDef();
 
-        ArrayList<PTFExpressionDef> args = tDef.getArgs();
+        List<PTFExpressionDef> args = tDef.getArgs();
         int argsNum = args.size();
 
         validateAndSetupPatternStr(evaluator, args);
