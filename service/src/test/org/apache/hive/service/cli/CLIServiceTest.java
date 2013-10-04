@@ -154,7 +154,7 @@ public abstract class CLIServiceTest {
     long pollTimeout = System.currentTimeMillis() + 100000;
     assertNotNull(sessionHandle);
     OperationState state = null;
-    OperationHandle ophandle;
+    OperationHandle ophandle = null;
 
     String setLockMgr = "SET " + HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY.varname
     + " = false";
@@ -171,6 +171,14 @@ public abstract class CLIServiceTest {
 
     // Test async execution response when query is malformed
     String wrongQuery = "SELECT NAME FROM NON_EXISTING_TAB";
+    try {
+      ophandle = client.executeStatementAsync(sessionHandle, wrongQuery, confOverlay);
+      fail("Async syntax excution should fail");
+    } catch (HiveSQLException e) {
+      // expected error
+    }
+
+    wrongQuery = "CREATE TABLE NON_EXISTING_TAB (ID STRING) location 'hdfs://fooNN:10000/a/b/c'";
     ophandle = client.executeStatementAsync(sessionHandle, wrongQuery, confOverlay);
 
     int count = 0;
@@ -192,19 +200,19 @@ public abstract class CLIServiceTest {
     }
     assertEquals("Query should return an error state",
         OperationState.ERROR, client.getOperationStatus(ophandle));
-    assertTrue(client.getLog(ophandle).contains("SELECT NAME FROM NON_EXISTING_TAB"));
+    assertTrue(client.getLog(ophandle).contains("CREATE TABLE NON_EXISTING_TAB (ID STRING) location"));
 
     try {
       client.fetchResults(ophandle);
       Assert.fail("Fetch should fail for malformed query");
     } catch (HiveSQLException e) {
-      assertEquals("42S02", e.getSQLState());
+      assertEquals("08S01", e.getSQLState());
     }
     // Test async execution when query is well formed
     String select = "SELECT ID FROM TEST_EXEC_ASYNC";
     ophandle =
         client.executeStatementAsync(sessionHandle, select, confOverlay);
-
+    assertTrue(ophandle.hasResultSet());
     count = 0;
     while (true) {
       // Break if polling times out

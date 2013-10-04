@@ -80,35 +80,22 @@ public class SQLOperation extends ExecuteStatementOperation {
     this.runAsync = runInBackground;
   }
 
-
-  public void prepare() throws HiveSQLException {
-  }
-
-  private void runInternal(HiveConf sqlOperationConf) throws HiveSQLException {
+  /***
+   * Compile the query and extract metadata
+   * @param sqlOperationConf
+   * @throws HiveSQLException
+   */
+  public void prepare(HiveConf sqlOperationConf) throws HiveSQLException {
     setState(OperationState.RUNNING);
-    String statement_trimmed = statement.trim();
-    String[] tokens = statement_trimmed.split("\\s");
-    String cmd_1 = statement_trimmed.substring(tokens[0].length()).trim();
-
-    int ret = 0;
-    String errorMessage = "";
-    String SQLState = null;
-
     try {
-      driver = new Driver(sqlOperationConf, getParentSession().getUsername(), getParentSession().getIpAddress());
-      // In Hive server mode, we are not able to retry in the FetchTask
-      // case, when calling fetch queries since execute() has returned.
-      // For now, we disable the test attempts.
-      driver.setTryCount(Integer.MAX_VALUE);
-
+      driver = new Driver(sqlOperationConf,
+          getParentSession().getUsername(), getParentSession().getIpAddress());
       String subStatement = new VariableSubstitution().substitute(sqlOperationConf, statement);
-
-      response = driver.run(subStatement);
+      response = driver.compileAndRespond(subStatement);
       if (0 != response.getResponseCode()) {
-        throw new HiveSQLException("Error while processing statement: "
+        throw new HiveSQLException("Error while compiling statement: "
             + response.getErrorMessage(), response.getSQLState(), response.getResponseCode());
       }
-
       mResultSchema = driver.getSchema();
 
       // hasResultSet should be true only if the query has a FetchTask
@@ -139,12 +126,35 @@ public class SQLOperation extends ExecuteStatementOperation {
       setState(OperationState.ERROR);
       throw new HiveSQLException("Error running query: " + e.toString(), e);
     }
+  }
+
+  private void runInternal(HiveConf sqlOperationConf) throws HiveSQLException {
+    try {
+      // In Hive server mode, we are not able to retry in the FetchTask
+      // case, when calling fetch queries since execute() has returned.
+      // For now, we disable the test attempts.
+      driver.setTryCount(Integer.MAX_VALUE);
+
+      response = driver.run();
+      if (0 != response.getResponseCode()) {
+        throw new HiveSQLException("Error while processing statement: "
+            + response.getErrorMessage(), response.getSQLState(), response.getResponseCode());
+      }
+
+    } catch (HiveSQLException e) {
+      setState(OperationState.ERROR);
+      throw e;
+    } catch (Exception e) {
+      setState(OperationState.ERROR);
+      throw new HiveSQLException("Error running query: " + e.toString(), e);
+    }
     setState(OperationState.FINISHED);
   }
 
   @Override
   public void run() throws HiveSQLException {
     setState(OperationState.PENDING);
+    prepare(getConfigForOperation());
     if (!shouldRunAsync()) {
       runInternal(getConfigForOperation());
     } else {
