@@ -106,6 +106,7 @@ ltrim
 map
 map_keys
 map_values
+matchpath
 max
 min
 minute
