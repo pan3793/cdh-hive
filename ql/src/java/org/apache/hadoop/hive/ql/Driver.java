@@ -1019,6 +1019,9 @@ public class Driver implements CommandProcessor {
     int ret;
     if (!alreadyCompiled) {
       ret = compileInternal(command);
+      if (ret != 0) {
+        return new CommandProcessorResponse(ret, errorMessage, SQLState);
+      }
     }
 
     boolean requireLock = false;
