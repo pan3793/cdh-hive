@@ -27,7 +27,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorConverters.C
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
-import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeParams;
+import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeInfo;
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.FloatWritable;
@@ -188,8 +188,8 @@ public class TestObjectInspectorConverters extends TestCase {
 
     // output OI should have varchar type params
     PrimitiveObjectInspector poi = (PrimitiveObjectInspector)
-        ObjectInspectorConverters.getConvertedOI(varchar10OI, varchar5OI, true);
-    VarcharTypeParams vcParams = (VarcharTypeParams) poi.getTypeParams();
-    assertEquals("varchar length doesn't match", 5, vcParams.length);
+        ObjectInspectorConverters.getConvertedOI(varchar10OI, varchar5OI);
+    VarcharTypeInfo vcParams = (VarcharTypeInfo) poi.getTypeInfo();
+    assertEquals("varchar length doesn't match", 5, vcParams.getLength());
   }
 }

@@ -39,7 +39,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.hive.common.type.HiveVarchar;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
@@ -156,7 +155,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
-import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeParams;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.w3c.dom.Document;
@@ -662,12 +660,7 @@ public final class FunctionRegistry {
         int maxLength = getCommonLength(
             TypeInfoUtils.getCharacterLengthForType(a),
             TypeInfoUtils.getCharacterLengthForType(b));
-        VarcharTypeParams varcharParams = new VarcharTypeParams();
-        varcharParams.setLength(maxLength);
-        // Generate type name so that we can retrieve the TypeInfo for that type.
-        String typeName = PrimitiveObjectInspectorUtils
-            .getTypeEntryFromTypeSpecs(typeCategory, varcharParams).toString();
-        return TypeInfoFactory.getPrimitiveTypeInfo(typeName);
+        return TypeInfoFactory.getVarcharTypeInfo(maxLength);
 
       default:
         // Type doesn't require any qualifiers.
@@ -1320,29 +1313,29 @@ public final class FunctionRegistry {
       GenericUDFMacro bridge = (GenericUDFMacro) genericUDF;
       clonedUDF = new GenericUDFMacro(bridge.getMacroName(), bridge.getBody(),
           bridge.getColNames(), bridge.getColTypes());
-     } else {
-       clonedUDF = (GenericUDF) ReflectionUtils
-           .newInstance(genericUDF.getClass(), null);
-     }
- 
-     if (clonedUDF != null) {
-       // The original may have settable info that needs to be added to the new copy.
-       if (genericUDF instanceof SettableUDF) {
-         try {
-           Object settableData = ((SettableUDF)genericUDF).getParams();
-           if (settableData != null) {
-             ((SettableUDF)clonedUDF).setParams(settableData);
-           }
-         } catch (UDFArgumentException err) {
-           // In theory this should not happen - if the original copy of the UDF had this
-           // data, we should be able to set the UDF copy with this same settableData.
-           LOG.error("Unable to add settable data to UDF " + genericUDF.getClass());
-           throw new IllegalArgumentException(err);
-         }
-       }
-     }
+    } else {
+      clonedUDF = (GenericUDF) ReflectionUtils
+          .newInstance(genericUDF.getClass(), null);
+    }
 
-     return clonedUDF;
+    if (clonedUDF != null) {
+      // The original may have settable info that needs to be added to the new copy.
+      if (genericUDF instanceof SettableUDF) {
+        try {
+          TypeInfo typeInfo = ((SettableUDF)genericUDF).getTypeInfo();
+          if (typeInfo != null) {
+            ((SettableUDF)clonedUDF).setTypeInfo(typeInfo);
+          }
+        } catch (UDFArgumentException err) {
+          // In theory this should not happen - if the original copy of the UDF had this
+          // data, we should be able to set the UDF copy with this same settableData.
+          LOG.error("Unable to add settable data to UDF " + genericUDF.getClass());
+          throw new IllegalArgumentException(err);
+        }
+      }
+    }
+
+    return clonedUDF;
   }
 
   /**
@@ -1761,7 +1754,9 @@ public final class FunctionRegistry {
   }
 
   private static void registerNativeStatus(FunctionInfo fi) {
-    if (!fi.isNative()) return;
+    if (!fi.isNative()) {
+      return;
+    }
     nativeUdfs.add(fi.getFunctionClass());
   }
 }
