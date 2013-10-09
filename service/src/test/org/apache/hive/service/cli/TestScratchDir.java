@@ -26,7 +26,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.hive.service.cli.thrift.EmbeddedThriftBinaryCLIService;
+import org.apache.hive.service.cli.thrift.EmbeddedThriftCLIService;
 import org.apache.hive.service.cli.thrift.ThriftCLIService;
 import org.apache.hive.service.cli.thrift.ThriftCLIServiceClient;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class TestScratchDir {
   public void testScratchDirs() throws Exception {
     String scratchDirStr = "/tmp/foobar";
     System.setProperty("hive.exec.scratchdir", scratchDirStr);
-    ThriftCLIService service = new EmbeddedThriftBinaryCLIService();
+    ThriftCLIService service = new EmbeddedThriftCLIService();
     ThriftCLIServiceClient client = new ThriftCLIServiceClient(service);
     final Path scratchDir = new Path(scratchDirStr);
     FileSystem fs = scratchDir.getFileSystem(new Configuration());
