@@ -33,6 +33,7 @@ import org.apache.hadoop.hive.metastore.HiveMetaException;
 import org.apache.hadoop.hive.metastore.MetaStoreSchemaInfo;
 import org.apache.hive.beeline.HiveSchemaHelper;
 import org.apache.hive.beeline.HiveSchemaHelper.NestedScriptParser;
+import org.apache.hive.beeline.HiveSchemaHelper.PostgresCommandParser;
 import org.apache.hive.beeline.HiveSchemaTool;
 
 public class TestSchemaTool extends TestCase {
@@ -366,6 +367,54 @@ public class TestSchemaTool extends TestCase {
     assertTrue(flattenedSql.contains(childTab1));
     assertTrue(flattenedSql.contains(childTab2));
     assertTrue(flattenedSql.contains(parentTab));
+  }
+
+  /**
+   * Test script formatting
+   * @throws Exception
+   */
+  public void testPostgresFilter() throws Exception {
+    String testScript[] = {
+        "-- this is a comment",
+      "DROP TABLE IF EXISTS fooTab;",
+      HiveSchemaHelper.PostgresCommandParser.POSTGRES_STRING_COMMAND_FILTER + ";",
+      "CREATE TABLE fooTab(id INTEGER);",
+      "DROP TABLE footab;",
+      "-- ending comment"
+    };
+
+    String resultScriptwithFilter[] = {
+      "DROP TABLE IF EXISTS fooTab",
+      HiveSchemaHelper.PostgresCommandParser.POSTGRES_STRING_COMMAND_FILTER,
+      "CREATE TABLE fooTab(id INTEGER)",
+      "DROP TABLE footab",
+    };
+
+    String resultScriptwithoutFilter[] = {
+        "DROP TABLE IF EXISTS fooTab",
+        "CREATE TABLE fooTab(id INTEGER)",
+        "DROP TABLE footab",
+      };
+
+    String expectedSQL = StringUtils.join(resultScriptwithFilter, System.getProperty("line.separator")) +
+        System.getProperty("line.separator");
+    File testScriptFile = generateTestScript(testScript);
+    String flattenedSql = HiveSchemaTool.buildCommand(
+        HiveSchemaHelper.getDbCommandParser("postgres"),
+        testScriptFile.getParentFile().getPath(), testScriptFile.getName());
+    assertEquals(expectedSQL, flattenedSql);
+
+    System.setProperty(HiveSchemaHelper.PostgresCommandParser.POSTGRES_SKIP_STANDARD_STRING, "true");
+    NestedScriptParser postgresParser = HiveSchemaHelper.getDbCommandParser("postgres");
+    postgresParser.setDbOpts(PostgresCommandParser.POSTGRES_SKIP_STANDARD_STRING);
+    expectedSQL = StringUtils.join(resultScriptwithoutFilter, System.getProperty("line.separator")) +
+        System.getProperty("line.separator");
+    testScriptFile = generateTestScript(testScript);
+    flattenedSql = HiveSchemaTool.buildCommand(
+        postgresParser,
+        testScriptFile.getParentFile().getPath(), testScriptFile.getName());
+    assertEquals(expectedSQL, flattenedSql);
+
   }
 
   private File generateTestScript(String [] stmts) throws IOException {
