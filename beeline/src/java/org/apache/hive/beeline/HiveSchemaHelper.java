@@ -79,6 +79,12 @@ public class HiveSchemaHelper {
      * @return
      */
     public boolean needsQuotedIdentifier();
+
+    /***
+     * Set DB specific options if any
+     * @param dbOps
+     */
+    public void setDbOpts(String dbOps);
   }
 
 
@@ -88,6 +94,7 @@ public class HiveSchemaHelper {
    *
    */
   private static abstract class AbstractCommandParser implements NestedScriptParser {
+    private String dbOpts = null;
 
     @Override
     public boolean isPartialCommand(String dbCommand) throws IllegalArgumentException{
@@ -125,6 +132,15 @@ public class HiveSchemaHelper {
     @Override
     public boolean needsQuotedIdentifier() {
       return false;
+    }
+
+    @Override
+    public void setDbOpts(String dbOpts) {
+      this.dbOpts = dbOpts;
+    }
+
+    protected String getDbOpts() {
+      return dbOpts;
     }
   }
 
@@ -210,6 +226,8 @@ public class HiveSchemaHelper {
 
   // Postgres specific parser
   public static class PostgresCommandParser extends AbstractCommandParser {
+    public static String POSTGRES_STRING_COMMAND_FILTER = "SET standard_conforming_strings";
+    public static String POSTGRES_SKIP_STANDARD_STRING = "postgres.filter.81";
     private static String POSTGRES_NESTING_TOKEN = "\\i";
 
     @Override
@@ -230,6 +248,17 @@ public class HiveSchemaHelper {
     @Override
     public boolean needsQuotedIdentifier() {
       return true;
+    }
+
+    @Override
+    public boolean isNonExecCommand(String dbCommand) {
+      // Skip "standard_conforming_strings" command which is not supported in older postgres
+      if (POSTGRES_SKIP_STANDARD_STRING.equalsIgnoreCase(getDbOpts())) {
+        if (dbCommand.startsWith(POSTGRES_STRING_COMMAND_FILTER)) {
+          return true;
+        }
+      }
+      return super.isNonExecCommand(dbCommand);
     }
   }
 
