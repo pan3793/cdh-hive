@@ -55,6 +55,7 @@ public class HiveSchemaTool {
   private String passWord = null;
   private boolean dryRun = false;
   private boolean verbose = false;
+  private String dbOpts = null;
   private final HiveConf hiveConf;
   private final String dbType;
   private final MetaStoreSchemaInfo metaStoreSchemaInfo;
@@ -93,6 +94,14 @@ public class HiveSchemaTool {
 
   public void setVerbose(boolean verbose) {
     this.verbose = verbose;
+  }
+
+  public String getDbOpts() {
+    return dbOpts;
+  }
+
+  public void setDbOpts(String dbOpts) {
+    this.dbOpts = dbOpts;
   }
 
   private static void printAndExit(Options cmdLineOptions) {
@@ -335,6 +344,7 @@ public class HiveSchemaTool {
   private void runBeeLine(String scriptDir, String scriptFile) throws IOException {
     NestedScriptParser dbCommandParser =
         HiveSchemaHelper.getDbCommandParser(dbType);
+    dbCommandParser.setDbOpts(getDbOpts());
     // expand the nested script
     String sqlCommands = buildCommand(dbCommandParser, scriptDir, scriptFile);
     File tmpFile = File.createTempFile("schematool", ".sql");
@@ -417,6 +427,10 @@ public class HiveSchemaTool {
     Option dbTypeOpt = OptionBuilder.withArgName("databaseType")
                 .hasArgs().withDescription("Metastore database type")
                 .create("dbType");
+    Option dbOpts = OptionBuilder.withArgName("databaseOpts")
+                .hasArgs().withDescription("Backend DB specific options")
+                .create("dbOpts");
+
     Option dryRunOpt = new Option("dryRun", "list SQL scripts (no execute)");
     Option verboseOpt = new Option("verbose", "only print SQL statements");
 
@@ -426,6 +440,7 @@ public class HiveSchemaTool {
     cmdLineOptions.addOption(passwdOpt);
     cmdLineOptions.addOption(dbTypeOpt);
     cmdLineOptions.addOption(verboseOpt);
+    cmdLineOptions.addOption(dbOpts);
     cmdLineOptions.addOptionGroup(optGroup);
   }
 
@@ -481,6 +496,10 @@ public class HiveSchemaTool {
       if (line.hasOption("verbose")) {
         schemaTool.setVerbose(true);
       }
+      if (line.hasOption("dbOpts")) {
+        schemaTool.setDbOpts(line.getOptionValue("dbOpts"));
+      }
+
 
       if (line.hasOption("info")) {
         schemaTool.showInfo();
