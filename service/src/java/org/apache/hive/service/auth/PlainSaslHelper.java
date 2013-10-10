@@ -31,7 +31,6 @@ import javax.security.sasl.SaslException;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.auth.PlainSaslServer.ExternalAuthenticationCallback;
 import org.apache.hive.service.auth.PlainSaslServer.SaslPlainProvider;
-import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TCLIService.Iface;
 import org.apache.hive.service.cli.thrift.ThriftCLIService;
 import org.apache.thrift.TProcessor;
@@ -108,9 +107,9 @@ public class PlainSaslHelper {
 
     @Override
     public TProcessor getProcessor(TTransport trans) {
-      TProcessor baseProcessor =  new TCLIService.Processor<Iface>(service);
+      TProcessor baseProcessor =  new TSetIpAddressProcessor<Iface>(service);
       return doAsEnabled ? new TUGIContainingProcessor(baseProcessor, conf) :
-            new TSetIpAddressProcessor<Iface>(service);
+            baseProcessor;
     }
   }
 

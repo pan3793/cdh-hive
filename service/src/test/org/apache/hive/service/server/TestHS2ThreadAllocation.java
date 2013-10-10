@@ -30,12 +30,28 @@ import junit.framework.Assert;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.ql.hooks.ExecuteWithHookContext;
+import org.apache.hadoop.hive.ql.hooks.HookContext;
+import org.apache.hadoop.hive.ql.hooks.HookContext.HookType;
 import org.apache.hive.jdbc.HiveConnection;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestHS2ThreadAllocation {
+  // Hook to verify ipaddress
+  public static class IpHookImpl implements ExecuteWithHookContext {
+    public static String userName = "";
+    public static String ipAddress = "";
+    public void run(HookContext hookContext) {
+      if (hookContext.getHookType().equals(HookType.POST_EXEC_HOOK)) {
+        Assert.assertNotNull(hookContext.getIpAddress(), "IP Address is null");
+        ipAddress = hookContext.getIpAddress();
+        Assert.assertNotNull(hookContext.getUserName(), "Username is null");
+        userName = hookContext.getUserName();
+      }
+    }
+  }
 
   private static HiveServer2 hiveServer2;
   private static final int MAX_THREADS = 10;
@@ -222,5 +238,19 @@ public class TestHS2ThreadAllocation {
       Assert.fail("Something went wrong with connection closure");
     }
   }
+
+  @Test
+  public void testExecuteStatementWithHook() throws Exception {
+    Properties connProp = new Properties();
+    connProp.setProperty("user", System.getProperty("user.name"));
+    connProp.setProperty("password", "");
+    HiveConnection connection = new HiveConnection("jdbc:hive2://localhost:10000/default", connProp);
+    connection.createStatement().execute("SET hive.exec.post.hooks =  " + IpHookImpl.class.getName());
+    connection.createStatement().execute("show tables");
+    Assert.assertEquals(System.getProperty("user.name"), IpHookImpl.userName);
+    Assert.assertTrue(IpHookImpl.ipAddress.contains("127.0.0.1"));
+    connection.close();
+  }
+
 }
 
