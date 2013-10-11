@@ -97,6 +97,10 @@ public class HiveSchemaTool {
     this.verbose = verbose;
   }
 
+  public String getDbOpts() {
+    return dbOpts;
+  }
+
   public void setDbOpts(String dbOpts) {
     this.dbOpts = dbOpts;
   }
@@ -343,6 +347,7 @@ public class HiveSchemaTool {
   private void runBeeLine(String scriptDir, String scriptFile) throws IOException {
     NestedScriptParser dbCommandParser =
         HiveSchemaHelper.getDbCommandParser(dbType);
+    dbCommandParser.setDbOpts(getDbOpts());
     // expand the nested script
     String sqlCommands = buildCommand(dbCommandParser, scriptDir, scriptFile);
     File tmpFile = File.createTempFile("schematool", ".sql");
