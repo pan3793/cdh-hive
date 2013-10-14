@@ -819,7 +819,7 @@ class RecordReaderImpl implements RecordReader {
     Object next(Object previous) throws IOException {
       super.next(previous);
       if (valuePresent) {
-        return new HiveDecimal(SerializationUtils.readBigInteger(valueStream),
+        return HiveDecimal.create(SerializationUtils.readBigInteger(valueStream),
             (int) scaleStream.next());
       }
       return null;
@@ -1306,6 +1306,7 @@ class RecordReaderImpl implements RecordReader {
       }
       return result;
     }
+
 
     @Override
     void checkEncoding(OrcProto.ColumnEncoding encoding) throws IOException {
