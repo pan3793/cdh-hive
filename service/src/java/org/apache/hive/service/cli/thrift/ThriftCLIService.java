@@ -163,7 +163,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
     SessionHandle sessionHandle = null;
     if (
         cliService.getHiveConf().getVar(ConfVars.HIVE_SERVER2_AUTHENTICATION)
-        .equals(HiveAuthFactory.AuthTypes.KERBEROS.toString())
+        .equalsIgnoreCase(HiveAuthFactory.AuthTypes.KERBEROS.toString())
         &&
         cliService.getHiveConf().
         getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS)
