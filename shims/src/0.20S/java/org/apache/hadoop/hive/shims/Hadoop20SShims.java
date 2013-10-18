@@ -21,11 +21,14 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
+import org.apache.hadoop.fs.ProxyFileSystem;
 import org.apache.hadoop.fs.Trash;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.mapred.JobTracker;
@@ -339,5 +342,10 @@ public class Hadoop20SShims extends HadoopShimsSecure {
   @Override
   public WebHCatJTShim getWebHCatShim(Configuration conf, UserGroupInformation ugi) throws IOException {
     return new WebHCatJTShim20S(conf, ugi);//this has state, so can't be cached
+  }
+
+  @Override
+  public FileSystem createProxyFileSystem(FileSystem fs, URI uri) {
+    return new ProxyFileSystem(fs, uri);
   }
 }
