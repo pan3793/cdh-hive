@@ -350,6 +350,13 @@ public interface HadoopShims {
    */
   public void reLoginUserFromKeytab() throws IOException;
 
+  /***
+   * Check if the current UGI is keytab based
+   * @return
+   * @throws IOException
+   */
+  public boolean isLoginKeytabBased() throws IOException;
+
   /**
    * Create the proxy ugi for the given userid
    * @param userName

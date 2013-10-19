@@ -47,7 +47,6 @@ import org.apache.hadoop.hive.ql.exec.Utilities.StreamPrinter;
 import org.apache.hadoop.hive.ql.exec.persistence.AbstractMapJoinKey;
 import org.apache.hadoop.hive.ql.exec.persistence.HashMapWrapper;
 import org.apache.hadoop.hive.ql.exec.persistence.MapJoinObjectValue;
-import org.apache.hadoop.hive.ql.exec.SecureCmdDoAs;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.plan.BucketMapJoinContext;
 import org.apache.hadoop.hive.ql.plan.FetchWork;
@@ -216,8 +215,7 @@ public class MapredLocalTask extends Task<MapredLocalWork> implements Serializab
 
 
       if(ShimLoader.getHadoopShims().isSecurityEnabled() &&
-          conf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_KERBEROS_IMPERSONATION) == true
-          ){
+          ShimLoader.getHadoopShims().isLoginKeytabBased()) {
         //If kerberos security is enabled, and HS2 doAs is enabled,
         // then additional params need to be set so that the command is run as
         // intended user
