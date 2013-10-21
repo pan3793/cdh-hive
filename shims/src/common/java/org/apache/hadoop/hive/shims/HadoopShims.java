@@ -538,4 +538,10 @@ public interface HadoopShims {
      */
     public void close();
   }
+
+  /**
+   * Create a proxy file system that can serve a given scheme/authority using some
+   * other file system.
+   */
+  public FileSystem createProxyFileSystem(FileSystem fs, URI uri);
 }
