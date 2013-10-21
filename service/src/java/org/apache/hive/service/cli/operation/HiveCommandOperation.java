@@ -106,8 +106,10 @@ public abstract class HiveCommandOperation extends ExecuteStatementOperation {
 
       response = getCommandProcessor().run(commandArgs);
       int returnCode = response.getResponseCode();
-      String sqlState = response.getSQLState();
-      String errorMessage = response.getErrorMessage();
+      if (returnCode != 0) {
+        throw new HiveSQLException("Error while processing statement: "
+            + response.getErrorMessage(), response.getSQLState(), response.getResponseCode());
+      }
       Schema schema = response.getSchema();
       if (schema != null) {
         setHasResultSet(true);
@@ -116,6 +118,9 @@ public abstract class HiveCommandOperation extends ExecuteStatementOperation {
         setHasResultSet(false);
         resultSchema = new TableSchema();
       }
+    } catch (HiveSQLException e) {
+      setState(OperationState.ERROR);
+      throw e;
     } catch (Exception e) {
       setState(OperationState.ERROR);
       throw new HiveSQLException("Error running query: " + e.toString(), e);

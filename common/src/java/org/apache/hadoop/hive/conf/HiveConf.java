@@ -962,7 +962,7 @@ public class HiveConf extends Configuration {
 
   public void verifyAndSet(String name, String value) throws IllegalArgumentException {
     if (restrictList.contains(name)) {
-      throw new IllegalArgumentException("Cann't modify " + name + " at runtime");
+      throw new IllegalArgumentException("Cannot modify " + name + " at runtime");
     }
     set(name, value);
   }
@@ -1106,6 +1106,7 @@ public class HiveConf extends Configuration {
     hiveJar = other.hiveJar;
     auxJars = other.auxJars;
     origProp = (Properties)other.origProp.clone();
+    restrictList.addAll(other.restrictList);
   }
 
   public Properties getAllProperties() {
