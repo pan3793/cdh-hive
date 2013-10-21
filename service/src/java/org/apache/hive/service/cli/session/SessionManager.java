@@ -27,15 +27,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.security.UserGroupInformation;
-import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.CompositeService;
+import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.log.LogManager;
@@ -231,13 +231,21 @@ public class SessionManager extends CompositeService {
     if (!hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ALLOW_USER_SUBSTITUTION)) {
       throw new HiveSQLException("Proxy user substitution is not allowed");
     }
-    if (!ShimLoader.getHadoopShims().isSecurityEnabled()) {
-      throw new HiveSQLException("Proxy user substitution is not supported for unsecure hadoop");
+
+    // If there's no authentication, then directly substitute the user
+    if (HiveAuthFactory.AuthTypes.NONE.toString().
+        equalsIgnoreCase(hiveConf.getVar(ConfVars.HIVE_SERVER2_AUTHENTICATION))) {
+      return proxyUser;
     }
 
     // Verify proxy user privilege of the realUser for the proxyUser
     try {
-      UserGroupInformation sessionUgi = ShimLoader.getHadoopShims().createProxyUser(realUser);
+      UserGroupInformation sessionUgi;
+      if (!ShimLoader.getHadoopShims().isSecurityEnabled()) {
+        sessionUgi = ShimLoader.getHadoopShims().createProxyUser(realUser);
+      } else {
+        sessionUgi = ShimLoader.getHadoopShims().createRemoteUser(realUser, null);
+      }
       ShimLoader.getHadoopShims().
           authorizeProxyAccess(proxyUser, sessionUgi, ipAddress, hiveConf);
       return proxyUser;
