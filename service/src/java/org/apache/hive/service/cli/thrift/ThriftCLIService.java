@@ -29,6 +29,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hive.service.AbstractService;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.CLIService;
@@ -41,6 +43,7 @@ import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.TableSchema;
+import org.apache.hive.service.cli.session.SessionManager;
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessorFactory;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -143,16 +146,21 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
     if(hiveAuthFactory != null) {
       return hiveAuthFactory.getIpAddress();
     }
-    return null;
+    return SessionManager.getIpAddress();
   }
 
-  private String getUserName(TOpenSessionReq req) {
+  private String getUserName(TOpenSessionReq req) throws HiveSQLException {
+    String userName;
     if (hiveAuthFactory != null
         && hiveAuthFactory.getRemoteUser() != null) {
-      return hiveAuthFactory.getRemoteUser();
+       userName = hiveAuthFactory.getRemoteUser();
     } else {
-      return req.getUsername();
+      userName = SessionManager.getUserName();
     }
+    if (userName == null) {
+      userName = req.getUsername();
+    }
+    return getProxyUser(userName, req.getConfiguration(), getIpAddress());
   }
 
   SessionHandle getSessionHandle(TOpenSessionReq req)
@@ -539,6 +547,46 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
     }
   }
 
+  /**
+   * If the proxy user name is provided then check privileges to substitute the user.
+   * @param realUser
+   * @param sessionConf
+   * @param ipAddress
+   * @return
+   * @throws HiveSQLException
+   */
+  private String getProxyUser(String realUser, Map<String, String> sessionConf, String ipAddress)
+      throws HiveSQLException {
+    if (sessionConf == null || !sessionConf.containsKey(HiveAuthFactory.HS2_PROXY_USER)) {
+      return realUser;
+    }
 
+    // Extract the proxy user name and check if we are allowed to do the substitution
+    String proxyUser = sessionConf.get(HiveAuthFactory.HS2_PROXY_USER);
+    if (!hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ALLOW_USER_SUBSTITUTION)) {
+      throw new HiveSQLException("Proxy user substitution is not allowed");
+    }
 
+    // If there's no authentication, then directly substitute the user
+    if (HiveAuthFactory.AuthTypes.NONE.toString().
+        equalsIgnoreCase(hiveConf.getVar(ConfVars.HIVE_SERVER2_AUTHENTICATION))) {
+      return proxyUser;
+    }
+
+    // Verify proxy user privilege of the realUser for the proxyUser
+    try {
+      UserGroupInformation sessionUgi;
+      if (!ShimLoader.getHadoopShims().isSecurityEnabled()) {
+        sessionUgi = ShimLoader.getHadoopShims().createProxyUser(realUser);
+      } else {
+        sessionUgi = ShimLoader.getHadoopShims().createRemoteUser(realUser, null);
+      }
+      ShimLoader.getHadoopShims().
+          authorizeProxyAccess(proxyUser, sessionUgi, ipAddress, hiveConf);
+      return proxyUser;
+    } catch (IOException e) {
+      throw new HiveSQLException("Failed to validate proxy privilage of " + realUser +
+          " for " + proxyUser, e);
+    }
+  }
 }
