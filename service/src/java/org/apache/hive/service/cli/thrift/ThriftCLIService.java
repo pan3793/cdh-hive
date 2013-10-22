@@ -161,7 +161,8 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
     String userName = getUserName(req);
 
     SessionHandle sessionHandle = null;
-    if (cliService.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS)) {
+    if (cliService.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS) &&
+        (userName != null)) {
       String delegationTokenStr = null;
       try {
         delegationTokenStr = cliService.getDelegationTokenFromMetaStore(userName);
