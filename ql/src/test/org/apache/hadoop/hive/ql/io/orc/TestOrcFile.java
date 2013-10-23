@@ -247,7 +247,7 @@ public class TestOrcFile {
             Long.MAX_VALUE, (float) 1.0, -15.0, bytes(0, 1, 2, 3, 4), "hi",
             new MiddleStruct(inner(1, "bye"), inner(2, "sigh")), list(
                 inner(3, "good"), inner(4, "bad")), map(), Timestamp
-                .valueOf("2000-03-12 15:00:00"), new HiveDecimal(
+                .valueOf("2000-03-12 15:00:00"), HiveDecimal.create(
                 "12345678.6547456")));
       } else {
         writer.addRow(new AllTypesRow(true, (byte) 100, (short) 2048, 65536,
@@ -256,7 +256,7 @@ public class TestOrcFile {
                 inner(100000000, "cat"), inner(-100000, "in"),
                 inner(1234, "hat")),
             map(inner(5, "chani"), inner(1, "mauddib")), Timestamp
-                .valueOf("2000-03-12 15:00:01"), new HiveDecimal(
+                .valueOf("2000-03-12 15:00:01"), HiveDecimal.create(
                 "12345678.6547457")));
       }
     }
