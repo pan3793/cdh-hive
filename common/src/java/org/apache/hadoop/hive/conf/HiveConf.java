@@ -706,6 +706,9 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_IN_MEM_LOGGING("hive.server2.in.mem.logging", true),
     HIVE_SERVER2_IN_MEM_LOG_SIZE("hive.server2.in.mem.log.size", 128 * 1024),
     HIVE_SERVER2_SESSION_HOOK("hive.server2.session.hook", ""),
+    HIVE_SERVER2_USE_SSL("hive.server2.enable.SSL", false),
+    HIVE_SERVER2_SSL_KEYSTORE_PATH("hive.server2.keystore.path", ""),
+    HIVE_SERVER2_SSL_KEYSTORE_PASSWORD("hive.server2.keystore.password", ""),
     HIVE_SERVER2_AUTHZ_EXTERNAL_EXEC("hive.server2.authorization.external.exec", true),
     HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true),
     HIVE_SERVER2_TABLE_TYPE_MAPPING("hive.server2.table.type.mapping", "HIVE"),
@@ -730,8 +733,8 @@ public class HiveConf extends Configuration {
     HIVEOPTLISTBUCKETING("hive.optimize.listbucketing", false),
 
     HIVE_CURRENT_DB("hive.current.db", "default"),
-    
-    // Allow TCP Keep alive socket option for for HiveServer or a maximum timeout for the socket.  
+
+    // Allow TCP Keep alive socket option for for HiveServer or a maximum timeout for the socket.
     SERVER_READ_SOCKET_TIMEOUT("hive.server.read.socket.timeout", 10),
     SERVER_TCP_KEEP_ALIVE("hive.server.tcp.keepalive", true),
 

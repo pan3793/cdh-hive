@@ -33,6 +33,8 @@
                 transitive="false"/>
     <dependency org="commons-logging" name="commons-logging" rev="${commons-logging.version}"
                 transitive="false"/>
+    <dependency org="org.apache.hive" name="hive-service" rev="${version}"
+                conf="test->default" />
 
     <!-- MR1 dependency -->
     <dependency org="org.apache.hadoop" name="hadoop-core"

@@ -25,6 +25,7 @@ import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -68,7 +69,6 @@ import org.apache.hive.service.cli.thrift.TSessionHandle;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
@@ -86,6 +86,10 @@ public class HiveConnection implements java.sql.Connection {
   private static final String HIVE_AUTH_PASSWD = "password";
   private static final String HIVE_ANONYMOUS_USER = "anonymous";
   private static final String HIVE_ANONYMOUS_PASSWD = "anonymous";
+  private static final String HIVE_USE_SSL = "ssl";
+  private static final String HIVE_SSL_TRUST_STORE = "sslTrustStore";
+  private static final String HIVE_SSL_TRUST_STORE_PASSWORD = "trustStorePassword";
+  private static final int HIVE_CONNECTION_TIMEOUT = 5;
 
   private TTransport transport;
   private TCLIService.Iface client;
@@ -93,11 +97,13 @@ public class HiveConnection implements java.sql.Connection {
   private SQLWarning warningChain = null;
   private TSessionHandle sessHandle = null;
   private final List<TProtocolVersion> supportedProtocols = new LinkedList<TProtocolVersion>();
+  private int loginTimeout = HIVE_CONNECTION_TIMEOUT;
   /**
    * TODO: - parse uri (use java.net.URI?).
    */
   public HiveConnection(String uri, Properties info) throws SQLException {
     Utils.JdbcConnectionParams connParams;
+    loginTimeout = DriverManager.getLoginTimeout();
     try {
       connParams = Utils.parseURL(uri);
     } catch (IllegalArgumentException e) {
@@ -148,12 +154,11 @@ public class HiveConnection implements java.sql.Connection {
 
   private void openTransport(String uri, String host, int port, Map<String, String> sessConf )
       throws SQLException {
-    transport = new TSocket(host, port);
 
     // handle secure connection if specified
-    if (!sessConf.containsKey(HIVE_AUTH_TYPE)
-        || !sessConf.get(HIVE_AUTH_TYPE).equals(HIVE_AUTH_SIMPLE)){
-      try {
+    try {
+      if (!sessConf.containsKey(HIVE_AUTH_TYPE)
+        || !sessConf.get(HIVE_AUTH_TYPE).equals(HIVE_AUTH_SIMPLE)) {
         String tokenStr;
         if (sessConf.containsKey(HIVE_AUTH_PRINCIPAL)) {
           Map<String, String> saslProps = new HashMap<String, String>();
@@ -181,12 +186,30 @@ public class HiveConnection implements java.sql.Connection {
           if ((passwd == null) || passwd.isEmpty()) {
             passwd = HIVE_ANONYMOUS_PASSWD;
           }
+          String useSslStr = sessConf.get(HIVE_USE_SSL);
+          if ("true".equalsIgnoreCase(useSslStr)) {
+            String sslTrustStore = sessConf.get(HIVE_SSL_TRUST_STORE);
+            String sslTrustStorePassword = sessConf.get(HIVE_SSL_TRUST_STORE_PASSWORD);
+            if (sslTrustStore == null || sslTrustStore.isEmpty()) {
+              transport = HiveAuthFactory.getSSLSocket(host, port, loginTimeout);
+            } else {
+              transport = HiveAuthFactory.getSSLSocket(host, port, loginTimeout,
+                  sslTrustStore, sslTrustStorePassword);
+            }
+          } else {
+            transport = HiveAuthFactory.getSocketTransport(host, port);
+          }
           transport = PlainSaslHelper.getPlainTransport(userName, passwd, transport);
         }
-      } catch (SaslException e) {
-        throw new SQLException("Could not establish secure connection to "
-                  + uri + ": " + e.getMessage(), " 08S01", e);
+      } else {
+        transport = HiveAuthFactory.getSocketTransport(host, port);
       }
+    } catch (SaslException e) {
+      throw new SQLException("Could not establish secure connection to "
+                + uri + ": " + e.getMessage(), " 08S01", e);
+    } catch (TTransportException e) {
+      throw new SQLException("Could not create connection to "
+          + uri + ": " + e.getMessage(), " 08S01", e);
     }
 
     TProtocol protocol = new TBinaryProtocol(transport);

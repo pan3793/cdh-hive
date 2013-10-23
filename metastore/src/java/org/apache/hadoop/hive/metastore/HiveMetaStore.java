@@ -273,6 +273,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       return threadLocalId.get();
     }
 
+    public static void resetDefaultDBFlag() {
+      createDefaultDB = false;
+    }
+
     public HMSHandler(String name) throws MetaException {
       super(name);
       hiveConf = new HiveConf(this.getClass());
@@ -4009,7 +4013,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
   public static IHMSHandler newHMSHandler(String name, HiveConf hiveConf) throws MetaException {
     return RetryingHMSHandler.getProxy(hiveConf, name);
   }
-
 
 
   /**
