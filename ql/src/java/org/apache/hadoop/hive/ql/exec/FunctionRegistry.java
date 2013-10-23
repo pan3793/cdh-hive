@@ -128,7 +128,6 @@ import org.apache.hadoop.hive.ql.udf.UDFUnhex;
 import org.apache.hadoop.hive.ql.udf.UDFWeekOfYear;
 import org.apache.hadoop.hive.ql.udf.UDFYear;
 import org.apache.hadoop.hive.ql.udf.generic.*;
-import org.apache.hadoop.hive.ql.udf.ptf.MatchPath.MatchPathResolver;
 import org.apache.hadoop.hive.ql.udf.ptf.Noop.NoopResolver;
 import org.apache.hadoop.hive.ql.udf.ptf.NoopWithMap.NoopWithMapResolver;
 import org.apache.hadoop.hive.ql.udf.ptf.TableFunctionResolver;
@@ -452,7 +451,6 @@ public final class FunctionRegistry {
     registerTableFunction(NOOP_TABLE_FUNCTION, NoopResolver.class);
     registerTableFunction(NOOP_MAP_TABLE_FUNCTION, NoopWithMapResolver.class);
     registerTableFunction(WINDOWING_TABLE_FUNCTION,  WindowingTableFunctionResolver.class);
-    registerTableFunction("matchpath", MatchPathResolver.class);
   }
 
   public static void registerTemporaryUDF(String functionName,
