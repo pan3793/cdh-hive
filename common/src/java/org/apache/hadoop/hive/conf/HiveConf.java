@@ -754,7 +754,7 @@ public class HiveConf extends Configuration {
     // Number of async threads
     HIVE_SERVER2_ASYNC_EXEC_THREADS("hive.server2.async.exec.threads", 50),
     // Number of seconds HiveServer2 shutdown will wait for async threads to terminate
-    HIVE_SERVER2_ASYNC_EXEC_SHUTDOWN_TIMEOUT("hive.server2.async.exec.shutdown.timeout", 10),
+    HIVE_SERVER2_ASYNC_EXEC_SHUTDOWN_TIMEOUT("hive.server2.async.exec.shutdown.timeout", 10L),
 
 
     // HiveServer2 auth configuration
@@ -966,12 +966,12 @@ public class HiveConf extends Configuration {
   }
 
   public static int getIntVar(Configuration conf, ConfVars var) {
-    assert (var.valClass == Integer.class);
+    assert (var.valClass == Integer.class) : var.varname;
     return conf.getInt(var.varname, var.defaultIntVal);
   }
 
   public static void setIntVar(Configuration conf, ConfVars var, int val) {
-    assert (var.valClass == Integer.class);
+    assert (var.valClass == Integer.class) : var.varname;
     conf.setInt(var.varname, val);
   }
 
@@ -984,7 +984,7 @@ public class HiveConf extends Configuration {
   }
 
   public static long getLongVar(Configuration conf, ConfVars var) {
-    assert (var.valClass == Long.class);
+    assert (var.valClass == Long.class) : var.varname;
     return conf.getLong(var.varname, var.defaultLongVal);
   }
 
@@ -993,7 +993,7 @@ public class HiveConf extends Configuration {
   }
 
   public static void setLongVar(Configuration conf, ConfVars var, long val) {
-    assert (var.valClass == Long.class);
+    assert (var.valClass == Long.class) : var.varname;
     conf.setLong(var.varname, val);
   }
 
@@ -1006,7 +1006,7 @@ public class HiveConf extends Configuration {
   }
 
   public static float getFloatVar(Configuration conf, ConfVars var) {
-    assert (var.valClass == Float.class);
+    assert (var.valClass == Float.class) : var.varname;
     return conf.getFloat(var.varname, var.defaultFloatVal);
   }
 
@@ -1015,7 +1015,7 @@ public class HiveConf extends Configuration {
   }
 
   public static void setFloatVar(Configuration conf, ConfVars var, float val) {
-    assert (var.valClass == Float.class);
+    assert (var.valClass == Float.class) : var.varname;
     ShimLoader.getHadoopShims().setFloatConf(conf, var.varname, val);
   }
 
@@ -1028,7 +1028,7 @@ public class HiveConf extends Configuration {
   }
 
   public static boolean getBoolVar(Configuration conf, ConfVars var) {
-    assert (var.valClass == Boolean.class);
+    assert (var.valClass == Boolean.class) : var.varname;
     return conf.getBoolean(var.varname, var.defaultBoolVal);
   }
 
@@ -1037,7 +1037,7 @@ public class HiveConf extends Configuration {
   }
 
   public static void setBoolVar(Configuration conf, ConfVars var, boolean val) {
-    assert (var.valClass == Boolean.class);
+    assert (var.valClass == Boolean.class) : var.varname;
     conf.setBoolean(var.varname, val);
   }
 
@@ -1050,7 +1050,7 @@ public class HiveConf extends Configuration {
   }
 
   public static String getVar(Configuration conf, ConfVars var) {
-    assert (var.valClass == String.class);
+    assert (var.valClass == String.class) : var.varname;
     return conf.get(var.varname, var.defaultVal);
   }
 
@@ -1059,7 +1059,7 @@ public class HiveConf extends Configuration {
   }
 
   public static void setVar(Configuration conf, ConfVars var, String val) {
-    assert (var.valClass == String.class);
+    assert (var.valClass == String.class) : var.varname;
     conf.set(var.varname, val);
   }
 
