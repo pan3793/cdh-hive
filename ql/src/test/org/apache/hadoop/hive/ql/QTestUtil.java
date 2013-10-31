@@ -86,6 +86,8 @@ import org.apache.hadoop.mapred.SequenceFileOutputFormat;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.util.Shell;
 import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 /**
@@ -1343,7 +1345,11 @@ public class QTestUtil {
       }
 
       int sessionTimeout = conf.getIntVar(HiveConf.ConfVars.HIVE_ZOOKEEPER_SESSION_TIMEOUT);
-      zooKeeper = new ZooKeeper("localhost:" + zkPort, sessionTimeout, null);
+      zooKeeper = new ZooKeeper("localhost:" + zkPort, sessionTimeout, new Watcher() {
+        @Override
+        public void process(WatchedEvent arg0) {
+        }
+      });
 
       String zkServer = "localhost";
       conf.set("hive.zookeeper.quorum", zkServer);
