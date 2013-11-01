@@ -168,7 +168,7 @@ public class SQLOperation extends ExecuteStatementOperation {
         SessionState ss = SessionState.get();
         @Override
         public void run() {
-          SessionState.start(ss);
+          SessionState.setCurrentSessionState(ss);
           try {
             runInternal(getConfigForOperation());
           } catch (HiveSQLException e) {
