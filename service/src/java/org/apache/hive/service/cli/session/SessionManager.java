@@ -18,7 +18,6 @@
 
 package org.apache.hive.service.cli.session;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,11 +79,6 @@ public class SessionManager extends CompositeService {
   public SessionHandle openSession(String username, String password, Map<String, String> sessionConf,
           boolean withImpersonation, String delegationToken) throws HiveSQLException {
     HiveSession session;
-    if (username == null) {
-      username = threadLocalUserName.get();
-    }
-
-    username = getProxyUser(username, sessionConf, threadLocalIpAddress.get());
     if (withImpersonation) {
           HiveSessionImplwithUGI hiveSessionUgi = new HiveSessionImplwithUGI(username, password, sessionConf,
               threadLocalIpAddress.get(), delegationToken);
@@ -138,7 +132,7 @@ public class SessionManager extends CompositeService {
   public LogManager getLogManager() {
     return logManager;
   }
-
+  
   private static ThreadLocal<String> threadLocalIpAddress = new ThreadLocal<String>() {
     @Override
     protected synchronized String initialValue() {
@@ -152,6 +146,10 @@ public class SessionManager extends CompositeService {
 
   private void clearIpAddress() {
     threadLocalIpAddress.remove();
+  }
+
+  public static String getIpAddress() {
+    return threadLocalIpAddress.get();
   }
 
   private static ThreadLocal<String> threadLocalUserName = new ThreadLocal<String>(){
@@ -174,6 +172,10 @@ public class SessionManager extends CompositeService {
     clearUserName();
   }
 
+  public static String getUserName() {
+    return threadLocalUserName.get();
+  }
+
   // execute session hooks
   private void executeSessionHooks(HiveSession session) throws Exception {
     String hookList = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK).trim();
@@ -189,38 +191,4 @@ public class SessionManager extends CompositeService {
     }
   }
 
-  /**
-   * If the proxy user name is provided then check privileges to substitute the user.
-   * @param realUser
-   * @param sessionConf
-   * @param ipAddress
-   * @return
-   * @throws HiveSQLException
-   */
-  private String getProxyUser(String realUser, Map<String, String> sessionConf, String ipAddress)
-      throws HiveSQLException {
-    if (sessionConf == null || !sessionConf.containsKey(HiveAuthFactory.HS2_PROXY_USER)) {
-      return realUser;
-    }
-
-    // Extract the proxy user name and check if we are allowed to do the substitution
-    String proxyUser = sessionConf.get(HiveAuthFactory.HS2_PROXY_USER);
-    if (!hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ALLOW_USER_SUBSTITUTION)) {
-      throw new HiveSQLException("Proxy user substitution is not allowed");
-    }
-    if (!ShimLoader.getHadoopShims().isSecurityEnabled()) {
-      throw new HiveSQLException("Proxy user substitution is not supported for unsecure hadoop");
-    }
-
-    // Verify proxy user privilege of the realUser for the proxyUser
-    try {
-      UserGroupInformation sessionUgi = ShimLoader.getHadoopShims().createProxyUser(realUser);
-      ShimLoader.getHadoopShims().
-          authorizeProxyAccess(proxyUser, sessionUgi, ipAddress, hiveConf);
-      return proxyUser;
-    } catch (IOException e) {
-      throw new HiveSQLException("Failed to validate proxy privilage of " + realUser +
-          " for " + proxyUser, " 08004", e);
-    }
-  }
 }
