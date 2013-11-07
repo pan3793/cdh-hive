@@ -28,12 +28,14 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.hive.common.type.HiveChar;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.common.type.HiveVarchar;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.io.ByteWritable;
 import org.apache.hadoop.hive.serde2.io.DateWritable;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
+import org.apache.hadoop.hive.serde2.io.HiveCharWritable;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.hadoop.hive.serde2.io.HiveVarcharWritable;
 import org.apache.hadoop.hive.serde2.io.ShortWritable;
@@ -224,6 +226,9 @@ public final class PrimitiveObjectInspectorUtils {
   public static final PrimitiveTypeEntry varcharTypeEntry = new PrimitiveTypeEntry(
       PrimitiveCategory.VARCHAR, serdeConstants.VARCHAR_TYPE_NAME, null, HiveVarchar.class,
       HiveVarcharWritable.class);
+  public static final PrimitiveTypeEntry charTypeEntry = new PrimitiveTypeEntry(
+      PrimitiveCategory.CHAR, serdeConstants.CHAR_TYPE_NAME, null, HiveChar.class,
+      HiveCharWritable.class);
 
   // The following is a complex type for special handling
   public static final PrimitiveTypeEntry unknownTypeEntry = new PrimitiveTypeEntry(
@@ -232,6 +237,7 @@ public final class PrimitiveObjectInspectorUtils {
   static {
     registerType(binaryTypeEntry);
     registerType(stringTypeEntry);
+    registerType(charTypeEntry);
     registerType(varcharTypeEntry);
     registerType(booleanTypeEntry);
     registerType(intTypeEntry);
@@ -402,6 +408,10 @@ public final class PrimitiveObjectInspectorUtils {
       Writable t2 = ((StringObjectInspector) oi2)
           .getPrimitiveWritableObject(o2);
       return t1.equals(t2);
+    }
+    case CHAR: {
+      return ((HiveCharObjectInspector)oi1).getPrimitiveWritableObject(o1)
+          .equals(((HiveCharObjectInspector)oi2).getPrimitiveWritableObject(o2));
     }
     case VARCHAR: {
       return ((HiveVarcharObjectInspector)oi1).getPrimitiveWritableObject(o1)
@@ -610,6 +620,7 @@ public final class PrimitiveObjectInspectorUtils {
       }
       break;
     }
+    case CHAR:
     case VARCHAR: {
       result = Integer.parseInt(getString(o, oi));
       break;
@@ -673,6 +684,7 @@ public final class PrimitiveObjectInspectorUtils {
         result = Long.parseLong(s);
       }
       break;
+    case CHAR:
     case VARCHAR: {
       result = Long.parseLong(getString(o, oi));
       break;
@@ -730,6 +742,7 @@ public final class PrimitiveObjectInspectorUtils {
       String s = soi.getPrimitiveJavaObject(o);
       result = Double.parseDouble(s);
       break;
+    case CHAR:
     case VARCHAR:
       result = Double.parseDouble(getString(o, oi));
       break;
@@ -798,6 +811,10 @@ public final class PrimitiveObjectInspectorUtils {
       StringObjectInspector soi = (StringObjectInspector) oi;
       result = soi.getPrimitiveJavaObject(o);
       break;
+    case CHAR:
+      // when converting from char to string/varchar, strip any trailing spaces
+      result = ((HiveCharObjectInspector) oi).getPrimitiveJavaObject(o).getStrippedValue();
+      break;
     case VARCHAR:
       HiveVarcharObjectInspector hcoi = (HiveVarcharObjectInspector) oi;
       result = hcoi.getPrimitiveJavaObject(o).toString();
@@ -815,6 +832,25 @@ public final class PrimitiveObjectInspectorUtils {
     default:
       throw new RuntimeException("Hive 2 Internal error: unknown type: "
           + oi.getTypeName());
+    }
+    return result;
+  }
+
+  public static HiveChar getHiveChar(Object o, PrimitiveObjectInspector oi) {
+    if (o == null) {
+      return null;
+    }
+
+    HiveChar result = null;
+    switch (oi.getPrimitiveCategory()) {
+      case CHAR:
+        result = ((HiveCharObjectInspector) oi).getPrimitiveJavaObject(o);
+        break;
+      default:
+        // No char length available, copy whole string value here.
+        result = new HiveChar();
+        result.setValue(getString(o, oi));
+        break;
     }
     return result;
   }
@@ -841,6 +877,12 @@ public final class PrimitiveObjectInspectorUtils {
     return result;
   }
 
+  public static BytesWritable getBinaryFromText(Text text) {
+    BytesWritable bw = new BytesWritable();
+    bw.set(text.getBytes(), 0, text.getLength());
+    return bw;
+  }
+
   public static BytesWritable getBinary(Object o, PrimitiveObjectInspector oi) {
 
     if (null == o) {
@@ -854,9 +896,14 @@ public final class PrimitiveObjectInspectorUtils {
 
     case STRING:
       Text text = ((StringObjectInspector) oi).getPrimitiveWritableObject(o);
-      BytesWritable bw = new BytesWritable();
-      bw.set(text.getBytes(), 0, text.getLength());
-      return bw;
+      return getBinaryFromText(text);
+    case CHAR:
+      // char to binary conversion: include trailing spaces?
+      return getBinaryFromText(
+          ((HiveCharObjectInspector) oi).getPrimitiveWritableObject(o).getPaddedValue());
+    case VARCHAR:
+      return getBinaryFromText(
+          ((HiveVarcharObjectInspector) oi).getPrimitiveWritableObject(o).getTextValue());
 
     case BINARY:
       return ((BinaryObjectInspector) oi).getPrimitiveWritableObject(o);
@@ -904,6 +951,7 @@ public final class PrimitiveObjectInspectorUtils {
     case STRING:
       result = HiveDecimal.create(((StringObjectInspector) oi).getPrimitiveJavaObject(o));
       break;
+    case CHAR:
     case VARCHAR:
       result = HiveDecimal.create(getString(o, oi));
       break;
@@ -942,6 +990,7 @@ public final class PrimitiveObjectInspectorUtils {
         result = null;
       }
       break;
+    case CHAR:
     case VARCHAR: {
       try {
         String val = getString(o, oi).trim();
@@ -1006,6 +1055,7 @@ public final class PrimitiveObjectInspectorUtils {
       String s = soi.getPrimitiveJavaObject(o);
       result = getTimestampFromString(s);
       break;
+    case CHAR:
     case VARCHAR:
       result = getTimestampFromString(getString(o, oi));
       break;
@@ -1078,6 +1128,7 @@ public final class PrimitiveObjectInspectorUtils {
       case DECIMAL:
         return PrimitiveGrouping.NUMERIC_GROUP;
       case STRING:
+      case CHAR:
       case VARCHAR:
         return PrimitiveGrouping.STRING_GROUP;
       case BOOLEAN:

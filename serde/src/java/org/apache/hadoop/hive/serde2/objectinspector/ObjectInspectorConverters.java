@@ -32,6 +32,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableBooleanOb
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableByteObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableDoubleObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableFloatObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableHiveCharObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableHiveDecimalObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableHiveVarcharObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableIntObjectInspector;
@@ -105,6 +106,10 @@ public final class ObjectInspectorConverters {
         return new PrimitiveObjectInspectorConverter.StringConverter(
             inputOI);
       }
+    case CHAR:
+      return new PrimitiveObjectInspectorConverter.HiveCharConverter(
+          inputOI,
+          (SettableHiveCharObjectInspector) outputOI);
     case VARCHAR:
       return new PrimitiveObjectInspectorConverter.HiveVarcharConverter(
           inputOI,
