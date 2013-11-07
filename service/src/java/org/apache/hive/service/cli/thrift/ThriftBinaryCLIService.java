@@ -67,7 +67,19 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
       maxWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS);
       requestTimeout = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT);
 
-      TThreadPoolServer.Args sargs = new TThreadPoolServer.Args(new TServerSocket(serverAddress))
+      TServerSocket serverSocket = null;
+      if (!hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_USE_SSL)) {
+        serverSocket = HiveAuthFactory.getServerSocket(hiveHost, portNum);
+      } else {
+        String keyStorePath = hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH).trim();
+        if (keyStorePath.isEmpty()) {
+          throw new IllegalArgumentException(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname +
+              " Not configured for SSL connection");
+        }
+        serverSocket = HiveAuthFactory.getServerSSLSocket(hiveHost, portNum,
+            keyStorePath, hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD));
+      }
+      TThreadPoolServer.Args sargs = new TThreadPoolServer.Args(serverSocket)
       .processorFactory(processorFactory)
       .transportFactory(transportFactory)
       .protocolFactory(new TBinaryProtocol.Factory())
