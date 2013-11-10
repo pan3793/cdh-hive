@@ -216,9 +216,9 @@ public class HiveAuthFactory {
 
   }
 
-  public static TTransport getSocketTransport(String host, int port)
+  public static TTransport getSocketTransport(String host, int port, int loginTimeout)
       throws TTransportException {
-    return new TSocket(host, port);
+    return new TSocket(host, port, loginTimeout);
   }
 
   public static TTransport getSSLSocket(String host, int port, int loginTimeout)

@@ -89,7 +89,6 @@ public class HiveConnection implements java.sql.Connection {
   private static final String HIVE_USE_SSL = "ssl";
   private static final String HIVE_SSL_TRUST_STORE = "sslTrustStore";
   private static final String HIVE_SSL_TRUST_STORE_PASSWORD = "trustStorePassword";
-  private static final int HIVE_CONNECTION_TIMEOUT = 5;
 
   private TTransport transport;
   private TCLIService.Iface client;
@@ -97,7 +96,7 @@ public class HiveConnection implements java.sql.Connection {
   private SQLWarning warningChain = null;
   private TSessionHandle sessHandle = null;
   private final List<TProtocolVersion> supportedProtocols = new LinkedList<TProtocolVersion>();
-  private int loginTimeout = HIVE_CONNECTION_TIMEOUT;
+  private int loginTimeout = 0;
   /**
    * TODO: - parse uri (use java.net.URI?).
    */
@@ -173,7 +172,8 @@ public class HiveConnection implements java.sql.Connection {
           saslProps.put(Sasl.QOP, saslQOP.toString());
           saslProps.put(Sasl.SERVER_AUTH, "true");
           transport = KerberosSaslHelper.getKerberosTransport(
-                  sessConf.get(HIVE_AUTH_PRINCIPAL), host, transport, saslProps);
+                  sessConf.get(HIVE_AUTH_PRINCIPAL), host,
+                  HiveAuthFactory.getSocketTransport(host, port, loginTimeout), saslProps);
         } else if ((tokenStr = getClientDelegationToken(sessConf)) != null) {
           transport = KerberosSaslHelper.getTokenTransport(tokenStr,
                   host, transport);
@@ -197,12 +197,12 @@ public class HiveConnection implements java.sql.Connection {
                   sslTrustStore, sslTrustStorePassword);
             }
           } else {
-            transport = HiveAuthFactory.getSocketTransport(host, port);
+            transport = HiveAuthFactory.getSocketTransport(host, port, loginTimeout);
           }
           transport = PlainSaslHelper.getPlainTransport(userName, passwd, transport);
         }
       } else {
-        transport = HiveAuthFactory.getSocketTransport(host, port);
+        transport = HiveAuthFactory.getSocketTransport(host, port, loginTimeout);
       }
     } catch (SaslException e) {
       throw new SQLException("Could not establish secure connection to "
