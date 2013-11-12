@@ -7,7 +7,7 @@ move_source() {
     echo $source
   fi
   mkdir -p $(dirname $target)
-  mv $source $target
+  git mv $source $target
 }
 move_source serde/src/test/org/apache/hadoop/hive/serde2/TestSerdeWithFieldComments.java itests/hive-unit/src/test/java/org/apache/hadoop/hive/serde2/TestSerdeWithFieldComments.java
 move_source serde/src/test/org/apache/hadoop/hive/serde2/dynamic_type/TestDynamicSerDe.java itests/hive-unit/src/test/java/org/apache/hadoop/hive/serde2/dynamic_type/TestDynamicSerDe.java
