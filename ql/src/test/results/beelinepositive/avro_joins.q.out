@@ -46,7 +46,7 @@ No rows affected
 'extra_field','string','from deserializer'
 4 rows selected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/doctors.avro' INTO TABLE doctors4;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/doctors.avro' INTO TABLE doctors4;
 No rows affected 
 >>>  
 >>>  CREATE TABLE episodes 
@@ -86,7 +86,7 @@ No rows affected
 'doctor','int','from deserializer'
 3 rows selected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/episodes.avro' INTO TABLE episodes;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/episodes.avro' INTO TABLE episodes;
 No rows affected 
 >>>  
 >>>  SELECT e.title, e.air_date, d.first_name, d.last_name, d.extra_field, e.air_date 

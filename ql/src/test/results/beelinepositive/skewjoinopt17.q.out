@@ -9,14 +9,14 @@ No rows affected
 SKEWED BY (key, val) ON ((2, 12)) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T1.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T1.txt' INTO TABLE T1;
 No rows affected 
 >>>  
 >>>  CREATE TABLE T2(key STRING, val STRING) 
 SKEWED BY (key) ON ((2)) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T2.txt' INTO TABLE T2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T2.txt' INTO TABLE T2;
 No rows affected 
 >>>  
 >>>  -- One of the tables is skewed by 2 columns, and the other table is
@@ -236,14 +236,14 @@ No rows affected
 SKEWED BY (key, val) ON ((2, 12)) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T1.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T1.txt' INTO TABLE T1;
 No rows affected 
 >>>  
 >>>  CREATE TABLE T2(key STRING, val STRING) 
 SKEWED BY (key) ON ((2)) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T2.txt' INTO TABLE T2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T2.txt' INTO TABLE T2;
 No rows affected 
 >>>  
 >>>  -- One of the tables is skewed by 2 columns, and the other table is

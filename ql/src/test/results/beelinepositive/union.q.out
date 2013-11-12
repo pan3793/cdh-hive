@@ -8,10 +8,10 @@ FROM src select src.key, src.value WHERE src.key < 100
 UNION ALL 
 FROM src SELECT src.* WHERE src.key > 100 
 ) unioninput 
-INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/union.out' SELECT unioninput.*;
+INSERT OVERWRITE DIRECTORY 'target/tmp/ql/test/data/warehouse/union.out' SELECT unioninput.*;
 'Explain'
 'ABSTRACT SYNTAX TREE:'
-'  (TOK_QUERY (TOK_FROM (TOK_SUBQUERY (TOK_UNION (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME src))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL src) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL src) value))) (TOK_WHERE (< (. (TOK_TABLE_OR_COL src) key) 100)))) (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME src))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_ALLCOLREF (TOK_TABNAME src)))) (TOK_WHERE (> (. (TOK_TABLE_OR_COL src) key) 100))))) unioninput)) (TOK_INSERT (TOK_DESTINATION (TOK_DIR '../build/ql/test/data/warehouse/union.out')) (TOK_SELECT (TOK_SELEXPR (TOK_ALLCOLREF (TOK_TABNAME unioninput))))))'
+'  (TOK_QUERY (TOK_FROM (TOK_SUBQUERY (TOK_UNION (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME src))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL src) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL src) value))) (TOK_WHERE (< (. (TOK_TABLE_OR_COL src) key) 100)))) (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME src))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_ALLCOLREF (TOK_TABNAME src)))) (TOK_WHERE (> (. (TOK_TABLE_OR_COL src) key) 100))))) unioninput)) (TOK_INSERT (TOK_DESTINATION (TOK_DIR 'target/tmp/ql/test/data/warehouse/union.out')) (TOK_SELECT (TOK_SELEXPR (TOK_ALLCOLREF (TOK_TABNAME unioninput))))))'
 ''
 'STAGE DEPENDENCIES:'
 '  Stage-1 is a root stage'
@@ -96,7 +96,7 @@ INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/union.out' SELECT un
 '    Move Operator'
 '      files:'
 '          hdfs directory: true'
-'          destination: ../build/ql/test/data/warehouse/union.out'
+'          destination: target/tmp/ql/test/data/warehouse/union.out'
 ''
 '  Stage: Stage-2'
 '    Map Reduce'
@@ -134,10 +134,10 @@ FROM src select src.key, src.value WHERE src.key < 100
 UNION ALL 
 FROM src SELECT src.* WHERE src.key > 100 
 ) unioninput 
-INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/union.out' SELECT unioninput.*;
+INSERT OVERWRITE DIRECTORY 'target/tmp/ql/test/data/warehouse/union.out' SELECT unioninput.*;
 'key','value'
 No rows selected 
 >>>  
->>>  dfs -cat ../build/ql/test/data/warehouse/union.out/*;
+>>>  dfs -cat target/tmp/ql/test/data/warehouse/union.out/*;
 No rows affected 
 >>>  !record

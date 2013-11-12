@@ -19,11 +19,11 @@ No rows affected
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/x.txt' INTO TABLE x;
+>>>  load data local inpath '../../data/files/x.txt' INTO TABLE x;
 No rows affected 
->>>  load data local inpath '../data/files/y.txt' INTO TABLE y;
+>>>  load data local inpath '../../data/files/y.txt' INTO TABLE y;
 No rows affected 
->>>  load data local inpath '../data/files/z.txt' INTO TABLE z;
+>>>  load data local inpath '../../data/files/z.txt' INTO TABLE z;
 No rows affected 
 >>>  
 >>>  SELECT subq.key1, subq.value1, subq.key2, subq.value2, z.id, z.name 

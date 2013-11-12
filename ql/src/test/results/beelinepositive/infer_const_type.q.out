@@ -5,7 +5,7 @@ No rows affected
 >>>  CREATE TABLE infertypes(ti TINYINT, si SMALLINT, i INT, bi BIGINT, fl FLOAT, db DOUBLE, str STRING);
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/infer_const_type.txt' OVERWRITE INTO TABLE infertypes;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/infer_const_type.txt' OVERWRITE INTO TABLE infertypes;
 No rows affected 
 >>>  
 >>>  SELECT * FROM infertypes;

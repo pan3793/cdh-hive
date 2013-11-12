@@ -14,7 +14,7 @@ No rows affected
 >>>  
 >>>  CREATE TABLE INPUT(key INT, value STRING) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv5.txt' INTO TABLE INPUT;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv5.txt' INTO TABLE INPUT;
 No rows affected 
 >>>  
 >>>  EXPLAIN 

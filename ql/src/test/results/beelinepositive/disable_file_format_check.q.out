@@ -4,12 +4,12 @@ Saving all output to "!!{outputDirectory}!!/disable_file_format_check.q.raw". En
 No rows affected 
 >>>  create table kv_fileformat_check_txt (key string, value string) stored as textfile;
 No rows affected 
->>>  load data local inpath '../data/files/kv1.seq' overwrite into table kv_fileformat_check_txt;
+>>>  load data local inpath '../../data/files/kv1.seq' overwrite into table kv_fileformat_check_txt;
 No rows affected 
 >>>  
 >>>  create table kv_fileformat_check_seq (key string, value string) stored as sequencefile;
 No rows affected 
->>>  load data local inpath '../data/files/kv1.txt' overwrite into table kv_fileformat_check_seq;
+>>>  load data local inpath '../../data/files/kv1.txt' overwrite into table kv_fileformat_check_seq;
 No rows affected 
 >>>  
 >>>  

@@ -3,10 +3,10 @@ Saving all output to "!!{outputDirectory}!!/insert1_overwrite_partitions.q.raw".
 >>>  CREATE TABLE sourceTable (one string,two string) PARTITIONED BY (ds string,hr string);
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/kv1.txt' INTO TABLE sourceTable partition(ds='2011-11-11', hr='11');
+>>>  load data local inpath '../../data/files/kv1.txt' INTO TABLE sourceTable partition(ds='2011-11-11', hr='11');
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/kv3.txt' INTO TABLE sourceTable partition(ds='2011-11-11', hr='12');
+>>>  load data local inpath '../../data/files/kv3.txt' INTO TABLE sourceTable partition(ds='2011-11-11', hr='12');
 No rows affected 
 >>>  
 >>>  CREATE TABLE destinTable (one string,two string) PARTITIONED BY (ds string,hr string);

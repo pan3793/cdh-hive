@@ -5,7 +5,7 @@ No rows affected
 >>>  
 >>>  CREATE TABLE myinput1(key int, value int);
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in8.txt' INTO TABLE myinput1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in8.txt' INTO TABLE myinput1;
 No rows affected 
 >>>  
 >>>  -- merging
@@ -887,13 +887,13 @@ No rows affected
 No rows affected 
 >>>  CREATE TABLE smb_input2(key int, value int) CLUSTERED BY (value) SORTED BY (value) INTO 2 BUCKETS;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in8.txt' into table smb_input1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in8.txt' into table smb_input1;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in9.txt' into table smb_input1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in9.txt' into table smb_input1;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in8.txt' into table smb_input2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in8.txt' into table smb_input2;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in9.txt' into table smb_input2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in9.txt' into table smb_input2;
 No rows affected 
 >>>  
 >>>  SET hive.optimize.bucketmapJOIN = true;

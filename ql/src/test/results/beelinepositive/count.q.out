@@ -2,7 +2,7 @@ Saving all output to "!!{outputDirectory}!!/count.q.raw". Enter "record" with no
 >>>  !run !!{qFileDirectory}!!/count.q
 >>>  create table abcd (a int, b int, c int, d int);
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in4.txt' INTO TABLE abcd;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in4.txt' INTO TABLE abcd;
 No rows affected 
 >>>  
 >>>  select * from abcd;

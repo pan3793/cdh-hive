@@ -3,9 +3,9 @@ Saving all output to "!!{outputDirectory}!!/nullscript.q.raw". Enter "record" wi
 >>>  
 >>>  CREATE TABLE nullscript(KEY STRING, VALUE STRING) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE nullscript;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE nullscript;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/nullfile.txt' INTO TABLE nullscript;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/nullfile.txt' INTO TABLE nullscript;
 No rows affected 
 >>>  explain 
 select transform(key) using 'cat' as key1 from nullscript;

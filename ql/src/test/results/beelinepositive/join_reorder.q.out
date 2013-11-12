@@ -11,11 +11,11 @@ No rows affected
 >>>  CREATE TABLE T3(key STRING, val STRING) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T1.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T1.txt' INTO TABLE T1;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/T2.txt' INTO TABLE T2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T2.txt' INTO TABLE T2;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/T3.txt' INTO TABLE T3;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T3.txt' INTO TABLE T3;
 No rows affected 
 >>>  
 >>>  EXPLAIN FROM T1 a JOIN src c ON c.key+1=a.key 

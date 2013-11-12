@@ -3,12 +3,12 @@ Saving all output to "!!{outputDirectory}!!/join_1to1.q.raw". Enter "record" wit
 >>>  
 >>>  CREATE TABLE join_1to1_1(key1 int, key2 int, value int);
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in5.txt' INTO TABLE join_1to1_1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in5.txt' INTO TABLE join_1to1_1;
 No rows affected 
 >>>  
 >>>  CREATE TABLE join_1to1_2(key1 int, key2 int, value int);
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in6.txt' INTO TABLE join_1to1_2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in6.txt' INTO TABLE join_1to1_2;
 No rows affected 
 >>>  
 >>>  

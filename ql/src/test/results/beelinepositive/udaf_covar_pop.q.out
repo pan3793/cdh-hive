@@ -6,7 +6,7 @@ No rows affected
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' 
 STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/covar_tab.txt' OVERWRITE 
+>>>  LOAD DATA LOCAL INPATH '../../data/files/covar_tab.txt' OVERWRITE 
 INTO TABLE covar_tab;
 No rows affected 
 >>>  

@@ -3,10 +3,10 @@ Saving all output to "!!{outputDirectory}!!/input4.q.raw". Enter "record" with n
 >>>  CREATE TABLE INPUT4(KEY STRING, VALUE STRING) STORED AS TEXTFILE;
 No rows affected 
 >>>  EXPLAIN 
-LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE INPUT4;
+LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE INPUT4;
 'Explain'
 'ABSTRACT SYNTAX TREE:'
-'  (TOK_LOAD '../data/files/kv1.txt' (TOK_TAB (TOK_TABNAME INPUT4)) LOCAL)'
+'  (TOK_LOAD '../../data/files/kv1.txt' (TOK_TAB (TOK_TABNAME INPUT4)) LOCAL)'
 ''
 'STAGE DEPENDENCIES:'
 '  Stage-0 is a root stage'
@@ -34,7 +34,7 @@ LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE INPUT4;
 ''
 ''
 28 rows selected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE INPUT4;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE INPUT4;
 No rows affected 
 >>>  EXPLAIN FORMATTED 
 SELECT INPUT4.VALUE, INPUT4.KEY FROM INPUT4;

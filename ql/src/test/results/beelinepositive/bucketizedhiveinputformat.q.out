@@ -8,7 +8,7 @@ No rows affected
 >>>  CREATE TABLE T1(name STRING) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE T1;
 No rows affected 
 >>>  
 >>>  CREATE TABLE T2(name STRING) STORED AS SEQUENCEFILE;
@@ -255,9 +255,9 @@ No rows selected
 >>>  
 >>>  CREATE TABLE T3(name STRING) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE T3;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE T3;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv2.txt' INTO TABLE T3;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv2.txt' INTO TABLE T3;
 No rows affected 
 >>>  
 >>>  EXPLAIN SELECT COUNT(1) FROM T3;

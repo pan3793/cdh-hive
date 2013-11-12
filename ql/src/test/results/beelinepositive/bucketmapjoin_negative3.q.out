@@ -18,32 +18,32 @@ No rows affected
 >>>  create table test4 (key string, value string) clustered by (value, key) sorted by (value, key) into 3 buckets;
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/srcbucket20.txt' INTO TABLE test1;
+>>>  load data local inpath '../../data/files/srcbucket20.txt' INTO TABLE test1;
 No rows affected 
->>>  load data local inpath '../data/files/srcbucket21.txt' INTO TABLE test1;
+>>>  load data local inpath '../../data/files/srcbucket21.txt' INTO TABLE test1;
 No rows affected 
->>>  load data local inpath '../data/files/srcbucket22.txt' INTO TABLE test1;
-No rows affected 
->>>  
->>>  load data local inpath '../data/files/srcbucket20.txt' INTO TABLE test2;
-No rows affected 
->>>  load data local inpath '../data/files/srcbucket21.txt' INTO TABLE test2;
-No rows affected 
->>>  load data local inpath '../data/files/srcbucket22.txt' INTO TABLE test2;
+>>>  load data local inpath '../../data/files/srcbucket22.txt' INTO TABLE test1;
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/srcbucket20.txt' INTO TABLE test3;
+>>>  load data local inpath '../../data/files/srcbucket20.txt' INTO TABLE test2;
 No rows affected 
->>>  load data local inpath '../data/files/srcbucket21.txt' INTO TABLE test3;
+>>>  load data local inpath '../../data/files/srcbucket21.txt' INTO TABLE test2;
 No rows affected 
->>>  load data local inpath '../data/files/srcbucket22.txt' INTO TABLE test3;
+>>>  load data local inpath '../../data/files/srcbucket22.txt' INTO TABLE test2;
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/srcbucket20.txt' INTO TABLE test4;
+>>>  load data local inpath '../../data/files/srcbucket20.txt' INTO TABLE test3;
 No rows affected 
->>>  load data local inpath '../data/files/srcbucket21.txt' INTO TABLE test4;
+>>>  load data local inpath '../../data/files/srcbucket21.txt' INTO TABLE test3;
 No rows affected 
->>>  load data local inpath '../data/files/srcbucket22.txt' INTO TABLE test4;
+>>>  load data local inpath '../../data/files/srcbucket22.txt' INTO TABLE test3;
+No rows affected 
+>>>  
+>>>  load data local inpath '../../data/files/srcbucket20.txt' INTO TABLE test4;
+No rows affected 
+>>>  load data local inpath '../../data/files/srcbucket21.txt' INTO TABLE test4;
+No rows affected 
+>>>  load data local inpath '../../data/files/srcbucket22.txt' INTO TABLE test4;
 No rows affected 
 >>>  
 >>>  set hive.optimize.bucketmapjoin = true;

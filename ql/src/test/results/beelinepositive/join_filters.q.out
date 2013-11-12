@@ -2,7 +2,7 @@ Saving all output to "!!{outputDirectory}!!/join_filters.q.raw". Enter "record" 
 >>>  !run !!{qFileDirectory}!!/join_filters.q
 >>>  CREATE TABLE myinput1(key int, value int);
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in3.txt' INTO TABLE myinput1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in3.txt' INTO TABLE myinput1;
 No rows affected 
 >>>  
 >>>  SELECT * FROM myinput1 a JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value ORDER BY a.key ASC, a.value ASC, b.key ASC, b.value ASC;
@@ -304,13 +304,13 @@ No rows affected
 No rows affected 
 >>>  CREATE TABLE smb_input2(key int, value int) CLUSTERED BY (value) SORTED BY (value) INTO 2 BUCKETS;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in1.txt' into table smb_input1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in1.txt' into table smb_input1;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in2.txt' into table smb_input1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in2.txt' into table smb_input1;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in1.txt' into table smb_input2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in1.txt' into table smb_input2;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in2.txt' into table smb_input2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in2.txt' into table smb_input2;
 No rows affected 
 >>>  
 >>>  SET hive.optimize.bucketmapjoin = true;

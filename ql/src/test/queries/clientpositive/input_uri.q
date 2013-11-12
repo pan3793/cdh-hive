@@ -8,10 +8,10 @@ CREATE DATABASE db1;
 USE db1;
 CREATE TABLE tab1( dep_id INT);
 
-LOAD DATA LOCAL INPATH '../data/files/test.dat' INTO TABLE tab1;
+LOAD DATA LOCAL INPATH '../../data/files/test.dat' INTO TABLE tab1;
 
-dfs ${system:test.dfs.mkdir} ../build/ql/test/data/exports/uri1/temp;
-dfs -rmr ../build/ql/test/data/exports/uri1;
+dfs ${system:test.dfs.mkdir} target/tmp/ql/test/data/exports/uri1/temp;
+dfs -rmr target/tmp/ql/test/data/exports/uri1;
 EXPORT TABLE tab1 TO 'ql/test/data/exports/uri1';
 
 DROP TABLE tab1;

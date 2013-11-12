@@ -38,7 +38,7 @@ No rows affected
 'last_name','string','from deserializer'
 3 rows selected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/doctors.avro' INTO TABLE doctors;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/doctors.avro' INTO TABLE doctors;
 No rows affected 
 >>>  
 >>>  SELECT * FROM doctors ORDER BY number;

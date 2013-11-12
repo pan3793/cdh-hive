@@ -2,7 +2,7 @@ Saving all output to "!!{outputDirectory}!!/input22.q.raw". Enter "record" with 
 >>>  !run !!{qFileDirectory}!!/input22.q
 >>>  CREATE TABLE INPUT4(KEY STRING, VALUE STRING) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE INPUT4;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE INPUT4;
 No rows affected 
 >>>  
 >>>  EXPLAIN 

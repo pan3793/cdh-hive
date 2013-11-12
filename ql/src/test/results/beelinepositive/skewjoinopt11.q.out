@@ -9,13 +9,13 @@ No rows affected
 SKEWED BY (key) ON ((2)) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T1.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T1.txt' INTO TABLE T1;
 No rows affected 
 >>>  
 >>>  CREATE TABLE T2(key STRING, val STRING) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T2.txt' INTO TABLE T2;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T2.txt' INTO TABLE T2;
 No rows affected 
 >>>  
 >>>  -- This test is to verify the skew join compile optimization when the join is followed

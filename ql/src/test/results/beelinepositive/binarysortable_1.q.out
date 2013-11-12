@@ -6,7 +6,7 @@ FIELDS TERMINATED BY '9'
 STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/string.txt' INTO TABLE mytable;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/string.txt' INTO TABLE mytable;
 No rows affected 
 >>>  
 >>>  EXPLAIN 

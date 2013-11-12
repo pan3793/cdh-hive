@@ -15,7 +15,7 @@ No rows affected
 CLUSTERED BY (key) SORTED BY (key) INTO 2 BUCKETS STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T1.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T1.txt' INTO TABLE T1;
 No rows affected 
 >>>  
 >>>  -- perform an insert to make sure there are 2 files

@@ -12,7 +12,7 @@ No rows affected
 >>>  
 >>>  create table smb_bucket_input (key int, value string) stored as rcfile;
 No rows affected 
->>>  load data local inpath '../data/files/smb_bucket_input.rc' into table smb_bucket_input;
+>>>  load data local inpath '../../data/files/smb_bucket_input.rc' into table smb_bucket_input;
 No rows affected 
 >>>  
 >>>  

@@ -21,9 +21,9 @@ No rows affected
 >>>  MSCK TABLE repairtable;
 No rows affected 
 >>>  
->>>  dfs -mkdir -p ../build/ql/test/data/warehouse/repairtable/p1=a/p2=a;
+>>>  dfs -mkdir -p target/tmp/ql/test/data/warehouse/repairtable/p1=a/p2=a;
 No rows affected 
->>>  dfs -mkdir -p ../build/ql/test/data/warehouse/repairtable/p1=b/p2=a;
+>>>  dfs -mkdir -p target/tmp/ql/test/data/warehouse/repairtable/p1=b/p2=a;
 No rows affected 
 >>>  
 >>>  MSCK TABLE repairtable;

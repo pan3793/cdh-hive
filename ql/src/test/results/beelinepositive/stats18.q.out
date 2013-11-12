@@ -61,7 +61,7 @@ No rows selected
 '','serialization.format','1                   '
 36 rows selected 
 >>>  
->>>  load data local inpath '../data/files/srcbucket20.txt' INTO TABLE stats_part partition (ds='2010-04-08', hr='13');
+>>>  load data local inpath '../../data/files/srcbucket20.txt' INTO TABLE stats_part partition (ds='2010-04-08', hr='13');
 No rows affected 
 >>>  
 >>>  desc formatted stats_part partition (ds='2010-04-08', hr='13');

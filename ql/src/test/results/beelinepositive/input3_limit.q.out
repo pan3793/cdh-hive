@@ -3,9 +3,9 @@ Saving all output to "!!{outputDirectory}!!/input3_limit.q.raw". Enter "record" 
 >>>  
 >>>  CREATE TABLE T1(key STRING, value STRING) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE T1;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv2.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv2.txt' INTO TABLE T1;
 No rows affected 
 >>>  
 >>>  

@@ -17,9 +17,9 @@ No rows affected
 sorted by (value, key) into 1 BUCKETS stored as textfile;
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/SortCol1Col2.txt' overwrite into table table1;
+>>>  load data local inpath '../../data/files/SortCol1Col2.txt' overwrite into table table1;
 No rows affected 
->>>  load data local inpath '../data/files/SortCol2Col1.txt' overwrite into table table2;
+>>>  load data local inpath '../../data/files/SortCol2Col1.txt' overwrite into table table2;
 No rows affected 
 >>>  
 >>>  set hive.optimize.bucketmapjoin = true;

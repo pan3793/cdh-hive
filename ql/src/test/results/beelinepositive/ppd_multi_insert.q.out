@@ -17,10 +17,10 @@ FROM src a JOIN src b ON (a.key = b.key)
 INSERT OVERWRITE TABLE mi1 SELECT a.* WHERE a.key < 100 
 INSERT OVERWRITE TABLE mi2 SELECT a.key, a.value WHERE a.key >= 100 and a.key < 200 
 INSERT OVERWRITE TABLE mi3 PARTITION(ds='2008-04-08', hr='12') SELECT a.key WHERE a.key >= 200 and a.key < 300 
-INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/mi4.out' SELECT a.value WHERE a.key >= 300;
+INSERT OVERWRITE DIRECTORY 'target/tmp/ql/test/data/warehouse/mi4.out' SELECT a.value WHERE a.key >= 300;
 'Explain'
 'ABSTRACT SYNTAX TREE:'
-'  (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME src) a) (TOK_TABREF (TOK_TABNAME src) b) (= (. (TOK_TABLE_OR_COL a) key) (. (TOK_TABLE_OR_COL b) key)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi1))) (TOK_SELECT (TOK_SELEXPR (TOK_ALLCOLREF (TOK_TABNAME a)))) (TOK_WHERE (< (. (TOK_TABLE_OR_COL a) key) 100))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi2))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) value))) (TOK_WHERE (and (>= (. (TOK_TABLE_OR_COL a) key) 100) (< (. (TOK_TABLE_OR_COL a) key) 200)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi3) (TOK_PARTSPEC (TOK_PARTVAL ds '2008-04-08') (TOK_PARTVAL hr '12')))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) key))) (TOK_WHERE (and (>= (. (TOK_TABLE_OR_COL a) key) 200) (< (. (TOK_TABLE_OR_COL a) key) 300)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR '../build/ql/test/data/warehouse/mi4.out')) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) value))) (TOK_WHERE (>= (. (TOK_TABLE_OR_COL a) key) 300))))'
+'  (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME src) a) (TOK_TABREF (TOK_TABNAME src) b) (= (. (TOK_TABLE_OR_COL a) key) (. (TOK_TABLE_OR_COL b) key)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi1))) (TOK_SELECT (TOK_SELEXPR (TOK_ALLCOLREF (TOK_TABNAME a)))) (TOK_WHERE (< (. (TOK_TABLE_OR_COL a) key) 100))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi2))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) value))) (TOK_WHERE (and (>= (. (TOK_TABLE_OR_COL a) key) 100) (< (. (TOK_TABLE_OR_COL a) key) 200)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi3) (TOK_PARTSPEC (TOK_PARTVAL ds '2008-04-08') (TOK_PARTVAL hr '12')))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) key))) (TOK_WHERE (and (>= (. (TOK_TABLE_OR_COL a) key) 200) (< (. (TOK_TABLE_OR_COL a) key) 300)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR 'target/tmp/ql/test/data/warehouse/mi4.out')) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) value))) (TOK_WHERE (>= (. (TOK_TABLE_OR_COL a) key) 300))))'
 ''
 'STAGE DEPENDENCIES:'
 '  Stage-4 is a root stage'
@@ -210,7 +210,7 @@ INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/mi4.out' SELECT a.va
 '    Move Operator'
 '      files:'
 '          hdfs directory: true'
-'          destination: ../build/ql/test/data/warehouse/mi4.out'
+'          destination: target/tmp/ql/test/data/warehouse/mi4.out'
 ''
 ''
 194 rows selected 
@@ -219,7 +219,7 @@ INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/mi4.out' SELECT a.va
 INSERT OVERWRITE TABLE mi1 SELECT a.* WHERE a.key < 100 
 INSERT OVERWRITE TABLE mi2 SELECT a.key, a.value WHERE a.key >= 100 and a.key < 200 
 INSERT OVERWRITE TABLE mi3 PARTITION(ds='2008-04-08', hr='12') SELECT a.key WHERE a.key >= 200 and a.key < 300 
-INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/mi4.out' SELECT a.value WHERE a.key >= 300;
+INSERT OVERWRITE DIRECTORY 'target/tmp/ql/test/data/warehouse/mi4.out' SELECT a.value WHERE a.key >= 300;
 'value'
 No rows selected 
 >>>  
@@ -798,7 +798,7 @@ No rows selected
 '298','2008-04-08','12'
 '298','2008-04-08','12'
 207 rows selected 
->>>  dfs -cat ../build/ql/test/data/warehouse/mi4.out/*;
+>>>  dfs -cat target/tmp/ql/test/data/warehouse/mi4.out/*;
 No rows affected 
 >>>  
 >>>  
@@ -810,10 +810,10 @@ FROM src a JOIN src b ON (a.key = b.key)
 INSERT OVERWRITE TABLE mi1 SELECT a.* WHERE a.key < 100 
 INSERT OVERWRITE TABLE mi2 SELECT a.key, a.value WHERE a.key >= 100 and a.key < 200 
 INSERT OVERWRITE TABLE mi3 PARTITION(ds='2008-04-08', hr='12') SELECT a.key WHERE a.key >= 200 and a.key < 300 
-INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/mi4.out' SELECT a.value WHERE a.key >= 300;
+INSERT OVERWRITE DIRECTORY 'target/tmp/ql/test/data/warehouse/mi4.out' SELECT a.value WHERE a.key >= 300;
 'Explain'
 'ABSTRACT SYNTAX TREE:'
-'  (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME src) a) (TOK_TABREF (TOK_TABNAME src) b) (= (. (TOK_TABLE_OR_COL a) key) (. (TOK_TABLE_OR_COL b) key)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi1))) (TOK_SELECT (TOK_SELEXPR (TOK_ALLCOLREF (TOK_TABNAME a)))) (TOK_WHERE (< (. (TOK_TABLE_OR_COL a) key) 100))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi2))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) value))) (TOK_WHERE (and (>= (. (TOK_TABLE_OR_COL a) key) 100) (< (. (TOK_TABLE_OR_COL a) key) 200)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi3) (TOK_PARTSPEC (TOK_PARTVAL ds '2008-04-08') (TOK_PARTVAL hr '12')))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) key))) (TOK_WHERE (and (>= (. (TOK_TABLE_OR_COL a) key) 200) (< (. (TOK_TABLE_OR_COL a) key) 300)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR '../build/ql/test/data/warehouse/mi4.out')) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) value))) (TOK_WHERE (>= (. (TOK_TABLE_OR_COL a) key) 300))))'
+'  (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME src) a) (TOK_TABREF (TOK_TABNAME src) b) (= (. (TOK_TABLE_OR_COL a) key) (. (TOK_TABLE_OR_COL b) key)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi1))) (TOK_SELECT (TOK_SELEXPR (TOK_ALLCOLREF (TOK_TABNAME a)))) (TOK_WHERE (< (. (TOK_TABLE_OR_COL a) key) 100))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi2))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) key)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) value))) (TOK_WHERE (and (>= (. (TOK_TABLE_OR_COL a) key) 100) (< (. (TOK_TABLE_OR_COL a) key) 200)))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME mi3) (TOK_PARTSPEC (TOK_PARTVAL ds '2008-04-08') (TOK_PARTVAL hr '12')))) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) key))) (TOK_WHERE (and (>= (. (TOK_TABLE_OR_COL a) key) 200) (< (. (TOK_TABLE_OR_COL a) key) 300)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR 'target/tmp/ql/test/data/warehouse/mi4.out')) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) value))) (TOK_WHERE (>= (. (TOK_TABLE_OR_COL a) key) 300))))'
 ''
 'STAGE DEPENDENCIES:'
 '  Stage-4 is a root stage'
@@ -1003,7 +1003,7 @@ INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/mi4.out' SELECT a.va
 '    Move Operator'
 '      files:'
 '          hdfs directory: true'
-'          destination: ../build/ql/test/data/warehouse/mi4.out'
+'          destination: target/tmp/ql/test/data/warehouse/mi4.out'
 ''
 ''
 194 rows selected 
@@ -1012,7 +1012,7 @@ INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/mi4.out' SELECT a.va
 INSERT OVERWRITE TABLE mi1 SELECT a.* WHERE a.key < 100 
 INSERT OVERWRITE TABLE mi2 SELECT a.key, a.value WHERE a.key >= 100 and a.key < 200 
 INSERT OVERWRITE TABLE mi3 PARTITION(ds='2008-04-08', hr='12') SELECT a.key WHERE a.key >= 200 and a.key < 300 
-INSERT OVERWRITE DIRECTORY '../build/ql/test/data/warehouse/mi4.out' SELECT a.value WHERE a.key >= 300;
+INSERT OVERWRITE DIRECTORY 'target/tmp/ql/test/data/warehouse/mi4.out' SELECT a.value WHERE a.key >= 300;
 'value'
 No rows selected 
 >>>  
@@ -1591,6 +1591,6 @@ No rows selected
 '298','2008-04-08','12'
 '298','2008-04-08','12'
 207 rows selected 
->>>  dfs -cat ../build/ql/test/data/warehouse/mi4.out/*;
+>>>  dfs -cat target/tmp/ql/test/data/warehouse/mi4.out/*;
 No rows affected 
 >>>  !record

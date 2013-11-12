@@ -5,7 +5,7 @@ No rows affected
 >>>  
 >>>  CREATE TABLE myinput1(key int, value int);
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/in1.txt' INTO TABLE myinput1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/in1.txt' INTO TABLE myinput1;
 No rows affected 
 >>>  
 >>>  SELECT sum(hash(a.key,a.value,b.key,b.value)) FROM myinput1 a JOIN myinput1 b;

@@ -8,7 +8,7 @@ No rows affected
 >>>  CREATE TABLE T1(key STRING, value STRING) STORED AS TEXTFILE;
 No rows affected 
 >>>  
->>>  LOAD DATA LOCAL INPATH '../data/files/T1.txt' INTO TABLE T1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/T1.txt' INTO TABLE T1;
 No rows affected 
 >>>  
 >>>  drop table array_valued_T1;

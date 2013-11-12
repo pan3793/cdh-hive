@@ -9,6 +9,6 @@ No rows affected
 '_col0','_col1'
 No rows selected 
 >>>  
->>>  dfs -cat ../build/ql/test/data/warehouse/dest/*.txt;
+>>>  dfs -cat target/tmp/ql/test/data/warehouse/dest/*.txt;
 No rows affected 
 >>>  !record

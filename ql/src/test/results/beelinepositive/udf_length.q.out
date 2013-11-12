@@ -143,7 +143,7 @@ No rows affected
 >>>  -- Test with non-ascii characters.
 >>>  CREATE TABLE dest1(name STRING) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv4.txt' INTO TABLE dest1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv4.txt' INTO TABLE dest1;
 No rows affected 
 >>>  EXPLAIN SELECT length(dest1.name) FROM dest1;
 'Explain'

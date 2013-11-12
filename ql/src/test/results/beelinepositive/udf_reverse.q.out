@@ -145,7 +145,7 @@ No rows affected
 >>>  -- 0xE993AEE982B5
 >>>  CREATE TABLE dest1(name STRING) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv4.txt' INTO TABLE dest1;
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv4.txt' INTO TABLE dest1;
 No rows affected 
 >>>  SELECT count(1) FROM dest1 WHERE reverse(dest1.name) = _UTF-8 0xE993AEE982B5;
 '_c0'

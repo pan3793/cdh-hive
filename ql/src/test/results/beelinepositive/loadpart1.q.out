@@ -5,7 +5,7 @@ Saving all output to "!!{outputDirectory}!!/loadpart1.q.raw". Enter "record" wit
 >>>  
 >>>  create table hive_test_src ( col1 string ) stored as textfile ;
 No rows affected 
->>>  load data local inpath '../data/files/test.dat' overwrite into table hive_test_src ;
+>>>  load data local inpath '../../data/files/test.dat' overwrite into table hive_test_src ;
 No rows affected 
 >>>  
 >>>  create table hive_test_dst ( col1 string ) partitioned by ( pcol1 string , pcol2 string) stored as sequencefile;

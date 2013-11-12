@@ -30,7 +30,7 @@ No rows selected
 1 row selected 
 >>>  
 >>>  
->>>  load data local inpath '../data/files/kv1.txt' into table load_overwrite;
+>>>  load data local inpath '../../data/files/kv1.txt' into table load_overwrite;
 No rows affected 
 >>>  show table extended like load_overwrite;
 'tab_name'
@@ -56,7 +56,7 @@ No rows affected
 1 row selected 
 >>>  
 >>>  
->>>  load data local inpath '../data/files/kv1.txt' overwrite into table load_overwrite;
+>>>  load data local inpath '../../data/files/kv1.txt' overwrite into table load_overwrite;
 No rows affected 
 >>>  show table extended like load_overwrite;
 'tab_name'

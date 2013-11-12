@@ -2,9 +2,9 @@ Saving all output to "!!{outputDirectory}!!/nullgroup3.q.raw". Enter "record" wi
 >>>  !run !!{qFileDirectory}!!/nullgroup3.q
 >>>  CREATE TABLE tstparttbl(KEY STRING, VALUE STRING) PARTITIONED BY(ds string) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE tstparttbl PARTITION (ds='2008-04-09');
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE tstparttbl PARTITION (ds='2008-04-09');
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/nullfile.txt' INTO TABLE tstparttbl PARTITION (ds='2008-04-08');
+>>>  LOAD DATA LOCAL INPATH '../../data/files/nullfile.txt' INTO TABLE tstparttbl PARTITION (ds='2008-04-08');
 No rows affected 
 >>>  explain 
 select count(1) from tstparttbl;
@@ -67,9 +67,9 @@ select count(1) from tstparttbl;
 >>>  
 >>>  CREATE TABLE tstparttbl2(KEY STRING, VALUE STRING) PARTITIONED BY(ds string) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/nullfile.txt' INTO TABLE tstparttbl2 PARTITION (ds='2008-04-09');
+>>>  LOAD DATA LOCAL INPATH '../../data/files/nullfile.txt' INTO TABLE tstparttbl2 PARTITION (ds='2008-04-09');
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/nullfile.txt' INTO TABLE tstparttbl2 PARTITION (ds='2008-04-08');
+>>>  LOAD DATA LOCAL INPATH '../../data/files/nullfile.txt' INTO TABLE tstparttbl2 PARTITION (ds='2008-04-08');
 No rows affected 
 >>>  explain 
 select count(1) from tstparttbl2;
@@ -133,9 +133,9 @@ select count(1) from tstparttbl2;
 No rows affected 
 >>>  CREATE TABLE tstparttbl(KEY STRING, VALUE STRING) PARTITIONED BY(ds string) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/kv1.txt' INTO TABLE tstparttbl PARTITION (ds='2008-04-09');
+>>>  LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE tstparttbl PARTITION (ds='2008-04-09');
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/nullfile.txt' INTO TABLE tstparttbl PARTITION (ds='2008-04-08');
+>>>  LOAD DATA LOCAL INPATH '../../data/files/nullfile.txt' INTO TABLE tstparttbl PARTITION (ds='2008-04-08');
 No rows affected 
 >>>  explain 
 select count(1) from tstparttbl;
@@ -200,9 +200,9 @@ select count(1) from tstparttbl;
 No rows affected 
 >>>  CREATE TABLE tstparttbl2(KEY STRING, VALUE STRING) PARTITIONED BY(ds string) STORED AS TEXTFILE;
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/nullfile.txt' INTO TABLE tstparttbl2 PARTITION (ds='2008-04-09');
+>>>  LOAD DATA LOCAL INPATH '../../data/files/nullfile.txt' INTO TABLE tstparttbl2 PARTITION (ds='2008-04-09');
 No rows affected 
->>>  LOAD DATA LOCAL INPATH '../data/files/nullfile.txt' INTO TABLE tstparttbl2 PARTITION (ds='2008-04-08');
+>>>  LOAD DATA LOCAL INPATH '../../data/files/nullfile.txt' INTO TABLE tstparttbl2 PARTITION (ds='2008-04-08');
 No rows affected 
 >>>  explain 
 select count(1) from tstparttbl2;

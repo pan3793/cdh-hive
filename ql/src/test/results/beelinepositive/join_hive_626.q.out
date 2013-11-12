@@ -18,11 +18,11 @@ No rows affected
 terminated by ',' stored as textfile;
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/hive_626_foo.txt' overwrite into table hive_foo;
+>>>  load data local inpath '../../data/files/hive_626_foo.txt' overwrite into table hive_foo;
 No rows affected 
->>>  load data local inpath '../data/files/hive_626_bar.txt' overwrite into table hive_bar;
+>>>  load data local inpath '../../data/files/hive_626_bar.txt' overwrite into table hive_bar;
 No rows affected 
->>>  load data local inpath '../data/files/hive_626_count.txt' overwrite into table hive_count;
+>>>  load data local inpath '../../data/files/hive_626_count.txt' overwrite into table hive_count;
 No rows affected 
 >>>  
 >>>  explain 

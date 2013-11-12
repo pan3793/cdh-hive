@@ -6,13 +6,13 @@ No rows affected
 >>>  SET hive.output.file.extension=.txt;
 No rows affected 
 >>>  
->>>  INSERT OVERWRITE DIRECTORY '../build/ql/test/data/x/y/z/' SELECT src.* FROM src;
+>>>  INSERT OVERWRITE DIRECTORY 'target/tmp/ql/test/data/x/y/z/' SELECT src.* FROM src;
 'key','value'
 No rows selected 
 >>>  
->>>  dfs -cat ../build/ql/test/data/x/y/z/*.txt;
+>>>  dfs -cat target/tmp/ql/test/data/x/y/z/*.txt;
 No rows affected 
 >>>  
->>>  dfs -rmr ../build/ql/test/data/x;
+>>>  dfs -rmr target/tmp/ql/test/data/x;
 No rows affected 
 >>>  !record

@@ -25,9 +25,9 @@ No rows affected
 >>>  create table normal_join_results(k1 int, v1 string, k2 int, v2 string);
 No rows affected 
 >>>  
->>>  load data local inpath '../data/files/empty1.txt' into table smb_bucket4_1;
+>>>  load data local inpath '../../data/files/empty1.txt' into table smb_bucket4_1;
 No rows affected 
->>>  load data local inpath '../data/files/empty2.txt' into table smb_bucket4_1;
+>>>  load data local inpath '../../data/files/empty2.txt' into table smb_bucket4_1;
 No rows affected 
 >>>  
 >>>  insert overwrite table smb_bucket4_2 
