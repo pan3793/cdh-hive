@@ -212,6 +212,7 @@ public class TestHadoop20SAuthBridge extends TestCase {
   public void testSaslWithHiveMetaStore() throws Exception {
     setup();
     UserGroupInformation clientUgi = UserGroupInformation.getCurrentUser();
+    setGroupsInConf(clientUgi.getGroupNames(), clientUgi.getShortUserName());
     obtainTokenAndAddIntoUGI(clientUgi, null);
     obtainTokenAndAddIntoUGI(clientUgi, "tokenForFooTablePartition");
   }
