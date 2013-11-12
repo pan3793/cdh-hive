@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.hive</groupId>
     <artifactId>hive</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.12.0-cdh5.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
-      <version>${httpcomponents.version}</version>
+      <version>${httpcomponents.core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.thrift</groupId>
@@ -85,7 +85,7 @@
     <profile>
       <id>hadoop-1</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
       <dependencies>
         <dependency>
