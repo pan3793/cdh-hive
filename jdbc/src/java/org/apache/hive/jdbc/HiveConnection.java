@@ -177,7 +177,7 @@ public class HiveConnection implements java.sql.Connection {
                   HiveAuthFactory.getSocketTransport(host, port, loginTimeout), saslProps);
         } else if ((tokenStr = getClientDelegationToken(sessConf)) != null) {
           transport = KerberosSaslHelper.getTokenTransport(tokenStr,
-                  host, transport);
+                  host, HiveAuthFactory.getSocketTransport(host, port, loginTimeout));
         } else {
           String userName = sessConf.get(HIVE_AUTH_USER);
           if ((userName == null) || userName.isEmpty()) {
