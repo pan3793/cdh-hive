@@ -61,3 +61,16 @@ FROM src LIMIT 1;
 SELECT CASE 1 WHEN 1 THEN 'yo'
 ELSE reflect('java.lang.String', 'bogus', 1) END
 FROM src LIMIT 1;
+
+
+-- Allow compatible types to be used in return value
+SELECT CASE
+        WHEN 1=1 THEN 123L
+        ELSE 0S
+       END,
+       CASE
+        WHEN 1=1 THEN 123L
+        WHEN 1=2 THEN 1
+        ELSE 0Y
+       END
+FROM src LIMIT 1;
