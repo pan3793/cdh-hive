@@ -639,6 +639,7 @@ public final class FunctionRegistry {
     case DOUBLE:
     case STRING: // String or string equivalent is considered numeric when used in arithmetic operator.
     case VARCHAR:
+    case CHAR:
     case VOID: // NULL is considered numeric type for arithmetic operators.
       return true;
     default:
