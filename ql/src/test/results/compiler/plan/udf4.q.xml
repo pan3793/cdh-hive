@@ -607,17 +607,7 @@
                      </object> 
                     </void> 
                     <void property="genericUDF"> 
-                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                      <void property="operator"> 
-                       <boolean>true</boolean> 
-                      </void> 
-                      <void property="udfClassName"> 
-                       <string>org.apache.hadoop.hive.ql.udf.UDFOPNegative</string> 
-                      </void> 
-                      <void property="udfName"> 
-                       <string>-</string> 
-                      </void> 
-                     </object> 
+                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNegative"/> 
                     </void> 
                     <void property="typeInfo"> 
                      <object idref="PrimitiveTypeInfo0"/> 
@@ -695,17 +685,7 @@
                      </object> 
                     </void> 
                     <void property="genericUDF"> 
-                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                      <void property="operator"> 
-                       <boolean>true</boolean> 
-                      </void> 
-                      <void property="udfClassName"> 
-                       <string>org.apache.hadoop.hive.ql.udf.UDFOPNegative</string> 
-                      </void> 
-                      <void property="udfName"> 
-                       <string>-</string> 
-                      </void> 
-                     </object> 
+                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNegative"/> 
                     </void> 
                     <void property="typeInfo"> 
                      <object idref="PrimitiveTypeInfo0"/> 
@@ -715,14 +695,7 @@
                  </object> 
                 </void> 
                 <void property="genericUDF"> 
-                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                  <void property="udfClassName"> 
-                   <string>org.apache.hadoop.hive.ql.udf.UDFFloor</string> 
-                  </void> 
-                  <void property="udfName"> 
-                   <string>floor</string> 
-                  </void> 
-                 </object> 
+                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFFloor"/> 
                 </void> 
                 <void property="typeInfo"> 
                  <object idref="PrimitiveTypeInfo1"/> 
@@ -747,14 +720,7 @@
                  </object> 
                 </void> 
                 <void property="genericUDF"> 
-                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                  <void property="udfClassName"> 
-                   <string>org.apache.hadoop.hive.ql.udf.UDFFloor</string> 
-                  </void> 
-                  <void property="udfName"> 
-                   <string>floor</string> 
-                  </void> 
-                 </object> 
+                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFFloor"/> 
                 </void> 
                 <void property="typeInfo"> 
                  <object idref="PrimitiveTypeInfo1"/> 
@@ -779,14 +745,7 @@
                  </object> 
                 </void> 
                 <void property="genericUDF"> 
-                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                  <void property="udfClassName"> 
-                   <string>org.apache.hadoop.hive.ql.udf.UDFFloor</string> 
-                  </void> 
-                  <void property="udfName"> 
-                   <string>floor</string> 
-                  </void> 
-                 </object> 
+                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFFloor"/> 
                 </void> 
                 <void property="typeInfo"> 
                  <object idref="PrimitiveTypeInfo1"/> 
@@ -815,17 +774,7 @@
                      </object> 
                     </void> 
                     <void property="genericUDF"> 
-                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                      <void property="operator"> 
-                       <boolean>true</boolean> 
-                      </void> 
-                      <void property="udfClassName"> 
-                       <string>org.apache.hadoop.hive.ql.udf.UDFOPNegative</string> 
-                      </void> 
-                      <void property="udfName"> 
-                       <string>-</string> 
-                      </void> 
-                     </object> 
+                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNegative"/> 
                     </void> 
                     <void property="typeInfo"> 
                      <object idref="PrimitiveTypeInfo0"/> 
@@ -885,14 +834,7 @@
                  </object> 
                 </void> 
                 <void property="genericUDF"> 
-                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                  <void property="udfClassName"> 
-                   <string>org.apache.hadoop.hive.ql.udf.UDFCeil</string> 
-                  </void> 
-                  <void property="udfName"> 
-                   <string>ceil</string> 
-                  </void> 
-                 </object> 
+                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFCeil"/> 
                 </void> 
                 <void property="typeInfo"> 
                  <object idref="PrimitiveTypeInfo1"/> 
@@ -949,14 +891,7 @@
                  </object> 
                 </void> 
                 <void property="genericUDF"> 
-                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                  <void property="udfClassName"> 
-                   <string>org.apache.hadoop.hive.ql.udf.UDFCeil</string> 
-                  </void> 
-                  <void property="udfName"> 
-                   <string>ceiling</string> 
-                  </void> 
-                 </object> 
+                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFCeil"/> 
                 </void> 
                 <void property="typeInfo"> 
                  <object idref="PrimitiveTypeInfo1"/> 
@@ -985,17 +920,7 @@
                      </object> 
                     </void> 
                     <void property="genericUDF"> 
-                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                      <void property="operator"> 
-                       <boolean>true</boolean> 
-                      </void> 
-                      <void property="udfClassName"> 
-                       <string>org.apache.hadoop.hive.ql.udf.UDFOPNegative</string> 
-                      </void> 
-                      <void property="udfName"> 
-                       <string>-</string> 
-                      </void> 
-                     </object> 
+                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNegative"/> 
                     </void> 
                     <void property="typeInfo"> 
                      <object idref="PrimitiveTypeInfo0"/> 
@@ -1005,14 +930,7 @@
                  </object> 
                 </void> 
                 <void property="genericUDF"> 
-                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                  <void property="udfClassName"> 
-                   <string>org.apache.hadoop.hive.ql.udf.UDFCeil</string> 
-                  </void> 
-                  <void property="udfName"> 
-                   <string>ceil</string> 
-                  </void> 
-                 </object> 
+                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFCeil"/> 
                 </void> 
                 <void property="typeInfo"> 
                  <object idref="PrimitiveTypeInfo1"/> 
@@ -1037,14 +955,7 @@
                  </object> 
                 </void> 
                 <void property="genericUDF"> 
-                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                  <void property="udfClassName"> 
-                   <string>org.apache.hadoop.hive.ql.udf.UDFCeil</string> 
-                  </void> 
-                  <void property="udfName"> 
-                   <string>ceil</string> 
-                  </void> 
-                 </object> 
+                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFCeil"/> 
                 </void> 
                 <void property="typeInfo"> 
                  <object idref="PrimitiveTypeInfo1"/> 
@@ -1083,17 +994,7 @@
                      </object> 
                     </void> 
                     <void property="genericUDF"> 
-                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                      <void property="operator"> 
-                       <boolean>true</boolean> 
-                      </void> 
-                      <void property="udfClassName"> 
-                       <string>org.apache.hadoop.hive.ql.udf.UDFOPNegative</string> 
-                      </void> 
-                      <void property="udfName"> 
-                       <string>-</string> 
-                      </void> 
-                     </object> 
+                     <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNegative"/> 
                     </void> 
                     <void property="typeInfo"> 
                      <object idref="PrimitiveTypeInfo2"/> 
@@ -1163,17 +1064,7 @@
                  </object> 
                 </void> 
                 <void property="genericUDF"> 
-                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge"> 
-                  <void property="operator"> 
-                   <boolean>true</boolean> 
-                  </void> 
-                  <void property="udfClassName"> 
-                   <string>org.apache.hadoop.hive.ql.udf.UDFOPNegative</string> 
-                  </void> 
-                  <void property="udfName"> 
-                   <string>-</string> 
-                  </void> 
-                 </object> 
+                 <object class="org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNegative"/> 
                 </void> 
                 <void property="typeInfo"> 
                  <object idref="PrimitiveTypeInfo2"/> 

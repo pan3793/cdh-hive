@@ -16,49 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hive.ql.udf;
+package org.apache.hadoop.hive.ql.udf.generic;
 
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.exec.Description;
-import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.hadoop.io.LongWritable;
 
-/**
- * UDFCeil.
- *
- */
-@Description(name = "ceil,ceiling",
-    value = "_FUNC_(x) - Find the smallest integer not smaller than x",
-    extended = "Example:\n"
+@Description(name = "floor",
+value = "_FUNC_(x) - Find the largest integer not greater than x",
+extended = "Example:\n"
     + "  > SELECT _FUNC_(-0.1) FROM src LIMIT 1;\n"
-    + "  0\n"
+    + "  -1\n"
     + "  > SELECT _FUNC_(5) FROM src LIMIT 1;\n" + "  5")
-public class UDFCeil extends UDF {
-  private final LongWritable longWritable = new LongWritable();
-  private final HiveDecimalWritable decimalWritable = new HiveDecimalWritable();
+public final class GenericUDFFloor extends GenericUDFFloorCeilBase {
 
-  public UDFCeil() {
+  public GenericUDFFloor() {
+    super();
+    opDisplayName = "floor";
   }
 
-  public LongWritable evaluate(DoubleWritable i) {
-    if (i == null) {
-      return null;
-    } else {
-      longWritable.set((long) Math.ceil(i.get()));
-      return longWritable;
-    }
+  @Override
+  protected LongWritable evaluate(DoubleWritable input) {
+    longWritable.set((long) Math.floor(input.get()));
+    return longWritable;
   }
 
-  public HiveDecimalWritable evaluate(HiveDecimalWritable i) {
-    if (i == null) {
-      return null;
-    } else {
-      HiveDecimal bd = i.getHiveDecimal();
-      int origScale = bd.scale();
-      decimalWritable.set(bd.setScale(0, HiveDecimal.ROUND_CEILING).setScale(origScale));
-      return decimalWritable;
-    }
+  @Override
+  protected HiveDecimalWritable evaluate(HiveDecimalWritable input) {
+    HiveDecimal bd = input.getHiveDecimal();
+    decimalWritable.set(bd.setScale(0, HiveDecimal.ROUND_FLOOR));
+    return decimalWritable;
   }
+
 }
