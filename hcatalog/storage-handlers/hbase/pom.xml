@@ -202,6 +202,19 @@
         <!-- test -->
         <dependency>
           <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-common</artifactId>
+          <version>${hadoop-23.version}</version>
+          <classifier>tests</classifier>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-mapreduce-client-hs</artifactId>
+          <version>${hadoop-23.version}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
           <version>${hadoop-23.version}</version>
           <classifier>tests</classifier>
@@ -214,6 +227,13 @@
           <classifier>tests</classifier>
           <scope>test</scope>
         </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+         <artifactId>hadoop-yarn-server-tests</artifactId>
+         <version>${hadoop-23.version}</version>
+         <classifier>tests</classifier>
+         <scope>test</scope>
+       </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-common</artifactId>

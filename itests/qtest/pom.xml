@@ -312,12 +312,6 @@
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-server</artifactId>
           <version>${hbase.hadoop2.version}</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.hbase</groupId>
-          <artifactId>hbase-server</artifactId>
-          <version>${hbase.hadoop2.version}</version>
           <classifier>tests</classifier>
           <scope>test</scope>
         </dependency>
