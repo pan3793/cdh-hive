@@ -710,6 +710,7 @@ class ColumnStatisticsImpl implements ColumnStatistics {
           case DOUBLE:
             return new DoubleStatisticsImpl();
           case STRING:
+          case CHAR:
           case VARCHAR:
             return new StringStatisticsImpl();
           case DECIMAL:
