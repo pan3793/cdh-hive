@@ -776,7 +776,7 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
     Properties props;
     if (isEmptyPath) {
       PartitionDesc partDesc = work.getPathToPartitionInfo().get(path);
-      props = partDesc.getProperties();
+      props = partDesc.getOverlayedProperties();
       outFileFormat = partDesc.getOutputFileFormatClass();
       nonNative = partDesc.getTableDesc().isNonNative();
       oneRow = partDesc.getInputFileFormatClass() == OneNullRowInputFormat.class;
