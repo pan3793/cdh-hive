@@ -2906,7 +2906,7 @@ public final class Utilities {
     PartitionDesc partDesc = work.getPathToPartitionInfo().get(strPath);
     boolean nonNative = partDesc.getTableDesc().isNonNative();
     boolean oneRow = partDesc.getInputFileFormatClass() == OneNullRowInputFormat.class;
-    Properties props = partDesc.getProperties();
+    Properties props = partDesc.getOverlayedProperties();
     Class<? extends HiveOutputFormat> outFileFormat = partDesc.getOutputFileFormatClass();
 
     if (nonNative) {
