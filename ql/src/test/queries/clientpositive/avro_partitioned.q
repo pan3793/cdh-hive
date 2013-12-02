@@ -71,3 +71,7 @@ SELECT * FROM episodes_partitioned LIMIT 5;
 SELECT * FROM episodes_partitioned WHERE doctor_pt = 6;
 -- Fetch w/non-existant partition
 SELECT * FROM episodes_partitioned WHERE doctor_pt = 7 LIMIT 5;
+
+-- Alter table add an empty partition
+ALTER TABLE episodes_partitioned ADD PARTITION (doctor_pt=7);
+SELECT COUNT(*) FROM episodes_partitioned;

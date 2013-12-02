@@ -107,7 +107,7 @@ public class AvroGenericRecordReader implements
                       " with input split " + split);
           }
 
-          Properties props = pathsAndParts.getValue().getProperties();
+          Properties props = pathsAndParts.getValue().getOverlayedProperties();
           if(props.containsKey(AvroSerdeUtils.SCHEMA_LITERAL) || props.containsKey(AvroSerdeUtils.SCHEMA_URL)) {
             return AvroSerdeUtils.determineSchemaOrThrowException(props);
           }
