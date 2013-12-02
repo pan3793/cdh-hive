@@ -61,7 +61,7 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
    * exactly what we want.
    */
   private GenericUDF genericUDF;
-  private List<ExprNodeDesc> childExprs;
+  private List<ExprNodeDesc> chidren;
   /**
    * This class uses a writableObjectInspector rather than a TypeInfo to store
    * the canonical type information for this NodeDesc.
@@ -86,7 +86,7 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
         ObjectInspectorUtils.getWritableObjectInspector(oi);
     assert (genericUDF != null);
     this.genericUDF = genericUDF;
-    this.childExprs = children;
+    this.chidren = children;
   }
 
   @Override
@@ -102,17 +102,13 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
     this.genericUDF = genericUDF;
   }
 
-  public List<ExprNodeDesc> getChildExprs() {
-    return childExprs;
-  }
-
-  public void setChildExprs(List<ExprNodeDesc> children) {
-    childExprs = children;
+  public void setChildren(List<ExprNodeDesc> children) {
+    chidren = children;
   }
 
   @Override
   public List<ExprNodeDesc> getChildren() {
-    return childExprs;
+    return chidren;
   }
 
   @Override
@@ -120,11 +116,11 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
     StringBuilder sb = new StringBuilder();
     sb.append(genericUDF.getClass().toString());
     sb.append("(");
-    for (int i = 0; i < childExprs.size(); i++) {
+    for (int i = 0; i < chidren.size(); i++) {
       if (i > 0) {
         sb.append(", ");
       }
-      sb.append(childExprs.get(i).toString());
+      sb.append(chidren.get(i).toString());
     }
     sb.append("(");
     sb.append(")");
@@ -135,9 +131,9 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
   @Override
   public String getExprString() {
     // Get the children expr strings
-    String[] childrenExprStrings = new String[childExprs.size()];
+    String[] childrenExprStrings = new String[chidren.size()];
     for (int i = 0; i < childrenExprStrings.length; i++) {
-      childrenExprStrings[i] = childExprs.get(i).getExprString();
+      childrenExprStrings[i] = chidren.get(i).getExprString();
     }
 
     return genericUDF.getDisplayString(childrenExprStrings);
@@ -146,10 +142,10 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
   @Override
   public List<String> getCols() {
     List<String> colList = new ArrayList<String>();
-    if (childExprs != null) {
+    if (chidren != null) {
       int pos = 0;
-      while (pos < childExprs.size()) {
-        List<String> colCh = childExprs.get(pos).getCols();
+      while (pos < chidren.size()) {
+        List<String> colCh = chidren.get(pos).getCols();
         colList = Utilities.mergeUniqElems(colList, colCh);
         pos++;
       }
@@ -160,8 +156,8 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
 
   @Override
   public ExprNodeDesc clone() {
-    List<ExprNodeDesc> cloneCh = new ArrayList<ExprNodeDesc>(childExprs.size());
-    for (ExprNodeDesc ch : childExprs) {
+    List<ExprNodeDesc> cloneCh = new ArrayList<ExprNodeDesc>(chidren.size());
+    for (ExprNodeDesc ch : chidren) {
       cloneCh.add(ch.clone());
     }
     ExprNodeGenericFuncDesc clone = new ExprNodeGenericFuncDesc(typeInfo,
@@ -256,12 +252,12 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
       }
     }
 
-    if (childExprs.size() != dest.getChildExprs().size()) {
+    if (chidren.size() != dest.getChildren().size()) {
       return false;
     }
 
-    for (int pos = 0; pos < childExprs.size(); pos++) {
-      if (!childExprs.get(pos).isSame(dest.getChildExprs().get(pos))) {
+    for (int pos = 0; pos < chidren.size(); pos++) {
+      if (!chidren.get(pos).isSame(dest.getChildren().get(pos))) {
         return false;
       }
     }
@@ -274,7 +270,7 @@ public class ExprNodeGenericFuncDesc extends ExprNodeDesc implements
     int superHashCode = super.hashCode();
     HashCodeBuilder builder = new HashCodeBuilder();
     builder.appendSuper(superHashCode);
-    builder.append(childExprs);
+    builder.append(chidren);
     return builder.toHashCode();
   }
 
