@@ -103,33 +103,33 @@
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-client</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <version>${hbase.hadoop2.version}</version>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-server</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <version>${hbase.hadoop2.version}</version>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-common</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <version>${hbase.hadoop2.version}</version>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-hadoop-compat</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <version>${hbase.hadoop2.version}</version>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
-          <artifactId>hbase-hadoop1-compat</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <artifactId>hbase-hadoop2-compat</artifactId>
+          <version>${hbase.hadoop2.version}</version>
           <classifier>tests</classifier>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
-          <artifactId>hbase-hadoop1-compat</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <artifactId>hbase-hadoop2-compat</artifactId>
+          <version>${hbase.hadoop2.version}</version>
         </dependency>
         <!-- test -->
         <dependency>
@@ -141,21 +141,21 @@
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-common</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <version>${hbase.hadoop2.version}</version>
           <type>test-jar</type>
           <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-server</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <version>${hbase.hadoop2.version}</version>
           <type>test-jar</type>
           <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-hadoop-compat</artifactId>
-          <version>${hbase.hadoop1.version}</version>
+          <version>${hbase.hadoop2.version}</version>
           <type>test-jar</type>
           <scope>test</scope>
         </dependency>
