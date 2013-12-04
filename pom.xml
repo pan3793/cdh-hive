@@ -860,7 +860,7 @@
     <profile>
       <id>hadoop-1</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
       <dependencyManagement>
         <dependencies>
