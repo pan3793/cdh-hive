@@ -64,7 +64,7 @@ public class TestMultiOutputFormat {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestMultiOutputFormat.class);
   private static File workDir;
-  private static Configuration mrConf = null;
+  private Configuration mrConf = null;
   private static FileSystem fs = null;
   private static MiniMRCluster mrCluster = null;
 
@@ -81,7 +81,6 @@ public class TestMultiOutputFormat {
     // to use MiniMRCluster. MAPREDUCE-2350
     mrCluster = new MiniMRCluster(1, fs.getUri().toString(), 1, null, null,
       new JobConf(conf));
-    mrConf = mrCluster.createJobConf();
   }
 
   private static void createWorkDir() throws IOException {
@@ -107,6 +106,7 @@ public class TestMultiOutputFormat {
    */
   @Test
   public void testMultiOutputFormatWithoutReduce() throws Throwable {
+    mrConf = mrCluster.createJobConf();
     Job job = new Job(mrConf, "MultiOutNoReduce");
     job.setMapperClass(MultiOutWordIndexMapper.class);
     job.setJarByClass(this.getClass());
@@ -174,6 +174,7 @@ public class TestMultiOutputFormat {
    */
   @Test
   public void testMultiOutputFormatWithReduce() throws Throwable {
+    mrConf = mrCluster.createJobConf();
     Job job = new Job(mrConf, "MultiOutWithReduce");
 
     job.setMapperClass(WordCountMapper.class);
