@@ -35,6 +35,9 @@ import org.apache.hive.service.CompositeService;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.operation.OperationManager;
+import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hive.service.auth.HiveAuthFactory;
 
 /**
  * SessionManager.
@@ -93,9 +96,6 @@ public class SessionManager extends CompositeService {
 
   public SessionHandle openSession(String username, String password, Map<String, String> sessionConf,
           boolean withImpersonation, String delegationToken) throws HiveSQLException {
-    if (username == null) {
-      username = threadLocalUserName.get();
-    }
     HiveSession session;
     if (withImpersonation) {
       HiveSessionImplwithUGI hiveSessionUgi = new HiveSessionImplwithUGI(username, password, sessionConf,
@@ -160,6 +160,10 @@ public class SessionManager extends CompositeService {
     threadLocalIpAddress.remove();
   }
 
+  public static String getIpAddress() {
+    return threadLocalIpAddress.get();
+  }
+
   private static ThreadLocal<String> threadLocalUserName = new ThreadLocal<String>(){
     @Override
     protected synchronized String initialValue() {
@@ -173,6 +177,10 @@ public class SessionManager extends CompositeService {
 
   private void clearUserName() {
     threadLocalUserName.remove();
+  }
+
+  public static String getUserName() {
+    return threadLocalUserName.get();
   }
 
   // execute session hooks
@@ -189,3 +197,4 @@ public class SessionManager extends CompositeService {
   }
 
 }
+

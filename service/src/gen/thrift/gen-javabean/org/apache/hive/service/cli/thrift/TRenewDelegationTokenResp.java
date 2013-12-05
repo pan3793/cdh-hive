@@ -31,22 +31,22 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TRow");
+public class TRenewDelegationTokenResp implements org.apache.thrift.TBase<TRenewDelegationTokenResp, TRenewDelegationTokenResp._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TRenewDelegationTokenResp");
 
-  private static final org.apache.thrift.protocol.TField COL_VALS_FIELD_DESC = new org.apache.thrift.protocol.TField("colVals", org.apache.thrift.protocol.TType.LIST, (short)1);
+  private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new TRowStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new TRowTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TRenewDelegationTokenRespStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TRenewDelegationTokenRespTupleSchemeFactory());
   }
 
-  private List<TColumnValue> colVals; // required
+  private TStatus status; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    COL_VALS((short)1, "colVals");
+    STATUS((short)1, "status");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -61,8 +61,8 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // COL_VALS
-          return COL_VALS;
+        case 1: // STATUS
+          return STATUS;
         default:
           return null;
       }
@@ -106,90 +106,70 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.COL_VALS, new org.apache.thrift.meta_data.FieldMetaData("colVals", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TColumnValue.class))));
+    tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TStatus.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TRow.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TRenewDelegationTokenResp.class, metaDataMap);
   }
 
-  public TRow() {
+  public TRenewDelegationTokenResp() {
   }
 
-  public TRow(
-    List<TColumnValue> colVals)
+  public TRenewDelegationTokenResp(
+    TStatus status)
   {
     this();
-    this.colVals = colVals;
+    this.status = status;
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public TRow(TRow other) {
-    if (other.isSetColVals()) {
-      List<TColumnValue> __this__colVals = new ArrayList<TColumnValue>();
-      for (TColumnValue other_element : other.colVals) {
-        __this__colVals.add(new TColumnValue(other_element));
-      }
-      this.colVals = __this__colVals;
+  public TRenewDelegationTokenResp(TRenewDelegationTokenResp other) {
+    if (other.isSetStatus()) {
+      this.status = new TStatus(other.status);
     }
   }
 
-  public TRow deepCopy() {
-    return new TRow(this);
+  public TRenewDelegationTokenResp deepCopy() {
+    return new TRenewDelegationTokenResp(this);
   }
 
   @Override
   public void clear() {
-    this.colVals = null;
+    this.status = null;
   }
 
-  public int getColValsSize() {
-    return (this.colVals == null) ? 0 : this.colVals.size();
+  public TStatus getStatus() {
+    return this.status;
   }
 
-  public java.util.Iterator<TColumnValue> getColValsIterator() {
-    return (this.colVals == null) ? null : this.colVals.iterator();
+  public void setStatus(TStatus status) {
+    this.status = status;
   }
 
-  public void addToColVals(TColumnValue elem) {
-    if (this.colVals == null) {
-      this.colVals = new ArrayList<TColumnValue>();
-    }
-    this.colVals.add(elem);
+  public void unsetStatus() {
+    this.status = null;
   }
 
-  public List<TColumnValue> getColVals() {
-    return this.colVals;
+  /** Returns true if field status is set (has been assigned a value) and false otherwise */
+  public boolean isSetStatus() {
+    return this.status != null;
   }
 
-  public void setColVals(List<TColumnValue> colVals) {
-    this.colVals = colVals;
-  }
-
-  public void unsetColVals() {
-    this.colVals = null;
-  }
-
-  /** Returns true if field colVals is set (has been assigned a value) and false otherwise */
-  public boolean isSetColVals() {
-    return this.colVals != null;
-  }
-
-  public void setColValsIsSet(boolean value) {
+  public void setStatusIsSet(boolean value) {
     if (!value) {
-      this.colVals = null;
+      this.status = null;
     }
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case COL_VALS:
+    case STATUS:
       if (value == null) {
-        unsetColVals();
+        unsetStatus();
       } else {
-        setColVals((List<TColumnValue>)value);
+        setStatus((TStatus)value);
       }
       break;
 
@@ -198,8 +178,8 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case COL_VALS:
-      return getColVals();
+    case STATUS:
+      return getStatus();
 
     }
     throw new IllegalStateException();
@@ -212,8 +192,8 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
     }
 
     switch (field) {
-    case COL_VALS:
-      return isSetColVals();
+    case STATUS:
+      return isSetStatus();
     }
     throw new IllegalStateException();
   }
@@ -222,21 +202,21 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof TRow)
-      return this.equals((TRow)that);
+    if (that instanceof TRenewDelegationTokenResp)
+      return this.equals((TRenewDelegationTokenResp)that);
     return false;
   }
 
-  public boolean equals(TRow that) {
+  public boolean equals(TRenewDelegationTokenResp that) {
     if (that == null)
       return false;
 
-    boolean this_present_colVals = true && this.isSetColVals();
-    boolean that_present_colVals = true && that.isSetColVals();
-    if (this_present_colVals || that_present_colVals) {
-      if (!(this_present_colVals && that_present_colVals))
+    boolean this_present_status = true && this.isSetStatus();
+    boolean that_present_status = true && that.isSetStatus();
+    if (this_present_status || that_present_status) {
+      if (!(this_present_status && that_present_status))
         return false;
-      if (!this.colVals.equals(that.colVals))
+      if (!this.status.equals(that.status))
         return false;
     }
 
@@ -247,28 +227,28 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
   public int hashCode() {
     HashCodeBuilder builder = new HashCodeBuilder();
 
-    boolean present_colVals = true && (isSetColVals());
-    builder.append(present_colVals);
-    if (present_colVals)
-      builder.append(colVals);
+    boolean present_status = true && (isSetStatus());
+    builder.append(present_status);
+    if (present_status)
+      builder.append(status);
 
     return builder.toHashCode();
   }
 
-  public int compareTo(TRow other) {
+  public int compareTo(TRenewDelegationTokenResp other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    TRow typedOther = (TRow)other;
+    TRenewDelegationTokenResp typedOther = (TRenewDelegationTokenResp)other;
 
-    lastComparison = Boolean.valueOf(isSetColVals()).compareTo(typedOther.isSetColVals());
+    lastComparison = Boolean.valueOf(isSetStatus()).compareTo(typedOther.isSetStatus());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetColVals()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.colVals, typedOther.colVals);
+    if (isSetStatus()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.status, typedOther.status);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -290,14 +270,14 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("TRow(");
+    StringBuilder sb = new StringBuilder("TRenewDelegationTokenResp(");
     boolean first = true;
 
-    sb.append("colVals:");
-    if (this.colVals == null) {
+    sb.append("status:");
+    if (this.status == null) {
       sb.append("null");
     } else {
-      sb.append(this.colVals);
+      sb.append(this.status);
     }
     first = false;
     sb.append(")");
@@ -306,11 +286,14 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
-    if (!isSetColVals()) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'colVals' is unset! Struct:" + toString());
+    if (!isSetStatus()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'status' is unset! Struct:" + toString());
     }
 
     // check for sub-struct validity
+    if (status != null) {
+      status.validate();
+    }
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -329,15 +312,15 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
     }
   }
 
-  private static class TRowStandardSchemeFactory implements SchemeFactory {
-    public TRowStandardScheme getScheme() {
-      return new TRowStandardScheme();
+  private static class TRenewDelegationTokenRespStandardSchemeFactory implements SchemeFactory {
+    public TRenewDelegationTokenRespStandardScheme getScheme() {
+      return new TRenewDelegationTokenRespStandardScheme();
     }
   }
 
-  private static class TRowStandardScheme extends StandardScheme<TRow> {
+  private static class TRenewDelegationTokenRespStandardScheme extends StandardScheme<TRenewDelegationTokenResp> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, TRow struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TRenewDelegationTokenResp struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -347,21 +330,11 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
           break;
         }
         switch (schemeField.id) {
-          case 1: // COL_VALS
-            if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-              {
-                org.apache.thrift.protocol.TList _list102 = iprot.readListBegin();
-                struct.colVals = new ArrayList<TColumnValue>(_list102.size);
-                for (int _i103 = 0; _i103 < _list102.size; ++_i103)
-                {
-                  TColumnValue _elem104; // required
-                  _elem104 = new TColumnValue();
-                  _elem104.read(iprot);
-                  struct.colVals.add(_elem104);
-                }
-                iprot.readListEnd();
-              }
-              struct.setColValsIsSet(true);
+          case 1: // STATUS
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+              struct.status = new TStatus();
+              struct.status.read(iprot);
+              struct.setStatusIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -375,20 +348,13 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, TRow struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TRenewDelegationTokenResp struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.colVals != null) {
-        oprot.writeFieldBegin(COL_VALS_FIELD_DESC);
-        {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.colVals.size()));
-          for (TColumnValue _iter105 : struct.colVals)
-          {
-            _iter105.write(oprot);
-          }
-          oprot.writeListEnd();
-        }
+      if (struct.status != null) {
+        oprot.writeFieldBegin(STATUS_FIELD_DESC);
+        struct.status.write(oprot);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -397,41 +363,26 @@ public class TRow implements org.apache.thrift.TBase<TRow, TRow._Fields>, java.i
 
   }
 
-  private static class TRowTupleSchemeFactory implements SchemeFactory {
-    public TRowTupleScheme getScheme() {
-      return new TRowTupleScheme();
+  private static class TRenewDelegationTokenRespTupleSchemeFactory implements SchemeFactory {
+    public TRenewDelegationTokenRespTupleScheme getScheme() {
+      return new TRenewDelegationTokenRespTupleScheme();
     }
   }
 
-  private static class TRowTupleScheme extends TupleScheme<TRow> {
+  private static class TRenewDelegationTokenRespTupleScheme extends TupleScheme<TRenewDelegationTokenResp> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, TRow struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TRenewDelegationTokenResp struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
-      {
-        oprot.writeI32(struct.colVals.size());
-        for (TColumnValue _iter106 : struct.colVals)
-        {
-          _iter106.write(oprot);
-        }
-      }
+      struct.status.write(oprot);
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, TRow struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TRenewDelegationTokenResp struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      {
-        org.apache.thrift.protocol.TList _list107 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.colVals = new ArrayList<TColumnValue>(_list107.size);
-        for (int _i108 = 0; _i108 < _list107.size; ++_i108)
-        {
-          TColumnValue _elem109; // required
-          _elem109 = new TColumnValue();
-          _elem109.read(iprot);
-          struct.colVals.add(_elem109);
-        }
-      }
-      struct.setColValsIsSet(true);
+      struct.status = new TStatus();
+      struct.status.read(iprot);
+      struct.setStatusIsSet(true);
     }
   }
 

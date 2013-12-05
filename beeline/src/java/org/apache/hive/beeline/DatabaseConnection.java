@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -44,18 +45,16 @@ class DatabaseConnection {
   private DatabaseMetaData meta;
   private final String driver;
   private final String url;
-  private final String username;
-  private final String password;
+  private final Properties props;
   private Schema schema = null;
   private Completor sqlCompletor = null;
 
 
   public DatabaseConnection(BeeLine beeLine, String driver, String url,
-      String username, String password) throws SQLException {
+       Properties props) throws SQLException {
     this.beeLine = beeLine;
     this.driver = driver;
-    this.username = username;
-    this.password = password;
+    this.props = props;
     this.url = appendHiveVariables(beeLine, url);
   }
 
@@ -157,7 +156,7 @@ class DatabaseConnection {
       return beeLine.error(e);
     }
 
-    setConnection(DriverManager.getConnection(getUrl(), username, password));
+    setConnection(DriverManager.getConnection(getUrl(), props));
     setDatabaseMetaData(getConnection().getMetaData());
 
     try {

@@ -82,6 +82,8 @@ class BeeLineOpts implements Completor {
   private String historyFile = new File(saveDir(), "history").getAbsolutePath();
 
   private String scriptFile = null;
+  private String authType = null;
+
 
   private Map<String, String> hiveVariables = new HashMap<String, String>();
 
@@ -435,6 +437,13 @@ class BeeLineOpts implements Completor {
     this.allowMultiLineCommand = allowMultiLineCommand;
   }
 
+  public String getAuthType() {
+    return authType;
+  }
+
+  public void setAuthType(String authType) {
+    this.authType = authType;
+  }
 
   public Map<String, String> getHiveVariables() {
     return hiveVariables;

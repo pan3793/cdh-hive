@@ -2034,4 +2034,12 @@
   </description>
 </property>
 
+<property>
+  <name>hive.server2.allow.user.substitution</name>
+  <value>true</value>
+  <description>
+  Allow altername user to be specified as part of HiveServer2 open connection requestion
+  </description>
+</property>
+
 </configuration>

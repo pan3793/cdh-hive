@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hive.service.auth.HiveAuthFactory;
+
 
 /**
  * CLIServiceClient.
@@ -157,5 +159,17 @@ public abstract class CLIServiceClient implements ICLIService {
     // TODO: provide STATIC default value
     return fetchResults(opHandle, FetchOrientation.FETCH_NEXT, 1000);
   }
+
+  @Override
+  public abstract String getDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String owner, String renewer) throws HiveSQLException;
+
+  @Override
+  public abstract void cancelDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String tokenStr) throws HiveSQLException;
+
+  @Override
+  public abstract void renewDelegationToken(SessionHandle sessionHandle, HiveAuthFactory authFactory,
+      String tokenStr) throws HiveSQLException;
 
 }

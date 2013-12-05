@@ -403,6 +403,13 @@ import org.apache.thrift.transport.TTransportFactory;
      }
 
      @Override
+     public String getDelegationTokenWithService(String owner, String renewer, String service)
+         throws IOException, InterruptedException {
+       String token = getDelegationToken(owner, renewer);
+       return ShimLoader.getHadoopShims().addServiceToToken(token, service);
+     }
+
+     @Override
      public long renewDelegationToken(String tokenStrForm) throws IOException {
        if (!authenticationMethod.get().equals(AuthenticationMethod.KERBEROS)) {
          throw new AuthorizationException(
