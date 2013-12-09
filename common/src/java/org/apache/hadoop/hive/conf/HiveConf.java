@@ -773,6 +773,8 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_SSL_KEYSTORE_PASSWORD("hive.server2.keystore.password", ""),
     HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true),
 
+    HIVE_SERVER2_IN_MEM_LOGGING("hive.server2.in.mem.logging", true),
+    HIVE_SERVER2_IN_MEM_LOG_SIZE("hive.server2.in.mem.log.size", 128 * 1024),
     HIVE_SECURITY_COMMAND_WHITELIST("hive.security.command.whitelist", "set,reset,dfs,add,delete"),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", ""),

@@ -208,4 +208,10 @@ public class EmbeddedCLIServiceClient extends CLIServiceClient {
       String tokenStr) throws HiveSQLException {
     cliService.renewDelegationToken(sessionHandle, authFactory, tokenStr);
   }
+
+  @Override
+  public String getLog(OperationHandle opHandle)
+      throws HiveSQLException {
+    return cliService.getLog(opHandle);
+  }
 }
