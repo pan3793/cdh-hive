@@ -152,24 +152,6 @@ public class HiveConnection implements java.sql.Connection {
     configureConnection(connParams.getDbName());
   }
 
-  private void configureConnection(Utils.JdbcConnectionParams connParams)
-      throws SQLException {
-    // set the hive variable in session state for local mode
-    if (isEmbeddedMode) {
-      if (!hiveVarMap.isEmpty()) {
-        SessionState.get().setHiveVariables(hiveVarMap);
-      }
-    } else {
-      // for remote JDBC client, try to set the conf var using 'set foo=bar'
-      Statement stmt = createStatement();
-      for (Entry<String, String> hiveConf : hiveConfMap.entrySet()) {
-        stmt.execute("set " + hiveConf.getKey() + "=" + hiveConf.getValue());
-        stmt.close();
-      }
-    }
-
-    retrieveServerName(hiveConfMap);
-  }
 
   private void openTransport(String uri, String host, int port, Map<String, String> sessConf )
       throws SQLException {

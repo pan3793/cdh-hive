@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -931,8 +932,9 @@ public class TestJdbcDriver2 extends TestCase {
   public void testDatabaseMetaData() throws SQLException {
     DatabaseMetaData meta = con.getMetaData();
 
-    assertEquals("Hive", meta.getDatabaseProductName());
-    assertEquals("0.10.0", meta.getDatabaseProductVersion());
+    assertEquals("Apache Hive", meta.getDatabaseProductName());
+    assertTrue("verifying hive version pattern. got " + meta.getDatabaseProductVersion(),
+        Pattern.matches("\\d+\\.\\d+\\.\\d+.*", meta.getDatabaseProductVersion()) );
     assertEquals(DatabaseMetaData.sqlStateSQL99, meta.getSQLStateType());
     assertFalse(meta.supportsCatalogsInTableDefinitions());
     assertFalse(meta.supportsSchemasInTableDefinitions());
