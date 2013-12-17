@@ -579,6 +579,9 @@ import org.apache.thrift.transport.TTransportFactory;
            if (useProxy) {
              clientUgi = UserGroupInformation.createProxyUser(
                endUser, UserGroupInformation.getLoginUser());
+             // ensure that metastore user has privilege to impersonate the requesting user
+             ProxyUsers.authorize(clientUgi,
+                 getRemoteAddress().getHostAddress(), null);
              remoteUser.set(clientUgi.getShortUserName());
              return clientUgi.doAs(new PrivilegedExceptionAction<Boolean>() {
                  public Boolean run() {
