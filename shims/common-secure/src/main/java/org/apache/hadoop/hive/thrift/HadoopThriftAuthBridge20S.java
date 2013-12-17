@@ -606,7 +606,10 @@ public class HadoopThriftAuthBridge20S extends HadoopThriftAuthBridge {
         UserGroupInformation clientUgi = null;
         try {
           if (useProxy) {
-            clientUgi = UserGroupInformation.createProxyUser(
+              // ensure that metastore user has privilege to impersonate the requesting user
+              ProxyUsers.authorize(clientUgi,
+                  getRemoteAddress().getHostAddress(), null);
+              clientUgi = UserGroupInformation.createProxyUser(
                 endUser, UserGroupInformation.getLoginUser());
             remoteUser.set(clientUgi.getShortUserName());
             LOG.debug("Set remoteUser :" + remoteUser.get());
