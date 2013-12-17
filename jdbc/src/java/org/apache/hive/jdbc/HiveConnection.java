@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslException;
@@ -109,7 +110,7 @@ public class HiveConnection implements java.sql.Connection {
   private int loginTimeout = 0;
 
   public HiveConnection(String uri, Properties info) throws SQLException {
-    loginTimeout = DriverManager.getLoginTimeout();
+    setupLoginTimeout();
     jdbcURI = uri;
     // parse the connection uri
     Utils.JdbcConnectionParams connParams;
@@ -388,6 +389,16 @@ public class HiveConnection implements java.sql.Connection {
       varValue = varDefault;
     }
     return varValue;
+  }
+
+  // copy loginTimeout from driver manager. Thrift timeout needs to be in millis
+  private void setupLoginTimeout() {
+    long timeOut = TimeUnit.SECONDS.toMillis(DriverManager.getLoginTimeout());
+    if (timeOut > Integer.MAX_VALUE) {
+      loginTimeout = Integer.MAX_VALUE;
+    } else {
+      loginTimeout = (int) timeOut;
+    }
   }
 
   public void abort(Executor executor) throws SQLException {
