@@ -145,7 +145,7 @@ public class EmbeddedCLIServiceClient extends CLIServiceClient {
   @Override
   public OperationHandle getFunctions(SessionHandle sessionHandle,
       String catalogName, String schemaName, String functionName)
-      throws HiveSQLException {
+          throws HiveSQLException {
     return cliService.getFunctions(sessionHandle, catalogName, schemaName, functionName);
   }
 
@@ -153,7 +153,7 @@ public class EmbeddedCLIServiceClient extends CLIServiceClient {
    * @see org.apache.hive.service.cli.CLIServiceClient#getOperationStatus(org.apache.hive.service.cli.OperationHandle)
    */
   @Override
-  public OperationState getOperationStatus(OperationHandle opHandle) throws HiveSQLException {
+  public OperationStatus getOperationStatus(OperationHandle opHandle) throws HiveSQLException {
     return cliService.getOperationStatus(opHandle);
   }
 

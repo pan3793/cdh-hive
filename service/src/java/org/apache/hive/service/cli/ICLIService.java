@@ -29,11 +29,11 @@ public interface ICLIService {
 
   public abstract SessionHandle openSession(String username, String password,
       Map<String, String> configuration)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
   public abstract SessionHandle openSessionWithImpersonation(String username, String password,
       Map<String, String> configuration, String delegationToken)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
   public abstract void closeSession(SessionHandle sessionHandle)
       throws HiveSQLException;
@@ -43,11 +43,11 @@ public interface ICLIService {
 
   public abstract OperationHandle executeStatement(SessionHandle sessionHandle, String statement,
       Map<String, String> confOverlay)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
   public abstract OperationHandle executeStatementAsync(SessionHandle sessionHandle,
       String statement, Map<String, String> confOverlay)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
   public abstract OperationHandle getTypeInfo(SessionHandle sessionHandle)
       throws HiveSQLException;
@@ -57,24 +57,24 @@ public interface ICLIService {
 
   public abstract OperationHandle getSchemas(SessionHandle sessionHandle,
       String catalogName, String schemaName)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
   public abstract OperationHandle getTables(SessionHandle sessionHandle,
       String catalogName, String schemaName, String tableName, List<String> tableTypes)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
   public abstract OperationHandle getTableTypes(SessionHandle sessionHandle)
       throws HiveSQLException;
 
   public abstract OperationHandle getColumns(SessionHandle sessionHandle,
       String catalogName, String schemaName, String tableName, String columnName)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
   public abstract OperationHandle getFunctions(SessionHandle sessionHandle,
       String catalogName, String schemaName, String functionName)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
-  public abstract OperationState getOperationStatus(OperationHandle opHandle)
+  public abstract OperationStatus getOperationStatus(OperationHandle opHandle)
       throws HiveSQLException;
 
   public abstract void cancelOperation(OperationHandle opHandle)
@@ -88,7 +88,7 @@ public interface ICLIService {
 
   public abstract RowSet fetchResults(OperationHandle opHandle, FetchOrientation orientation,
       long maxRows)
-      throws HiveSQLException;
+          throws HiveSQLException;
 
   public abstract RowSet fetchResults(OperationHandle opHandle)
       throws HiveSQLException;

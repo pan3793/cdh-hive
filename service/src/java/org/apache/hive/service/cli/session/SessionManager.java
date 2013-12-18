@@ -18,9 +18,11 @@
 
 package org.apache.hive.service.cli.session;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -47,8 +49,9 @@ import org.apache.hive.service.auth.HiveAuthFactory;
 public class SessionManager extends CompositeService {
   private static final Log LOG = LogFactory.getLog(CompositeService.class);
   private HiveConf hiveConf;
-  private final Map<SessionHandle, HiveSession> handleToSession = new HashMap<SessionHandle, HiveSession>();
-  private OperationManager operationManager = new OperationManager();
+  private final Map<SessionHandle, HiveSession> handleToSession =
+      new ConcurrentHashMap<SessionHandle, HiveSession>();
+  private final OperationManager operationManager = new OperationManager();
   private LogManager logManager = new LogManager();
   private static final Object sessionMapLock = new Object();
   private ThreadPoolExecutor backgroundOperationPool;
@@ -60,7 +63,6 @@ public class SessionManager extends CompositeService {
   @Override
   public synchronized void init(HiveConf hiveConf) {
     this.hiveConf = hiveConf;
-    operationManager = new OperationManager();
     int backgroundPoolSize = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_ASYNC_EXEC_THREADS);
     LOG.info("HiveServer2: Async execution thread pool size: " + backgroundPoolSize);
     int backgroundPoolQueueSize = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_ASYNC_EXEC_WAIT_QUEUE_SIZE);
@@ -102,17 +104,20 @@ public class SessionManager extends CompositeService {
   }
 
   public SessionHandle openSession(String username, String password, Map<String, String> sessionConf)
-          throws HiveSQLException {
-     return openSession(username, password, sessionConf, false, null);
+      throws HiveSQLException {
+    return openSession(username, password, sessionConf, false, null);
   }
 
   public SessionHandle openSession(String username, String password, Map<String, String> sessionConf,
-          boolean withImpersonation, String delegationToken) throws HiveSQLException {
+      boolean withImpersonation, String delegationToken) throws HiveSQLException {
     HiveSession session;
+    if (username == null) {
+      username = threadLocalUserName.get();
+    }
     if (withImpersonation) {
       HiveSessionImplwithUGI hiveSessionUgi = new HiveSessionImplwithUGI(username, password, sessionConf,
           threadLocalIpAddress.get(), delegationToken);
-      session = (HiveSession)HiveSessionProxy.getProxy(hiveSessionUgi, hiveSessionUgi.getSessionUgi());
+      session = HiveSessionProxy.getProxy(hiveSessionUgi, hiveSessionUgi.getSessionUgi());
       hiveSessionUgi.setProxySession(session);
     } else {
       session = new HiveSessionImpl(username, password, sessionConf, threadLocalIpAddress.get());

@@ -126,9 +126,9 @@ public class CLIService extends CompositeService implements ICLIService {
    */
   @Override
   public SessionHandle openSessionWithImpersonation(String username, String password, Map<String, String> configuration,
-       String delegationToken) throws HiveSQLException {
+      String delegationToken) throws HiveSQLException {
     SessionHandle sessionHandle = sessionManager.openSession(username, password, configuration,
-          true, delegationToken);
+        true, delegationToken);
     LOG.info(sessionHandle + ": openSession()");
     return sessionHandle;
   }
@@ -150,7 +150,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public GetInfoValue getInfo(SessionHandle sessionHandle, GetInfoType getInfoType)
       throws HiveSQLException {
-    GetInfoValue infoValue = sessionManager.getSession(sessionHandle).getInfo(getInfoType);
+    GetInfoValue infoValue = sessionManager.getSession(sessionHandle)
+        .getInfo(getInfoType);
     LOG.info(sessionHandle + ": getInfo()");
     sessionManager.clearIpAddress();
     return infoValue;
@@ -163,7 +164,7 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public OperationHandle executeStatement(SessionHandle sessionHandle, String statement,
       Map<String, String> confOverlay)
-      throws HiveSQLException {
+          throws HiveSQLException {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle)
         .executeStatement(statement, confOverlay);
     LOG.info(sessionHandle + ": executeStatement()");
@@ -191,7 +192,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public OperationHandle getTypeInfo(SessionHandle sessionHandle)
       throws HiveSQLException {
-    OperationHandle opHandle = sessionManager.getSession(sessionHandle).getTypeInfo();
+    OperationHandle opHandle = sessionManager.getSession(sessionHandle)
+        .getTypeInfo();
     LOG.info(sessionHandle + ": getTypeInfo()");
     sessionManager.clearIpAddress();
     return opHandle;
@@ -203,7 +205,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public OperationHandle getCatalogs(SessionHandle sessionHandle)
       throws HiveSQLException {
-    OperationHandle opHandle = sessionManager.getSession(sessionHandle).getCatalogs();
+    OperationHandle opHandle = sessionManager.getSession(sessionHandle)
+        .getCatalogs();
     LOG.info(sessionHandle + ": getCatalogs()");
     sessionManager.clearIpAddress();
     return opHandle;
@@ -215,7 +218,7 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public OperationHandle getSchemas(SessionHandle sessionHandle,
       String catalogName, String schemaName)
-      throws HiveSQLException {
+          throws HiveSQLException {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle)
         .getSchemas(catalogName, schemaName);
     LOG.info(sessionHandle + ": getSchemas()");
@@ -229,9 +232,9 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public OperationHandle getTables(SessionHandle sessionHandle,
       String catalogName, String schemaName, String tableName, List<String> tableTypes)
-      throws HiveSQLException {
-    OperationHandle opHandle = sessionManager
-        .getSession(sessionHandle).getTables(catalogName, schemaName, tableName, tableTypes);
+          throws HiveSQLException {
+    OperationHandle opHandle = sessionManager.getSession(sessionHandle)
+        .getTables(catalogName, schemaName, tableName, tableTypes);
     LOG.info(sessionHandle + ": getTables()");
     sessionManager.clearIpAddress();
     return opHandle;
@@ -243,7 +246,8 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public OperationHandle getTableTypes(SessionHandle sessionHandle)
       throws HiveSQLException {
-    OperationHandle opHandle = sessionManager.getSession(sessionHandle).getTableTypes();
+    OperationHandle opHandle = sessionManager.getSession(sessionHandle)
+        .getTableTypes();
     LOG.info(sessionHandle + ": getTableTypes()");
     sessionManager.clearIpAddress();
     return opHandle;
@@ -255,7 +259,7 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public OperationHandle getColumns(SessionHandle sessionHandle,
       String catalogName, String schemaName, String tableName, String columnName)
-      throws HiveSQLException {
+          throws HiveSQLException {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle)
         .getColumns(catalogName, schemaName, tableName, columnName);
     LOG.info(sessionHandle + ": getColumns()");
@@ -269,7 +273,7 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public OperationHandle getFunctions(SessionHandle sessionHandle,
       String catalogName, String schemaName, String functionName)
-      throws HiveSQLException {
+          throws HiveSQLException {
     OperationHandle opHandle = sessionManager.getSession(sessionHandle)
         .getFunctions(catalogName, schemaName, functionName);
     LOG.info(sessionHandle + ": getFunctions()");
@@ -281,14 +285,15 @@ public class CLIService extends CompositeService implements ICLIService {
    * @see org.apache.hive.service.cli.ICLIService#getOperationStatus(org.apache.hive.service.cli.OperationHandle)
    */
   @Override
-  public OperationState getOperationStatus(OperationHandle opHandle)
+  public OperationStatus getOperationStatus(OperationHandle opHandle)
       throws HiveSQLException {
     startLogCapture(opHandle);
-    OperationState opState = sessionManager.getOperationManager().getOperationState(opHandle);
+    OperationStatus opStatus = sessionManager.getOperationManager()
+        .getOperationStatus(opHandle);
     LOG.info(opHandle + ": getOperationStatus()");
     sessionManager.clearIpAddress();
     stopLogCapture();
-    return opState;
+    return opStatus;
   }
 
   /* (non-Javadoc)
@@ -298,8 +303,8 @@ public class CLIService extends CompositeService implements ICLIService {
   public void cancelOperation(OperationHandle opHandle)
       throws HiveSQLException {
     startLogCapture(opHandle);
-    sessionManager.getOperationManager().getOperation(opHandle).
-        getParentSession().cancelOperation(opHandle);
+    sessionManager.getOperationManager().getOperation(opHandle)
+        .getParentSession().cancelOperation(opHandle);
     LOG.info(opHandle + ": cancelOperation()");
     sessionManager.clearIpAddress();
     stopLogCapture();
@@ -312,8 +317,8 @@ public class CLIService extends CompositeService implements ICLIService {
   public void closeOperation(OperationHandle opHandle)
       throws HiveSQLException {
     startLogCapture(opHandle);
-    sessionManager.getOperationManager().getOperation(opHandle).
-        getParentSession().closeOperation(opHandle);
+    sessionManager.getOperationManager().getOperation(opHandle)
+        .getParentSession().closeOperation(opHandle);
     LOG.info(opHandle + ": closeOperation");
     sessionManager.clearIpAddress();
     sessionManager.getLogManager().destroyOperationLog(opHandle);
@@ -327,8 +332,8 @@ public class CLIService extends CompositeService implements ICLIService {
   public TableSchema getResultSetMetadata(OperationHandle opHandle)
       throws HiveSQLException {
     startLogCapture(opHandle);
-    TableSchema tableSchema = sessionManager.getOperationManager().getOperation(opHandle).
-        getParentSession().getResultSetMetadata(opHandle);
+    TableSchema tableSchema = sessionManager.getOperationManager()
+        .getOperation(opHandle).getParentSession().getResultSetMetadata(opHandle);
     LOG.info(opHandle + ": getResultSetMetadata()");
     sessionManager.clearIpAddress();
     stopLogCapture();
@@ -342,8 +347,8 @@ public class CLIService extends CompositeService implements ICLIService {
   public RowSet fetchResults(OperationHandle opHandle, FetchOrientation orientation, long maxRows)
       throws HiveSQLException {
     startLogCapture(opHandle);
-    RowSet rowSet = sessionManager.getOperationManager().getOperation(opHandle).
-        getParentSession().fetchResults(opHandle, orientation, maxRows);
+    RowSet rowSet = sessionManager.getOperationManager().getOperation(opHandle)
+        .getParentSession().fetchResults(opHandle, orientation, maxRows);
     LOG.info(opHandle + ": fetchResults()");
     sessionManager.clearIpAddress();
     stopLogCapture();
@@ -357,8 +362,8 @@ public class CLIService extends CompositeService implements ICLIService {
   public RowSet fetchResults(OperationHandle opHandle)
       throws HiveSQLException {
     startLogCapture(opHandle);
-    RowSet rowSet = sessionManager.getOperationManager().getOperation(opHandle).
-        getParentSession().fetchResults(opHandle);
+    RowSet rowSet = sessionManager.getOperationManager().getOperation(opHandle)
+        .getParentSession().fetchResults(opHandle);
     LOG.info(opHandle + ": fetchResults()");
     sessionManager.clearIpAddress();
     stopLogCapture();
@@ -382,7 +387,7 @@ public class CLIService extends CompositeService implements ICLIService {
     if (!hiveConf.getBoolVar(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL) ||
         !hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ENABLE_DOAS)) {
       throw new UnsupportedOperationException(
-        "delegation token is can only be obtained for a secure remote metastore");
+          "delegation token is can only be obtained for a secure remote metastore");
     }
 
     try {
