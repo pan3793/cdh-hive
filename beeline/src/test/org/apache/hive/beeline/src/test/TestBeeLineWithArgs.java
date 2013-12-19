@@ -24,6 +24,9 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.beeline.BeeLine;
 import org.apache.hive.service.server.HiveServer2;
@@ -43,6 +46,15 @@ public class TestBeeLineWithArgs {
   final static String JDBC_URL = BeeLine.BEELINE_DEFAULT_JDBC_URL + "localhost:10000";
 
   private static HiveServer2 hiveServer2;
+
+  private List<String> getBaseArgs(String jdbcUrl) {
+    List<String> argList = new ArrayList<String>(8);
+    argList.add("-d");
+    argList.add(BeeLine.BEELINE_DEFAULT_JDBC_DRIVER);
+    argList.add("-u");
+    argList.add(jdbcUrl);
+    return argList;
+  }
 
   /**
    * Start up a local Hive Server 2 for these tests
@@ -81,13 +93,16 @@ public class TestBeeLineWithArgs {
    * @throws Any exception while executing
    * @return The stderr and stdout from running the script
    */
-  private String testCommandLineScript(String scriptFileName) throws Throwable {
-    String[] args = {"-d", BeeLine.BEELINE_DEFAULT_JDBC_DRIVER, "-u", JDBC_URL, "-f", scriptFileName};
+  private String testCommandLineScript(List<String> argList) throws Throwable {
+    // String[] args = {"-d", BeeLine.BEELINE_DEFAULT_JDBC_DRIVER, "-u", JDBC_URL, "-f", scriptFileName};
     BeeLine beeLine = new BeeLine();
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     PrintStream beelineOutputStream = new PrintStream(os);
     beeLine.setOutputStream(beelineOutputStream);
     beeLine.setErrorStream(beelineOutputStream);
+
+    String[] args = argList.toArray(new String[argList.size()]);
+
     beeLine.begin(args, null);
     String output = os.toString("UTF8");
 
@@ -104,7 +119,8 @@ public class TestBeeLineWithArgs {
    * @param shouldMatch true if the pattern should be found, false if it should not
    * @throws Exception on command execution error
    */
-  private void testScriptFile(String testName, String scriptText, String expectedPattern, boolean shouldMatch) throws Throwable {
+  private void testScriptFile(String testName, String scriptText, String expectedPattern, 
+    boolean shouldMatch, List<String> argList) throws Throwable {
 
     long startTime = System.currentTimeMillis();
     System.out.println(">>> STARTED " + testName);
@@ -116,9 +132,12 @@ public class TestBeeLineWithArgs {
     os.print(scriptText);
     os.close();
 
+    argList.add("-f");
+    argList.add(scriptFile.getAbsolutePath());
+
     if(shouldMatch) {
       try {
-        String output = testCommandLineScript(scriptFile.getAbsolutePath());
+        String output = testCommandLineScript(argList);
         long elapsedTime = (System.currentTimeMillis() - startTime)/1000;
         String time = "(" + elapsedTime + "s)";
         if (output.contains(expectedPattern)) {
@@ -134,7 +153,7 @@ public class TestBeeLineWithArgs {
       }
     } else {
       try {
-        String output = testCommandLineScript(scriptFile.getAbsolutePath());
+        String output = testCommandLineScript(argList);
         long elapsedTime = (System.currentTimeMillis() - startTime)/1000;
         String time = "(" + elapsedTime + "s)";
         if (output.contains(expectedPattern)) {
@@ -164,7 +183,9 @@ public class TestBeeLineWithArgs {
     final String TEST_NAME = "testPositiveScriptFile";
     final String SCRIPT_TEXT = "show databases;\n";
     final String EXPECTED_PATTERN = " default ";
-    testScriptFile(TEST_NAME, SCRIPT_TEXT, EXPECTED_PATTERN, true);
+
+    List<String> argList = getBaseArgs(JDBC_URL);
+    testScriptFile(TEST_NAME, SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
   }
 
   /**
@@ -177,7 +198,9 @@ public class TestBeeLineWithArgs {
     final String TEST_NAME = "testBreakOnErrorScriptFile";
     final String SCRIPT_TEXT = "select * from abcdefg01;\nshow databases;\n";
     final String EXPECTED_PATTERN = " default ";
-    testScriptFile(TEST_NAME, SCRIPT_TEXT, EXPECTED_PATTERN, false);
+
+    List<String> argList = getBaseArgs(JDBC_URL);
+    testScriptFile(TEST_NAME, SCRIPT_TEXT, EXPECTED_PATTERN, false, argList);
   }
 
   /**
@@ -196,10 +219,15 @@ public class TestBeeLineWithArgs {
     File scriptFile = File.createTempFile("beelinenegative", "temp");
     scriptFile.delete();
 
+    List<String> argList = getBaseArgs(JDBC_URL);
+    argList.add("-f");
+    argList.add(scriptFile.getAbsolutePath());
+
     try {
-        String output = testCommandLineScript(scriptFile.getAbsolutePath());
+      String output = testCommandLineScript(argList);
       long elapsedTime = (System.currentTimeMillis() - startTime)/1000;
       String time = "(" + elapsedTime + "s)";
+
       if (output.contains(EXPECTED_PATTERN)) {
         System.err.println("Output: " + output);
         System.err.println(">>> FAILED " + TEST_NAME + " (ERROR) " + time);
@@ -239,4 +267,16 @@ public class TestBeeLineWithArgs {
     System.out.println(">>> PASSED " + "testNPE" );
   }
 
+  @Test
+  public void testEmbeddedBeelineConnection() throws Throwable{
+    String embeddedJdbcURL = BeeLine.BEELINE_DEFAULT_JDBC_URL+"/Default";
+    List<String> argList = getBaseArgs(embeddedJdbcURL);
+    // This argument is not supported in CDH4
+    // argList.add("--hivevar");
+    argList.add("DUMMY_TBL=embedded_table");
+    final String TEST_NAME = "testEmbeddedBeelineConnection";
+    final String SCRIPT_TEXT = "create table ${DUMMY_TBL} (d int);\nshow tables;\n";
+    final String EXPECTED_PATTERN = "embedded_table";
+    testScriptFile(TEST_NAME, SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
+  }
 }
