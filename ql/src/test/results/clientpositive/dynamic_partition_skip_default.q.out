@@ -1,43 +1,43 @@
-PREHOOK: query: create table dynamic_part_table(intcol int) partitioned by (partcol1 int, partcol2 int)
+PREHOOK: query: create table dynamic_part_table(intcol string) partitioned by (partcol1 string, partcol2 string)
 PREHOOK: type: CREATETABLE
-POSTHOOK: query: create table dynamic_part_table(intcol int) partitioned by (partcol1 int, partcol2 int)
+POSTHOOK: query: create table dynamic_part_table(intcol string) partitioned by (partcol1 string, partcol2 string)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: default@dynamic_part_table
-PREHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select 1, 1, 1 from src where key=150
+PREHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select '1', '1', '1' from src where key=150
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 PREHOOK: Output: default@dynamic_part_table
-POSTHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select 1, 1, 1 from src where key=150
+POSTHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select '1', '1', '1' from src where key=150
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 POSTHOOK: Output: default@dynamic_part_table@partcol1=1/partcol2=1
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=1).intcol SIMPLE []
-PREHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select 1, NULL, 1 from src where key=150
+PREHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select '1', NULL, '1' from src where key=150
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 PREHOOK: Output: default@dynamic_part_table
-POSTHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select 1, NULL, 1 from src where key=150
+POSTHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select '1', NULL, '1' from src where key=150
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 POSTHOOK: Output: default@dynamic_part_table@partcol1=__HIVE_DEFAULT_PARTITION__/partcol2=1
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=1).intcol SIMPLE []
-PREHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select 1, 1, NULL from src where key=150
+PREHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select '1', '1', NULL from src where key=150
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 PREHOOK: Output: default@dynamic_part_table
-POSTHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select 1, 1, NULL from src where key=150
+POSTHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select '1', '1', NULL from src where key=150
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 POSTHOOK: Output: default@dynamic_part_table@partcol1=1/partcol2=__HIVE_DEFAULT_PARTITION__
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=1).intcol SIMPLE []
-PREHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select 1, NULL, NULL from src where key=150
+PREHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select '1', NULL, NULL from src where key=150
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 PREHOOK: Output: default@dynamic_part_table
-POSTHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select 1, NULL, NULL from src where key=150
+POSTHOOK: query: insert into table dynamic_part_table partition(partcol1, partcol2) select '1', NULL, NULL from src where key=150
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 POSTHOOK: Output: default@dynamic_part_table@partcol1=__HIVE_DEFAULT_PARTITION__/partcol2=__HIVE_DEFAULT_PARTITION__
@@ -45,16 +45,16 @@ POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=1).intcol SI
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
-PREHOOK: query: explain extended select intcol from dynamic_part_table where partcol1=1 and partcol2=1
+PREHOOK: query: explain extended select intcol from dynamic_part_table where partcol1='1' and partcol2='1'
 PREHOOK: type: QUERY
-POSTHOOK: query: explain extended select intcol from dynamic_part_table where partcol1=1 and partcol2=1
+POSTHOOK: query: explain extended select intcol from dynamic_part_table where partcol1='1' and partcol2='1'
 POSTHOOK: type: QUERY
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
 ABSTRACT SYNTAX TREE:
-  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME dynamic_part_table))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_TABLE_OR_COL intcol))) (TOK_WHERE (and (= (TOK_TABLE_OR_COL partcol1) 1) (= (TOK_TABLE_OR_COL partcol2) 1)))))
+  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME dynamic_part_table))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_TABLE_OR_COL intcol))) (TOK_WHERE (and (= (TOK_TABLE_OR_COL partcol1) '1') (= (TOK_TABLE_OR_COL partcol2) '1')))))
 
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -71,7 +71,7 @@ STAGE PLANS:
             Select Operator
               expressions:
                     expr: intcol
-                    type: int
+                    type: string
               outputColumnNames: _col0
               File Output Operator
                 compressed: false
@@ -84,7 +84,7 @@ STAGE PLANS:
                     output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                     properties:
                       columns _col0
-                      columns.types int
+                      columns.types string
                       escape.delim \
                       hive.serialization.extend.nesting.levels true
                       serialization.format 1
@@ -107,14 +107,14 @@ STAGE PLANS:
             properties:
               bucket_count -1
               columns intcol
-              columns.types int
+              columns.types string
 #### A masked pattern was here ####
               name default.dynamic_part_table
               numFiles 1
               numRows 1
               partition_columns partcol1/partcol2
               rawDataSize 1
-              serialization.ddl struct dynamic_part_table { i32 intcol}
+              serialization.ddl struct dynamic_part_table { string intcol}
               serialization.format 1
               serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               totalSize 2
@@ -126,7 +126,7 @@ STAGE PLANS:
               properties:
                 bucket_count -1
                 columns intcol
-                columns.types int
+                columns.types string
 #### A masked pattern was here ####
                 name default.dynamic_part_table
                 numFiles 4
@@ -134,7 +134,7 @@ STAGE PLANS:
                 numRows 4
                 partition_columns partcol1/partcol2
                 rawDataSize 4
-                serialization.ddl struct dynamic_part_table { i32 intcol}
+                serialization.ddl struct dynamic_part_table { string intcol}
                 serialization.format 1
                 serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                 totalSize 8
@@ -149,16 +149,16 @@ STAGE PLANS:
     Fetch Operator
       limit: -1
 
-PREHOOK: query: explain extended select intcol from dynamic_part_table where partcol1=1 and partcol2=1
+PREHOOK: query: explain extended select intcol from dynamic_part_table where partcol1='1' and partcol2='1'
 PREHOOK: type: QUERY
-POSTHOOK: query: explain extended select intcol from dynamic_part_table where partcol1=1 and partcol2=1
+POSTHOOK: query: explain extended select intcol from dynamic_part_table where partcol1='1' and partcol2='1'
 POSTHOOK: type: QUERY
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
 ABSTRACT SYNTAX TREE:
-  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME dynamic_part_table))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_TABLE_OR_COL intcol))) (TOK_WHERE (and (= (TOK_TABLE_OR_COL partcol1) 1) (= (TOK_TABLE_OR_COL partcol2) 1)))))
+  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME dynamic_part_table))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_TABLE_OR_COL intcol))) (TOK_WHERE (and (= (TOK_TABLE_OR_COL partcol1) '1') (= (TOK_TABLE_OR_COL partcol2) '1')))))
 
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -175,7 +175,7 @@ STAGE PLANS:
             Select Operator
               expressions:
                     expr: intcol
-                    type: int
+                    type: string
               outputColumnNames: _col0
               File Output Operator
                 compressed: false
@@ -188,7 +188,7 @@ STAGE PLANS:
                     output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                     properties:
                       columns _col0
-                      columns.types int
+                      columns.types string
                       escape.delim \
                       hive.serialization.extend.nesting.levels true
                       serialization.format 1
@@ -211,14 +211,14 @@ STAGE PLANS:
             properties:
               bucket_count -1
               columns intcol
-              columns.types int
+              columns.types string
 #### A masked pattern was here ####
               name default.dynamic_part_table
               numFiles 1
               numRows 1
               partition_columns partcol1/partcol2
               rawDataSize 1
-              serialization.ddl struct dynamic_part_table { i32 intcol}
+              serialization.ddl struct dynamic_part_table { string intcol}
               serialization.format 1
               serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               totalSize 2
@@ -230,7 +230,7 @@ STAGE PLANS:
               properties:
                 bucket_count -1
                 columns intcol
-                columns.types int
+                columns.types string
 #### A masked pattern was here ####
                 name default.dynamic_part_table
                 numFiles 4
@@ -238,7 +238,7 @@ STAGE PLANS:
                 numRows 4
                 partition_columns partcol1/partcol2
                 rawDataSize 4
-                serialization.ddl struct dynamic_part_table { i32 intcol}
+                serialization.ddl struct dynamic_part_table { string intcol}
                 serialization.format 1
                 serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                 totalSize 8
@@ -253,16 +253,16 @@ STAGE PLANS:
     Fetch Operator
       limit: -1
 
-PREHOOK: query: explain extended select intcol from dynamic_part_table where (partcol1=1 and partcol2=1)or (partcol1=1 and partcol2='__HIVE_DEFAULT_PARTITION__')
+PREHOOK: query: explain extended select intcol from dynamic_part_table where (partcol1='1' and partcol2='1')or (partcol1='1' and partcol2='__HIVE_DEFAULT_PARTITION__')
 PREHOOK: type: QUERY
-POSTHOOK: query: explain extended select intcol from dynamic_part_table where (partcol1=1 and partcol2=1)or (partcol1=1 and partcol2='__HIVE_DEFAULT_PARTITION__')
+POSTHOOK: query: explain extended select intcol from dynamic_part_table where (partcol1='1' and partcol2='1')or (partcol1='1' and partcol2='__HIVE_DEFAULT_PARTITION__')
 POSTHOOK: type: QUERY
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=1,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=1).intcol SIMPLE []
 POSTHOOK: Lineage: dynamic_part_table PARTITION(partcol1=__HIVE_DEFAULT_PARTITION__,partcol2=__HIVE_DEFAULT_PARTITION__).intcol SIMPLE []
 ABSTRACT SYNTAX TREE:
-  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME dynamic_part_table))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_TABLE_OR_COL intcol))) (TOK_WHERE (or (and (= (TOK_TABLE_OR_COL partcol1) 1) (= (TOK_TABLE_OR_COL partcol2) 1)) (and (= (TOK_TABLE_OR_COL partcol1) 1) (= (TOK_TABLE_OR_COL partcol2) '__HIVE_DEFAULT_PARTITION__'))))))
+  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME dynamic_part_table))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_TABLE_OR_COL intcol))) (TOK_WHERE (or (and (= (TOK_TABLE_OR_COL partcol1) '1') (= (TOK_TABLE_OR_COL partcol2) '1')) (and (= (TOK_TABLE_OR_COL partcol1) '1') (= (TOK_TABLE_OR_COL partcol2) '__HIVE_DEFAULT_PARTITION__'))))))
 
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -279,7 +279,7 @@ STAGE PLANS:
             Select Operator
               expressions:
                     expr: intcol
-                    type: int
+                    type: string
               outputColumnNames: _col0
               File Output Operator
                 compressed: false
@@ -292,7 +292,7 @@ STAGE PLANS:
                     output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                     properties:
                       columns _col0
-                      columns.types int
+                      columns.types string
                       escape.delim \
                       hive.serialization.extend.nesting.levels true
                       serialization.format 1
@@ -315,14 +315,14 @@ STAGE PLANS:
             properties:
               bucket_count -1
               columns intcol
-              columns.types int
+              columns.types string
 #### A masked pattern was here ####
               name default.dynamic_part_table
               numFiles 1
               numRows 1
               partition_columns partcol1/partcol2
               rawDataSize 1
-              serialization.ddl struct dynamic_part_table { i32 intcol}
+              serialization.ddl struct dynamic_part_table { string intcol}
               serialization.format 1
               serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               totalSize 2
@@ -334,7 +334,7 @@ STAGE PLANS:
               properties:
                 bucket_count -1
                 columns intcol
-                columns.types int
+                columns.types string
 #### A masked pattern was here ####
                 name default.dynamic_part_table
                 numFiles 4
@@ -342,7 +342,7 @@ STAGE PLANS:
                 numRows 4
                 partition_columns partcol1/partcol2
                 rawDataSize 4
-                serialization.ddl struct dynamic_part_table { i32 intcol}
+                serialization.ddl struct dynamic_part_table { string intcol}
                 serialization.format 1
                 serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                 totalSize 8
@@ -361,14 +361,14 @@ STAGE PLANS:
             properties:
               bucket_count -1
               columns intcol
-              columns.types int
+              columns.types string
 #### A masked pattern was here ####
               name default.dynamic_part_table
               numFiles 1
               numRows 1
               partition_columns partcol1/partcol2
               rawDataSize 1
-              serialization.ddl struct dynamic_part_table { i32 intcol}
+              serialization.ddl struct dynamic_part_table { string intcol}
               serialization.format 1
               serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               totalSize 2
@@ -380,7 +380,7 @@ STAGE PLANS:
               properties:
                 bucket_count -1
                 columns intcol
-                columns.types int
+                columns.types string
 #### A masked pattern was here ####
                 name default.dynamic_part_table
                 numFiles 4
@@ -388,7 +388,7 @@ STAGE PLANS:
                 numRows 4
                 partition_columns partcol1/partcol2
                 rawDataSize 4
-                serialization.ddl struct dynamic_part_table { i32 intcol}
+                serialization.ddl struct dynamic_part_table { string intcol}
                 serialization.format 1
                 serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                 totalSize 8
