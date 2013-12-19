@@ -49,6 +49,8 @@ public class HiveStatement implements java.sql.Statement {
   private final Map<String,String> sessConf = new HashMap<String,String>();
   private int fetchSize = 50;
   private boolean isScrollableResultset = false;
+  private final HiveConnection hiveConn;
+
   /**
    * We need to keep a reference to the result set to support the following:
    * <code>
@@ -78,15 +80,16 @@ public class HiveStatement implements java.sql.Statement {
   /**
    *
    */
-  public HiveStatement(TCLIService.Iface client, TSessionHandle sessHandle) {
-    this(client, sessHandle, false);
+  public HiveStatement(TCLIService.Iface client, TSessionHandle sessHandle, HiveConnection hiveConn) {
+    this(client, sessHandle, hiveConn, false);
   }
 
-  public HiveStatement(TCLIService.Iface client, TSessionHandle sessHandle,
+  public HiveStatement(TCLIService.Iface client, TSessionHandle sessHandle,HiveConnection hiveConn,
         boolean isScrollableResultset) {
     this.client = client;
     this.sessHandle = sessHandle;
     this.isScrollableResultset = isScrollableResultset;
+    this.hiveConn = hiveConn;
   }
 
   /*
@@ -198,6 +201,7 @@ public class HiveStatement implements java.sql.Statement {
       if (execResp.getStatus().getStatusCode().equals(TStatusCode.STILL_EXECUTING_STATUS)) {
         warningChain = Utils.addWarning(warningChain, new SQLWarning("Query execuing asynchronously"));
       } else {
+        hiveConn.loadExtendedErrorMsg(execResp.getOperationHandle(), execResp.getStatus());
         Utils.verifySuccessWithInfo(execResp.getStatus());
       }
       stmtHandle = execResp.getOperationHandle();
@@ -212,7 +216,8 @@ public class HiveStatement implements java.sql.Statement {
     }
     resultSet =  new HiveQueryResultSet.Builder().setClient(client).setSessionHandle(sessHandle)
         .setStmtHandle(stmtHandle).setMaxRows(maxRows).setFetchSize(fetchSize)
-        .setScrollable(isScrollableResultset)
+        .setScrollable(isScrollableResultset).setHiveConn(hiveConn)
+        .setNeedExtendedDiagnostics(true)
         .build();
     return true;
   }
@@ -607,5 +612,4 @@ public class HiveStatement implements java.sql.Statement {
   public <T> T unwrap(Class<T> iface) throws SQLException {
     throw new SQLException("Method not supported");
   }
-
 }

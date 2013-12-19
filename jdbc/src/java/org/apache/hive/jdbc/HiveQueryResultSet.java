@@ -56,6 +56,8 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
   private int maxRows;
   private int fetchSize;
   private int rowsFetched = 0;
+  private HiveConnection hiveConn = null;
+  private boolean needsExtendedDiagnostics = false;
 
   private List<TRow> fetchedRows;
   private Iterator<TRow> fetchedRowsItr;
@@ -69,6 +71,8 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
     private TCLIService.Iface client = null;
     private TOperationHandle stmtHandle = null;
     private TSessionHandle sessHandle  = null;
+    private HiveConnection hiveConn = null;
+    private boolean needsExtendedDiagnostics = false;
 
     /**
      * Sets the limit for the maximum number of rows that any ResultSet object produced by this
@@ -90,6 +94,16 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
 
     public Builder setStmtHandle(TOperationHandle stmtHandle) {
       this.stmtHandle = stmtHandle;
+      return this;
+    }
+
+    public Builder setHiveConn(HiveConnection hiveConn) {
+      this.hiveConn = hiveConn;
+      return this;
+    }
+
+    public Builder setNeedExtendedDiagnostics(boolean needExtendedDiagnostics) {
+      this.needsExtendedDiagnostics = needExtendedDiagnostics;
       return this;
     }
 
@@ -136,6 +150,8 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
     this.client = builder.client;
     this.stmtHandle = builder.stmtHandle;
     this.sessHandle = builder.sessHandle;
+    this.hiveConn = builder.hiveConn;
+    this.needsExtendedDiagnostics = builder.needsExtendedDiagnostics;
     this.fetchSize = builder.fetchSize;
     columnNames = new ArrayList<String>();
     columnTypes = new ArrayList<String>();
@@ -152,6 +168,10 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
       this.maxRows = builder.maxRows;
     }
     this.isScrollable = builder.isScrollable;
+    if (needsExtendedDiagnostics && hiveConn == null) {
+      throw new SQLException("Internal error: "
+          + "Resutlset needs connection object to load extended diagnostisc");
+    }
   }
 
   /**
@@ -242,6 +262,10 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
         TFetchResultsReq fetchReq = new TFetchResultsReq(stmtHandle,
             orientation, fetchSize);
         TFetchResultsResp fetchResp = client.FetchResults(fetchReq);
+        if (needsExtendedDiagnostics) {
+          hiveConn.loadExtendedErrorMsg(stmtHandle, fetchResp.getStatus());
+        }
+
         Utils.verifySuccessWithInfo(fetchResp.getStatus());
         fetchedRows = fetchResp.getResults().getRows();
         fetchedRowsItr = fetchedRows.iterator();

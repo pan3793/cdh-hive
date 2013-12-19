@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.jar.Attributes;
 
 import org.apache.hadoop.hive.metastore.TableType;
+import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TGetCatalogsReq;
 import org.apache.hive.service.cli.thrift.TGetCatalogsResp;
 import org.apache.hive.service.cli.thrift.TGetColumnsReq;
@@ -42,7 +43,6 @@ import org.apache.hive.service.cli.thrift.TGetTablesReq;
 import org.apache.hive.service.cli.thrift.TGetTablesResp;
 import org.apache.hive.service.cli.thrift.TGetTypeInfoReq;
 import org.apache.hive.service.cli.thrift.TGetTypeInfoResp;
-import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TSessionHandle;
 import org.apache.thrift.TException;
 
@@ -54,6 +54,7 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
 
   private final TCLIService.Iface client;
   private final TSessionHandle sessHandle;
+  private final HiveConnection hiveConn;
   private static final String CATALOG_SEPARATOR = ".";
 
   private static final char SEARCH_STRING_ESCAPE = '\\';
@@ -64,9 +65,11 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
   /**
    *
    */
-  public HiveDatabaseMetaData(TCLIService.Iface client, TSessionHandle sessHandle) {
+  public HiveDatabaseMetaData(TCLIService.Iface client, TSessionHandle sessHandle,
+      HiveConnection hiveConn) {
     this.client = client;
     this.sessHandle = sessHandle;
+    this.hiveConn = hiveConn;
   }
 
   public boolean allProceduresAreCallable() throws SQLException {
@@ -238,7 +241,7 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
   }
 
   public Connection getConnection() throws SQLException {
-    throw new SQLException("Method not supported");
+    return this.hiveConn;
   }
 
   public ResultSet getCrossReference(String primaryCatalog,
@@ -256,7 +259,7 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
   }
 
   public String getDatabaseProductName() throws SQLException {
-    return "Hive";
+    return hiveConn.getServerName();
   }
 
   public String getDatabaseProductVersion() throws SQLException {
@@ -1111,7 +1114,7 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
   }
 
   public static void main(String[] args) throws SQLException {
-    HiveDatabaseMetaData meta = new HiveDatabaseMetaData(null, null);
+    HiveDatabaseMetaData meta = new HiveDatabaseMetaData(null, null, null);
     System.out.println("DriverName: " + meta.getDriverName());
     System.out.println("DriverVersion: " + meta.getDriverVersion());
   }

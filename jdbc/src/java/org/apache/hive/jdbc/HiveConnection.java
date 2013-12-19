@@ -61,12 +61,20 @@ import org.apache.hive.service.cli.thrift.TCancelDelegationTokenResp;
 import org.apache.hive.service.cli.thrift.TCloseSessionReq;
 import org.apache.hive.service.cli.thrift.TGetDelegationTokenReq;
 import org.apache.hive.service.cli.thrift.TGetDelegationTokenResp;
+import org.apache.hive.service.cli.thrift.TGetInfoReq;
+import org.apache.hive.service.cli.thrift.TGetInfoResp;
+import org.apache.hive.service.cli.thrift.TGetInfoType;
+import org.apache.hive.service.cli.thrift.TGetLogReq;
+import org.apache.hive.service.cli.thrift.TGetLogResp;
 import org.apache.hive.service.cli.thrift.TOpenSessionReq;
 import org.apache.hive.service.cli.thrift.TOpenSessionResp;
+import org.apache.hive.service.cli.thrift.TOperationHandle;
 import org.apache.hive.service.cli.thrift.TProtocolVersion;
 import org.apache.hive.service.cli.thrift.TRenewDelegationTokenReq;
 import org.apache.hive.service.cli.thrift.TRenewDelegationTokenResp;
 import org.apache.hive.service.cli.thrift.TSessionHandle;
+import org.apache.hive.service.cli.thrift.TStatus;
+import org.apache.hive.service.cli.thrift.TStatusCode;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -98,6 +106,7 @@ public class HiveConnection implements java.sql.Connection {
   private TSessionHandle sessHandle = null;
   private final List<TProtocolVersion> supportedProtocols = new LinkedList<TProtocolVersion>();
   private int loginTimeout = 0;
+  private String serverName = "Hive";
   /**
    * TODO: - parse uri (use java.net.URI?).
    */
@@ -150,6 +159,8 @@ public class HiveConnection implements java.sql.Connection {
         stmt.close();
       }
     }
+
+    retrieveServerName(connParams.getHiveConfs());
   }
 
   private void openTransport(String uri, String host, int port, Map<String, String> sessConf )
@@ -429,7 +440,7 @@ public class HiveConnection implements java.sql.Connection {
     if (isClosed) {
       throw new SQLException("Can't create Statement, connection is closed");
     }
-    return new HiveStatement(client, sessHandle);
+    return new HiveStatement(client, sessHandle, this);
   }
 
   /*
@@ -446,7 +457,7 @@ public class HiveConnection implements java.sql.Connection {
     if (resultSetType == ResultSet.TYPE_SCROLL_SENSITIVE) {
       throw new SQLException("Method not supported");
     }
-    return new HiveStatement(client, sessHandle,
+    return new HiveStatement(client, sessHandle, this,
         resultSetType == ResultSet.TYPE_SCROLL_INSENSITIVE);
   }
 
@@ -534,7 +545,7 @@ public class HiveConnection implements java.sql.Connection {
    */
 
   public DatabaseMetaData getMetaData() throws SQLException {
-    return new HiveDatabaseMetaData(client, sessHandle);
+    return new HiveDatabaseMetaData(client, sessHandle, this);
   }
 
   public int getNetworkTimeout() throws SQLException {
@@ -902,4 +913,59 @@ public class HiveConnection implements java.sql.Connection {
     throw new SQLException("Method not supported");
   }
 
+  /**
+   * Extract additional diagnostics from server if needed using GetLog()
+   * The caller need to pass the TStatus included in the response of the last RPC call
+   *
+   * @param opHandle Operation handle of the last request
+   * @param opStatus Operation status of the last request
+   */
+  void loadExtendedErrorMsg(TOperationHandle opHandle, TStatus opStatus) {
+    if (needExtendedErrorFromServer() && Utils.isErrorStatus(opStatus, true)) {
+      TGetLogReq logReq = new TGetLogReq(opHandle);
+      try {
+        TGetLogResp logResp = client.GetLog(logReq);
+        if (logResp.getStatus().getStatusCode() != TStatusCode.SUCCESS_STATUS) {
+          // if for some reason server GetLog fails then bail out
+          opStatus.addToInfoMessages("Failed to extract additional diagnostics from server" +
+               "due to rrror " + logResp.getStatus().getErrorMessage());
+          return;
+        }
+        opStatus.setErrorMessage(logResp.getLog());
+      } catch (TException e) {
+        // Ignore the thrift errors hit during error message retrieval
+        opStatus.addToInfoMessages("Error retrieving additional diagnostics from server " + e.toString());
+      } finally {
+        if (opStatus.getSqlState() == null || opStatus.getSqlState().isEmpty()) {
+          opStatus.setSqlState("HY000"); // set general execute error
+        }
+      }
+    }
+  }
+
+  public String getServerName() {
+    return serverName;
+  }
+
+  // retrieve server Name using getInfo
+  private void retrieveServerName(Map<String, String> sessConf) throws SQLException {
+    try {
+      TGetInfoReq req = new TGetInfoReq(sessHandle, TGetInfoType.CLI_SERVER_NAME);
+      TGetInfoResp infoResp = client.GetInfo(req);
+      serverName = infoResp.getInfoValue().getStringValue();
+    } catch (Exception e) {
+      /*
+       *  Ignore errors with retrieving server name via GetInfo unless specified
+       *  Older servers like CDH 4.1 didn't have this API
+       */
+      if ("true".equalsIgnoreCase(sessConf.get("verifyServer"))) {
+        throw new SQLException("Failed to retrieve server type using GetInfo()", e);
+      }
+    }
+  }
+
+  // Check if  this connection requires extracting additional daignostics from server
+  protected boolean needExtendedErrorFromServer() {
+    return (serverName.toUpperCase().contains("IMPALA"));
+  }
 }
