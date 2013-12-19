@@ -1,6 +1,8 @@
 package org.apache.hive.jdbc;
 
-  import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
@@ -12,6 +14,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.jdbc.miniHS2.MiniHS2;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,19 +33,25 @@ import org.junit.Test;
       String dataFileDir = conf.get("test.data.files").replace('\\', '/')
           .replace("c:", "");
       dataFilePath = new Path(dataFileDir, "kv1.txt");
+      miniHS2.start();
     }
 
     @Before
     public void setUp() throws Exception {
-      miniHS2.start();
       hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL(), System.getProperty("user.name"), "bar");
       hs2Conn.createStatement().execute("set hive.support.concurrency = false");
+    }
+
+    @AfterClass
+    public static void afterTest() throws Exception {
+      if (miniHS2.isStarted()) {
+        miniHS2.stop();
+      }
     }
 
     @After
     public void tearDown() throws Exception {
       hs2Conn.close();
-      miniHS2.stop();
     }
 
     @Test
@@ -65,4 +74,75 @@ import org.junit.Test;
       res.close();
       stmt.close();
     }
+
+    /**   This test is to connect to any database without using the command "Use <<DB>>"
+     *  1)connect to default database.
+     *  2) Create a new DB test_default.
+     *  3) Connect to test_default database.
+     *  4) Connect and create table under test_default_test.
+     *  5) Connect and display all tables.
+     *  6) Connect to default database and shouldn't find table test_default_test.
+     *  8) drop test_default database.
+     *  7) Connect and drop test_default_test.
+     */
+
+     @Test
+    public void testURIDatabaseName() throws Exception{
+
+     String  jdbcUri  = miniHS2.getJdbcURL().substring(0, miniHS2.getJdbcURL().indexOf("default"));
+
+     hs2Conn= DriverManager.getConnection(jdbcUri+"default",System.getProperty("user.name"),"bar");
+     String dbName="test_connection_non_default_db";
+     String tableInNonDefaultSchema="table_in_non_default_schema";
+     Statement stmt = hs2Conn.createStatement();
+     stmt.execute("create database  if not exists "+dbName);
+     stmt.close();
+     hs2Conn.close();
+
+     hs2Conn = DriverManager.getConnection(jdbcUri+dbName,System.getProperty("user.name"),"bar");
+     stmt = hs2Conn .createStatement();
+     boolean expected = stmt.execute(" create table "+tableInNonDefaultSchema +" (x int)");
+     stmt.close();
+     hs2Conn .close();
+
+     hs2Conn  = DriverManager.getConnection(jdbcUri+dbName,System.getProperty("user.name"),"bar");
+     stmt = hs2Conn .createStatement();
+     ResultSet res = stmt.executeQuery("show tables");
+     boolean testTableExists = false;
+     while (res.next()) {
+        assertNotNull("table name is null in result set", res.getString(1));
+        if (tableInNonDefaultSchema.equalsIgnoreCase(res.getString(1))) {
+          testTableExists = true;
+        }
+     }
+     assertTrue("table name  "+tableInNonDefaultSchema
+           + "   found in SHOW TABLES result set", testTableExists);
+     stmt.close();
+     hs2Conn .close();
+
+     hs2Conn  = DriverManager.getConnection(jdbcUri+"default",System.getProperty("user.name"),"bar");
+     stmt = hs2Conn .createStatement();
+     res = stmt.executeQuery("show tables");
+     testTableExists = false;
+     while (res.next()) {
+       assertNotNull("table name is null in result set", res.getString(1));
+       if (tableInNonDefaultSchema.equalsIgnoreCase(res.getString(1))) {
+         testTableExists = true;
+        }
+     }
+
+     assertFalse("table name "+tableInNonDefaultSchema
+           + "  NOT  found in SHOW TABLES result set", testTableExists);
+     stmt.close();
+     hs2Conn .close();
+
+     hs2Conn  = DriverManager.getConnection(jdbcUri+dbName,System.getProperty("user.name"),"bar");
+     stmt = hs2Conn .createStatement();
+     stmt.execute("set hive.support.concurrency = false");
+     res = stmt.executeQuery("show tables");
+
+     stmt.execute(" drop table if exists table_in_non_default_schema");
+     expected = stmt.execute("DROP DATABASE "+ dbName);
+     stmt.close();
+   }
 }

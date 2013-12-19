@@ -99,6 +99,10 @@ public class HiveConnection implements java.sql.Connection {
   private static final String HIVE_SSL_TRUST_STORE = "sslTrustStore";
   private static final String HIVE_SSL_TRUST_STORE_PASSWORD = "trustStorePassword";
 
+  private final Map<String, String> sessConfMap;
+  private final Map<String, String> hiveConfMap;
+  private final Map<String, String> hiveVarMap;
+  private final boolean isEmbeddedMode;
   private TTransport transport;
   private TCLIService.Iface client;
   private boolean isClosed = true;
@@ -115,52 +119,56 @@ public class HiveConnection implements java.sql.Connection {
     setupLoginTimeout();
     try {
       connParams = Utils.parseURL(uri);
+      sessConfMap = connParams.getSessionVars();
+      hiveConfMap = connParams.getHiveConfs();
+      hiveVarMap = connParams.getHiveVars();
+      isEmbeddedMode = connParams.isEmbeddedMode();
     } catch (IllegalArgumentException e) {
       throw new SQLException(e);
     }
-    if (connParams.isEmbeddedMode()) {
+    if (isEmbeddedMode) {
       client = new EmbeddedThriftCLIService();
     } else {
       // extract user/password from JDBC connection properties if its not supplied in the connection URL
       if (info.containsKey(HIVE_AUTH_USER)) {
-        connParams.getSessionVars().put(HIVE_AUTH_USER, info.getProperty(HIVE_AUTH_USER));
+        sessConfMap.put(HIVE_AUTH_USER, info.getProperty(HIVE_AUTH_USER));
         if (info.containsKey(HIVE_AUTH_PASSWD)) {
-            connParams.getSessionVars().put(HIVE_AUTH_PASSWD, info.getProperty(HIVE_AUTH_PASSWD));
+            sessConfMap.put(HIVE_AUTH_PASSWD, info.getProperty(HIVE_AUTH_PASSWD));
         }
       }
       if (info.containsKey(HIVE_AUTH_TYPE)) {
-        connParams.getSessionVars().put(HIVE_AUTH_TYPE, info.getProperty(HIVE_AUTH_TYPE));
+        sessConfMap.put(HIVE_AUTH_TYPE, info.getProperty(HIVE_AUTH_TYPE));
       }
 
-      openTransport(uri, connParams.getHost(), connParams.getPort(), connParams.getSessionVars());
+      openTransport(uri, connParams.getHost(), connParams.getPort(), sessConfMap);
     }
 
     // currently only V1 is supported
     supportedProtocols.add(TProtocolVersion.HIVE_CLI_SERVICE_PROTOCOL_V1);
 
     // open client session
-    openSession(uri, connParams.getSessionVars());
+    openSession(uri, sessConfMap);
 
-    configureConnection(connParams);
+    configureConnection(connParams.getDbName());
   }
 
   private void configureConnection(Utils.JdbcConnectionParams connParams)
       throws SQLException {
     // set the hive variable in session state for local mode
-    if (connParams.isEmbeddedMode()) {
-      if (!connParams.getHiveVars().isEmpty()) {
-        SessionState.get().setHiveVariables(connParams.getHiveVars());
+    if (isEmbeddedMode) {
+      if (!hiveVarMap.isEmpty()) {
+        SessionState.get().setHiveVariables(hiveVarMap);
       }
     } else {
       // for remote JDBC client, try to set the conf var using 'set foo=bar'
       Statement stmt = createStatement();
-      for (Entry<String, String> hiveConf : connParams.getHiveConfs().entrySet()) {
+      for (Entry<String, String> hiveConf : hiveConfMap.entrySet()) {
         stmt.execute("set " + hiveConf.getKey() + "=" + hiveConf.getValue());
         stmt.close();
       }
     }
 
-    retrieveServerName(connParams.getHiveConfs());
+    retrieveServerName(hiveConfMap);
   }
 
   private void openTransport(String uri, String host, int port, Map<String, String> sessConf )
@@ -274,6 +282,59 @@ public class HiveConnection implements java.sql.Connection {
           + uri + ": " + e.getMessage(), " 08S01", e);
     }
     isClosed = false;
+  }
+
+  private void configureConnection(String dbName) throws SQLException {
+    // set the hive variable in session state for local mode
+    if (isEmbeddedMode) {
+      if (!hiveVarMap.isEmpty()) {
+        SessionState.get().setHiveVariables(hiveVarMap);
+      }
+    } else {
+      // for remote JDBC client, try to set the conf var using 'set foo=bar'
+      Statement stmt = createStatement();
+      for (Entry<String, String> hiveConf : hiveConfMap.entrySet()) {
+        stmt.execute("set " + hiveConf.getKey() + "=" + hiveConf.getValue());
+      }
+
+      // For remote JDBC client, try to set the hive var using 'set hivevar:key=value'
+      for (Entry<String, String> hiveVar : hiveVarMap.entrySet()) {
+        stmt.execute("set hivevar:" + hiveVar.getKey() + "=" + hiveVar.getValue());
+      }
+      if(dbName!=null) {
+        stmt.execute("use "+dbName);
+      }
+      stmt.close();
+    }
+  }
+
+  /**
+   * @return username from sessConfMap
+   */
+  private String getUserName() {
+    return getSessionValue(HIVE_AUTH_USER, HIVE_ANONYMOUS_USER);
+  }
+
+  /**
+   * @return password from sessConfMap
+   */
+  private String getPasswd() {
+    return getSessionValue(HIVE_AUTH_PASSWD, HIVE_ANONYMOUS_PASSWD);
+  }
+
+  /**
+   * Lookup varName in sessConfMap, if its null or empty return the default
+   * value varDefault
+   * @param varName
+   * @param varDefault
+   * @return
+   */
+  private String getSessionValue(String varName, String varDefault) {
+    String varValue = sessConfMap.get(varName);
+    if ((varValue == null) || varValue.isEmpty()) {
+      varValue = varDefault;
+    }
+    return varValue;
   }
 
   // copy loginTimeout from driver manager. Thrift timeout needs to be in millis
