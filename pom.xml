@@ -523,7 +523,7 @@
       </dependency>
       <dependency>
         <groupId>com.twitter</groupId>
-        <artifactId>parquet-hive-bundle</artifactId>
+        <artifactId>parquet-hadoop-bundle</artifactId>
         <version>${parquet.version}</version>
       </dependency>
     </dependencies>
