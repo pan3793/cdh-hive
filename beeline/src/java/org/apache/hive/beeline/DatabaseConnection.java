@@ -69,7 +69,7 @@ class DatabaseConnection {
       if (url.indexOf("#") == -1) {
         sb.append("#");
       } else {
-        sb.append("&");
+        sb.append(";");
       }
       Set<Map.Entry<String, String>> vars = hiveVars.entrySet();
       Iterator<Map.Entry<String, String>> it = vars.iterator();
@@ -79,7 +79,7 @@ class DatabaseConnection {
         sb.append("=");
         sb.append(var.getValue());
         if (it.hasNext()) {
-          sb.append("&");
+          sb.append(";");
         }
       }
     }
