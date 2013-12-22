@@ -410,9 +410,6 @@
                       <void property="isDfsDir"> 
                        <boolean>true</boolean> 
                       </void> 
-                      <void property="sourceDir"> 
-                       #### A masked pattern was here #### 
-                      </void> 
                       <void property="targetDir"> 
                        #### A masked pattern was here #### 
                       </void> 
@@ -452,9 +449,6 @@
                   </void> 
                   <void property="replace"> 
                    <boolean>true</boolean> 
-                  </void> 
-                  <void property="sourceDir"> 
-                   #### A masked pattern was here #### 
                   </void> 
                   <void property="table"> 
                    <object idref="TableDesc0"/> 
