@@ -213,7 +213,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
         method.invoke(null, jobConf, partitionFile);
       }
     } catch(Exception e) {
-      throw new AssertionError("Unable to find TotalOrderPartitioner.setPartitionFile", e);
+      throw new IllegalStateException("Unable to find TotalOrderPartitioner.setPartitionFile", e);
     }
   }
 
