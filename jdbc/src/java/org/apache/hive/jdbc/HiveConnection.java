@@ -545,6 +545,9 @@ public class HiveConnection implements java.sql.Connection {
    */
 
   public DatabaseMetaData getMetaData() throws SQLException {
+    if (isClosed) {
+      throw new SQLException("Connection is closed");
+    }
     return new HiveDatabaseMetaData(client, sessHandle, this);
   }
 

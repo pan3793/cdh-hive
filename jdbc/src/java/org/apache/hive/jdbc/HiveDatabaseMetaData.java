@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.jar.Attributes;
 
 import org.apache.hadoop.hive.metastore.TableType;
+import org.apache.hive.service.cli.GetInfoType;
 import org.apache.hive.service.cli.thrift.TCLIService;
 import org.apache.hive.service.cli.thrift.TGetCatalogsReq;
 import org.apache.hive.service.cli.thrift.TGetCatalogsResp;
@@ -35,6 +36,8 @@ import org.apache.hive.service.cli.thrift.TGetColumnsReq;
 import org.apache.hive.service.cli.thrift.TGetColumnsResp;
 import org.apache.hive.service.cli.thrift.TGetFunctionsReq;
 import org.apache.hive.service.cli.thrift.TGetFunctionsResp;
+import org.apache.hive.service.cli.thrift.TGetInfoReq;
+import org.apache.hive.service.cli.thrift.TGetInfoResp;
 import org.apache.hive.service.cli.thrift.TGetSchemasReq;
 import org.apache.hive.service.cli.thrift.TGetSchemasResp;
 import org.apache.hive.service.cli.thrift.TGetTableTypesReq;
@@ -61,6 +64,9 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
 
   //  The maximum column length = MFieldSchema.FNAME in metastore/src/model/package.jdo
   private static final int maxColumnNameLength = 128;
+
+  //  Cached values, to save on round trips to database.
+  private String dbVersion = null;
 
   /**
    *
@@ -251,11 +257,11 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
   }
 
   public int getDatabaseMajorVersion() throws SQLException {
-    throw new SQLException("Method not supported");
+    return Utils.getVersionPart(getDatabaseProductVersion(), 1);
   }
 
   public int getDatabaseMinorVersion() throws SQLException {
-    throw new SQLException("Method not supported");
+    return Utils.getVersionPart(getDatabaseProductVersion(), 2);
   }
 
   public String getDatabaseProductName() throws SQLException {
@@ -263,8 +269,21 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
   }
 
   public String getDatabaseProductVersion() throws SQLException {
-    // TODO: Fetch this from the server side
-    return "0.10.0";
+    if (dbVersion != null) { //lazy-caching of the version.
+      return dbVersion;
+    }
+
+    TGetInfoReq req = new TGetInfoReq(sessHandle, GetInfoType.CLI_DBMS_VER.toTGetInfoType());
+    TGetInfoResp resp;
+    try {
+      resp = client.GetInfo(req);
+    } catch (TException e) {
+      throw new SQLException(e.getMessage(), "08S01", e);
+    }
+    Utils.verifySuccess(resp.getStatus());
+
+    this.dbVersion = resp.getInfoValue().getStringValue();
+    return dbVersion;
   }
 
   public int getDefaultTransactionIsolation() throws SQLException {

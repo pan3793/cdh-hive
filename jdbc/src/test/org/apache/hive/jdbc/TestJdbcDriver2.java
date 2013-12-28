@@ -33,7 +33,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,10 +42,9 @@ import junit.framework.TestCase;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.ql.hooks.ExecuteWithHookContext;
 import org.apache.hadoop.hive.ql.hooks.HookContext;
-import org.apache.hadoop.hive.metastore.TableType;
-import org.apache.hive.common.util.HiveVersionInfo;
 import org.apache.hive.service.cli.operation.ClassicTableTypeMapping;
 import org.apache.hive.service.cli.operation.ClassicTableTypeMapping.ClassicTableTypes;
 import org.apache.hive.service.cli.operation.HiveTableTypeMapping;
@@ -217,7 +215,7 @@ public class TestJdbcDriver2 extends TestCase {
     try{
       DriverManager.getConnection(url, "", "");
       fail("should have thrown IllegalArgumentException but did not ");
-    }catch(IllegalArgumentException i){
+    }catch(SQLException i){
       assertTrue(i.getMessage().contains("Bad URL format. Hostname not found "
           + " in authority part of the url"));
     }
@@ -942,6 +940,10 @@ public class TestJdbcDriver2 extends TestCase {
     assertFalse(meta.supportsMultipleResultSets());
     assertFalse(meta.supportsStoredProcedures());
     assertTrue(meta.supportsAlterTableWithAddColumn());
+
+    //-1 indicates malformed version.
+    assertTrue(meta.getDatabaseMajorVersion() > -1);
+    assertTrue(meta.getDatabaseMinorVersion() > -1);
   }
 
   public void testResultSetMetaData() throws SQLException {
