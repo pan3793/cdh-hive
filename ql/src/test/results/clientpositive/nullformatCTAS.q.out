@@ -172,8 +172,8 @@ OUTPUTFORMAT
 LOCATION
 #### A masked pattern was here ####
 TBLPROPERTIES (
+  'numPartitions'='0', 
   'numFiles'='1', 
-  'COLUMN_STATS_ACCURATE'='true', 
 #### A masked pattern was here ####
   'numRows'='10', 
   'totalSize'='80', 
