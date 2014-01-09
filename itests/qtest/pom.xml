@@ -123,7 +123,7 @@
       </activation>
       <properties>
         <active.hadoop.version>${hadoop-20S.version}</active.hadoop.version>
-        <test.dfs.mkdir>-mkdir</test.dfs.mkdir>
+        <test.dfs.mkdir>-mkdir -p</test.dfs.mkdir>
       </properties>
       <dependencies>
         <dependency>
