@@ -33,14 +33,14 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 PREHOOK: query: -- The plan should be converted to a map-side group by if the group by key
 -- matches the sorted key
 -- addind a order by at the end to make the test results deterministic
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM T1 GROUP BY key
 PREHOOK: type: QUERY
 POSTHOOK: query: -- The plan should be converted to a map-side group by if the group by key
 -- matches the sorted key
 -- addind a order by at the end to make the test results deterministic
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM T1 GROUP BY key
 POSTHOOK: type: QUERY
@@ -66,7 +66,6 @@ STAGE PLANS:
         t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -91,78 +90,11 @@ STAGE PLANS:
                   File Output Operator
                     compressed: false
                     GlobalTableId: 1
-#### A masked pattern was here ####
-                    NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          bucket_count -1
-                          columns key,cnt
-                          columns.types int:int
-#### A masked pattern was here ####
-                          name default.outputtbl1
-                          serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                          serialization.format 1
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.outputtbl1
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [t1]
 
   Stage: Stage-7
     Conditional Operator
@@ -177,161 +109,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
@@ -381,12 +194,12 @@ POSTHOOK: Lineage: outputtbl1.key EXPRESSION [(t1)t1.FieldSchema(name:key, type:
 POSTHOOK: Lineage: t1.key SIMPLE [(t1)t1.FieldSchema(name:key, type:string, comment:null), ]
 POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comment:null), ]
 PREHOOK: query: -- no map-side group by even if the group by key is a superset of sorted key
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl2
 SELECT key, val, count(1) FROM T1 GROUP BY key, val
 PREHOOK: type: QUERY
 POSTHOOK: query: -- no map-side group by even if the group by key is a superset of sorted key
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl2
 SELECT key, val, count(1) FROM T1 GROUP BY key, val
 POSTHOOK: type: QUERY
@@ -409,7 +222,6 @@ STAGE PLANS:
         t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -444,58 +256,6 @@ STAGE PLANS:
                   value expressions:
                         expr: _col2
                         type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [t1]
-      Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
           aggregations:
@@ -520,53 +280,24 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 1
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
-#### A masked pattern was here ####
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,cnt
-                    columns.types int:string:int
-#### A masked pattern was here ####
-                    name default.outputtbl2
-                    serialization.ddl struct outputtbl2 { i32 key1, string key2, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl2
-              TotalFiles: 1
-              GatherStats: true
-              MultiFileSpray: false
 
   Stage: Stage-0
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,cnt
-                columns.types int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl2
-                serialization.ddl struct outputtbl2 { i32 key1, string key2, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl2
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
 
 PREHOOK: query: INSERT OVERWRITE TABLE outputTbl2
@@ -608,12 +339,12 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 8	18	1
 8	28	1
 PREHOOK: query: -- It should work for sub-queries
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM (SELECT key, val FROM T1) subq1 GROUP BY key
 PREHOOK: type: QUERY
 POSTHOOK: query: -- It should work for sub-queries
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM (SELECT key, val FROM T1) subq1 GROUP BY key
 POSTHOOK: type: QUERY
@@ -644,7 +375,6 @@ STAGE PLANS:
         subq1:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -669,83 +399,11 @@ STAGE PLANS:
                   File Output Operator
                     compressed: false
                     GlobalTableId: 1
-#### A masked pattern was here ####
-                    NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          bucket_count -1
-                          columns key,cnt
-                          columns.types int:int
-#### A masked pattern was here ####
-                          name default.outputtbl1
-                          numFiles 1
-                          numPartitions 0
-                          numRows 5
-                          rawDataSize 15
-                          serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                          serialization.format 1
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                          totalSize 20
-#### A masked pattern was here ####
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.outputtbl1
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [subq1:t1]
 
   Stage: Stage-7
     Conditional Operator
@@ -760,196 +418,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 15
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 20
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 15
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 20
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              numFiles 1
-              numPartitions 0
-              numRows 5
-              rawDataSize 15
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 20
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 15
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 20
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 15
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 20
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              numFiles 1
-              numPartitions 0
-              numRows 5
-              rawDataSize 15
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 20
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 15
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 20
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
@@ -1000,12 +504,12 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 7	1
 8	2
 PREHOOK: query: -- It should work for sub-queries with column aliases
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT k, count(1) FROM (SELECT key as k, val as v FROM T1) subq1 GROUP BY k
 PREHOOK: type: QUERY
 POSTHOOK: query: -- It should work for sub-queries with column aliases
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT k, count(1) FROM (SELECT key as k, val as v FROM T1) subq1 GROUP BY k
 POSTHOOK: type: QUERY
@@ -1038,7 +542,6 @@ STAGE PLANS:
         subq1:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -1063,83 +566,11 @@ STAGE PLANS:
                   File Output Operator
                     compressed: false
                     GlobalTableId: 1
-#### A masked pattern was here ####
-                    NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          bucket_count -1
-                          columns key,cnt
-                          columns.types int:int
-#### A masked pattern was here ####
-                          name default.outputtbl1
-                          numFiles 1
-                          numPartitions 0
-                          numRows 5
-                          rawDataSize 15
-                          serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                          serialization.format 1
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                          totalSize 20
-#### A masked pattern was here ####
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.outputtbl1
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [subq1:t1]
 
   Stage: Stage-7
     Conditional Operator
@@ -1154,196 +585,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 15
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 20
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 15
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 20
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              numFiles 1
-              numPartitions 0
-              numRows 5
-              rawDataSize 15
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 20
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 15
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 20
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 15
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 20
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              numFiles 1
-              numPartitions 0
-              numRows 5
-              rawDataSize 15
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 20
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 15
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 20
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
@@ -1415,13 +692,13 @@ POSTHOOK: Lineage: t1.key SIMPLE [(t1)t1.FieldSchema(name:key, type:string, comm
 POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comment:null), ]
 PREHOOK: query: -- The plan should be converted to a map-side group by if the group by key contains a constant followed
 -- by a match to the sorted key
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl3
 SELECT 1, key, count(1) FROM T1 GROUP BY 1, key
 PREHOOK: type: QUERY
 POSTHOOK: query: -- The plan should be converted to a map-side group by if the group by key contains a constant followed
 -- by a match to the sorted key
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl3
 SELECT 1, key, count(1) FROM T1 GROUP BY 1, key
 POSTHOOK: type: QUERY
@@ -1456,7 +733,6 @@ STAGE PLANS:
         t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -1485,78 +761,11 @@ STAGE PLANS:
                   File Output Operator
                     compressed: false
                     GlobalTableId: 1
-#### A masked pattern was here ####
-                    NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          bucket_count -1
-                          columns key1,key2,cnt
-                          columns.types int:int:int
-#### A masked pattern was here ####
-                          name default.outputtbl3
-                          serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-                          serialization.format 1
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.outputtbl3
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [t1]
 
   Stage: Stage-7
     Conditional Operator
@@ -1571,161 +780,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,cnt
-                columns.types int:int:int
-#### A masked pattern was here ####
-                name default.outputtbl3
-                serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl3
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,cnt
-                    columns.types int:int:int
-#### A masked pattern was here ####
-                    name default.outputtbl3
-                    serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl3
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,cnt
-              columns.types int:int:int
-#### A masked pattern was here ####
-              name default.outputtbl3
-              serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,cnt
-                columns.types int:int:int
-#### A masked pattern was here ####
-                name default.outputtbl3
-                serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl3
-            name: default.outputtbl3
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,cnt
-                    columns.types int:int:int
-#### A masked pattern was here ####
-                    name default.outputtbl3
-                    serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl3
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,cnt
-              columns.types int:int:int
-#### A masked pattern was here ####
-              name default.outputtbl3
-              serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,cnt
-                columns.types int:int:int
-#### A masked pattern was here ####
-                name default.outputtbl3
-                serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl3
-            name: default.outputtbl3
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
@@ -1805,12 +895,12 @@ POSTHOOK: Lineage: outputtbl3.key2 EXPRESSION [(t1)t1.FieldSchema(name:key, type
 POSTHOOK: Lineage: t1.key SIMPLE [(t1)t1.FieldSchema(name:key, type:string, comment:null), ]
 POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comment:null), ]
 PREHOOK: query: -- no map-side group by if the group by key contains a constant followed by another column
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, 1, val, count(1) FROM T1 GROUP BY key, 1, val
 PREHOOK: type: QUERY
 POSTHOOK: query: -- no map-side group by if the group by key contains a constant followed by another column
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, 1, val, count(1) FROM T1 GROUP BY key, 1, val
 POSTHOOK: type: QUERY
@@ -1843,7 +933,6 @@ STAGE PLANS:
         t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -1884,58 +973,6 @@ STAGE PLANS:
                   value expressions:
                         expr: _col3
                         type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [t1]
-      Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
           aggregations:
@@ -1964,53 +1001,24 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 1
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
-#### A masked pattern was here ####
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,cnt
-                    columns.types int:int:string:int
-#### A masked pattern was here ####
-                    name default.outputtbl4
-                    serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl4
-              TotalFiles: 1
-              GatherStats: true
-              MultiFileSpray: false
 
   Stage: Stage-0
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl4
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
 
 PREHOOK: query: INSERT OVERWRITE TABLE outputTbl4
@@ -2074,12 +1082,12 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 8	1	18	1
 8	1	28	1
 PREHOOK: query: -- no map-side group by if the group by key contains a function
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl3
 SELECT key, key + 1, count(1) FROM T1 GROUP BY key, key + 1
 PREHOOK: type: QUERY
 POSTHOOK: query: -- no map-side group by if the group by key contains a function
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl3
 SELECT key, key + 1, count(1) FROM T1 GROUP BY key, key + 1
 POSTHOOK: type: QUERY
@@ -2116,7 +1124,6 @@ STAGE PLANS:
         t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -2149,58 +1156,6 @@ STAGE PLANS:
                   value expressions:
                         expr: _col2
                         type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [t1]
-      Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
           aggregations:
@@ -2225,63 +1180,24 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 1
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
-#### A masked pattern was here ####
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,cnt
-                    columns.types int:int:int
-#### A masked pattern was here ####
-                    name default.outputtbl3
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 25
-                    serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 30
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl3
-              TotalFiles: 1
-              GatherStats: true
-              MultiFileSpray: false
 
   Stage: Stage-0
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,cnt
-                columns.types int:int:int
-#### A masked pattern was here ####
-                name default.outputtbl3
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 25
-                serialization.ddl struct outputtbl3 { i32 key1, i32 key2, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl3
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
 
 PREHOOK: query: INSERT OVERWRITE TABLE outputTbl3
@@ -2353,7 +1269,7 @@ PREHOOK: query: -- it should not matter what follows the group by
 -- test various cases
 
 -- group by followed by another group by
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key + key, sum(cnt) from
 (SELECT key, count(1) as cnt FROM T1 GROUP BY key) subq1
@@ -2363,7 +1279,7 @@ POSTHOOK: query: -- it should not matter what follows the group by
 -- test various cases
 
 -- group by followed by another group by
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key + key, sum(cnt) from
 (SELECT key, count(1) as cnt FROM T1 GROUP BY key) subq1
@@ -2405,7 +1321,6 @@ STAGE PLANS:
         subq1:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -2448,58 +1363,6 @@ STAGE PLANS:
                       value expressions:
                             expr: _col1
                             type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [subq1:t1]
-      Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
           aggregations:
@@ -2520,63 +1383,24 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 1
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
-#### A masked pattern was here ####
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 15
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 20
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: true
-              MultiFileSpray: false
 
   Stage: Stage-0
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 15
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 20
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
 
 PREHOOK: query: INSERT OVERWRITE TABLE outputTbl1
@@ -2653,7 +1477,7 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 14	1
 16	2
 PREHOOK: query: -- group by followed by a union
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT * FROM (
 SELECT key, count(1) FROM T1 GROUP BY key
@@ -2662,7 +1486,7 @@ SELECT key, count(1) FROM T1 GROUP BY key
 ) subq1
 PREHOOK: type: QUERY
 POSTHOOK: query: -- group by followed by a union
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT * FROM (
 SELECT key, count(1) FROM T1 GROUP BY key
@@ -2713,7 +1537,6 @@ STAGE PLANS:
         null-subquery1:subq1-subquery1:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -2746,36 +1569,14 @@ STAGE PLANS:
                       File Output Operator
                         compressed: false
                         GlobalTableId: 1
-#### A masked pattern was here ####
-                        NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                         table:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                            properties:
-                              bucket_count -1
-                              columns key,cnt
-                              columns.types int:int
-#### A masked pattern was here ####
-                              name default.outputtbl1
-                              numFiles 1
-                              numPartitions 0
-                              numRows 5
-                              rawDataSize 17
-                              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                              serialization.format 1
-                              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                              totalSize 22
-#### A masked pattern was here ####
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                             name: default.outputtbl1
-                        TotalFiles: 1
-                        GatherStats: true
-                        MultiFileSpray: false
         null-subquery2:subq1-subquery2:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -2808,83 +1609,11 @@ STAGE PLANS:
                       File Output Operator
                         compressed: false
                         GlobalTableId: 1
-#### A masked pattern was here ####
-                        NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                         table:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                            properties:
-                              bucket_count -1
-                              columns key,cnt
-                              columns.types int:int
-#### A masked pattern was here ####
-                              name default.outputtbl1
-                              numFiles 1
-                              numPartitions 0
-                              numRows 5
-                              rawDataSize 17
-                              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                              serialization.format 1
-                              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                              totalSize 22
-#### A masked pattern was here ####
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                             name: default.outputtbl1
-                        TotalFiles: 1
-                        GatherStats: true
-                        MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [null-subquery1:subq1-subquery1:t1, null-subquery2:subq1-subquery2:t1]
 
   Stage: Stage-7
     Conditional Operator
@@ -2899,196 +1628,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 17
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 22
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 17
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 22
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              numFiles 1
-              numPartitions 0
-              numRows 5
-              rawDataSize 17
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 22
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 17
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 22
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 17
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 22
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              numFiles 1
-              numPartitions 0
-              numRows 5
-              rawDataSize 17
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 22
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 17
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 22
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
@@ -3184,7 +1759,7 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 8	2
 8	2
 PREHOOK: query: -- group by followed by a union where one of the sub-queries is map-side group by
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT * FROM (
 SELECT key, count(1) FROM T1 GROUP BY key
@@ -3193,7 +1768,7 @@ SELECT key + key as key, count(1) FROM T1 GROUP BY key + key
 ) subq1
 PREHOOK: type: QUERY
 POSTHOOK: query: -- group by followed by a union where one of the sub-queries is map-side group by
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT * FROM (
 SELECT key, count(1) FROM T1 GROUP BY key
@@ -3247,7 +1822,6 @@ STAGE PLANS:
         null-subquery2:subq1-subquery2:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -3274,58 +1848,6 @@ STAGE PLANS:
                   value expressions:
                         expr: _col1
                         type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [null-subquery2:subq1-subquery2:t1]
-      Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
           aggregations:
@@ -3346,27 +1868,16 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                  properties:
-                    columns _col0,_col1
-                    columns.types double,bigint
-                    escape.delim \
-                    serialization.lib org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
                   serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
 
   Stage: Stage-2
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             Union
               Select Operator
                 expressions:
@@ -3378,36 +1889,14 @@ STAGE PLANS:
                 File Output Operator
                   compressed: false
                   GlobalTableId: 1
-#### A masked pattern was here ####
-                  NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                   table:
                       input format: org.apache.hadoop.mapred.TextInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                      properties:
-                        bucket_count -1
-                        columns key,cnt
-                        columns.types int:int
-#### A masked pattern was here ####
-                        name default.outputtbl1
-                        numFiles 1
-                        numPartitions 0
-                        numRows 10
-                        rawDataSize 30
-                        serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                        serialization.format 1
-                        serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                        totalSize 40
-#### A masked pattern was here ####
                       serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                       name: default.outputtbl1
-                  TotalFiles: 1
-                  GatherStats: true
-                  MultiFileSpray: false
         null-subquery1:subq1-subquery1:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -3440,104 +1929,11 @@ STAGE PLANS:
                       File Output Operator
                         compressed: false
                         GlobalTableId: 1
-#### A masked pattern was here ####
-                        NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                         table:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                            properties:
-                              bucket_count -1
-                              columns key,cnt
-                              columns.types int:int
-#### A masked pattern was here ####
-                              name default.outputtbl1
-                              numFiles 1
-                              numPartitions 0
-                              numRows 10
-                              rawDataSize 30
-                              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                              serialization.format 1
-                              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                              totalSize 40
-#### A masked pattern was here ####
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                             name: default.outputtbl1
-                        TotalFiles: 1
-                        GatherStats: true
-                        MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -mr-10003
-            input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-            properties:
-              columns _col0,_col1
-              columns.types double,bigint
-              escape.delim \
-              serialization.lib org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-            serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-          
-              input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-              properties:
-                columns _col0,_col1
-                columns.types double,bigint
-                escape.delim \
-                serialization.lib org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-              serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [null-subquery1:subq1-subquery1:t1]
-#### A masked pattern was here ####
 
   Stage: Stage-8
     Conditional Operator
@@ -3552,196 +1948,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 10
-                rawDataSize 30
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 40
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-4
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 10
-                    rawDataSize 30
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 40
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              numFiles 1
-              numPartitions 0
-              numRows 10
-              rawDataSize 30
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 40
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 10
-                rawDataSize 30
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 40
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 10
-                    rawDataSize 30
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 40
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key,cnt
-              columns.types int:int
-#### A masked pattern was here ####
-              name default.outputtbl1
-              numFiles 1
-              numPartitions 0
-              numRows 10
-              rawDataSize 30
-              serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 40
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 10
-                rawDataSize 30
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 40
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl1
-            name: default.outputtbl1
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-7
     Move Operator
@@ -3841,7 +2083,7 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 14	1
 16	2
 PREHOOK: query: -- group by followed by a join
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT subq1.key, subq1.cnt+subq2.cnt FROM 
 (SELECT key, count(1) as cnt FROM T1 GROUP BY key) subq1
@@ -3850,7 +2092,7 @@ JOIN
 ON subq1.key = subq2.key
 PREHOOK: type: QUERY
 POSTHOOK: query: -- group by followed by a join
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT subq1.key, subq1.cnt+subq2.cnt FROM 
 (SELECT key, count(1) as cnt FROM T1 GROUP BY key) subq1
@@ -3900,7 +2142,6 @@ STAGE PLANS:
         subq1:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -3939,7 +2180,6 @@ STAGE PLANS:
         subq2:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -3973,58 +2213,6 @@ STAGE PLANS:
                     value expressions:
                           expr: _col1
                           type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [subq1:t1, subq2:t1]
-      Needs Tagging: true
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -4044,63 +2232,24 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 1
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
-#### A masked pattern was here ####
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 10
-                    rawDataSize 32
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 42
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: true
-              MultiFileSpray: false
 
   Stage: Stage-0
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 10
-                rawDataSize 32
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 42
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
 
 PREHOOK: query: INSERT OVERWRITE TABLE outputTbl1
@@ -4193,7 +2342,7 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 7	2
 8	4
 PREHOOK: query: -- group by followed by a join where one of the sub-queries can be performed in the mapper
-EXPLAIN EXTENDED 
+EXPLAIN 
 SELECT * FROM 
 (SELECT key, count(1) FROM T1 GROUP BY key) subq1
 JOIN
@@ -4201,7 +2350,7 @@ JOIN
 ON subq1.key = subq2.key
 PREHOOK: type: QUERY
 POSTHOOK: query: -- group by followed by a join where one of the sub-queries can be performed in the mapper
-EXPLAIN EXTENDED 
+EXPLAIN 
 SELECT * FROM 
 (SELECT key, count(1) FROM T1 GROUP BY key) subq1
 JOIN
@@ -4252,7 +2401,6 @@ STAGE PLANS:
         subq2:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -4287,58 +2435,6 @@ STAGE PLANS:
                   value expressions:
                         expr: _col2
                         type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [subq2:t1]
-      Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
           aggregations:
@@ -4363,27 +2459,16 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                  properties:
-                    columns _col0,_col1,_col2
-                    columns.types string,string,bigint
-                    escape.delim \
-                    serialization.lib org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
                   serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
 
   Stage: Stage-1
     Map Reduce
       Alias -> Map Operator Tree:
         $INTNAME 
           TableScan
-            GatherStats: false
             Reduce Output Operator
               key expressions:
                     expr: _col0
@@ -4403,7 +2488,6 @@ STAGE PLANS:
         subq1:t1 
           TableScan
             alias: t1
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -4439,79 +2523,6 @@ STAGE PLANS:
                           type: string
                           expr: _col1
                           type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -mr-10002
-            input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-            properties:
-              columns _col0,_col1,_col2
-              columns.types string,string,bigint
-              escape.delim \
-              serialization.lib org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-            serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-          
-              input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-              properties:
-                columns _col0,_col1,_col2
-                columns.types string,string,bigint
-                escape.delim \
-                serialization.lib org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-              serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-#### A masked pattern was here ####
-          Partition
-            base file name: t1
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t1
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t1 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t1
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t1 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t1
-            name: default.t1
-      Truncated Path -> Alias:
-        /t1 [subq1:t1]
-#### A masked pattern was here ####
-      Needs Tagging: true
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -4537,23 +2548,10 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
-#### A masked pattern was here ####
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    columns _col0,_col1,_col2,_col3,_col4
-                    columns.types string:bigint:string:string:bigint
-                    escape.delim \
-                    hive.serialization.extend.nesting.levels true
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
 
   Stage: Stage-0
     Fetch Operator
@@ -4638,12 +2636,12 @@ POSTHOOK: Lineage: t1.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 POSTHOOK: Lineage: t2.key SIMPLE [(t1)t1.FieldSchema(name:key, type:string, comment:null), ]
 POSTHOOK: Lineage: t2.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comment:null), ]
 PREHOOK: query: -- no mapside sort group by if the group by is a prefix of the sorted key
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM T2 GROUP BY key
 PREHOOK: type: QUERY
 POSTHOOK: query: -- no mapside sort group by if the group by is a prefix of the sorted key
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM T2 GROUP BY key
 POSTHOOK: type: QUERY
@@ -4693,7 +2691,6 @@ STAGE PLANS:
         t2 
           TableScan
             alias: t2
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -4720,58 +2717,6 @@ STAGE PLANS:
                   value expressions:
                         expr: _col1
                         type: bigint
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t2
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t2
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t2 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t2
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t2 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t2
-            name: default.t2
-      Truncated Path -> Alias:
-        /t2 [t2]
-      Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
           aggregations:
@@ -4792,63 +2737,24 @@ STAGE PLANS:
             File Output Operator
               compressed: false
               GlobalTableId: 1
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
-#### A masked pattern was here ####
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key,cnt
-                    columns.types int:int
-#### A masked pattern was here ####
-                    name default.outputtbl1
-                    numFiles 1
-                    numPartitions 0
-                    numRows 5
-                    rawDataSize 15
-                    serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 20
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl1
-              TotalFiles: 1
-              GatherStats: true
-              MultiFileSpray: false
 
   Stage: Stage-0
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key,cnt
-                columns.types int:int
-#### A masked pattern was here ####
-                name default.outputtbl1
-                numFiles 1
-                numPartitions 0
-                numRows 5
-                rawDataSize 15
-                serialization.ddl struct outputtbl1 { i32 key, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 20
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
 
 PREHOOK: query: INSERT OVERWRITE TABLE outputTbl1
@@ -4942,13 +2848,13 @@ POSTHOOK: Lineage: t2.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 8	2
 PREHOOK: query: -- The plan should be converted to a map-side group by if the group by key contains a constant in between the
 -- sorted keys
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, 1, val, count(1) FROM T2 GROUP BY key, 1, val
 PREHOOK: type: QUERY
 POSTHOOK: query: -- The plan should be converted to a map-side group by if the group by key contains a constant in between the
 -- sorted keys
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, 1, val, count(1) FROM T2 GROUP BY key, 1, val
 POSTHOOK: type: QUERY
@@ -5005,7 +2911,6 @@ STAGE PLANS:
         t2 
           TableScan
             alias: t2
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -5040,83 +2945,11 @@ STAGE PLANS:
                   File Output Operator
                     compressed: false
                     GlobalTableId: 1
-#### A masked pattern was here ####
-                    NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          bucket_count -1
-                          columns key1,key2,key3,cnt
-                          columns.types int:int:string:int
-#### A masked pattern was here ####
-                          name default.outputtbl4
-                          numFiles 1
-                          numPartitions 0
-                          numRows 6
-                          rawDataSize 48
-                          serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                          serialization.format 1
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                          totalSize 54
-#### A masked pattern was here ####
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.outputtbl4
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t2
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t2
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t2 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t2
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t2 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t2
-            name: default.t2
-      Truncated Path -> Alias:
-        /t2 [t2]
 
   Stage: Stage-7
     Conditional Operator
@@ -5131,196 +2964,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl4
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,cnt
-                    columns.types int:int:string:int
-#### A masked pattern was here ####
-                    name default.outputtbl4
-                    numFiles 1
-                    numPartitions 0
-                    numRows 6
-                    rawDataSize 48
-                    serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 54
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl4
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,key3,cnt
-              columns.types int:int:string:int
-#### A masked pattern was here ####
-              name default.outputtbl4
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 48
-              serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 54
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl4
-            name: default.outputtbl4
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,cnt
-                    columns.types int:int:string:int
-#### A masked pattern was here ####
-                    name default.outputtbl4
-                    numFiles 1
-                    numPartitions 0
-                    numRows 6
-                    rawDataSize 48
-                    serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 54
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl4
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,key3,cnt
-              columns.types int:int:string:int
-#### A masked pattern was here ####
-              name default.outputtbl4
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 48
-              serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 54
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl4
-            name: default.outputtbl4
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
@@ -5471,13 +3150,13 @@ POSTHOOK: Lineage: t2.key SIMPLE [(t1)t1.FieldSchema(name:key, type:string, comm
 POSTHOOK: Lineage: t2.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comment:null), ]
 PREHOOK: query: -- The plan should be converted to a map-side group by if the group by key contains a constant in between the
 -- sorted keys followed by anything
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl5
 SELECT key, 1, val, 2, count(1) FROM T2 GROUP BY key, 1, val, 2
 PREHOOK: type: QUERY
 POSTHOOK: query: -- The plan should be converted to a map-side group by if the group by key contains a constant in between the
 -- sorted keys followed by anything
-EXPLAIN EXTENDED 
+EXPLAIN 
 INSERT OVERWRITE TABLE outputTbl5
 SELECT key, 1, val, 2, count(1) FROM T2 GROUP BY key, 1, val, 2
 POSTHOOK: type: QUERY
@@ -5538,7 +3217,6 @@ STAGE PLANS:
         t2 
           TableScan
             alias: t2
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -5577,78 +3255,11 @@ STAGE PLANS:
                   File Output Operator
                     compressed: false
                     GlobalTableId: 1
-#### A masked pattern was here ####
-                    NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          bucket_count -1
-                          columns key1,key2,key3,key4,cnt
-                          columns.types int:int:string:int:int
-#### A masked pattern was here ####
-                          name default.outputtbl5
-                          serialization.ddl struct outputtbl5 { i32 key1, i32 key2, string key3, i32 key4, i32 cnt}
-                          serialization.format 1
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.outputtbl5
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t2
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t2
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t2 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t2
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t2 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t2
-            name: default.t2
-      Truncated Path -> Alias:
-        /t2 [t2]
 
   Stage: Stage-7
     Conditional Operator
@@ -5663,161 +3274,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,key4,cnt
-                columns.types int:int:string:int:int
-#### A masked pattern was here ####
-                name default.outputtbl5
-                serialization.ddl struct outputtbl5 { i32 key1, i32 key2, string key3, i32 key4, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl5
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,key4,cnt
-                    columns.types int:int:string:int:int
-#### A masked pattern was here ####
-                    name default.outputtbl5
-                    serialization.ddl struct outputtbl5 { i32 key1, i32 key2, string key3, i32 key4, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl5
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,key3,key4,cnt
-              columns.types int:int:string:int:int
-#### A masked pattern was here ####
-              name default.outputtbl5
-              serialization.ddl struct outputtbl5 { i32 key1, i32 key2, string key3, i32 key4, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,key4,cnt
-                columns.types int:int:string:int:int
-#### A masked pattern was here ####
-                name default.outputtbl5
-                serialization.ddl struct outputtbl5 { i32 key1, i32 key2, string key3, i32 key4, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl5
-            name: default.outputtbl5
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,key4,cnt
-                    columns.types int:int:string:int:int
-#### A masked pattern was here ####
-                    name default.outputtbl5
-                    serialization.ddl struct outputtbl5 { i32 key1, i32 key2, string key3, i32 key4, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl5
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,key3,key4,cnt
-              columns.types int:int:string:int:int
-#### A masked pattern was here ####
-              name default.outputtbl5
-              serialization.ddl struct outputtbl5 { i32 key1, i32 key2, string key3, i32 key4, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,key4,cnt
-                columns.types int:int:string:int:int
-#### A masked pattern was here ####
-                name default.outputtbl5
-                serialization.ddl struct outputtbl5 { i32 key1, i32 key2, string key3, i32 key4, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl5
-            name: default.outputtbl5
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
@@ -5937,14 +3429,14 @@ POSTHOOK: Lineage: t2.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 8	1	18	2	1
 8	1	28	2	1
 PREHOOK: query: -- contants from sub-queries should work fine
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, constant, val, count(1) from 
 (SELECT key, 1 as constant, val from T2)subq
 group by key, constant, val
 PREHOOK: type: QUERY
 POSTHOOK: query: -- contants from sub-queries should work fine
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, constant, val, count(1) from 
 (SELECT key, 1 as constant, val from T2)subq
@@ -6012,7 +3504,6 @@ STAGE PLANS:
         subq:t2 
           TableScan
             alias: t2
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -6049,83 +3540,11 @@ STAGE PLANS:
                   File Output Operator
                     compressed: false
                     GlobalTableId: 1
-#### A masked pattern was here ####
-                    NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          bucket_count -1
-                          columns key1,key2,key3,cnt
-                          columns.types int:int:string:int
-#### A masked pattern was here ####
-                          name default.outputtbl4
-                          numFiles 1
-                          numPartitions 0
-                          numRows 6
-                          rawDataSize 48
-                          serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                          serialization.format 1
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                          totalSize 54
-#### A masked pattern was here ####
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.outputtbl4
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t2
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t2
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t2 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t2
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t2 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t2
-            name: default.t2
-      Truncated Path -> Alias:
-        /t2 [subq:t2]
 
   Stage: Stage-7
     Conditional Operator
@@ -6140,196 +3559,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl4
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,cnt
-                    columns.types int:int:string:int
-#### A masked pattern was here ####
-                    name default.outputtbl4
-                    numFiles 1
-                    numPartitions 0
-                    numRows 6
-                    rawDataSize 48
-                    serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 54
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl4
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,key3,cnt
-              columns.types int:int:string:int
-#### A masked pattern was here ####
-              name default.outputtbl4
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 48
-              serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 54
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl4
-            name: default.outputtbl4
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,cnt
-                    columns.types int:int:string:int
-#### A masked pattern was here ####
-                    name default.outputtbl4
-                    numFiles 1
-                    numPartitions 0
-                    numRows 6
-                    rawDataSize 48
-                    serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 54
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl4
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,key3,cnt
-              columns.types int:int:string:int
-#### A masked pattern was here ####
-              name default.outputtbl4
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 48
-              serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 54
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl4
-            name: default.outputtbl4
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
@@ -6459,7 +3724,7 @@ POSTHOOK: Lineage: t2.val SIMPLE [(t1)t1.FieldSchema(name:val, type:string, comm
 8	1	18	1
 8	1	28	1
 PREHOOK: query: -- multiple levels of contants from sub-queries should work fine
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl4
 select key, constant3, val, count(1) from
 (
@@ -6469,7 +3734,7 @@ SELECT key, constant as constant2, val, 2 as constant3 from
 group by key, constant3, val
 PREHOOK: type: QUERY
 POSTHOOK: query: -- multiple levels of contants from sub-queries should work fine
-EXPLAIN EXTENDED
+EXPLAIN
 INSERT OVERWRITE TABLE outputTbl4
 select key, constant3, val, count(1) from
 (
@@ -6544,7 +3809,6 @@ STAGE PLANS:
         subq2:subq:t2 
           TableScan
             alias: t2
-            GatherStats: false
             Select Operator
               expressions:
                     expr: key
@@ -6581,83 +3845,11 @@ STAGE PLANS:
                   File Output Operator
                     compressed: false
                     GlobalTableId: 1
-#### A masked pattern was here ####
-                    NumFilesPerFileSink: 1
-#### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          bucket_count -1
-                          columns key1,key2,key3,cnt
-                          columns.types int:int:string:int
-#### A masked pattern was here ####
-                          name default.outputtbl4
-                          numFiles 1
-                          numPartitions 0
-                          numRows 6
-                          rawDataSize 48
-                          serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                          serialization.format 1
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                          totalSize 54
-#### A masked pattern was here ####
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.outputtbl4
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: t2
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              SORTBUCKETCOLSPREFIX TRUE
-              bucket_count 2
-              bucket_field_name key
-              columns key,val
-              columns.types string:string
-#### A masked pattern was here ####
-              name default.t2
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 24
-              serialization.ddl struct t2 { string key, string val}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 30
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                SORTBUCKETCOLSPREFIX TRUE
-                bucket_count 2
-                bucket_field_name key
-                columns key,val
-                columns.types string:string
-#### A masked pattern was here ####
-                name default.t2
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 24
-                serialization.ddl struct t2 { string key, string val}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 30
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.t2
-            name: default.t2
-      Truncated Path -> Alias:
-        /t2 [subq2:subq:t2]
 
   Stage: Stage-7
     Conditional Operator
@@ -6672,196 +3864,42 @@ STAGE PLANS:
     Move Operator
       tables:
           replace: true
-#### A masked pattern was here ####
           table:
               input format: org.apache.hadoop.mapred.TextInputFormat
               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl4
-#### A masked pattern was here ####
 
   Stage: Stage-2
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-3
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,cnt
-                    columns.types int:int:string:int
-#### A masked pattern was here ####
-                    name default.outputtbl4
-                    numFiles 1
-                    numPartitions 0
-                    numRows 6
-                    rawDataSize 48
-                    serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 54
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl4
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,key3,cnt
-              columns.types int:int:string:int
-#### A masked pattern was here ####
-              name default.outputtbl4
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 48
-              serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 54
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl4
-            name: default.outputtbl4
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-5
     Map Reduce
       Alias -> Map Operator Tree:
 #### A masked pattern was here ####
           TableScan
-            GatherStats: false
             File Output Operator
               compressed: false
               GlobalTableId: 0
-#### A masked pattern was here ####
-              NumFilesPerFileSink: 1
               table:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  properties:
-                    bucket_count -1
-                    columns key1,key2,key3,cnt
-                    columns.types int:int:string:int
-#### A masked pattern was here ####
-                    name default.outputtbl4
-                    numFiles 1
-                    numPartitions 0
-                    numRows 6
-                    rawDataSize 48
-                    serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                    serialization.format 1
-                    serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                    totalSize 54
-#### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.outputtbl4
-              TotalFiles: 1
-              GatherStats: false
-              MultiFileSpray: false
-      Path -> Alias:
-#### A masked pattern was here ####
-      Path -> Partition:
-#### A masked pattern was here ####
-          Partition
-            base file name: -ext-10002
-            input format: org.apache.hadoop.mapred.TextInputFormat
-            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-            properties:
-              bucket_count -1
-              columns key1,key2,key3,cnt
-              columns.types int:int:string:int
-#### A masked pattern was here ####
-              name default.outputtbl4
-              numFiles 1
-              numPartitions 0
-              numRows 6
-              rawDataSize 48
-              serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-              serialization.format 1
-              serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              totalSize 54
-#### A masked pattern was here ####
-            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-          
-              input format: org.apache.hadoop.mapred.TextInputFormat
-              output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-              properties:
-                bucket_count -1
-                columns key1,key2,key3,cnt
-                columns.types int:int:string:int
-#### A masked pattern was here ####
-                name default.outputtbl4
-                numFiles 1
-                numPartitions 0
-                numRows 6
-                rawDataSize 48
-                serialization.ddl struct outputtbl4 { i32 key1, i32 key2, string key3, i32 cnt}
-                serialization.format 1
-                serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                totalSize 54
-#### A masked pattern was here ####
-              serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-              name: default.outputtbl4
-            name: default.outputtbl4
-      Truncated Path -> Alias:
-#### A masked pattern was here ####
 
   Stage: Stage-6
     Move Operator
