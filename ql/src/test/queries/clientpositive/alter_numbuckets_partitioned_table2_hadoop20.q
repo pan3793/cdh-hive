@@ -1,8 +1,8 @@
 -- Tests that when overwriting a partition in a table after altering the bucketing/sorting metadata
 -- the partition metadata is updated as well.
 
--- EXCLUDE_HADOOP_MAJOR_VERSIONS(0.20, 0.20S)
--- MAPREDUCE-434 relaxes the limitation of local-mode Hadoop to use more than 1 reducer, thus enabling the bucketing case to work in the test environment.
+-- INCLUDE_HADOOP_MAJOR_VERSIONS(0.20, 0.20S)
+-- Older versions of Hadoop are limited to one reducer in local mode, resulting in one file.
 
 CREATE TABLE tst1(key STRING, value STRING) PARTITIONED BY (ds STRING);
 

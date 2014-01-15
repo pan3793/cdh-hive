@@ -1,5 +1,5 @@
--- EXCLUDE_HADOOP_MAJOR_VERSIONS(0.20, 0.20S)
--- MAPREDUCE-434 relaxes the limitation of local-mode Hadoop to use more than 1 reducer, thus enabling the bucketing case to work in the test environment.
+-- INCLUDE_HADOOP_MAJOR_VERSIONS(0.20, 0.20S)
+-- Older versions of Hadoop are limited to one reducer in local mode, resulting in one file.
 
 create table tst1(key string, value string) partitioned by (ds string) clustered by (key) into 10 buckets;
 
