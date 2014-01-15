@@ -70,6 +70,7 @@ public class Context {
   private int resDirFilesNum;
   boolean initialized;
   String originalTracker = null;
+  String originalMRFramework = null;
   private final Map<String, ContentSummary> pathToCS = new ConcurrentHashMap<String, ContentSummary>();
 
   // scratch path to use for all non-local (ie. hdfs) file system tmp folders
@@ -551,14 +552,19 @@ public class Context {
     hiveTxnManager = txnMgr;
   }
 
-  public void setOriginalTracker(String originalTracker) {
+  public void setOriginalTracker(String originalTracker, String mrFramework) {
     this.originalTracker = originalTracker;
+    this.originalMRFramework = mrFramework;
   }
 
   public void restoreOriginalTracker() {
     if (originalTracker != null) {
       ShimLoader.getHadoopShims().setJobLauncherRpcAddress(conf, originalTracker);
       originalTracker = null;
+      if (originalMRFramework != null) {
+        ShimLoader.getHadoopShims().setMRFramework(conf, originalMRFramework);
+        originalMRFramework = null;
+      }
     }
   }
 

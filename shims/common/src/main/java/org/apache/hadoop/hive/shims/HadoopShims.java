@@ -292,6 +292,28 @@ public interface HadoopShims {
   public void setJobLauncherRpcAddress(Configuration conf, String val);
 
   /**
+   * Return the MR framework if MR2 mode. (local or yarn)
+   * In upstream, 23shim automatically resets this value if address manager
+   * rpc address has changed.  In CDH, there is only one shim for both MR1/MR2,
+   * so it doesn't have the context to do so.  We need to explicitly track and
+   * reset this value.
+   * @param conf
+   * @return
+   */
+  public String getMRFramework(Configuration conf);
+
+  /**
+   * Set the MR framework as it is understood by MR2. (local or yarn)
+   * In upstream, 23shim automatically resets this value if address manager
+   * rpc address has changed.  In CDH, there is only one shim for both MR1/MR2,
+   * so it doesn't have the context to do so.  We need to explicitly track and
+   * reset this value.
+   * @param conf
+   * @param framework
+   */
+  public void setMRFramework(Configuration conf, String framework);
+
+  /**
    * All references to jobtracker/resource manager http address
    * in the configuration should be done through this shim
    * @param conf

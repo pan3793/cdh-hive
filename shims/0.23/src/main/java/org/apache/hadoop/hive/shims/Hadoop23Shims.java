@@ -212,6 +212,16 @@ public class Hadoop23Shims extends HadoopShimsSecure {
   }
 
   @Override
+  public String getMRFramework(Configuration conf) {
+    return conf.get("mapreduce.framework.name");
+  }
+
+  @Override
+  public void setMRFramework(Configuration conf, String framework) {
+    conf.set("mapreduce.framework.name", framework);
+  }
+
+  @Override
   public long getDefaultBlockSize(FileSystem fs, Path path) {
     return fs.getDefaultBlockSize(path);
   }

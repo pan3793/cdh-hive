@@ -265,7 +265,9 @@ public class MapReduceCompiler extends TaskCompiler {
     if (!hasNonLocalJob) {
       // Entire query can be run locally.
       // Save the current tracker value and restore it when done.
-      ctx.setOriginalTracker(ShimLoader.getHadoopShims().getJobLauncherRpcAddress(conf));
+      // Also save the original mr framework to identify MR2 mode (CDH change).
+      ctx.setOriginalTracker(ShimLoader.getHadoopShims().getJobLauncherRpcAddress(conf),
+        ShimLoader.getHadoopShims().getMRFramework(conf));
       ShimLoader.getHadoopShims().setJobLauncherRpcAddress(conf, "local");
       console.printInfo("Automatically selecting local only mode for query");
     }
