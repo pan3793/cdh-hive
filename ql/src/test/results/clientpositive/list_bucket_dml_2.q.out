@@ -499,7 +499,7 @@ POSTHOOK: Lineage: list_bucketing_static_part PARTITION(ds=2008-04-08,hr=11).val
 484	val_484	2008-04-08	12
 PREHOOK: query: -- 51 and val_51 in the table so skewed data for 51 and val_14 should be none
 -- but query should succeed for 51 or 51 and val_14
-select * from srcpart where ds = '2008-04-08' and key = '51' ORDER BY key, value
+select * from srcpart where ds = '2008-04-08' and key = '51' ORDER BY key, value, ds, hr
 PREHOOK: type: QUERY
 PREHOOK: Input: default@srcpart
 PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
@@ -507,7 +507,7 @@ PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
 #### A masked pattern was here ####
 POSTHOOK: query: -- 51 and val_51 in the table so skewed data for 51 and val_14 should be none
 -- but query should succeed for 51 or 51 and val_14
-select * from srcpart where ds = '2008-04-08' and key = '51' ORDER BY key, value
+select * from srcpart where ds = '2008-04-08' and key = '51' ORDER BY key, value, ds, hr
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@srcpart
 POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11

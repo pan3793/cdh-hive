@@ -14,8 +14,8 @@ INSERT OVERWRITE TABLE dest1 SELECT
   min(substr(src.value,5)),
   std(substr(src.value,5)),
   stddev_samp(substr(src.value,5)),
-  variance(substr(src.value,5)),
-  var_samp(substr(src.value,5));
+  cast(variance(substr(src.value,5)) as decimal(10,5)),
+  cast(var_samp(substr(src.value,5)) as decimal(10,5));
 
 FROM src
 INSERT OVERWRITE TABLE dest1 SELECT
@@ -26,8 +26,8 @@ INSERT OVERWRITE TABLE dest1 SELECT
   min(substr(src.value,5)),
   std(substr(src.value,5)),
   stddev_samp(substr(src.value,5)),
-  variance(substr(src.value,5)),
-  var_samp(substr(src.value,5));
+  cast(variance(substr(src.value,5)) as decimal(10,5)),
+  cast(var_samp(substr(src.value,5)) as decimal(10,5));
 
 SELECT dest1.* FROM dest1;
 
