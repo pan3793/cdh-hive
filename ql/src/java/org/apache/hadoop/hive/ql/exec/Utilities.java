@@ -2189,6 +2189,23 @@ public final class Utilities {
     }
   }
 
+  // return sum of lengths except one alias. returns -1 if any of other alias is unknown
+  public static long sumOfExcept(Map<String, Long> aliasToSize,
+      Set<String> aliases, String except) {
+    long total = 0;
+    for (String alias : aliases) {
+      if (alias.equals(except)) {
+        continue;
+      }
+      Long size = aliasToSize.get(alias);
+      if (size == null) {
+        return -1;
+      }
+      total += size;
+    }
+    return total;
+  }
+
   public static boolean isEmptyPath(JobConf job, Path dirPath, Context ctx)
       throws Exception {
     ContentSummary cs = ctx.getCS(dirPath);
