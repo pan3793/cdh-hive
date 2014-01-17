@@ -553,7 +553,9 @@
                   clusterMode="${clustermode}"
                   resultsDirectory="${basedir}/${hive.path.to.root}/hbase-handler/src/test/results/positive/" className="TestHBaseCliDriver"
                   logFile="${project.build.directory}/testhbaseclidrivergen.log"
-                  logDirectory="${project.build.directory}/qfile-results/hbase-handler/positive/"/>
+                  logDirectory="${project.build.directory}/qfile-results/hbase-handler/positive/"
+                  hadoopVersion="${hadoopVersion}"
+                  />
 
                 <!-- HBase Minimr -->
                 <qtestgen hiveRootDirectory="${basedir}/${hive.path.to.root}/"
@@ -565,7 +567,9 @@
                   clusterMode="miniMR"
                   resultsDirectory="${basedir}/${hive.path.to.root}/hbase-handler/src/test/results/positive/" className="TestHBaseMinimrCliDriver"
                   logFile="${project.build.directory}/testhbaseminimrclidrivergen.log"
-                  logDirectory="${project.build.directory}/qfile-results/hbase-handler/minimrpositive/"/>
+                  logDirectory="${project.build.directory}/qfile-results/hbase-handler/minimrpositive/"
+                  hadoopVersion="${hadoopVersion}"
+                  />
 
                 <!-- HBase Negative -->
                 <qtestgen hiveRootDirectory="${basedir}/${hive.path.to.root}/"
@@ -577,7 +581,9 @@
                   clusterMode="${clustermode}"
                   resultsDirectory="${basedir}/${hive.path.to.root}/hbase-handler/src/test/results/negative/" className="TestHBaseNegativeCliDriver"
                   logFile="${project.build.directory}/testhbasenegativeclidrivergen.log"
-                  logDirectory="${project.build.directory}/qfile-results/hbase-handler/negative"/>
+                  logDirectory="${project.build.directory}/qfile-results/hbase-handler/negative"
+                  hadoopVersion="${hadoopVersion}"
+                  />
 
 
                 <!-- Beeline -->
@@ -625,8 +631,9 @@
                   runDisabled="${run_disabled}"
                   resultsDirectory="${basedir}/${hive.path.to.root}/contrib/src/test/results/clientnegative/" className="TestContribNegativeCliDriver"
                   logFile="${project.build.directory}/testcontribnegclidrivergen.log"
-                  logDirectory="${project.build.directory}/qfile-results/contribclientnegative"/>
-
+                  logDirectory="${project.build.directory}/qfile-results/contribclientnegative"
+                  hadoopVersion="${hadoopVersion}"
+                 />
 
               </target>
             </configuration>

@@ -47,7 +47,8 @@ public class $className extends TestCase {
     MiniClusterType miniMR = MiniClusterType.valueForString("$clusterMode");
 
     try {
-      qt = new HBaseQTestUtil((HIVE_ROOT + "$resultsDir"), (HIVE_ROOT + "$logDir"), miniMR, setup);
+      String hadoopVer = "$hadoopVersion";
+      qt = new HBaseQTestUtil((HIVE_ROOT + "$resultsDir"), (HIVE_ROOT + "$logDir"), miniMR, setup, hadoopVer);
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
