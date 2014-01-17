@@ -24,10 +24,10 @@ import org.apache.hadoop.hive.ql.QTestUtil;
  */
 public class HBaseQTestUtil extends QTestUtil {
   public HBaseQTestUtil(
-    String outDir, String logDir, boolean miniMr, HBaseTestSetup setup)
+    String outDir, String logDir, boolean miniMr, HBaseTestSetup setup, String hadoopVer)
     throws Exception {
 
-    super(outDir, logDir, miniMr, null);
+    super(outDir, logDir, miniMr, hadoopVer);
     setup.preTest(conf);
     super.init();
   }
