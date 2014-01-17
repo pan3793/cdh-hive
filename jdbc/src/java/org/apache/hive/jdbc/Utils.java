@@ -223,17 +223,16 @@ public class Utils {
 
     // dbname and session settings
     String sessVars = jdbcURI.getPath();
-    if ((sessVars == null) || sessVars.isEmpty()) {
-      connParams.setDbName(DEFAULT_DATABASE);
-    } else {
+    if ((sessVars != null) && !sessVars.isEmpty()) {
+      String dbName = "";
       // removing leading '/' returned by getPath()
       sessVars = sessVars.substring(1);
       if (!sessVars.contains(";")) {
         // only dbname is provided
-        connParams.setDbName(sessVars);
+        dbName = sessVars;
       } else {
         // we have dbname followed by session parameters
-        connParams.setDbName(sessVars.substring(0, sessVars.indexOf(';')));
+        dbName = sessVars.substring(0, sessVars.indexOf(';'));
         sessVars = sessVars.substring(sessVars.indexOf(';')+1);
         if (sessVars != null) {
           Matcher sessMatcher = pattern.matcher(sessVars);
@@ -243,6 +242,9 @@ public class Utils {
             }
           }
         }
+      }
+      if (!dbName.isEmpty()) {
+        connParams.setDbName(dbName);
       }
     }
 
