@@ -578,7 +578,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
     // Verify proxy user privilege of the realUser for the proxyUser
     try {
       UserGroupInformation sessionUgi;
-      if (!ShimLoader.getHadoopShims().isSecurityEnabled()) {
+      if (ShimLoader.getHadoopShims().isSecurityEnabled()) {
         sessionUgi = ShimLoader.getHadoopShims().createProxyUser(realUser);
       } else {
         sessionUgi = ShimLoader.getHadoopShims().createRemoteUser(realUser, null);
