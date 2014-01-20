@@ -263,7 +263,6 @@ public class HiveConnection implements java.sql.Connection {
                 transport = HiveAuthFactory.getSSLSocket(host, port, loginTimeout,
                   sslTrustStore, sslTrustStorePassword);
               }
-              transport = PlainSaslHelper.getPlainTransport(userName, passwd, transport);
             } else {
               // get non-SSL socket transport
               transport = HiveAuthFactory.getSocketTransport(host, port, loginTimeout);
