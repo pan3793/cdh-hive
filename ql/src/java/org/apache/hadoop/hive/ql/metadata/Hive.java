@@ -2025,7 +2025,7 @@ public class Hive {
         }
       }
       success = fs.rename(srcf, destf);
-      LOG.debug((replace ? "Replacing src:" : "Renaming src:") + srcf.toString()
+      LOG.info((replace ? "Replacing src:" : "Renaming src:") + srcf.toString()
           + ";dest: " + destf.toString()  + ";Status:" + success);
     } catch (IOException ioe) {
       throw new HiveException("Unable to move source" + srcf + " to destination " + destf, ioe);
@@ -2128,10 +2128,7 @@ public class Hive {
       }
       List<List<Path[]>> result = checkPaths(conf, fs, srcs, destf, true);
 
-      // point of no return -- delete oldPath only if it is not same as destf,
-      // otherwise, the oldPath/destf will be cleaned later just before move
-      if (oldPath != null && (!destf.getFileSystem(conf).equals(oldPath.getFileSystem(conf))
-          || !destf.equals(oldPath))) {
+      if (oldPath != null) {
         try {
           FileSystem fs2 = oldPath.getFileSystem(conf);
           if (fs2.exists(oldPath)) {
@@ -2152,6 +2149,9 @@ public class Hive {
         Path destfp = destf.getParent();
         if (!fs.exists(destfp)) {
           boolean success = fs.mkdirs(destfp);
+          if (!success) {
+            LOG.warn("Error creating directory " + destf.toString());
+          }
           if (inheritPerms && success) {
             fs.setPermission(destfp, fs.getFileStatus(destfp.getParent()).getPermission());
           }
@@ -2165,6 +2165,9 @@ public class Hive {
       } else { // srcf is a file or pattern containing wildcards
         if (!fs.exists(destf)) {
           boolean success = fs.mkdirs(destf);
+          if (!success) {
+            LOG.warn("Error creating directory " + destf.toString());
+          }
           if (inheritPerms && success) {
             fs.setPermission(destf, fs.getFileStatus(destf.getParent()).getPermission());
           }
