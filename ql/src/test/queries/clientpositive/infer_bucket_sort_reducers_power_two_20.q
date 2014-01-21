@@ -2,7 +2,7 @@ set hive.exec.infer.bucket.sort=true;
 set hive.exec.infer.bucket.sort.num.buckets.power.two=true;
 set hive.exec.reducers.bytes.per.reducer=2500;
 
--- INCLUDE_HADOOP_MAJOR_VERSIONS(0.23)
+-- INCLUDE_HADOOP_MAJOR_VERSIONS(0.20, 0.20S)
 -- This tests inferring how data is bucketed/sorted from the operators in the reducer
 -- and populating that information in partitions' metadata, it also verifies that the
 -- number of reducers chosen will be a power of two
