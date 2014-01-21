@@ -177,10 +177,10 @@ Table:              	analyze_srcpart_partial_scan
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	numFiles            	1                   
+	numFiles            	22                  
 	numRows             	500                 
 	rawDataSize         	4812                
-	totalSize           	5293                
+	totalSize           	6954                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 

@@ -6,7 +6,6 @@ set mapred.min.split.size=300;
 set mapred.min.split.size.per.node=300;
 set mapred.min.split.size.per.rack=300;
 set hive.exec.mode.local.auto=true;
-set hive.merge.smallfiles.avgsize=1;
 
 -- INCLUDE_HADOOP_MAJOR_VERSIONS(0.20, 0.20S)
 -- This test sets mapred.max.split.size=300 and hive.merge.smallfiles.avgsize=1
