@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hive.service.AbstractService;
@@ -244,11 +245,17 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     if (cliService.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS) &&
         (userName != null)) {
       String delegationTokenStr = null;
-      try {
-        delegationTokenStr = cliService.getDelegationTokenFromMetaStore(userName);
-      } catch (UnsupportedOperationException e) {
-        // The delegation token is not applicable in the given deployment mode
-      }
+      if (!cliService.getHiveConf().getBoolVar(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL)) {
+        if (cliService.getHiveConf().getBoolVar(HiveConf.ConfVars.METASTORE_EXECUTE_SET_UGI)) {
+          Hive.closeCurrent();
+        }
+      } else {
+        try {
+          delegationTokenStr = cliService.getDelegationTokenFromMetaStore(userName);
+        } catch (UnsupportedOperationException e) {
+          // The delegation token is not applicable in the given deployment mode
+        }
+      }      
       sessionHandle = cliService.openSessionWithImpersonation(userName, req.getPassword(),
           req.getConfiguration(), delegationTokenStr);
     } else {
