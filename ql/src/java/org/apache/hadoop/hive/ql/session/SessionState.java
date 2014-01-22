@@ -786,6 +786,7 @@ public class SessionState {
 
   public void setCurrentDatabase(String currentDatabase) {
     this.currentDatabase = currentDatabase;
+    this.getConf().setVar(HiveConf.ConfVars.HIVE_CURRENT_DB, currentDatabase);
   }
 
   public void close() throws IOException {
