@@ -8,24 +8,24 @@ EXPLAIN
 FROM src
 INSERT OVERWRITE TABLE dest1 SELECT
   sum(substr(src.value,5)),
-  avg(substr(src.value,5)),
-  avg(DISTINCT substr(src.value,5)),
-  max(substr(src.value,5)),
-  min(substr(src.value,5)),
-  std(substr(src.value,5)),
-  stddev_samp(substr(src.value,5)),
+  cast(avg(substr(src.value,5)) as decimal(10,5)),
+  cast(avg(DISTINCT substr(src.value,5)) as decimal(10,5)),
+  cast(max(substr(src.value,5)) as decimal(10,5)),
+  cast(min(substr(src.value,5)) as decimal(10,5)),
+  cast(std(substr(src.value,5)) as decimal(10,5)),
+  cast(stddev_samp(substr(src.value,5)) as decimal(10,5)),
   cast(variance(substr(src.value,5)) as decimal(10,5)),
   cast(var_samp(substr(src.value,5)) as decimal(10,5));
 
 FROM src
 INSERT OVERWRITE TABLE dest1 SELECT
   sum(substr(src.value,5)),
-  avg(substr(src.value,5)),
-  avg(DISTINCT substr(src.value,5)),
-  max(substr(src.value,5)),
-  min(substr(src.value,5)),
-  std(substr(src.value,5)),
-  stddev_samp(substr(src.value,5)),
+  cast(avg(substr(src.value,5)) as decimal(10,5)),
+  cast(avg(DISTINCT substr(src.value,5)) as decimal(10,5)),
+  cast(max(substr(src.value,5)) as decimal(10,5)),
+  cast(min(substr(src.value,5)) as decimal(10,5)),
+  cast(std(substr(src.value,5)) as decimal(10,5)),
+  cast(stddev_samp(substr(src.value,5)) as decimal(10,5)),
   cast(variance(substr(src.value,5)) as decimal(10,5)),
   cast(var_samp(substr(src.value,5)) as decimal(10,5));
 
