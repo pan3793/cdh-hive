@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hive.ql.exec.FileSinkOperator;
+import org.apache.hadoop.hive.ql.exec.FileSinkOperator.RecordWriter;
 import org.apache.hadoop.hive.ql.io.HiveOutputFormat;
 import org.apache.hadoop.hive.ql.io.parquet.convert.HiveSchemaConverter;
 import org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriteSupport;
@@ -22,11 +22,8 @@ import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.RecordWriter;
-import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.util.Progressable;
-import org.apache.hadoop.hive.ql.io.FSRecordWriter;
 
 import parquet.hadoop.ParquetOutputFormat;
 
@@ -56,7 +53,7 @@ public class MapredParquetOutputFormat extends FileOutputFormat<Void, ArrayWrita
   }
 
   @Override
-  public RecordWriter<Void, ArrayWritable> getRecordWriter(
+  public org.apache.hadoop.mapred.RecordWriter getRecordWriter(
       final FileSystem ignored,
       final JobConf job,
       final String name,
@@ -71,7 +68,7 @@ public class MapredParquetOutputFormat extends FileOutputFormat<Void, ArrayWrita
    * contains the real output format
    */
   @Override
-  public FSRecordWriter getHiveRecordWriter(
+  public RecordWriter getHiveRecordWriter(
       final JobConf jobConf,
       final Path finalOutPath,
       final Class<? extends Writable> valueClass,

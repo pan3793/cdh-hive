@@ -5,23 +5,19 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hive.ql.exec.FileSinkOperator;
+import org.apache.hadoop.hive.ql.exec.FileSinkOperator.RecordWriter;
 import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.RecordWriter;
-import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.util.Progressable;
-import org.apache.hadoop.hive.ql.io.FSRecordWriter;
 
 import parquet.hadoop.ParquetOutputFormat;
 import parquet.hadoop.util.ContextUtil;
 
-public class ParquetRecordWriterWrapper implements RecordWriter<Void, ArrayWritable>,
-  FSRecordWriter {
+public class ParquetRecordWriterWrapper implements RecordWriter {
 
   public static final Log LOG = LogFactory.getLog(ParquetRecordWriterWrapper.class);
 
@@ -51,31 +47,20 @@ public class ParquetRecordWriterWrapper implements RecordWriter<Void, ArrayWrita
   }
 
   @Override
-  public void close(final Reporter reporter) throws IOException {
-    try {
-      realWriter.close(taskContext);
-    } catch (final InterruptedException e) {
-      throw new IOException(e);
-    }
-  }
-
-  @Override
-  public void write(final Void key, final ArrayWritable value) throws IOException {
-    try {
-      realWriter.write(key, value);
-    } catch (final InterruptedException e) {
-      throw new IOException(e);
-    }
-  }
-
-  @Override
   public void close(final boolean abort) throws IOException {
-    close(null);
+    try {
+      realWriter.close(null);
+    } catch (InterruptedException e) {
+      throw new IOException(e);
+    }
   }
 
   @Override
   public void write(final Writable w) throws IOException {
-    write(null, (ArrayWritable) w);
+    try {
+      realWriter.write(null, (ArrayWritable) w);
+    } catch (InterruptedException e) {
+      throw new IOException(e);
+    }
   }
-
 }
