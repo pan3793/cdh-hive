@@ -74,10 +74,6 @@ import org.apache.hadoop.mapred.SequenceFileInputFormat;
 import org.apache.hadoop.mapred.SequenceFileOutputFormat;
 import org.apache.hadoop.mapred.TextInputFormat;
 
-import parquet.hive.MapredParquetInputFormat;
-import parquet.hive.MapredParquetOutputFormat;
-import parquet.hive.serde.ParquetHiveSerDe;
-
 /**
  * BaseSemanticAnalyzer.
  *
@@ -131,10 +127,6 @@ public abstract class BaseSemanticAnalyzer {
       .getName();
   protected static final String ORCFILE_SERDE = OrcSerde.class
       .getName();
-
-  protected static final String PARQUETFILE_INPUT = MapredParquetInputFormat.class.getName();
-  protected static final String PARQUETFILE_OUTPUT = MapredParquetOutputFormat.class.getName();
-  protected static final String PARQUETFILE_SERDE = ParquetHiveSerDe.class.getName();
 
   class RowFormatParams {
     String fieldDelim = null;
@@ -223,12 +215,6 @@ public abstract class BaseSemanticAnalyzer {
         shared.serde = ORCFILE_SERDE;
         storageFormat = true;
         break;
-      case HiveParser.TOK_TBLPARQUETFILE:
-        inputFormat = PARQUETFILE_INPUT;
-        outputFormat = PARQUETFILE_OUTPUT;
-        shared.serde = PARQUETFILE_SERDE;
-        storageFormat = true;
-        break;
       case HiveParser.TOK_TABLEFILEFORMAT:
         inputFormat = unescapeSQLString(child.getChild(0).getText());
         outputFormat = unescapeSQLString(child.getChild(1).getText());
@@ -260,10 +246,6 @@ public abstract class BaseSemanticAnalyzer {
           inputFormat = ORCFILE_INPUT;
           outputFormat = ORCFILE_OUTPUT;
           shared.serde = ORCFILE_SERDE;
-        } else if ("PARQUET".equalsIgnoreCase(conf.getVar(HiveConf.ConfVars.HIVEDEFAULTFILEFORMAT))) {
-          inputFormat = PARQUETFILE_INPUT;
-          outputFormat = PARQUETFILE_OUTPUT;
-          shared.serde = PARQUETFILE_SERDE;
         } else {
           inputFormat = TEXTFILE_INPUT;
           outputFormat = TEXTFILE_OUTPUT;
