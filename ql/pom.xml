@@ -68,7 +68,7 @@
     </dependency>
     <dependency>
       <groupId>com.twitter</groupId>
-      <artifactId>parquet-hadoop-bundle</artifactId>
+      <artifactId>parquet-hive-bundle</artifactId>
       <version>${parquet.version}</version>
     </dependency>
     <dependency>
