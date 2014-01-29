@@ -266,7 +266,7 @@ public class HiveConf extends Configuration {
     METASTORECONNECTURLKEY("javax.jdo.option.ConnectionURL",
         "jdbc:derby:;databaseName=metastore_db;create=true"),
     // Number of attempts to retry connecting after there is a JDO datastore err
-    METASTOREATTEMPTS("hive.metastore.ds.retry.attempts", 1),
+    METASTOREATTEMPTS("hive.metastore.ds.retry.attempts", 0),
     // Number of miliseconds to wait between attepting
     METASTOREINTERVAL("hive.metastore.ds.retry.interval", 1000),
     // Whether to force reloading of the metastore configuration (including
