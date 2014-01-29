@@ -421,6 +421,11 @@ import org.apache.thrift.transport.TTransportFactory;
      }
 
      @Override
+     public String getUserFromToken(String tokenStr) throws IOException {
+       return secretManager.getUserFromToken(tokenStr);
+     }
+
+     @Override
      public void cancelDelegationToken(String tokenStrForm) throws IOException {
        secretManager.cancelDelegationToken(tokenStrForm);
      }

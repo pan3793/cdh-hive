@@ -1182,8 +1182,8 @@ public class Commands {
     } catch (Exception e) {
       beeLine.handleException(e);
     }
-    beeLine.output(beeLine.loc("record-closed", beeLine.getRecordOutputFile()));
     beeLine.setRecordOutputFile(null);
+    beeLine.output(beeLine.loc("record-closed", beeLine.getRecordOutputFile()));
     return true;
   }
 
@@ -1202,8 +1202,9 @@ public class Commands {
     }
 
     try {
-      beeLine.setRecordOutputFile(new OutputFile(parts[1]));
-      beeLine.output(beeLine.loc("record-started", beeLine.getRecordOutputFile()));
+      OutputFile recordOutput = new OutputFile(parts[1]);
+      beeLine.output(beeLine.loc("record-started", recordOutput));
+      beeLine.setRecordOutputFile(recordOutput);
       return true;
     } catch (Exception e) {
       return beeLine.error(e);

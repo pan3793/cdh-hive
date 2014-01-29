@@ -780,6 +780,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_SSL_KEYSTORE_PATH("hive.server2.keystore.path", ""),
     HIVE_SERVER2_SSL_KEYSTORE_PASSWORD("hive.server2.keystore.password", ""),
     HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true),
+    HIVE_SERVER2_SESSION_USER("hive.server2.session.user", ""),
 
     HIVE_SERVER2_IN_MEM_LOGGING("hive.server2.in.mem.logging", true),
     HIVE_SERVER2_IN_MEM_LOG_SIZE("hive.server2.in.mem.log.size", 128 * 1024),
