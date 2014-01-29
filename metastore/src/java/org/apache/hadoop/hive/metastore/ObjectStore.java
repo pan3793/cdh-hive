@@ -360,7 +360,10 @@ public class ObjectStore implements RawStore, Configurable {
       // currentTransaction is not active
       assert ((currentTransaction != null) && (currentTransaction.isActive()));
     }
-    return currentTransaction.isActive();
+    boolean result = currentTransaction.isActive();
+    LOG.debug("Open transaction: count = " + openTrasactionCalls + ", isActive = " + result);
+    printStack();
+    return result;
   }
 
   /**
@@ -372,23 +375,32 @@ public class ObjectStore implements RawStore, Configurable {
   @SuppressWarnings("nls")
   public boolean commitTransaction() {
     if (TXN_STATUS.ROLLBACK == transactionStatus) {
+      LOG.debug("Commit transaction: rollback");
+      printStack();
       return false;
     }
     if (openTrasactionCalls <= 0) {
-      throw new RuntimeException("commitTransaction was called but openTransactionCalls = "
+      RuntimeException e = new RuntimeException("commitTransaction was called but openTransactionCalls = "
           + openTrasactionCalls + ". This probably indicates that there are unbalanced " +
               "calls to openTransaction/commitTransaction");
+      LOG.error("Error commiting transaction", e);
+      throw e;
     }
     if (!currentTransaction.isActive()) {
-      throw new RuntimeException(
+      RuntimeException e = new RuntimeException(
           "Commit is called, but transaction is not active. Either there are"
               + " mismatching open and close calls or rollback was called in the same trasaction");
+      LOG.error("Error commiting transaction", e);
+      throw e;
     }
     openTrasactionCalls--;
+    LOG.debug("Commit transaction: count = " + openTrasactionCalls + ", isactive "+ currentTransaction.isActive());
+    printStack();
     if ((openTrasactionCalls == 0) && currentTransaction.isActive()) {
       transactionStatus = TXN_STATUS.COMMITED;
       currentTransaction.commit();
     }
+
     return true;
   }
 
@@ -408,9 +420,13 @@ public class ObjectStore implements RawStore, Configurable {
    */
   public void rollbackTransaction() {
     if (openTrasactionCalls < 1) {
+      LOG.debug("rolling back transaction: no open transactions: " + openTrasactionCalls);
+      printStack();
       return;
     }
     openTrasactionCalls = 0;
+    LOG.debug("Rollback transaction, isActive: " + currentTransaction.isActive());
+    printStack();
     if (currentTransaction.isActive()
         && transactionStatus != TXN_STATUS.ROLLBACK) {
       transactionStatus = TXN_STATUS.ROLLBACK;
@@ -421,6 +437,19 @@ public class ObjectStore implements RawStore, Configurable {
       // from reattaching in future transactions
       pm.evictAll();
     }
+  }
+
+  private int stacklimit = 4;
+
+  private void printStack() {
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    int thislimit = Math.min(stacklimit, stackTrace.length);
+    StringBuilder sb = new StringBuilder();
+    for (int i = 2; i < thislimit; i++) {
+      sb.append("\n\t");
+      sb.append(stackTrace[i].toString());
+    }
+    LOG.debug(sb.toString());
   }
 
   public void createDatabase(Database db) throws InvalidObjectException, MetaException {
