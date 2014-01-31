@@ -19,6 +19,7 @@
 package org.apache.hive.jdbc.miniHS2;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -65,5 +66,23 @@ public class TestHiveServer2 {
     OperationHandle opHandle = serviceClient.executeStatement(sessHandle, "SHOW TABLES", confOverlay);
     RowSet rowSet = serviceClient.fetchResults(opHandle);
     assertFalse(rowSet.getSize() == 0);
+  }
+
+  @Test
+  public void testAsyncGetLog() throws Exception {
+    String tabName = "testTab1";
+    CLIServiceClient serviceClient = miniHS2.getServiceClient();
+    SessionHandle sessHandle = serviceClient.openSession("foo", "bar");
+    serviceClient.executeStatement(sessHandle,
+        "DROP TABLE IF EXISTS " + tabName, confOverlay);
+    serviceClient.executeStatement(sessHandle, "CREATE TABLE " + tabName +
+        " (under_col INT, value STRING)", confOverlay);
+    String queryStr = "select * from " + tabName;
+    // run async query
+    OperationHandle opHandle =
+        serviceClient.executeStatementAsync(sessHandle, queryStr, confOverlay);
+    String logStr = serviceClient.getLog(opHandle);
+    assertTrue("Operation Log looks incorrect", logStr.contains("Starting command: " + queryStr));
+
   }
 }
