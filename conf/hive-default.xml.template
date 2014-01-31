@@ -375,7 +375,7 @@
 
 <property>
   <name>hive.default.rcfile.serde</name>
-  <value>org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe</value>
+  <value>org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe</value>
   <description>The default SerDe hive will use for the rcfile format</description>
 </property>
 
