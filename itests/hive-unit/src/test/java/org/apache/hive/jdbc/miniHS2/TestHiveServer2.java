@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.cli.CLIServiceClient;
 import org.apache.hive.service.cli.OperationHandle;
+import org.apache.hive.service.cli.OperationState;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.junit.After;
@@ -37,16 +38,17 @@ import org.junit.Test;
 
 public class TestHiveServer2 {
 
-  private static MiniHS2 miniHS2 = null;
+  private MiniHS2 miniHS2 = null;
   private Map<String, String> confOverlay;
 
   @BeforeClass
   public static void beforeTest() throws IOException {
-    miniHS2 = new MiniHS2(new HiveConf());
+    System.setProperty("hive.support.concurrency", "false");
   }
 
   @Before
   public void setUp() throws Exception {
+    miniHS2 = new MiniHS2(new HiveConf());
     miniHS2.start();
     confOverlay = new HashMap<String, String>();
   }
@@ -81,6 +83,10 @@ public class TestHiveServer2 {
     // run async query
     OperationHandle opHandle =
         serviceClient.executeStatementAsync(sessHandle, queryStr, confOverlay);
+    // wait for query to run. Note that the state is set to RUNNING before the returning the control back to client
+    while (OperationState.RUNNING.equals(serviceClient.getOperationStatus(opHandle).getState())) {
+      Thread.sleep(250);
+    }
     String logStr = serviceClient.getLog(opHandle);
     assertTrue("Operation Log looks incorrect", logStr.contains("Starting command: " + queryStr));
 
