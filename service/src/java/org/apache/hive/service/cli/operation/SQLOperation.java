@@ -169,11 +169,18 @@ public class SQLOperation extends ExecuteStatementOperation {
         @Override
         public void run() {
           SessionState.setCurrentSessionState(ss);
+          getParentSession().getSessionManager().
+              getLogManager().unregisterCurrentThread();
           try {
+            getParentSession().getSessionManager().
+                getLogManager().registerCurrentThread(getHandle());
             runInternal(getConfigForOperation());
           } catch (HiveSQLException e) {
             setOperationException(e);
             LOG.error("Error: ", e);
+          } finally {
+            getParentSession().getSessionManager().
+                getLogManager().unregisterCurrentThread();
           }
         }
       };
