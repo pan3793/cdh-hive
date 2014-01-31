@@ -447,7 +447,7 @@ public class HiveConf extends Configuration {
 
     // default serde for rcfile
     HIVEDEFAULTRCFILESERDE("hive.default.rcfile.serde",
-                           "org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe"),
+                           "org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe"),
 
     //Location of Hive run time structured log file
     HIVEHISTORYFILELOC("hive.querylog.location", System.getProperty("java.io.tmpdir") + File.separator + System.getProperty("user.name")),
