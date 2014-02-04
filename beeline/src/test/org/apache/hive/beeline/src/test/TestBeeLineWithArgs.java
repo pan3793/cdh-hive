@@ -94,7 +94,6 @@ public class TestBeeLineWithArgs {
    * @return The stderr and stdout from running the script
    */
   private String testCommandLineScript(List<String> argList) throws Throwable {
-    // String[] args = {"-d", BeeLine.BEELINE_DEFAULT_JDBC_DRIVER, "-u", JDBC_URL, "-f", scriptFileName};
     BeeLine beeLine = new BeeLine();
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     PrintStream beelineOutputStream = new PrintStream(os);
@@ -119,7 +118,7 @@ public class TestBeeLineWithArgs {
    * @param shouldMatch true if the pattern should be found, false if it should not
    * @throws Exception on command execution error
    */
-  private void testScriptFile(String testName, String scriptText, String expectedPattern, 
+  private void testScriptFile(String testName, String scriptText, String expectedPattern,
     boolean shouldMatch, List<String> argList) throws Throwable {
 
     long startTime = System.currentTimeMillis();
