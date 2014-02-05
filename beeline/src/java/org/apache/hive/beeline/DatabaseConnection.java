@@ -40,6 +40,7 @@ import jline.Completor;
 
 class DatabaseConnection {
   private static final String HIVE_VAR_PREFIX = "hivevar:";
+  private static final String HIVE_CONF_PREFIX = "hiveconf:";
 
   private final BeeLine beeLine;
   private Connection connection;
@@ -132,6 +133,12 @@ class DatabaseConnection {
     for (Map.Entry<String, String> var : hiveVars.entrySet()) {
       props.put(HIVE_VAR_PREFIX + var.getKey(), var.getValue());
     }
+
+    Map<String, String> hiveConfVars = beeLine.getOpts().getHiveConfVariables();
+    for (Map.Entry<String, String> var : hiveConfVars.entrySet()) {
+      props.put(HIVE_CONF_PREFIX + var.getKey(), var.getValue());
+    }
+
     setConnection(DriverManager.getConnection(getUrl(), props));
     setDatabaseMetaData(getConnection().getMetaData());
 

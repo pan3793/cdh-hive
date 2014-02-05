@@ -86,6 +86,7 @@ class BeeLineOpts implements Completor {
 
 
   private Map<String, String> hiveVariables = new HashMap<String, String>();
+  private Map<String, String> hiveConfVariables = new HashMap<String, String>();
 
   public BeeLineOpts(BeeLine beeLine, Properties props) {
     this.beeLine = beeLine;
@@ -244,6 +245,13 @@ class BeeLineOpts implements Completor {
     this.fastConnect = fastConnect;
   }
 
+  public Map<String, String> getHiveConfVariables() {
+    return hiveConfVariables;
+  }
+
+  public void setHiveConfVariables(Map<String, String> hiveConfVariables) {
+    this.hiveConfVariables = hiveConfVariables;
+  }
 
   public boolean getFastConnect() {
     return fastConnect;
