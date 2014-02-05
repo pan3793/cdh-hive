@@ -95,6 +95,8 @@ public class TestExtendedDiagnostics {
     Class.forName(HiveTestDriver.class.getName());
     DriverManager.deregisterDriver(DriverManager.getDriver("jdbc:hive2://"));
     DriverManager.registerDriver(new HiveTestDriver());
+    System.setProperty("hive.support.concurrency", "false");
+    conf = new HiveConf();
 
     miniHS2 = new MiniHS2(conf);
   }
@@ -148,7 +150,7 @@ public class TestExtendedDiagnostics {
       fail("next() should fail due to mock hook error");
     } catch (SQLException e) {
       // verify that the GetLog got called
-      assertTrue(e.getMessage(), e.getMessage().contains(queryStr));
+      assertTrue(e.getMessage(), e.getMessage().contains("Starting command: " + queryStr));
     }
   }
 

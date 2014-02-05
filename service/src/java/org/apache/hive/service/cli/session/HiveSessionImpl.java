@@ -34,6 +34,7 @@ import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.history.HiveHistory;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.GetInfoType;
@@ -92,6 +93,7 @@ public class HiveSessionImpl implements HiveSession {
     // set an explicit session name to control the download directory name
     hiveConf.set(ConfVars.HIVESESSIONID.varname,
         sessionHandle.getHandleIdentifier().toString());
+    hiveConf.setVar(ConfVars.HIVE_SERVER2_SESSION_USER, username);
     sessionState = new SessionState(hiveConf);
   }
 
@@ -426,6 +428,7 @@ public class HiveSessionImpl implements HiveSession {
   @Override
   public void setUserName(String userName) {
     this.username = userName;
+    getHiveConf().setVar(ConfVars.HIVE_SERVER2_SESSION_USER, username);
   }
 
   @Override
@@ -488,18 +491,28 @@ public class HiveSessionImpl implements HiveSession {
   @Override
   public String getDelegationToken(HiveAuthFactory authFactory, String owner, String renewer)
       throws HiveSQLException {
-    throw new HiveSQLException("Delegation token access is only allowed with impersonation");
+    HiveAuthFactory.verifyProxyAccess(getUsername(), owner, getIpAddress(), getHiveConf());
+    return authFactory.getDelegationToken(owner, renewer);
   }
 
   @Override
   public void cancelDelegationToken(HiveAuthFactory authFactory, String tokenStr)
       throws HiveSQLException {
-    throw new HiveSQLException("Delegation token access is only allowed with impersonation");
+    HiveAuthFactory.verifyProxyAccess(getUsername(), getUserFromToken(authFactory, tokenStr),
+        getIpAddress(), getHiveConf());
+    authFactory.cancelDelegationToken(tokenStr);
   }
 
   @Override
   public void renewDelegationToken(HiveAuthFactory authFactory, String tokenStr)
       throws HiveSQLException {
-    throw new HiveSQLException("Delegation token access is only allowed with impersonation");
+    HiveAuthFactory.verifyProxyAccess(getUsername(), getUserFromToken(authFactory, tokenStr),
+        getIpAddress(), getHiveConf());
+    authFactory.renewDelegationToken(tokenStr);
+  }
+
+  // extract the real user from the given token string
+  private String getUserFromToken(HiveAuthFactory authFactory, String tokenStr) throws HiveSQLException {
+    return authFactory.getUserFromToken(tokenStr);
   }
 }

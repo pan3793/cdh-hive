@@ -461,6 +461,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       try {
         cliService.cancelDelegationToken(new SessionHandle(req.getSessionHandle()),
             hiveAuthFactory, req.getDelegationToken());
+        resp.setStatus(OK_STATUS);
       } catch (HiveSQLException e) {
         e.printStackTrace();
         resp.setStatus(HiveSQLException.toTStatus(e));
@@ -479,6 +480,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       try {
         cliService.renewDelegationToken(new SessionHandle(req.getSessionHandle()),
             hiveAuthFactory, req.getDelegationToken());
+        resp.setStatus(OK_STATUS);
       } catch (HiveSQLException e) {
         e.printStackTrace();
         resp.setStatus(HiveSQLException.toTStatus(e));
@@ -583,20 +585,7 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
       return proxyUser;
     }
 
-    // Verify proxy user privilege of the realUser for the proxyUser
-    try {
-      UserGroupInformation sessionUgi;
-      if (ShimLoader.getHadoopShims().isSecurityEnabled()) {
-        sessionUgi = ShimLoader.getHadoopShims().createProxyUser(realUser);
-      } else {
-        sessionUgi = ShimLoader.getHadoopShims().createRemoteUser(realUser, null);
-      }
-      ShimLoader.getHadoopShims().
-      authorizeProxyAccess(proxyUser, sessionUgi, ipAddress, hiveConf);
-      return proxyUser;
-    } catch (IOException e) {
-      throw new HiveSQLException("Failed to validate proxy privilage of " + realUser +
-          " for " + proxyUser, e);
-    }
+    HiveAuthFactory.verifyProxyAccess(realUser, proxyUser, ipAddress, hiveConf);
+    return proxyUser;
   }
 }

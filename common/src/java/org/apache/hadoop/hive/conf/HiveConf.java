@@ -711,6 +711,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_SSL_KEYSTORE_PASSWORD("hive.server2.keystore.password", ""),
     HIVE_SERVER2_AUTHZ_EXTERNAL_EXEC("hive.server2.authorization.external.exec", true),
     HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true),
+    HIVE_SERVER2_SESSION_USER("hive.server2.session.user", ""),
     HIVE_SERVER2_TABLE_TYPE_MAPPING("hive.server2.table.type.mapping", "HIVE"),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),

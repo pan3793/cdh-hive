@@ -96,6 +96,7 @@ import org.apache.thrift.transport.TTransportFactory;
      throws IOException, InterruptedException;
      public abstract long renewDelegationToken(String tokenStrForm) throws IOException;
      public abstract void cancelDelegationToken(String tokenStrForm) throws IOException;
+     public abstract String getUserFromToken(String tokenStr) throws IOException;
    }
  }
 

@@ -34,6 +34,7 @@ import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.thrift.ThriftCLIService;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.thrift.TProcessorFactory;
 import org.apache.thrift.transport.TSSLTransportFactory;
 import org.apache.thrift.transport.TServerSocket;
@@ -259,6 +260,38 @@ public class HiveAuthFactory {
       serverAddress = InetAddress.getByName(hiveHost);
     }
     return TSSLTransportFactory.getServerSocket(portNum, 0, serverAddress, params);
+  }
+
+  public String getUserFromToken(String delegationToken) throws HiveSQLException {
+    if (saslServer == null) {
+      throw new HiveSQLException(
+          "Delegation token only supported over kerberos authentication");
+    }
+    try {
+      return saslServer.getUserFromToken(delegationToken);
+    } catch (IOException e) {
+      throw new HiveSQLException("Error extracting user from delegation token " + delegationToken, e);
+    }
+  }
+
+  public static void verifyProxyAccess(String realUser, String proxyUser, String ipAddress,
+      HiveConf hiveConf) throws HiveSQLException {
+    UserGroupInformation sessionUgi;
+
+    try {
+      if (ShimLoader.getHadoopShims().isSecurityEnabled()) {
+        sessionUgi = ShimLoader.getHadoopShims().createProxyUser(realUser);
+      } else {
+        sessionUgi = ShimLoader.getHadoopShims().createRemoteUser(realUser, null);
+      }
+      if (!proxyUser.equalsIgnoreCase(realUser)) {
+        ShimLoader.getHadoopShims().
+          authorizeProxyAccess(proxyUser, sessionUgi, ipAddress, hiveConf);
+      }
+    } catch (IOException e) {
+      throw new HiveSQLException("Failed to validate proxy privilage of " + realUser +
+          " for " + proxyUser, e);
+    }
   }
 
 }
