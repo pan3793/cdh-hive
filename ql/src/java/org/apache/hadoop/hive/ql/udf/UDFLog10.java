@@ -19,7 +19,6 @@
 package org.apache.hadoop.hive.ql.udf;
 
 import org.apache.hadoop.hive.ql.exec.Description;
-import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 
 /**
@@ -30,7 +29,7 @@ import org.apache.hadoop.hive.serde2.io.DoubleWritable;
     value = "_FUNC_(x) - Returns the logarithm of x with base 10",
     extended = "Example:\n"
     + "  > SELECT _FUNC_(10) FROM src LIMIT 1;\n" + "  1")
-public class UDFLog10 extends UDF {
+public class UDFLog10 extends UDFMath {
   private static double log10 = Math.log(10.0);
 
   private DoubleWritable result = new DoubleWritable();

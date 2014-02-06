@@ -20,7 +20,6 @@ package org.apache.hadoop.hive.ql.udf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.ql.exec.Description;
-import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 
 
@@ -31,7 +30,7 @@ import org.apache.hadoop.hive.serde2.io.DoubleWritable;
           "  > SELECT _FUNC_(90) FROM src LIMIT 1;\n" +
           "  1.5707963267949mo\n"
       )
-public class UDFRadians extends UDF {
+public class UDFRadians extends UDFMath {
 
   @SuppressWarnings("unused")
   private static Log LOG = LogFactory.getLog(UDFRadians.class.getName());

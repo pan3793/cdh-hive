@@ -19,7 +19,6 @@
 package org.apache.hadoop.hive.ql.udf;
 
 import org.apache.hadoop.hive.ql.exec.Description;
-import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 
 /**
@@ -30,7 +29,7 @@ import org.apache.hadoop.hive.serde2.io.DoubleWritable;
     + "NULL otherwise", extended = "Example:\n"
     + "  > SELECT _FUNC_(1) FROM src LIMIT 1;\n" + "  0\n"
     + "  > SELECT _FUNC_(2) FROM src LIMIT 1;\n" + "  NULL")
-public class UDFAcos extends UDF {
+public class UDFAcos extends UDFMath {
   private DoubleWritable result = new DoubleWritable();
 
   public UDFAcos() {

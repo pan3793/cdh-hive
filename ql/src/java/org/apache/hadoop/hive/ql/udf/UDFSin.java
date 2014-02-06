@@ -19,7 +19,6 @@
 package org.apache.hadoop.hive.ql.udf;
 
 import org.apache.hadoop.hive.ql.exec.Description;
-import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 
 /**
@@ -30,7 +29,7 @@ import org.apache.hadoop.hive.serde2.io.DoubleWritable;
     value = "_FUNC_(x) - returns the sine of x (x is in radians)",
     extended = "Example:\n "
     + "  > SELECT _FUNC_(0) FROM src LIMIT 1;\n" + "  0")
-public class UDFSin extends UDF {
+public class UDFSin extends UDFMath {
   private DoubleWritable result = new DoubleWritable();
 
   public UDFSin() {

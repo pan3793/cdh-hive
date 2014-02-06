@@ -21,7 +21,6 @@ package org.apache.hadoop.hive.ql.udf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.ql.exec.Description;
-import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 
 @Description(
@@ -31,7 +30,7 @@ import org.apache.hadoop.hive.serde2.io.DoubleWritable;
         "  > SELECT _FUNC_(0) FROM src LIMIT 1;\n" +
         "  0"
     )
-public class UDFAtan extends UDF {
+public class UDFAtan extends UDFMath {
 
   @SuppressWarnings("unused")
   private static Log LOG = LogFactory.getLog(UDFAtan.class.getName());

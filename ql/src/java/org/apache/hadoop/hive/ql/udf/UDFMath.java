@@ -18,34 +18,32 @@
 
 package org.apache.hadoop.hive.ql.udf;
 
-import org.apache.hadoop.hive.ql.exec.Description;
+import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
+import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 
-/**
- * Implementation of the SQRT UDF found in many databases.
- */
-@Description(name = "sqrt",
-    value = "_FUNC_(x) - returns the square root of x",
-    extended = "Example:\n "
-    + "  > SELECT _FUNC_(4) FROM src LIMIT 1;\n" + "  2")
-public class UDFSqrt extends UDFMath {
-  private DoubleWritable result = new DoubleWritable();
+public abstract class UDFMath extends UDF {
+  private final DoubleWritable doubleWritable = new DoubleWritable();
 
-  public UDFSqrt() {
+  public UDFMath() {
   }
 
   /**
-   * Return NULL for NULL or negative inputs; otherwise, return the square root.
+   * For subclass to implement.
    */
-  public DoubleWritable evaluate(DoubleWritable i) {
-    if (i == null) {
+  public abstract DoubleWritable evaluate(DoubleWritable a);
+
+  /**
+   * Convert HiveDecimal to a double and call evaluate() on it.
+   */
+  public final DoubleWritable evaluate(HiveDecimalWritable writable) {
+    if (writable == null) {
       return null;
-    } else if (i.get() < 0) {
-      return null;
-    } else {
-      result.set(Math.sqrt(i.get()));
-      return result;
     }
+
+    double d = writable.getHiveDecimal().bigDecimalValue().doubleValue();
+    doubleWritable.set(d);
+    return evaluate(doubleWritable);
   }
 
 }
