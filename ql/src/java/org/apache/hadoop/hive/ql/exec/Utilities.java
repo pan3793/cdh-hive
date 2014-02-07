@@ -840,6 +840,7 @@ public final class Utilities {
       kryo.setClassLoader(Thread.currentThread().getContextClassLoader());
       kryo.register(java.sql.Date.class, new SqlDateSerializer());
       kryo.register(java.sql.Timestamp.class, new TimestampSerializer());
+      kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
       removeField(kryo, Operator.class, "colExprMap");
       removeField(kryo, ColumnInfo.class, "objectInspector");
       removeField(kryo, MapWork.class, "opParseCtxMap");
@@ -862,6 +863,7 @@ public final class Utilities {
       kryo.register(CommonToken.class, new CommonTokenSerializer());
       kryo.register(java.sql.Date.class, new SqlDateSerializer());
       kryo.register(java.sql.Timestamp.class, new TimestampSerializer());
+      kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
       return kryo;
     };
   };
