@@ -93,7 +93,6 @@ public class HiveSessionImpl implements HiveSession {
     // set an explicit session name to control the download directory name
     hiveConf.set(ConfVars.HIVESESSIONID.varname,
         sessionHandle.getHandleIdentifier().toString());
-    hiveConf.setVar(ConfVars.HIVE_SERVER2_SESSION_USER, username);
     sessionState = new SessionState(hiveConf);
   }
 
@@ -428,7 +427,6 @@ public class HiveSessionImpl implements HiveSession {
   @Override
   public void setUserName(String userName) {
     this.username = userName;
-    getHiveConf().setVar(ConfVars.HIVE_SERVER2_SESSION_USER, username);
   }
 
   @Override
