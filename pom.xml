@@ -244,6 +244,17 @@
         <version>${bonecp.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.twitter</groupId>
+        <artifactId>parquet-hadoop-bundle</artifactId>
+        <version>${parquet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.twitter</groupId>
+        <artifactId>parquet-column</artifactId>
+        <version>${parquet.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
         <groupId>com.sun.jersey</groupId>
         <artifactId>jersey-core</artifactId>
         <version>${jersey.version}</version>
