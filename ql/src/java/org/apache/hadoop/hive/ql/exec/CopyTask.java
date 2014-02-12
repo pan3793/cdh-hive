@@ -51,8 +51,8 @@ public class CopyTask extends Task<CopyWork> implements Serializable {
     FileSystem dstFs = null;
     Path toPath = null;
     try {
-      Path fromPath = new Path(work.getFromPath());
-      toPath = new Path(work.getToPath());
+      Path fromPath = work.getFromPath();
+      toPath = work.getToPath();
 
       console.printInfo("Copying data from " + fromPath.toString(), " to "
           + toPath.toString());
@@ -61,7 +61,6 @@ public class CopyTask extends Task<CopyWork> implements Serializable {
       dstFs = toPath.getFileSystem(conf);
 
       FileStatus[] srcs = LoadSemanticAnalyzer.matchFilesOrDir(srcFs, fromPath);
-
       if (srcs == null || srcs.length == 0) {
         if (work.isErrorOnSrcEmpty()) {
           console.printError("No files matching path: " + fromPath.toString());

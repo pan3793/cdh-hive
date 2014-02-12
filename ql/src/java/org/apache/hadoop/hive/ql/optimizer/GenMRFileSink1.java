@@ -331,7 +331,7 @@ public class GenMRFileSink1 implements NodeProcessor {
     // since it is unknown if the merge MR will be triggered at execution time.
 
     MoveWork dummyMv = new MoveWork(null, null, null,
-        new LoadFileDesc(fsConf.getFinalDirName(), finalName, true, null, null), false);
+        new LoadFileDesc(new Path(fsConf.getFinalDirName()), finalName, true, null, null), false);
 
     ConditionalTask cndTsk = createCondTask(conf, currTask, dummyMv, cplan,
         fsConf.getFinalDirName());
@@ -456,7 +456,7 @@ public class GenMRFileSink1 implements NodeProcessor {
     //
     MapRedTask currTask = (MapRedTask) ctx.getCurrTask();
     MoveWork dummyMv = new MoveWork(null, null, null,
-        new LoadFileDesc(fsInputDesc.getFinalDirName(), finalName, true, null, null), false);
+        new LoadFileDesc(new Path(fsInputDesc.getFinalDirName()), finalName, true, null, null), false);
     MapredWork cplan;
 
     if(parseCtx.getConf().getBoolVar(HiveConf.ConfVars.

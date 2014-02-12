@@ -4656,7 +4656,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       // Create the work for moving the table
       // NOTE: specify Dynamic partitions in dest_tab for WriteEntity
       if (!isNonNativeTable) {
-        ltd = new LoadTableDesc(queryTmpdir, ctx.getExternalTmpFileURI(dest_path.toUri()),
+        ltd = new LoadTableDesc(new Path(queryTmpdir), ctx.getExternalTmpFileURI(dest_path.toUri()),
             table_desc, dpCtx);
         ltd.setReplace(!qb.getParseInfo().isInsertIntoTable(dest_tab.getDbName(),
             dest_tab.getTableName()));
@@ -4729,7 +4729,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       currentTableId = destTableId;
       destTableId++;
 
-      ltd = new LoadTableDesc(queryTmpdir, ctx.getExternalTmpFileURI(dest_path.toUri()),
+      ltd = new LoadTableDesc(new Path(queryTmpdir), ctx.getExternalTmpFileURI(dest_path.toUri()),
           table_desc, dest_part.getSpec());
       ltd.setReplace(!qb.getParseInfo().isInsertIntoTable(dest_tab.getDbName(),
           dest_tab.getTableName()));
@@ -4849,7 +4849,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
 
       boolean isDfsDir = (dest_type.intValue() == QBMetaData.DEST_DFS_FILE);
-      loadFileWork.add(new LoadFileDesc(tblDesc, queryTmpdir, destStr, isDfsDir, cols,
+      loadFileWork.add(new LoadFileDesc(tblDesc, new Path(queryTmpdir), destStr, isDfsDir, cols,
           colTypes));
 
       if (tblDesc == null) {

@@ -304,9 +304,6 @@
                       <void property="isDfsDir"> 
                        <boolean>true</boolean> 
                       </void> 
-                      <void property="sourceDir"> 
-                       #### A masked pattern was here #### 
-                      </void> 
                       <void property="targetDir"> 
                        #### A masked pattern was here #### 
                       </void> 
@@ -330,9 +327,6 @@
                   </void> 
                   <void property="isDfsDir"> 
                    <boolean>true</boolean> 
-                  </void> 
-                  <void property="sourceDir"> 
-                   #### A masked pattern was here #### 
                   </void> 
                   <void property="targetDir"> 
                    <string>../build/ql/test/data/warehouse/union.out</string> 
