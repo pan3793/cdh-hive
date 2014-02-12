@@ -417,7 +417,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           + rawStoreClassName));
       Configuration conf = getConf();
 
-      return RetryingRawStore.getProxy(hiveConf, conf, rawStoreClassName, threadLocalId.get());
+      return RawStoreProxy.getProxy(hiveConf, conf, rawStoreClassName, threadLocalId.get());
     }
 
     private void createDefaultDB_core(RawStore ms) throws MetaException, InvalidObjectException {

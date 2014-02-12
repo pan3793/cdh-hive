@@ -39,6 +39,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.jdo.JDODataStoreException;
+import javax.jdo.JDOEnhanceException;
 import javax.jdo.JDOHelper;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
@@ -360,9 +361,9 @@ public class ObjectStore implements RawStore, Configurable {
       // currentTransaction is not active
       assert ((currentTransaction != null) && (currentTransaction.isActive()));
     }
+
     boolean result = currentTransaction.isActive();
-    LOG.debug("Open transaction: count = " + openTrasactionCalls + ", isActive = " + result);
-    printStack();
+    debugLog("Open transaction: count = " + openTrasactionCalls + ", isActive = " + result);
     return result;
   }
 
@@ -375,27 +376,24 @@ public class ObjectStore implements RawStore, Configurable {
   @SuppressWarnings("nls")
   public boolean commitTransaction() {
     if (TXN_STATUS.ROLLBACK == transactionStatus) {
-      LOG.debug("Commit transaction: rollback");
-      printStack();
+      debugLog("Commit transaction: rollback");
       return false;
     }
     if (openTrasactionCalls <= 0) {
       RuntimeException e = new RuntimeException("commitTransaction was called but openTransactionCalls = "
-          + openTrasactionCalls + ". This probably indicates that there are unbalanced " +
-              "calls to openTransaction/commitTransaction");
-      LOG.error("Error commiting transaction", e);
+        + openTrasactionCalls + ". This probably indicates that there are unbalanced " +
+        "calls to openTransaction/commitTransaction");
+      LOG.error(e);
       throw e;
     }
     if (!currentTransaction.isActive()) {
-      RuntimeException e = new RuntimeException(
-          "Commit is called, but transaction is not active. Either there are"
-              + " mismatching open and close calls or rollback was called in the same trasaction");
-      LOG.error("Error commiting transaction", e);
+      RuntimeException e = new RuntimeException("Commit is called, but transaction is not active. Either there are"
+        + " mismatching open and close calls or rollback was called in the same trasaction");
+      LOG.error(e);
       throw e;
     }
     openTrasactionCalls--;
-    LOG.debug("Commit transaction: count = " + openTrasactionCalls + ", isactive "+ currentTransaction.isActive());
-    printStack();
+    debugLog("Commit transaction: count = " + openTrasactionCalls + ", isactive "+ currentTransaction.isActive());
     if ((openTrasactionCalls == 0) && currentTransaction.isActive()) {
       transactionStatus = TXN_STATUS.COMMITED;
       currentTransaction.commit();
@@ -420,13 +418,11 @@ public class ObjectStore implements RawStore, Configurable {
    */
   public void rollbackTransaction() {
     if (openTrasactionCalls < 1) {
-      LOG.debug("rolling back transaction: no open transactions: " + openTrasactionCalls);
-      printStack();
+      debugLog("rolling back transaction: no open transactions: " + openTrasactionCalls);
       return;
     }
     openTrasactionCalls = 0;
-    LOG.debug("Rollback transaction, isActive: " + currentTransaction.isActive());
-    printStack();
+    debugLog("Rollback transaction, isActive: " + currentTransaction.isActive());
     if (currentTransaction.isActive()
         && transactionStatus != TXN_STATUS.ROLLBACK) {
       transactionStatus = TXN_STATUS.ROLLBACK;
@@ -437,19 +433,6 @@ public class ObjectStore implements RawStore, Configurable {
       // from reattaching in future transactions
       pm.evictAll();
     }
-  }
-
-  private int stacklimit = 4;
-
-  private void printStack() {
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-    int thislimit = Math.min(stacklimit, stackTrace.length);
-    StringBuilder sb = new StringBuilder();
-    for (int i = 2; i < thislimit; i++) {
-      sb.append("\n\t");
-      sb.append(stackTrace[i].toString());
-    }
-    LOG.debug(sb.toString());
   }
 
   public void createDatabase(Database db) throws InvalidObjectException, MetaException {
@@ -6008,5 +5991,26 @@ public class ObjectStore implements RawStore, Configurable {
         rollbackTransaction();
       }
     }
+  }
+
+
+  private void debugLog(String message) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(message + getCallStack());
+    }
+  }
+
+  private static final int stackLimit = 5;
+
+  private String getCallStack() {
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    int thislimit = Math.min(stackLimit, stackTrace.length);
+    StringBuilder sb = new StringBuilder();
+    sb.append(" at:");
+    for (int i = 4; i < thislimit; i++) {
+      sb.append("\n\t");
+      sb.append(stackTrace[i].toString());
+    }
+    return sb.toString();
   }
 }
