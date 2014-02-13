@@ -49,13 +49,13 @@ import com.google.common.io.Files;
 public class MiniHS2 extends AbstractHiveService {
   private static final String driverName = "org.apache.hive.jdbc.HiveDriver";
   private HiveServer2 hiveServer2 = null;
+  private MiniMrShim mr;
+  private MiniDFSShim dfs;
   private final File baseDir;
   private final Path baseDfsDir;
   private static final AtomicLong hs2Counter = new AtomicLong();
   private static final String HS2_BINARY_MODE = "binary";
   private static final String HS2_HTTP_MODE = "http";
-  private MiniMrShim mr;
-  private MiniDFSShim dfs;
 
   public MiniHS2(HiveConf hiveConf) throws IOException {
     this(hiveConf, false);
@@ -77,13 +77,14 @@ public class MiniHS2 extends AbstractHiveService {
       fs = FileSystem.getLocal(hiveConf);
       baseDfsDir = new Path("file://"+ baseDir.getPath());
     }
-    String metaStoreURL =  "jdbc:derby:" + baseDir.getAbsolutePath() + File.separator + "test_metastore-" +
-        hs2Counter.incrementAndGet() + ";create=true";
 
     fs.mkdirs(baseDfsDir);
     Path wareHouseDir = new Path(baseDfsDir, "warehouse");
     fs.mkdirs(wareHouseDir);
     setWareHouseDir(wareHouseDir.toString());
+    String metaStoreURL =  "jdbc:derby:" + baseDir.getAbsolutePath() + File.separator + "test_metastore-" +
+        hs2Counter.incrementAndGet() + ";create=true";
+
     System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname, metaStoreURL);
     hiveConf.setVar(HiveConf.ConfVars.METASTORECONNECTURLKEY, metaStoreURL);
     // reassign a new port, just in case if one of the MR services grabbed the last one

@@ -726,6 +726,7 @@
             <exclude>**/ql/exec/vector/udf/generic/*.java</exclude>
             <exclude>**/TestHiveServer2Concurrency.java</exclude>
             <exclude>**/TestHiveMetaStore.java</exclude>
+            <exclude>${excluded.tests}</exclude>
           </excludes>
 	  <includes>
 		  <include>**/${testPackage}/*.java</include>
@@ -920,6 +921,12 @@
     <!-- hadoop profiles in the root pom are only used for dependency management -->
     <profile>
       <id>hadoop-1</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <excluded.tests>**/TestSchedulerQueue.java</excluded.tests>
+      </properties>
       <dependencyManagement>
         <dependencies>
           <dependency>
@@ -982,6 +989,16 @@
           <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-core</artifactId>
+            <version>${hadoop-23.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-server-resourcemanager</artifactId>
+            <version>${hadoop-23.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-minicluster</artifactId>
             <version>${hadoop-23.version}</version>
           </dependency>
           <dependency>

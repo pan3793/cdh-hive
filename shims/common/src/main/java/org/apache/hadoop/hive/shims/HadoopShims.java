@@ -395,6 +395,11 @@ public interface HadoopShims {
       String ipAddress, Configuration conf) throws IOException;
 
   /**
+   * Reset the default scheduler queue if applicable
+   */
+  public void refreshDefaultQueue(Configuration conf, String userName) throws IOException;
+
+  /**
    * The method sets to set the partition file has a different signature between
    * hadoop versions.
    * @param jobConf

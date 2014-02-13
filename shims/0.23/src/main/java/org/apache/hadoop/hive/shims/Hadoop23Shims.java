@@ -71,6 +71,9 @@ import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.Progressable;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.AllocationConfiguration;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.QueuePlacementPolicy;
 import org.apache.tez.test.MiniTezCluster;
 
 import com.google.common.base.Joiner;
@@ -277,6 +280,31 @@ public class Hadoop23Shims extends HadoopShimsSecure {
         return o1.compareTo(o2);
       }
     };
+  }
+
+  /**
+   * Load the fair scheduler queue for given user if available
+   */
+  @Override
+  public void refreshDefaultQueue(Configuration conf, String userName) throws IOException {
+    String requestedQueue = YarnConfiguration.DEFAULT_QUEUE_NAME;
+    if (isMR2(conf) && StringUtils.isNotBlank(userName) && isFairScheduler(conf)) {
+      AllocationConfiguration allocConf = new AllocationConfiguration(conf);
+      QueuePlacementPolicy queuePolicy = allocConf.getPlacementPolicy();
+      if (queuePolicy != null) {
+        requestedQueue = queuePolicy.assignAppToQueue(requestedQueue, userName);
+        LOG.debug("Setting queue name to " + requestedQueue + " for user " + userName);
+        if (StringUtils.isNotBlank(requestedQueue)) {
+          conf.set("mapred.job.queue.name", requestedQueue);
+        }
+      }
+    }
+  }
+
+  // verify if the configured scheduler is fair scheduler
+  private boolean isFairScheduler (Configuration conf) {
+    return "org.apache.hadoop.mapred.FairScheduler".
+          equalsIgnoreCase(conf.get("mapred.jobtracker.taskScheduler", ""));
   }
 
   /**

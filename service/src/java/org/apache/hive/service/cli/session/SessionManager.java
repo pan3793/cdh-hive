@@ -18,6 +18,7 @@
 
 package org.apache.hive.service.cli.session;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +34,7 @@ import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.hooks.HookUtils;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.service.CompositeService;
 import org.apache.hive.service.auth.TSetIpAddressProcessor;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -132,6 +134,16 @@ public class SessionManager extends CompositeService {
     session.open();
     handleToSession.put(session.getSessionHandle(), session);
 
+    try {
+      // reload the scheduler queue if possible
+      if (!withImpersonation &&
+          session.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE)) {
+        ShimLoader.getHadoopShims().
+          refreshDefaultQueue(session.getHiveConf(), session.getUserName());
+      }
+    } catch (IOException e1) {
+      LOG.warn("Error setting scheduler queue ", e1);
+    }
     try {
       executeSessionHooks(session);
     } catch (Exception e) {

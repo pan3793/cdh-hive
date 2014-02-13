@@ -926,6 +926,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_USE_SSL("hive.server2.use.SSL", false),
     HIVE_SERVER2_SSL_KEYSTORE_PATH("hive.server2.keystore.path", ""),
     HIVE_SERVER2_SSL_KEYSTORE_PASSWORD("hive.server2.keystore.password", ""),
+    HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE("hive.server2.map.fair.scheduler.queue", true),
 
     HIVE_SECURITY_COMMAND_WHITELIST("hive.security.command.whitelist", "set,reset,dfs,add,delete,compile"),
 
