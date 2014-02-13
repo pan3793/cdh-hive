@@ -20,14 +20,20 @@ package org.apache.hive.jdbc.miniHS2;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.HiveMetaStore;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
+import org.apache.hadoop.hive.shims.HadoopShims.MiniDFSShim;
+import org.apache.hadoop.hive.shims.HadoopShims.MiniMrShim;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.cli.CLIServiceClient;
 import org.apache.hive.service.cli.SessionHandle;
@@ -40,21 +46,52 @@ import com.google.common.io.Files;
 public class MiniHS2 extends AbstarctHiveService {
   private static final String driverName = "org.apache.hive.jdbc.HiveDriver";
   private HiveServer2 hiveServer2 = null;
+  private MiniMrShim mr;
+  private MiniDFSShim dfs;
   private final File baseDir;
+  private final Path baseDfsDir;
   private static final AtomicLong hs2Counter = new AtomicLong();
 
   public MiniHS2(HiveConf hiveConf) throws IOException {
+    this(hiveConf, false);
+  }
+
+  public MiniHS2(HiveConf hiveConf, boolean useMiniMR) throws IOException {
     super(hiveConf, "localhost", MetaStoreUtils.findFreePort());
     baseDir =  Files.createTempDir();
-    setWareHouseDir("file://" + baseDir.getPath() + File.separator + "warehouse");
+    FileSystem fs;
+    if (useMiniMR) {
+      dfs = ShimLoader.getHadoopShims().getMiniDfs(hiveConf, 4, true, null);
+      fs = dfs.getFileSystem();
+      mr = ShimLoader.getHadoopShims().getMiniMrCluster(hiveConf, 4,
+          fs.getUri().toString(), 1);
+      // store the config in system properties
+      mr.setupConfiguration(getHiveConf());
+      baseDfsDir =  new Path(new Path(fs.getUri()), "/base");
+    } else {
+      fs = FileSystem.getLocal(hiveConf);
+      baseDfsDir = new Path("file://"+ baseDir.getPath());
+    }
+
+    fs.mkdirs(baseDfsDir);
+    Path wareHouseDir = new Path(baseDfsDir, "warehouse");
+    fs.mkdirs(wareHouseDir);
+    setWareHouseDir(wareHouseDir.toString());
     String metaStoreURL =  "jdbc:derby:" + baseDir.getAbsolutePath() + File.separator + "test_metastore-" +
         hs2Counter.incrementAndGet() + ";create=true";
 
     System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname, metaStoreURL);
     hiveConf.setVar(HiveConf.ConfVars.METASTORECONNECTURLKEY, metaStoreURL);
+    setPort(MetaStoreUtils.findFreePort());
     hiveConf.setVar(ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST, getHost());
     hiveConf.setIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT, getPort());
     HiveMetaStore.HMSHandler.resetDefaultDBFlag();
+
+    Path scratchDir = new Path(baseDfsDir, "scratch");
+    fs.mkdirs(scratchDir);
+    System.setProperty(HiveConf.ConfVars.SCRATCHDIR.varname, scratchDir.toString());
+    System.setProperty(HiveConf.ConfVars.LOCALSCRATCHDIR.varname,
+        baseDir.getPath() + File.separator + "scratch");
   }
 
   public void start() throws Exception {
@@ -69,6 +106,16 @@ public class MiniHS2 extends AbstarctHiveService {
     verifyStarted();
     hiveServer2.stop();
     setStarted(false);
+    try {
+      if (mr != null) {
+        mr.shutdown();
+      }
+      if (dfs != null) {
+        dfs.shutdown();
+      }
+    } catch (IOException e) {
+      // Ignore errors cleaning up miniMR
+    }
     FileUtils.deleteQuietly(baseDir);
   }
 

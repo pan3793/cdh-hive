@@ -67,7 +67,7 @@ public class HiveSessionImpl implements HiveSession {
   private String username;
   private final String password;
   private final Map<String, String> sessionConf = new HashMap<String, String>();
-  private final HiveConf hiveConf = new HiveConf();
+  private final HiveConf hiveConf;
   private final SessionState sessionState;
   private String ipAddress;
 
@@ -82,10 +82,12 @@ public class HiveSessionImpl implements HiveSession {
   private IMetaStoreClient metastoreClient = null;
   private final Set<OperationHandle> opHandleSet = new HashSet<OperationHandle>();
 
-  public HiveSessionImpl(String username, String password, Map<String, String> sessionConf, String ipAddress) {
+  public HiveSessionImpl(HiveConf serverConf, String username, String password,
+      Map<String, String> sessionConf, String ipAddress) {
     this.username = username;
     this.password = password;
     this.ipAddress = ipAddress;
+    this.hiveConf = new HiveConf(serverConf, HiveConf.class);
 
     if (sessionConf != null) {
       for (Map.Entry<String, String> entry : sessionConf.entrySet()) {

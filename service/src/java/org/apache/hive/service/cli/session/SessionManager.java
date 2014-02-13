@@ -18,6 +18,7 @@
 
 package org.apache.hive.service.cli.session;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -115,18 +116,28 @@ public class SessionManager extends CompositeService {
       username = threadLocalUserName.get();
     }
     if (withImpersonation) {
-      HiveSessionImplwithUGI hiveSessionUgi = new HiveSessionImplwithUGI(username, password, sessionConf,
+      HiveSessionImplwithUGI hiveSessionUgi = new HiveSessionImplwithUGI(hiveConf, username, password, sessionConf,
           threadLocalIpAddress.get(), delegationToken);
       session = HiveSessionProxy.getProxy(hiveSessionUgi, hiveSessionUgi.getSessionUgi());
       hiveSessionUgi.setProxySession(session);
     } else {
-      session = new HiveSessionImpl(username, password, sessionConf, threadLocalIpAddress.get());
+      session = new HiveSessionImpl(hiveConf, username, password, sessionConf, threadLocalIpAddress.get());
     }
     session.setSessionManager(this);
     session.setOperationManager(operationManager);
     session.setLogManager(logManager);
     synchronized(sessionMapLock) {
       handleToSession.put(session.getSessionHandle(), session);
+    }
+    try {
+      // reload the scheduler queue if possible
+      if (!withImpersonation &&
+          session.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE)) {
+        ShimLoader.getHadoopShims().
+          refreshDefaultQueue(session.getHiveConf(), session.getUserName());
+      }
+    } catch (IOException e1) {
+      LOG.warn("Error setting scheduler queue ", e1);
     }
     try {
       executeSessionHooks(session);
