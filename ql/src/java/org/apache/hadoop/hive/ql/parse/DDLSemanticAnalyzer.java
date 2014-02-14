@@ -50,7 +50,6 @@ import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Index;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.Order;
-import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.SkewedInfo;
 import org.apache.hadoop.hive.ql.Driver;
 import org.apache.hadoop.hive.ql.ErrorMsg;
@@ -72,6 +71,8 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.HiveUtils;
 import org.apache.hadoop.hive.ql.metadata.Partition;
 import org.apache.hadoop.hive.ql.metadata.Table;
+import org.apache.hadoop.hive.ql.parse.authorization.HiveAuthorizationTaskFactory;
+import org.apache.hadoop.hive.ql.parse.authorization.HiveAuthorizationTaskFactoryFactory;
 import org.apache.hadoop.hive.ql.plan.AddPartitionDesc;
 import org.apache.hadoop.hive.ql.plan.AlterDatabaseDesc;
 import org.apache.hadoop.hive.ql.plan.AlterIndexDesc;
@@ -91,8 +92,6 @@ import org.apache.hadoop.hive.ql.plan.DropDatabaseDesc;
 import org.apache.hadoop.hive.ql.plan.DropIndexDesc;
 import org.apache.hadoop.hive.ql.plan.DropTableDesc;
 import org.apache.hadoop.hive.ql.plan.FetchWork;
-import org.apache.hadoop.hive.ql.plan.GrantDesc;
-import org.apache.hadoop.hive.ql.plan.GrantRevokeRoleDDL;
 import org.apache.hadoop.hive.ql.plan.ListBucketingCtx;
 import org.apache.hadoop.hive.ql.plan.LoadTableDesc;
 import org.apache.hadoop.hive.ql.plan.LockTableDesc;
@@ -100,17 +99,11 @@ import org.apache.hadoop.hive.ql.plan.MoveWork;
 import org.apache.hadoop.hive.ql.plan.MsckDesc;
 import org.apache.hadoop.hive.ql.plan.PartitionSpec;
 import org.apache.hadoop.hive.ql.plan.PlanUtils;
-import org.apache.hadoop.hive.ql.plan.PrincipalDesc;
-import org.apache.hadoop.hive.ql.plan.PrivilegeDesc;
-import org.apache.hadoop.hive.ql.plan.PrivilegeObjectDesc;
 import org.apache.hadoop.hive.ql.plan.RenamePartitionDesc;
-import org.apache.hadoop.hive.ql.plan.RevokeDesc;
-import org.apache.hadoop.hive.ql.plan.RoleDDLDesc;
 import org.apache.hadoop.hive.ql.plan.ShowColumnsDesc;
 import org.apache.hadoop.hive.ql.plan.ShowCreateTableDesc;
 import org.apache.hadoop.hive.ql.plan.ShowDatabasesDesc;
 import org.apache.hadoop.hive.ql.plan.ShowFunctionsDesc;
-import org.apache.hadoop.hive.ql.plan.ShowGrantDesc;
 import org.apache.hadoop.hive.ql.plan.ShowIndexesDesc;
 import org.apache.hadoop.hive.ql.plan.ShowLocksDesc;
 import org.apache.hadoop.hive.ql.plan.ShowPartitionsDesc;
@@ -122,14 +115,9 @@ import org.apache.hadoop.hive.ql.plan.SwitchDatabaseDesc;
 import org.apache.hadoop.hive.ql.plan.TableDesc;
 import org.apache.hadoop.hive.ql.plan.TruncateTableDesc;
 import org.apache.hadoop.hive.ql.plan.UnlockTableDesc;
-import org.apache.hadoop.hive.ql.security.authorization.Privilege;
-import org.apache.hadoop.hive.ql.security.authorization.PrivilegeRegistry;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
-import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorUtils;
-import org.apache.hadoop.hive.serde2.typeinfo.BaseCharTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.CharTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.DecimalTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeInfo;
@@ -145,6 +133,8 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
   private static final Map<Integer, String> TokenToTypeName = new HashMap<Integer, String>();
 
   private final Set<String> reservedPartitionValues;
+  private final HiveAuthorizationTaskFactory hiveAuthorizationTaskFactory;
+
   static {
     TokenToTypeName.put(HiveParser.TOK_BOOLEAN, serdeConstants.BOOLEAN_TYPE_NAME);
     TokenToTypeName.put(HiveParser.TOK_TINYINT, serdeConstants.TINYINT_TYPE_NAME);
@@ -210,7 +200,11 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   public DDLSemanticAnalyzer(HiveConf conf) throws SemanticException {
-    super(conf);
+    this(conf, createHiveDB(conf));
+  }
+
+  public DDLSemanticAnalyzer(HiveConf conf, Hive db) throws SemanticException {
+    super(conf, db);
     reservedPartitionValues = new HashSet<String>();
     // Partition can't have this name
     reservedPartitionValues.add(HiveConf.getVar(conf, ConfVars.DEFAULTPARTITIONNAME));
@@ -219,6 +213,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     reservedPartitionValues.add(HiveConf.getVar(conf, ConfVars.METASTORE_INT_ORIGINAL));
     reservedPartitionValues.add(HiveConf.getVar(conf, ConfVars.METASTORE_INT_ARCHIVED));
     reservedPartitionValues.add(HiveConf.getVar(conf, ConfVars.METASTORE_INT_EXTRACTED));
+    hiveAuthorizationTaskFactory = (new HiveAuthorizationTaskFactoryFactory(conf, db)).create();
   }
 
   @Override
@@ -443,233 +438,65 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
   }
 
-  private void analyzeGrantRevokeRole(boolean grant, ASTNode ast) {
-    List<PrincipalDesc> principalDesc = analyzePrincipalListDef(
-        (ASTNode) ast.getChild(0));
-    List<String> roles = new ArrayList<String>();
-    for (int i = 1; i < ast.getChildCount(); i++) {
-      roles.add(unescapeIdentifier(ast.getChild(i).getText()));
+  private void analyzeGrantRevokeRole(boolean grant, ASTNode ast) throws SemanticException {
+    Task<? extends Serializable> task;
+    if(grant) {
+      task = hiveAuthorizationTaskFactory.createGrantRoleTask(ast, getInputs(), getOutputs());
+    } else {
+      task = hiveAuthorizationTaskFactory.createRevokeRoleTask(ast, getInputs(), getOutputs());
     }
-    String roleOwnerName = "";
-    if (SessionState.get() != null
-        && SessionState.get().getAuthenticator() != null) {
-      roleOwnerName = SessionState.get().getAuthenticator().getUserName();
+    if(task != null) {
+      rootTasks.add(task);
     }
-    GrantRevokeRoleDDL grantRevokeRoleDDL = new GrantRevokeRoleDDL(grant,
-        roles, principalDesc, roleOwnerName, PrincipalType.USER, true);
-    rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
-        grantRevokeRoleDDL), conf));
   }
 
   private void analyzeShowGrant(ASTNode ast) throws SemanticException {
-    PrivilegeObjectDesc privHiveObj = null;
-
-    ASTNode principal = (ASTNode) ast.getChild(0);
-    PrincipalType type = PrincipalType.USER;
-    switch (principal.getType()) {
-    case HiveParser.TOK_USER:
-      type = PrincipalType.USER;
-      break;
-    case HiveParser.TOK_GROUP:
-      type = PrincipalType.GROUP;
-      break;
-    case HiveParser.TOK_ROLE:
-      type = PrincipalType.ROLE;
-      break;
+    Task<? extends Serializable> task = hiveAuthorizationTaskFactory.
+        createShowGrantTask(ast, ctx.getResFile(), getInputs(), getOutputs());
+    if(task != null) {
+      rootTasks.add(task);
     }
-    String principalName = unescapeIdentifier(principal.getChild(0).getText());
-    PrincipalDesc principalDesc = new PrincipalDesc(principalName, type);
-    List<String> cols = null;
-    if (ast.getChildCount() > 1) {
-      ASTNode child = (ASTNode) ast.getChild(1);
-      if (child.getToken().getType() == HiveParser.TOK_PRIV_OBJECT_COL) {
-        privHiveObj = new PrivilegeObjectDesc();
-        privHiveObj.setObject(unescapeIdentifier(child.getChild(0).getText()));
-        if (child.getChildCount() > 1) {
-          for (int i = 1; i < child.getChildCount(); i++) {
-            ASTNode grandChild = (ASTNode) child.getChild(i);
-            if (grandChild.getToken().getType() == HiveParser.TOK_PARTSPEC) {
-              privHiveObj.setPartSpec(DDLSemanticAnalyzer.getPartSpec(grandChild));
-            } else if (grandChild.getToken().getType() == HiveParser.TOK_TABCOLNAME) {
-              cols = getColumnNames((ASTNode) grandChild);
-            } else {
-              privHiveObj.setTable(child.getChild(i) != null);
-            }
-          }
-        }
-      }
-    }
-
-    if (privHiveObj == null && cols != null) {
-      throw new SemanticException(
-          "For user-level privileges, column sets should be null. columns="
-              + cols.toString());
-    }
-
-    ShowGrantDesc showGrant = new ShowGrantDesc(ctx.getResFile().toString(),
-        principalDesc, privHiveObj, cols);
-    rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
-        showGrant), conf));
   }
 
   private void analyzeGrant(ASTNode ast) throws SemanticException {
-    List<PrivilegeDesc> privilegeDesc = analyzePrivilegeListDef(
-        (ASTNode) ast.getChild(0));
-    List<PrincipalDesc> principalDesc = analyzePrincipalListDef(
-        (ASTNode) ast.getChild(1));
-    boolean grantOption = false;
-    PrivilegeObjectDesc privilegeObj = null;
-
-    if (ast.getChildCount() > 2) {
-      for (int i = 2; i < ast.getChildCount(); i++) {
-        ASTNode astChild = (ASTNode) ast.getChild(i);
-        if (astChild.getType() == HiveParser.TOK_GRANT_WITH_OPTION) {
-          grantOption = true;
-        } else if (astChild.getType() == HiveParser.TOK_PRIV_OBJECT) {
-          privilegeObj = analyzePrivilegeObject(astChild, getOutputs());
-        }
-      }
+    Task<? extends Serializable> task = hiveAuthorizationTaskFactory.
+        createGrantTask(ast, getInputs(), getOutputs());
+    if(task != null) {
+      rootTasks.add(task);
     }
-
-    String userName = null;
-    if (SessionState.get() != null
-        && SessionState.get().getAuthenticator() != null) {
-      userName = SessionState.get().getAuthenticator().getUserName();
-    }
-
-    GrantDesc grantDesc = new GrantDesc(privilegeObj, privilegeDesc,
-        principalDesc, userName, PrincipalType.USER, grantOption);
-    rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
-        grantDesc), conf));
   }
 
   private void analyzeRevoke(ASTNode ast) throws SemanticException {
-    List<PrivilegeDesc> privilegeDesc = analyzePrivilegeListDef(
-        (ASTNode) ast.getChild(0));
-    List<PrincipalDesc> principalDesc = analyzePrincipalListDef(
-        (ASTNode) ast.getChild(1));
-    PrivilegeObjectDesc hiveObj = null;
-    if (ast.getChildCount() > 2) {
-      ASTNode astChild = (ASTNode) ast.getChild(2);
-      hiveObj = analyzePrivilegeObject(astChild, getOutputs());
+    Task<? extends Serializable> task = hiveAuthorizationTaskFactory.
+        createRevokeTask(ast, getInputs(), getOutputs());
+    if(task != null) {
+      rootTasks.add(task);
     }
-
-    RevokeDesc revokeDesc = new RevokeDesc(privilegeDesc, principalDesc, hiveObj);
-    rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
-        revokeDesc), conf));
   }
 
-  private PrivilegeObjectDesc analyzePrivilegeObject(ASTNode ast,
-      HashSet<WriteEntity> outputs)
-      throws SemanticException {
-    PrivilegeObjectDesc subject = new PrivilegeObjectDesc();
-    subject.setObject(unescapeIdentifier(ast.getChild(0).getText()));
-    if (ast.getChildCount() > 1) {
-      for (int i = 0; i < ast.getChildCount(); i++) {
-        ASTNode astChild = (ASTNode) ast.getChild(i);
-        if (astChild.getToken().getType() == HiveParser.TOK_PARTSPEC) {
-          subject.setPartSpec(DDLSemanticAnalyzer.getPartSpec(astChild));
-        } else {
-          subject.setTable(ast.getChild(0) != null);
-        }
-      }
-    }
 
-    if (subject.getTable()) {
-      Table tbl = getTable(subject.getObject(), true);
-      if (subject.getPartSpec() != null) {
-        Partition part = getPartition(tbl, subject.getPartSpec(), true);
-        outputs.add(new WriteEntity(part));
-      } else {
-        outputs.add(new WriteEntity(tbl));
-      }
+  private void analyzeCreateRole(ASTNode ast) throws SemanticException {
+    Task<? extends Serializable> task = hiveAuthorizationTaskFactory.
+        createCreateRoleTask(ast, getInputs(), getOutputs());
+    if(task != null) {
+      rootTasks.add(task);
     }
-
-    return subject;
   }
 
-  private List<PrincipalDesc> analyzePrincipalListDef(ASTNode node) {
-    List<PrincipalDesc> principalList = new ArrayList<PrincipalDesc>();
-
-    for (int i = 0; i < node.getChildCount(); i++) {
-      ASTNode child = (ASTNode) node.getChild(i);
-      PrincipalType type = null;
-      switch (child.getType()) {
-      case HiveParser.TOK_USER:
-        type = PrincipalType.USER;
-        break;
-      case HiveParser.TOK_GROUP:
-        type = PrincipalType.GROUP;
-        break;
-      case HiveParser.TOK_ROLE:
-        type = PrincipalType.ROLE;
-        break;
-      }
-      String principalName = unescapeIdentifier(child.getChild(0).getText());
-      PrincipalDesc principalDesc = new PrincipalDesc(principalName, type);
-      principalList.add(principalDesc);
+  private void analyzeDropRole(ASTNode ast) throws SemanticException {
+    Task<? extends Serializable> task = hiveAuthorizationTaskFactory.
+        createDropRoleTask(ast, getInputs(), getOutputs());
+    if(task != null) {
+      rootTasks.add(task);
     }
-
-    return principalList;
   }
 
-  private List<PrivilegeDesc> analyzePrivilegeListDef(ASTNode node)
-      throws SemanticException {
-    List<PrivilegeDesc> ret = new ArrayList<PrivilegeDesc>();
-    for (int i = 0; i < node.getChildCount(); i++) {
-      ASTNode privilegeDef = (ASTNode) node.getChild(i);
-      ASTNode privilegeType = (ASTNode) privilegeDef.getChild(0);
-      Privilege privObj = PrivilegeRegistry.getPrivilege(privilegeType.getType());
-
-      if (privObj == null) {
-        throw new SemanticException("undefined privilege " + privilegeType.getType());
-      }
-      List<String> cols = null;
-      if (privilegeDef.getChildCount() > 1) {
-        cols = getColumnNames((ASTNode) privilegeDef.getChild(1));
-      }
-      PrivilegeDesc privilegeDesc = new PrivilegeDesc(privObj, cols);
-      ret.add(privilegeDesc);
+  private void analyzeShowRoleGrant(ASTNode ast) throws SemanticException {
+    Task<? extends Serializable> task = hiveAuthorizationTaskFactory.
+        createShowRoleGrantTask(ast, ctx.getResFile(), getInputs(), getOutputs());
+    if(task != null) {
+      rootTasks.add(task);
     }
-    return ret;
-  }
-
-  private void analyzeCreateRole(ASTNode ast) {
-    String roleName = unescapeIdentifier(ast.getChild(0).getText());
-    RoleDDLDesc createRoleDesc = new RoleDDLDesc(roleName,
-        RoleDDLDesc.RoleOperation.CREATE_ROLE);
-    rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
-        createRoleDesc), conf));
-  }
-
-  private void analyzeDropRole(ASTNode ast) {
-    String roleName = unescapeIdentifier(ast.getChild(0).getText());
-    RoleDDLDesc createRoleDesc = new RoleDDLDesc(roleName,
-        RoleDDLDesc.RoleOperation.DROP_ROLE);
-    rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
-        createRoleDesc), conf));
-  }
-
-  private void analyzeShowRoleGrant(ASTNode ast) {
-    ASTNode child = (ASTNode) ast.getChild(0);
-    PrincipalType principalType = PrincipalType.USER;
-    switch (child.getType()) {
-    case HiveParser.TOK_USER:
-      principalType = PrincipalType.USER;
-      break;
-    case HiveParser.TOK_GROUP:
-      principalType = PrincipalType.GROUP;
-      break;
-    case HiveParser.TOK_ROLE:
-      principalType = PrincipalType.ROLE;
-      break;
-    }
-    String principalName = unescapeIdentifier(child.getChild(0).getText());
-    RoleDDLDesc createRoleDesc = new RoleDDLDesc(principalName, principalType,
-        RoleDDLDesc.RoleOperation.SHOW_ROLE_GRANT, null);
-    createRoleDesc.setResFile(ctx.getResFile().toString());
-    rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
-        createRoleDesc), conf));
   }
 
   private void analyzeAlterDatabase(ASTNode ast) throws SemanticException {
@@ -2031,7 +1858,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     setFetchTask(createFetchTask(descDbDesc.getSchema()));
   }
 
-  private static HashMap<String, String> getPartSpec(ASTNode partspec)
+  public static HashMap<String, String> getPartSpec(ASTNode partspec)
       throws SemanticException {
     if (partspec == null) {
       return null;

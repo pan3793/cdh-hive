@@ -674,6 +674,8 @@ public class HiveConf extends Configuration {
     HIVE_EXEC_FILTER_HOOK("hive.exec.filter.hook",""),
 
     HIVE_AUTHORIZATION_ENABLED("hive.security.authorization.enabled", false),
+    HIVE_AUTHORIZATION_TASK_FACTORY("hive.security.authorization.task.factory",
+        "org.apache.hadoop.hive.ql.parse.authorization.DefaultHiveAuthorizationTaskFactory"),
     HIVE_AUTHORIZATION_MANAGER("hive.security.authorization.manager",
         "org.apache.hadoop.hive.ql.security.authorization.DefaultHiveAuthorizationProvider"),
     HIVE_AUTHENTICATOR_MANAGER("hive.security.authenticator.manager",
