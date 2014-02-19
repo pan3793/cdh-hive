@@ -133,7 +133,6 @@
         requires netty < 3.6.0 we force hadoops version
       -->
     <netty.version>3.4.0.Final</netty.version>
-    <parquet.version>${cdh.parquet.version}</parquet.version>
     <pig.version>${cdh.pig.version}</pig.version>
     <protobuf.version>${cdh.protobuf.version}</protobuf.version>
     <rat.version>0.8</rat.version>
@@ -934,11 +933,6 @@
       <id>hadoop-2</id>
       <dependencyManagement>
         <dependencies>
-          <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>${hadoop-23.version}</version>
-          </dependency>
           <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
