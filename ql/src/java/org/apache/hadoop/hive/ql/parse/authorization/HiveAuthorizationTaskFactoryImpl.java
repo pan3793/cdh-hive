@@ -56,9 +56,9 @@ import org.apache.hadoop.hive.ql.session.SessionState;
  * Default implementation of HiveAuthorizationTaskFactory
  */
 @SuppressWarnings("unchecked")
-public class DefaultHiveAuthorizationTaskFactory extends AbstractHiveAuthorizationTaskFactory {
+public class HiveAuthorizationTaskFactoryImpl extends AbstractHiveAuthorizationTaskFactory {
 
-  public DefaultHiveAuthorizationTaskFactory(HiveConf conf, Hive db) {
+  public HiveAuthorizationTaskFactoryImpl(HiveConf conf, Hive db) {
     super(conf, db);
   }
   @Override

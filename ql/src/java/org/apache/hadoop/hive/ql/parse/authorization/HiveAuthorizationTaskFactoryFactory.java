@@ -38,7 +38,7 @@ public class HiveAuthorizationTaskFactoryFactory {
   public HiveAuthorizationTaskFactory create() {
     Class<? extends HiveAuthorizationTaskFactory> authProviderClass = conf.
         getClass(HiveConf.ConfVars.HIVE_AUTHORIZATION_TASK_FACTORY.varname,
-            DefaultHiveAuthorizationTaskFactory.class,
+            HiveAuthorizationTaskFactoryImpl.class,
             HiveAuthorizationTaskFactory.class);
     String msg = "Unable to create instance of " + authProviderClass.getName() + ": ";
     try {
