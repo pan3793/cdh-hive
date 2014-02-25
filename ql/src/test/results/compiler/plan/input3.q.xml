@@ -1874,7 +1874,7 @@
                    <boolean>true</boolean> 
                   </void> 
                   <void property="targetDir"> 
-                   <string>../../../../build/contrib/hive/ql/test/data/warehouse/dest4.out</string> 
+                   #### A masked pattern was here #### 
                   </void> 
                  </object> 
                 </void> 
