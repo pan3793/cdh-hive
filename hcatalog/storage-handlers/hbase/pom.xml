@@ -178,26 +178,56 @@
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-client</artifactId>
           <version>${hbase.hadoop2.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-core</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-server</artifactId>
           <version>${hbase.hadoop2.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-core</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-common</artifactId>
           <version>${hbase.hadoop2.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-core</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-hadoop-compat</artifactId>
           <version>${hbase.hadoop2.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-core</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-hadoop2-compat</artifactId>
           <version>${hbase.hadoop2.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>hadoop-core</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <!-- test -->
         <dependency>
