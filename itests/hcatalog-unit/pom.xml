@@ -103,6 +103,32 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- Following have only one version, which is cdh.hadoop.version -->
+    <dependency>
+      <groupId>org.apache.pig</groupId>
+      <artifactId>pig</artifactId>
+      <version>${pig.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-annotations</artifactId>
+      <version>${hadoop-23.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-archives</artifactId>
+      <version>${hadoop-23.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <version>${hadoop-23.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <profiles>
@@ -189,37 +215,12 @@
           <classifier>tests</classifier>
           <scope>test</scope>
         </dependency>
-        <dependency>
-          <groupId>org.apache.pig</groupId>
-          <artifactId>pig</artifactId>
-          <version>${pig.version}</version>
-          <scope>test</scope>
-        </dependency>
       </dependencies>
     </profile>
    <profile>
       <id>hadoop-2</id>
       <dependencies>
         <!-- test -->
-        <dependency>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-annotations</artifactId>
-          <version>${hadoop-23.version}</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-archives</artifactId>
-          <version>${hadoop-23.version}</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-common</artifactId>
-          <version>${hadoop-23.version}</version>
-          <classifier>tests</classifier>
-          <scope>test</scope>
-        </dependency>
         <dependency>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-mapreduce-client-core</artifactId>
@@ -320,12 +321,6 @@
           <artifactId>hbase-server</artifactId>
           <version>${hbase.hadoop2.version}</version>
           <classifier>tests</classifier>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.pig</groupId>
-          <artifactId>pig</artifactId>
-          <version>${pig.version}</version>
           <scope>test</scope>
         </dependency>
       </dependencies>

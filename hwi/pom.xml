@@ -91,6 +91,12 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+       <groupId>org.apache.hadoop</groupId>
+       <artifactId>hadoop-common</artifactId>
+       <version>${hadoop-23.version}</version>
+       <optional>true</optional>
+     </dependency>
   </dependencies>
 
   <profiles>
@@ -111,15 +117,7 @@
     </profile>
    <profile>
       <id>hadoop-2</id>
-      <dependencies>
-    <!-- dependencies are always listed in sorted order by groupId, artifectId -->
-        <dependency>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-common</artifactId>
-          <version>${hadoop-23.version}</version>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
+
     </profile>
   </profiles>
 
