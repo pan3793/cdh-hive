@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Properties;
 import java.net.URI;
 import java.io.FileNotFoundException;
 
@@ -57,12 +58,14 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.util.KerberosName;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.AllocationConfiguration;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.QueuePlacementPolicy;
 
 /**
  * Implemention of shims against Hadoop 0.23.0.
  */
 public class Hadoop23Shims extends HadoopShimsSecure {
+  private static final String MR2_JOB_QUEUE_PROPERTY = "mapreduce.job.queuename";
 
   @Override
   public String getTaskAttemptLogUrl(JobConf conf,
@@ -241,9 +244,9 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       QueuePlacementPolicy queuePolicy = allocConf.getPlacementPolicy();
       if (queuePolicy != null) {
         requestedQueue = queuePolicy.assignAppToQueue(requestedQueue, userName);
-        LOG.debug("Setting queue name to " + requestedQueue + " for user " + userName);
         if (StringUtils.isNotBlank(requestedQueue)) {
-          conf.set("mapred.job.queue.name", requestedQueue);
+          LOG.debug("Setting queue name to " + requestedQueue + " for user " + userName);
+          conf.set(MR2_JOB_QUEUE_PROPERTY, requestedQueue);
         }
       }
     }
@@ -251,8 +254,8 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
   // verify if the configured scheduler is fair scheduler
   private boolean isFairScheduler (Configuration conf) {
-    return "org.apache.hadoop.mapred.FairScheduler".
-          equalsIgnoreCase(conf.get("mapred.jobtracker.taskScheduler", ""));
+    return FairScheduler.class.getName().
+        equalsIgnoreCase(conf.get(YarnConfiguration.RM_SCHEDULER));
   }
 
   /**
@@ -308,6 +311,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
         conf.set(pair.getKey(), pair.getValue());
       }
     }
+
   }
 
   // Don't move this code to the parent class. There's a binary

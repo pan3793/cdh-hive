@@ -67,7 +67,7 @@ public class HiveSessionImpl implements HiveSession {
   private String username;
   private final String password;
   private final Map<String, String> sessionConf = new HashMap<String, String>();
-  private final HiveConf hiveConf;
+  private final HiveConf hiveConf = new HiveConf();
   private final SessionState sessionState;
   private String ipAddress;
 
@@ -82,12 +82,21 @@ public class HiveSessionImpl implements HiveSession {
   private IMetaStoreClient metastoreClient = null;
   private final Set<OperationHandle> opHandleSet = new HashSet<OperationHandle>();
 
-  public HiveSessionImpl(HiveConf serverConf, String username, String password,
+  public HiveSessionImpl(String username, String password,
       Map<String, String> sessionConf, String ipAddress) {
     this.username = username;
     this.password = password;
     this.ipAddress = ipAddress;
-    this.hiveConf = new HiveConf(serverConf, HiveConf.class);
+
+    try {
+      // reload the scheduler queue if possible
+      if (hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE)) {
+        ShimLoader.getHadoopShims().
+          refreshDefaultQueue(hiveConf, username);
+      }
+    } catch (IOException e1) {
+      LOG.warn("Error setting scheduler queue ", e1);
+    }
 
     if (sessionConf != null) {
       for (Map.Entry<String, String> entry : sessionConf.entrySet()) {

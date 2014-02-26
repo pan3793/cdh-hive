@@ -42,9 +42,9 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
   private Hive sessionHive = null;
   private HiveSession proxySession = null;
 
-  public HiveSessionImplwithUGI(HiveConf serverConf, String username, String password, Map<String, String> sessionConf,
+  public HiveSessionImplwithUGI(String username, String password, Map<String, String> sessionConf,
       String ipAddress, String delegationToken) throws HiveSQLException {
-    super(serverConf, username, password, sessionConf, ipAddress);
+    super(username, password, sessionConf, ipAddress);
     setSessionUGI(username);
     setDelegationToken(delegationToken);
   }

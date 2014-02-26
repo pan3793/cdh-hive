@@ -18,6 +18,9 @@
 
 package org.apache.hive.jdbc.miniHS2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
@@ -32,6 +35,7 @@ public abstract class AbstarctHiveService {
   private String hostname;
   private int port;
   private boolean startedHiveService = false;
+  private List<String> addedProperties = new ArrayList<String>();
 
   public AbstarctHiveService(HiveConf hiveConf, String hostname, int port) {
     this.hiveConf = hiveConf;
@@ -64,6 +68,17 @@ public abstract class AbstarctHiveService {
   public void setConfProperty(String propertyKey, String propertyValue) {
     System.setProperty(propertyKey, propertyValue);
     hiveConf.set(propertyKey, propertyValue);
+    addedProperties.add(propertyKey);
+  }
+
+  /**
+   * Create system properties set by this server instance. This ensures that
+   * the changes made by current test are not impacting subsequent tests.
+   */
+  public void clearProperties() {
+    for (String propKey : addedProperties ) {
+      System.clearProperty(propKey);
+    }
   }
 
   /**
