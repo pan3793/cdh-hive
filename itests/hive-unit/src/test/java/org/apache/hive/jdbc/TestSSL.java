@@ -45,7 +45,7 @@ public class TestSSL {
   private static final String JAVA_TRUST_STORE_PASS_PROP = "javax.net.ssl.trustStorePassword";
 
   private MiniHS2 miniHS2 = null;
-  private static HiveConf conf = new HiveConf();
+  private HiveConf conf = new HiveConf();
   private Connection hs2Conn = null;
   private String dataFileDir = conf.get("test.data.files");
 
@@ -57,6 +57,7 @@ public class TestSSL {
   @Before
   public void setUp() throws Exception {
     DriverManager.setLoginTimeout(0);
+    conf = new HiveConf();
     if (!System.getProperty("test.data.files", "").isEmpty()) {
       dataFileDir = System.getProperty("test.data.files");
     }
