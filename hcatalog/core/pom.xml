@@ -118,6 +118,12 @@
       <artifactId>pig</artifactId>
       <version>${pig.version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
