@@ -101,7 +101,7 @@ public class TestHS2ThreadAllocation {
       HiveConnection connection = null;
       Statement statement = null;
       try {
-        connection = new HiveConnection("jdbc:hive2://localhost: " + portNum + "/default", new Properties());
+        connection = new HiveConnection("jdbc:hive2://localhost:" + portNum + "/default", new Properties());
 
         statement = connection.createStatement();
         if (statement.execute("show tables")) {
