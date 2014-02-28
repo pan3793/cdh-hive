@@ -87,6 +87,7 @@
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-servlet</artifactId>
       <version>${jersey.version}</version>
+      <scope>test</scope>
     </dependency>
     <!-- Following have only one version, which is cdh.hadoop.version -->
     <dependency>
