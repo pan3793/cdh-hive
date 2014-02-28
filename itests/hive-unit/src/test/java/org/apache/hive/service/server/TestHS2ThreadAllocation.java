@@ -30,6 +30,7 @@ import junit.framework.Assert;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hadoop.hive.ql.hooks.ExecuteWithHookContext;
 import org.apache.hadoop.hive.ql.hooks.HookContext;
 import org.apache.hadoop.hive.ql.hooks.HookContext.HookType;
@@ -55,6 +56,7 @@ public class TestHS2ThreadAllocation {
 
   private static HiveServer2 hiveServer2;
   private static final int MAX_THREADS = 10;
+  private static int portNum;
 
   /**
    * @throws java.lang.Exception
@@ -65,6 +67,8 @@ public class TestHS2ThreadAllocation {
     hiveConf.setIntVar(ConfVars.HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS, 1);
     hiveConf.setIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS, MAX_THREADS);
     hiveConf.setIntVar(ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT, 2);
+    portNum = MetaStoreUtils.findFreePort();
+    hiveConf.setIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT, portNum);
 
     hiveServer2 = new HiveServer2();
     hiveServer2.init(hiveConf);
@@ -97,7 +101,7 @@ public class TestHS2ThreadAllocation {
       HiveConnection connection = null;
       Statement statement = null;
       try {
-        connection = new HiveConnection("jdbc:hive2://localhost:10000/default", new Properties());
+        connection = new HiveConnection("jdbc:hive2://localhost: " + portNum + "/default", new Properties());
 
         statement = connection.createStatement();
         if (statement.execute("show tables")) {
@@ -151,7 +155,7 @@ public class TestHS2ThreadAllocation {
     int i = MAX_THREADS;
     for (; i > 0; i--) {
 
-      HiveConnection connection = new HiveConnection("jdbc:hive2://localhost:10000/default", new Properties());
+      HiveConnection connection = new HiveConnection("jdbc:hive2://localhost:" + portNum +  "/default", new Properties());
       Statement statement = connection.createStatement();
 
       if (statement.execute("show tables")) {
@@ -204,7 +208,7 @@ public class TestHS2ThreadAllocation {
 
     boolean connectionFailed = false;
     try {
-      connection = new HiveConnection("jdbc:hive2://localhost:10000/default", new Properties());
+      connection = new HiveConnection("jdbc:hive2://localhost:" + portNum +  "/default", new Properties());
     } catch (SQLException e) {
       //e.printStackTrace();
       System.out.println("Expected connection failure:" + e.getMessage());
@@ -244,7 +248,7 @@ public class TestHS2ThreadAllocation {
     Properties connProp = new Properties();
     connProp.setProperty("user", System.getProperty("user.name"));
     connProp.setProperty("password", "");
-    HiveConnection connection = new HiveConnection("jdbc:hive2://localhost:10000/default", connProp);
+    HiveConnection connection = new HiveConnection("jdbc:hive2://localhost:" + portNum +  "/default", connProp);
     connection.createStatement().execute("SET hive.exec.post.hooks =  " + IpHookImpl.class.getName());
     connection.createStatement().execute("show tables");
     Assert.assertEquals(System.getProperty("user.name"), IpHookImpl.userName);
