@@ -229,7 +229,7 @@ public class TestHS2ThreadAllocation {
 
     // Check if a new connection is possible
     try {
-      connection = new HiveConnection("jdbc:hive2://localhost:10000/default", new Properties());
+      connection = new HiveConnection("jdbc:hive2://localhost:" + portNum +  "/default", new Properties());
     } catch (SQLException e) {
       e.printStackTrace();
       Assert.fail("Cannot create connection with free threads");
