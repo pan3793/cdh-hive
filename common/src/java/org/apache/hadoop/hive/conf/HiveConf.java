@@ -487,6 +487,9 @@ public class HiveConf extends Configuration {
 
     HIVEUSEEXPLICITRCFILEHEADER("hive.exec.rcfile.use.explicit.header", true),
 
+    // Whether extended literal set is allowed for LazySimpleSerde.
+    HIVE_LAZYSIMPLE_EXTENDED_BOOLEAN_LITERAL("hive.lazysimple.extended_boolean_literal", false),
+
     HIVESKEWJOIN("hive.optimize.skewjoin", false),
     HIVECONVERTJOIN("hive.auto.convert.join", false),
     HIVESKEWJOINKEY("hive.skewjoin.key", 100000),

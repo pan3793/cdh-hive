@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
+import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 
 /**
  * LazyPrimitiveObjectInspectorFactory is the primary way to create new
@@ -39,6 +40,13 @@ public final class LazyPrimitiveObjectInspectorFactory {
 
   public static final LazyBooleanObjectInspector LAZY_BOOLEAN_OBJECT_INSPECTOR =
       new LazyBooleanObjectInspector();
+
+  public static final LazyBooleanObjectInspector LAZY_EXT_BOOLEAN_OBJECT_INSPECTOR =
+      new LazyBooleanObjectInspector();
+  static {
+    LAZY_EXT_BOOLEAN_OBJECT_INSPECTOR.setExtendedLiteral(true);
+  }
+
   public static final LazyByteObjectInspector LAZY_BYTE_OBJECT_INSPECTOR =
       new LazyByteObjectInspector();
   public static final LazyShortObjectInspector LAZY_SHORT_OBJECT_INSPECTOR =
@@ -78,11 +86,15 @@ public final class LazyPrimitiveObjectInspectorFactory {
   }
 
   public static AbstractPrimitiveLazyObjectInspector<?> getLazyObjectInspector(
-      PrimitiveCategory primitiveCategory, boolean escaped, byte escapeChar) {
+      PrimitiveTypeInfo typeInfo, boolean escaped, byte escapeChar) {
+    return getLazyObjectInspector(typeInfo, escaped, escapeChar, false);
+  }
+
+  public static AbstractPrimitiveLazyObjectInspector<?> getLazyObjectInspector(
+      PrimitiveTypeInfo typeInfo, boolean escaped, byte escapeChar, boolean extBoolean) {
+    PrimitiveCategory primitiveCategory = typeInfo.getPrimitiveCategory();
 
     switch (primitiveCategory) {
-    case BOOLEAN:
-      return LAZY_BOOLEAN_OBJECT_INSPECTOR;
     case BYTE:
       return LAZY_BYTE_OBJECT_INSPECTOR;
     case SHORT:
@@ -105,6 +117,8 @@ public final class LazyPrimitiveObjectInspectorFactory {
       return LAZY_TIMESTAMP_OBJECT_INSPECTOR;
     case DECIMAL:
       return LAZY_BIG_DECIMAL_OBJECT_INSPECTOR;
+    case BOOLEAN:
+      return getLazyBooleanObjectInspector(extBoolean);
     default:
       throw new RuntimeException("Internal error: Cannot find ObjectInspector "
           + " for " + primitiveCategory);
@@ -113,6 +127,10 @@ public final class LazyPrimitiveObjectInspectorFactory {
 
   private LazyPrimitiveObjectInspectorFactory() {
     // prevent instantiation
+  }
+
+  private static LazyBooleanObjectInspector getLazyBooleanObjectInspector(boolean extLiteral) {
+    return extLiteral ? LAZY_EXT_BOOLEAN_OBJECT_INSPECTOR : LAZY_BOOLEAN_OBJECT_INSPECTOR;
   }
 
 }
