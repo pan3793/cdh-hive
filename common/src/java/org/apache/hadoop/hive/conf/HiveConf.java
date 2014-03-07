@@ -82,6 +82,7 @@ public class HiveConf extends Configuration {
       vars.put(confVar.varname, confVar);
     }
     Configuration.addDeprecation("hive.server2.enable.impersonation", "hive.server2.enable.doAs");
+    Configuration.addDeprecation("hive.server2.enable.SSL", "hive.server2.use.SSL");
   }
 
   /**
