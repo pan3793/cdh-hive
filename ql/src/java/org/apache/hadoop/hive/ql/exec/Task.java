@@ -506,4 +506,21 @@ public abstract class Task<T extends Serializable> implements Serializable, Node
   void setException(Throwable ex) {
     exception = ex;
   }
+
+  public void setConsole(LogHelper console) {
+    this.console = console;
+  }
+
+  @Override
+  public String toString() {
+    return getId() + ":" + getType();
+  }
+
+  public int hashCode() {
+    return toString().hashCode();
+  }
+
+  public boolean equals(Object obj) {
+    return toString().equals(String.valueOf(obj));
+  }
 }

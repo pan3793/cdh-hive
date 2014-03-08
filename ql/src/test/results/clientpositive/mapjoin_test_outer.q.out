@@ -1213,7 +1213,12 @@ STAGE PLANS:
       Alias -> Map Operator Tree:
         src2 
           TableScan
+<<<<<<< HEAD
             alias: src2
+=======
+            alias: src3
+            Statistics: Num rows: 9 Data size: 40 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
             Map Join Operator
               condition map:
                    Right Outer Join0 to 1
@@ -1275,6 +1280,25 @@ STAGE PLANS:
                         type: string
       Local Work:
         Map Reduce Local Work
+<<<<<<< HEAD
+=======
+          Alias -> Map Local Tables:
+            src1 
+              Fetch Operator
+                limit: -1
+            src2 
+              Fetch Operator
+                limit: -1
+          Alias -> Map Local Operator Tree:
+            src1 
+              TableScan
+                alias: src1
+                Statistics: Num rows: 1 Data size: 216 Basic stats: COMPLETE Column stats: NONE
+            src2 
+              TableScan
+                alias: src2
+                Statistics: Num rows: 1 Data size: 13 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
       Reduce Operator Tree:
         Extract
           File Output Operator

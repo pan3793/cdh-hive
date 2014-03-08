@@ -60,6 +60,12 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
   private int numDistributionKeys;
 
   /**
+   * Used in tez. Holds the name of the output
+   * that this reduce sink is writing to.
+   */
+  private String outputName;
+
+  /**
    * The partition columns (CLUSTER BY or DISTRIBUTE BY in Hive language).
    * Partition columns decide the reducer that the current row goes to.
    * Partition columns are not passed to reducer.
@@ -117,6 +123,13 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
     desc.setKeySerializeInfo((TableDesc) getKeySerializeInfo().clone());
     desc.setValueSerializeInfo((TableDesc) getValueSerializeInfo().clone());
     return desc;
+  }
+  public String getOutputName() {
+    return outputName;
+  }
+
+  public void setOutputName(String outputName) {
+    this.outputName = outputName;
   }
 
   public java.util.ArrayList<java.lang.String> getOutputKeyColumnNames() {

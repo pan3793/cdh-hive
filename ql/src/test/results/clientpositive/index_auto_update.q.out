@@ -56,22 +56,22 @@ ABSTRACT SYNTAX TREE:
   (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME src))) (TOK_INSERT (TOK_DESTINATION (TOK_TAB (TOK_TABNAME temp))) (TOK_SELECT (TOK_SELEXPR TOK_ALLCOLREF))))
 
 STAGE DEPENDENCIES:
-  Stage-4 is a root stage
-  Stage-10 depends on stages: Stage-4 , consists of Stage-7, Stage-6, Stage-8
-  Stage-7
-  Stage-0 depends on stages: Stage-7, Stage-6, Stage-9
-  Stage-1 depends on stages: Stage-0
-  Stage-0 depends on stages: Stage-1
+  Stage-6 is a root stage
+  Stage-12 depends on stages: Stage-6 , consists of Stage-9, Stage-8, Stage-10
+  Stage-9
+  Stage-0 depends on stages: Stage-9, Stage-8, Stage-11
   Stage-2 depends on stages: Stage-0
-  null depends on stages: Stage-1
+  Stage-1 depends on stages: Stage-2
   Stage-3 depends on stages: Stage-1
-  Stage-5 depends on stages: Stage-0
-  Stage-6
+  Stage-4 depends on stages: Stage-2
+  Stage-5 depends on stages: Stage-2
+  Stage-7 depends on stages: Stage-0
   Stage-8
-  Stage-9 depends on stages: Stage-8
+  Stage-10
+  Stage-11 depends on stages: Stage-10
 
 STAGE PLANS:
-  Stage: Stage-4
+  Stage: Stage-6
     Map Reduce
       Alias -> Map Operator Tree:
         src 
@@ -93,10 +93,10 @@ STAGE PLANS:
                     serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                     name: default.temp
 
-  Stage: Stage-10
+  Stage: Stage-12
     Conditional Operator
 
-  Stage: Stage-7
+  Stage: Stage-9
     Move Operator
       files:
           hdfs directory: true
@@ -112,7 +112,7 @@ STAGE PLANS:
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.temp
 
-  Stage: Stage-1
+  Stage: Stage-2
     Map Reduce
       Alias -> Map Operator Tree:
         temp 
@@ -184,7 +184,7 @@ STAGE PLANS:
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.default__temp_temp_index__
 
-  Stage: Stage-0
+  Stage: Stage-1
     Move Operator
       tables:
           replace: true
@@ -194,29 +194,15 @@ STAGE PLANS:
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.default__temp_temp_index__
 
-  Stage: Stage-2
+  Stage: Stage-3
     Stats-Aggr Operator
 
-  Stage: null
-
-  Stage: Stage-3
+  Stage: Stage-4
 
   Stage: Stage-5
-    Stats-Aggr Operator
 
-  Stage: Stage-6
-    Map Reduce
-      Alias -> Map Operator Tree:
-#### A masked pattern was here ####
-          TableScan
-            File Output Operator
-              compressed: false
-              GlobalTableId: 0
-              table:
-                  input format: org.apache.hadoop.mapred.TextInputFormat
-                  output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                  serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-                  name: default.temp
+  Stage: Stage-7
+    Stats-Aggr Operator
 
   Stage: Stage-8
     Map Reduce
@@ -232,7 +218,21 @@ STAGE PLANS:
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                   name: default.temp
 
-  Stage: Stage-9
+  Stage: Stage-10
+    Map Reduce
+      Alias -> Map Operator Tree:
+#### A masked pattern was here ####
+          TableScan
+            File Output Operator
+              compressed: false
+              GlobalTableId: 0
+              table:
+                  input format: org.apache.hadoop.mapred.TextInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                  serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+                  name: default.temp
+
+  Stage: Stage-11
     Move Operator
       files:
           hdfs directory: true

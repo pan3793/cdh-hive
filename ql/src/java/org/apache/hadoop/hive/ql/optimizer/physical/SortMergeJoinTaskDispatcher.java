@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hive.common.ObjectPair;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.Context;
 import org.apache.hadoop.hive.ql.exec.ConditionalTask;
@@ -41,6 +40,7 @@ import org.apache.hadoop.hive.ql.exec.TaskFactory;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.mr.MapRedTask;
 import org.apache.hadoop.hive.ql.lib.Dispatcher;
+import org.apache.hadoop.hive.ql.optimizer.GenMapRedUtils;
 import org.apache.hadoop.hive.ql.optimizer.MapJoinProcessor;
 import org.apache.hadoop.hive.ql.parse.OpParseContext;
 import org.apache.hadoop.hive.ql.parse.ParseContext;
@@ -164,7 +164,7 @@ public class SortMergeJoinTaskDispatcher extends AbstractJoinTaskDispatcher impl
   }
 
   // create map join task and set big table as bigTablePosition
-  private ObjectPair<MapRedTask, String> convertSMBTaskToMapJoinTask(MapredWork origWork,
+  private MapRedTask convertSMBTaskToMapJoinTask(MapredWork origWork,
       int bigTablePosition,
       SMBMapJoinOperator smbJoinOp,
       QBJoinTree joinTree)
@@ -184,12 +184,11 @@ public class SortMergeJoinTaskDispatcher extends AbstractJoinTaskDispatcher impl
     ReduceWork rWork = newWork.getReduceWork();
 
     // create the local work for this plan
-    String bigTableAlias =
-        MapJoinProcessor.genLocalWorkForMapJoin(newWork, newMapJoinOp, bigTablePosition);
+    MapJoinProcessor.genLocalWorkForMapJoin(newWork, newMapJoinOp, bigTablePosition);
 
     // restore the reducer
     newWork.setReduceWork(rWork);
-    return new ObjectPair<MapRedTask, String>(newTask, bigTableAlias);
+    return newTask;
   }
 
   private boolean isEligibleForOptimization(SMBMapJoinOperator originalSMBJoinOp) {
@@ -264,9 +263,9 @@ public class SortMergeJoinTaskDispatcher extends AbstractJoinTaskDispatcher impl
     List<Serializable> listWorks = new ArrayList<Serializable>();
     List<Task<? extends Serializable>> listTasks = new ArrayList<Task<? extends Serializable>>();
 
-    // create alias to task mapping and alias to input file mapping for resolver
-    HashMap<String, Task<? extends Serializable>> aliasToTask =
-        new HashMap<String, Task<? extends Serializable>>();
+    // create task to aliases mapping and alias to input file mapping for resolver
+    HashMap<Task<? extends Serializable>, Set<String>> taskToAliases =
+        new HashMap<Task<? extends Serializable>, Set<String>>();
     // Note that pathToAlias will behave as if the original plan was a join plan
     HashMap<String, ArrayList<String>> pathToAliases = currJoinWork.getMapWork().getPathToAliases();
 
@@ -293,15 +292,16 @@ public class SortMergeJoinTaskDispatcher extends AbstractJoinTaskDispatcher impl
         }
 
         // create map join task for the given big table position
-        ObjectPair<MapRedTask, String> newTaskAlias = convertSMBTaskToMapJoinTask(
+        MapRedTask newTask = convertSMBTaskToMapJoinTask(
             currJoinWork, bigTablePosition, newSMBJoinOp, joinTree);
-        MapRedTask newTask = newTaskAlias.getFirst();
-        String bigTableAlias = newTaskAlias.getSecond();
 
-        Long aliasKnownSize = aliasToSize.get(bigTableAlias);
-        if (aliasKnownSize != null && aliasKnownSize.longValue() > 0) {
-          long smallTblTotalKnownSize = aliasTotalKnownInputSize
-              - aliasKnownSize.longValue();
+        MapWork mapWork = newTask.getWork().getMapWork();
+        Operator<?> parentOp = originalSMBJoinOp.getParentOperators().get(bigTablePosition);
+        Set<String> aliases = GenMapRedUtils.findAliases(mapWork, parentOp);
+
+        long aliasKnownSize = Utilities.sumOf(aliasToSize, aliases);
+        if (aliasKnownSize > 0) {
+          long smallTblTotalKnownSize = aliasTotalKnownInputSize - aliasKnownSize;
           if (smallTblTotalKnownSize > ThresholdOfSmallTblSizeSum) {
             // this table is not good to be a big table.
             continue;
@@ -317,8 +317,8 @@ public class SortMergeJoinTaskDispatcher extends AbstractJoinTaskDispatcher impl
         newTask.setBackupTask(currTask);
         newTask.setBackupChildrenTasks(currTask.getChildTasks());
 
-        // put the mapping alias to task
-        aliasToTask.put(bigTableAlias, newTask);
+        // put the mapping task to aliases
+        taskToAliases.put(newTask, aliases);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -342,7 +342,7 @@ public class SortMergeJoinTaskDispatcher extends AbstractJoinTaskDispatcher impl
     ConditionalResolverCommonJoinCtx resolverCtx = new ConditionalResolverCommonJoinCtx();
     resolverCtx.setPathToAliases(pathToAliases);
     resolverCtx.setAliasToKnownSize(aliasToSize);
-    resolverCtx.setAliasToTask(aliasToTask);
+    resolverCtx.setTaskToAliases(taskToAliases);
     resolverCtx.setCommonJoinTask(currTask);
     resolverCtx.setLocalTmpDir(context.getLocalScratchDir(false));
     resolverCtx.setHdfsTmpDir(context.getMRScratchDir());

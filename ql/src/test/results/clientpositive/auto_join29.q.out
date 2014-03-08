@@ -3675,7 +3675,7 @@ STAGE PLANS:
         src1 
           Fetch Operator
             limit: -1
-        src3 
+        src2 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
@@ -3697,6 +3697,7 @@ STAGE PLANS:
                   2 
                 handleSkewJoin: false
                 keys:
+<<<<<<< HEAD
                   0 [Column[key]]
                   1 [Column[key]]
                   2 [Column[key]]
@@ -3704,6 +3705,15 @@ STAGE PLANS:
         src3 
           TableScan
             alias: src3
+=======
+                  0 key (type: string)
+                  1 key (type: string)
+                  2 key (type: string)
+        src2 
+          TableScan
+            alias: src2
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
             Filter Operator
               predicate:
                   expr: (key < 10)
@@ -3729,7 +3739,12 @@ STAGE PLANS:
       Alias -> Map Operator Tree:
         src2 
           TableScan
+<<<<<<< HEAD
             alias: src2
+=======
+            alias: src3
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
             Filter Operator
               predicate:
                   expr: (key < 10)
@@ -3865,7 +3880,7 @@ STAGE PLANS:
         src1 
           Fetch Operator
             limit: -1
-        src3 
+        src2 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
@@ -3883,6 +3898,7 @@ STAGE PLANS:
                   2 {key} {value}
                 handleSkewJoin: false
                 keys:
+<<<<<<< HEAD
                   0 [Column[key]]
                   1 [Column[key]]
                   2 [Column[key]]
@@ -3894,6 +3910,18 @@ STAGE PLANS:
               predicate:
                   expr: ((key > 10) and (key < 10))
                   type: boolean
+=======
+                  0 key (type: string)
+                  1 key (type: string)
+                  2 key (type: string)
+        src2 
+          TableScan
+            alias: src2
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: ((key < 10) and (key > 10)) (type: boolean)
+              Statistics: Num rows: 3 Data size: 601 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
               HashTable Sink Operator
                 condition expressions:
                   0 {key} {value}
@@ -3911,11 +3939,19 @@ STAGE PLANS:
       Alias -> Map Operator Tree:
         src2 
           TableScan
+<<<<<<< HEAD
             alias: src2
             Filter Operator
               predicate:
                   expr: ((key < 10) and (key > 10))
                   type: boolean
+=======
+            alias: src3
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: ((key > 10) and (key < 10)) (type: boolean)
+              Statistics: Num rows: 3 Data size: 601 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
               Map Join Operator
                 condition map:
                      Inner Join 0 to 1

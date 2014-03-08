@@ -78,7 +78,11 @@ Obtaining error information
 
 Task failed!
 Task ID:
+<<<<<<< HEAD
   Stage-8
+=======
+  Stage-4
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
 
 Logs:
 

@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.ql.plan;
 
 import java.io.Serializable;
 
+import org.apache.hadoop.hive.ql.exec.Task;
 import org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.tableSpec;
 
 /**
@@ -48,6 +49,11 @@ public class StatsWork implements Serializable {
   private boolean isNoScanAnalyzeCommand = false;
 
   private boolean isPartialScanAnalyzeCommand = false;
+
+  // sourceTask for TS is not changed (currently) but that of FS might be changed
+  // by various optimizers (auto.convert.join, for example)
+  // so this is set by DriverContext in runtime
+  private transient Task sourceTask;
 
   public StatsWork() {
   }
@@ -139,5 +145,12 @@ public class StatsWork implements Serializable {
    */
   public void setPartialScanAnalyzeCommand(boolean isPartialScanAnalyzeCommand) {
     this.isPartialScanAnalyzeCommand = isPartialScanAnalyzeCommand;
+  }
+  public Task getSourceTask() {
+    return sourceTask;
+  }
+
+  public void setSourceTask(Task sourceTask) {
+    this.sourceTask = sourceTask;
   }
 }

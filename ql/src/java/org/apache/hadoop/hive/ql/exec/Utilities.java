@@ -2189,12 +2189,16 @@ public final class Utilities {
     }
   }
 
-  // return sum of lengths except one alias. returns -1 if any of other alias is unknown
+  public static long sumOf(Map<String, Long> aliasToSize, Set<String> aliases) {
+    return sumOfExcept(aliasToSize, aliases, null);
+  }
+
+  // return sum of lengths except some aliases. returns -1 if any of other alias is unknown
   public static long sumOfExcept(Map<String, Long> aliasToSize,
-      Set<String> aliases, String except) {
+      Set<String> aliases, Set<String> excepts) {
     long total = 0;
     for (String alias : aliases) {
-      if (alias.equals(except)) {
+      if (excepts != null && excepts.contains(alias)) {
         continue;
       }
       Long size = aliasToSize.get(alias);

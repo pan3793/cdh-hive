@@ -27,6 +27,9 @@ import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.util.ReflectionUtils;
 
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVESTATSDBCLASS;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_STATS_KEY_PREFIX_MAX_LENGTH;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_STATS_KEY_PREFIX_RESERVE_LENGTH;
 /**
  * A factory of stats publisher and aggregator implementations of the
  * StatsPublisher and StatsAggregator interfaces.
@@ -39,6 +42,10 @@ public final class StatsFactory {
   private static Class <? extends Serializable> aggregatorImplementation;
   private static Configuration jobConf;
 
+  public static int getMaxPrefixLength(Configuration conf) {
+
+    return -1;
+  }
   /**
    * Sets the paths of the implementation classes of publishing
    * and aggregation (IStatsPublisher and IStatsAggregator interfaces).

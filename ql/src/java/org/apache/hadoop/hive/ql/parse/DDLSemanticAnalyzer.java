@@ -2581,7 +2581,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
         cmd.append(")");
       }
       Driver driver = new Driver(conf);
-      int rc = driver.compile(cmd.toString());
+      int rc = driver.compile(cmd.toString(), false);
       if (rc != 0) {
         throw new SemanticException(ErrorMsg.NO_VALID_PARTN.getMsg());
       }

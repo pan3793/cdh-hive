@@ -721,7 +721,12 @@ STAGE PLANS:
       Alias -> Map Operator Tree:
         xx:x 
           TableScan
+<<<<<<< HEAD
             alias: x
+=======
+            alias: y
+            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
             Map Join Operator
               condition map:
                    Inner Join 0 to 1
@@ -762,7 +767,12 @@ STAGE PLANS:
                           type: bigint
         yy:x 
           TableScan
+<<<<<<< HEAD
             alias: x
+=======
+            alias: y
+            Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
             Map Join Operator
               condition map:
                    Inner Join 0 to 1
@@ -803,6 +813,25 @@ STAGE PLANS:
                           type: bigint
       Local Work:
         Map Reduce Local Work
+<<<<<<< HEAD
+=======
+          Alias -> Map Local Tables:
+            xx:x 
+              Fetch Operator
+                limit: -1
+            yy:x 
+              Fetch Operator
+                limit: -1
+          Alias -> Map Local Operator Tree:
+            xx:x 
+              TableScan
+                alias: x
+                Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
+            yy:x 
+              TableScan
+                alias: x
+                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
       Reduce Operator Tree:
         Demux Operator
           Group By Operator
@@ -5230,7 +5259,12 @@ STAGE PLANS:
       Alias -> Map Operator Tree:
         yy:x 
           TableScan
+<<<<<<< HEAD
             alias: x
+=======
+            alias: y
+            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
             Map Join Operator
               condition map:
                    Inner Join 0 to 1
@@ -5279,6 +5313,18 @@ STAGE PLANS:
                           type: bigint
       Local Work:
         Map Reduce Local Work
+<<<<<<< HEAD
+=======
+          Alias -> Map Local Tables:
+            yy:x 
+              Fetch Operator
+                limit: -1
+          Alias -> Map Local Operator Tree:
+            yy:x 
+              TableScan
+                alias: x
+                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
       Reduce Operator Tree:
         Group By Operator
           aggregations:
@@ -5351,7 +5397,12 @@ STAGE PLANS:
                     type: bigint
         xx:x 
           TableScan
+<<<<<<< HEAD
             alias: x
+=======
+            alias: y
+            Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
             Map Join Operator
               condition map:
                    Inner Join 0 to 1
@@ -5392,6 +5443,18 @@ STAGE PLANS:
                           type: bigint
       Local Work:
         Map Reduce Local Work
+<<<<<<< HEAD
+=======
+          Alias -> Map Local Tables:
+            xx:x 
+              Fetch Operator
+                limit: -1
+          Alias -> Map Local Operator Tree:
+            xx:x 
+              TableScan
+                alias: x
+                Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
       Reduce Operator Tree:
         Demux Operator
           Group By Operator
