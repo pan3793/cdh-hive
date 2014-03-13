@@ -48,6 +48,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
+import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.HiveStatsUtils;
 import org.apache.hadoop.hive.common.ObjectPair;
@@ -1223,12 +1224,15 @@ public class Hive {
    * @param holdDDLTime if true, force [re]create the partition
    * @param inheritTableSpecs if true, on [re]creating the partition, take the
    *          location/inputformat/outputformat/serde details from table spec
+   * @param isSrcLocal
+   *          If the source directory is LOCAL
    */
   public void loadPartition(Path loadPath, String tableName,
       Map<String, String> partSpec, boolean replace, boolean holdDDLTime,
-      boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir)
-      throws HiveException {
+      boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
+      boolean isSrcLocal) throws HiveException {
     Table tbl = getTable(tableName);
+    Path tblDataLocationPath =  tbl.getDataLocation();
     try {
       /**
        * Move files before creating the partition since down stream processes
@@ -1248,7 +1252,7 @@ public class Hive {
       if (inheritTableSpecs) {
         Path partPath = new Path(tbl.getDataLocation(),
             Warehouse.makePartPath(partSpec));
-        newPartPath = new Path(loadPath.toUri().getScheme(), loadPath.toUri().getAuthority(),
+        newPartPath = new Path(tblDataLocationPath.toUri().getScheme(), tblDataLocationPath.toUri().getAuthority(),
             partPath.toUri().getPath());
 
         if(oldPart != null) {
@@ -1270,10 +1274,11 @@ public class Hive {
       }
 
       if (replace) {
-        Hive.replaceFiles(tbl.getPath(), loadPath, newPartPath, oldPartPath, getConf());
+        Hive.replaceFiles(tbl.getPath(), loadPath, newPartPath, oldPartPath, getConf(),
+            isSrcLocal);
       } else {
         FileSystem fs = tbl.getDataLocation().getFileSystem(conf);
-        Hive.copyFiles(conf, loadPath, newPartPath, fs);
+        Hive.copyFiles(conf, loadPath, newPartPath, fs, isSrcLocal);
       }
 
       // recreate the partition if it existed before
@@ -1461,7 +1466,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
         // finally load the partition -- move the file to the final table address
         loadPartition(partPath, tableName, fullPartSpec, replace, holdDDLTime, true,
-            listBucketingEnabled);
+            listBucketingEnabled, false);
         LOG.info("New loading path = " + partPath + " with partSpec " + fullPartSpec);
       }
       return fullPartSpecs;
@@ -1483,15 +1488,16 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @param replace
    *          if true - replace files in the table, otherwise add files to table
    * @param holdDDLTime
+   * @param isSrcLocal
+   *          If the source directory is LOCAL
    */
   public void loadTable(Path loadPath, String tableName, boolean replace,
-      boolean holdDDLTime) throws HiveException {
+      boolean holdDDLTime, boolean isSrcLocal) throws HiveException {
     Table tbl = getTable(tableName);
-
     if (replace) {
-      tbl.replaceFiles(loadPath);
+      tbl.replaceFiles(loadPath, isSrcLocal);
     } else {
-      tbl.copyFiles(loadPath);
+      tbl.copyFiles(loadPath, isSrcLocal);
     }
 
     if (!holdDDLTime) {
@@ -2148,9 +2154,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
   }
 
   // for each file or directory in 'srcs', make mapping for every file in src to safe name in dest
-  private static List<List<Path[]>> checkPaths(HiveConf conf,
-      FileSystem fs, FileStatus[] srcs, Path destf,
-      boolean replace) throws HiveException {
+  private static List<List<Path[]>> checkPaths(HiveConf conf, FileSystem fs,
+      FileStatus[] srcs, FileSystem srcFs, Path destf, boolean replace)
+      throws HiveException {
 
     List<List<Path[]>> result = new ArrayList<List<Path[]>>();
     try {
@@ -2162,7 +2168,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
       for (FileStatus src : srcs) {
         FileStatus[] items;
         if (src.isDir()) {
-          items = fs.listStatus(src.getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER);
+          items = srcFs.listStatus(src.getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER);
           Arrays.sort(items);
         } else {
           items = new FileStatus[] {src};
@@ -2177,7 +2183,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
             // This check is redundant because temp files are removed by
             // execution layer before
             // calling loadTable/Partition. But leaving it in just in case.
-            fs.delete(itemSource, true);
+            srcFs.delete(itemSource, true);
             continue;
           }
 
@@ -2241,7 +2247,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
   //from mv command if the destf is a directory, it replaces the destf instead of moving under
   //the destf. in this case, the replaced destf still preserves the original destf's permission
   public static boolean moveFile(HiveConf conf, Path srcf, Path destf, FileSystem fs,
-                                 boolean replace) throws HiveException {
+                                 boolean replace, boolean isSrcLocal) throws HiveException {
     boolean success = false;
 
     //needed for perm inheritance.
@@ -2278,32 +2284,37 @@ private void constructOneLBLocationMap(FileStatus fSta,
         }
       }
 
-      if (hdfsEncryptionShim != null && (hdfsEncryptionShim.isPathEncrypted(srcf) || hdfsEncryptionShim.isPathEncrypted(destf))
+      if (!isSrcLocal) {
+        if (hdfsEncryptionShim != null && (hdfsEncryptionShim.isPathEncrypted(srcf) || hdfsEncryptionShim.isPathEncrypted(destf))
           && !hdfsEncryptionShim.arePathsOnSameEncryptionZone(srcf, destf))
-      {
-        LOG.info("Copying source " + srcf + " to " + destf + " because HDFS encryption zones are different.");
-        success = FileUtils.copy(srcf.getFileSystem(conf), srcf, destf.getFileSystem(conf), destf,
+        {
+          LOG.info("Copying source " + srcf + " to " + destf + " because HDFS encryption zones are different.");
+          success = FileUtils.copy(srcf.getFileSystem(conf), srcf, destf.getFileSystem(conf), destf,
             true,    // delete source
             replace, // overwrite destination
             conf);
-      } else {
-        if (destIsSubDir) {
-          FileStatus[] srcs = fs.listStatus(srcf, FileUtils.HIDDEN_FILES_PATH_FILTER);
-          for (FileStatus status : srcs) {
-            success = FileUtils.copy(srcf.getFileSystem(conf), status.getPath(), destf.getFileSystem(conf), destf,
+        } else {
+          if (destIsSubDir) {
+            FileStatus[] srcs = fs.listStatus(srcf, FileUtils.HIDDEN_FILES_PATH_FILTER);
+            for (FileStatus status : srcs) {
+              success = FileUtils.copy(srcf.getFileSystem(conf), status.getPath(), destf.getFileSystem(conf), destf,
               true,     // delete source
               replace,  // overwrite destination
               conf);
 
-            if (!success) {
-              throw new HiveException("Unable to move source " + status.getPath() + " to destination " + destf);
+              if (!success) {
+                throw new HiveException("Unable to move source " + status.getPath() + " to destination " + destf);
+              }
             }
+          } else {
+            success = fs.rename(srcf, destf);
           }
-        } else {
-          success = fs.rename(srcf, destf);
         }
+      } else {
+       // For local src file, copy to hdfs
+        fs.copyFromLocalFile(srcf, destf);
+        success = true;
       }
-
       LOG.info((replace ? "Replacing src:" : "Renaming src: ") + srcf.toString()
           + ", dest: " + destf.toString()  + ", Status:" + success);
     } catch (IOException ioe) {
@@ -2320,8 +2331,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
     return success;
   }
 
-  static protected void copyFiles(HiveConf conf, Path srcf, Path destf, FileSystem fs)
-      throws HiveException {
+  static protected void copyFiles(HiveConf conf, Path srcf, Path destf,
+      FileSystem fs, boolean isSrcLocal) throws HiveException {
     boolean inheritPerms = HiveConf.getBoolVar(conf,
         HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
     try {
@@ -2336,8 +2347,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
 
     FileStatus[] srcs;
+    FileSystem srcFs;
     try {
-      srcs = fs.globStatus(srcf);
+      srcFs = srcf.getFileSystem(conf);
+      srcs = srcFs.globStatus(srcf);
     } catch (IOException e) {
       LOG.error(StringUtils.stringifyException(e));
       throw new HiveException("addFiles: filesystem error in check phase", e);
@@ -2348,13 +2361,12 @@ private void constructOneLBLocationMap(FileStatus fSta,
       // srcs = new FileStatus[0]; Why is this needed?
     }
     // check that source and target paths exist
-    List<List<Path[]>> result = checkPaths(conf, fs, srcs, destf, false);
-
+    List<List<Path[]>> result = checkPaths(conf, fs, srcs, srcFs, destf, false);
     // move it, move it
     try {
       for (List<Path[]> sdpairs : result) {
         for (Path[] sdpair : sdpairs) {
-          if (!moveFile(conf, sdpair[0], sdpair[1], fs, false)) {
+          if (!moveFile(conf, sdpair[0], sdpair[1], fs, false, isSrcLocal)) {
             throw new IOException("Cannot move " + sdpair[0] + " to " + sdpair[1]);
           }
         }
@@ -2380,19 +2392,23 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @param oldPath
    *          The directory where the old data location, need to be cleaned up.  Most of time, will be the same
    *          as destf, unless its across FileSystem boundaries.
+   * @param isSrcLocal
+   *          If the source directory is LOCAL 
    */
-  protected static void replaceFiles(Path tablePath, Path srcf, Path destf, Path oldPath, HiveConf conf)
+  protected static void replaceFiles(Path tablePath, Path srcf, Path destf, Path oldPath, HiveConf conf, boolean isSrcLocal)
       throws HiveException {
     try {
-
+      FileSystem destFs = destf.getFileSystem(conf);
       FileSystem fs = srcf.getFileSystem(conf);
       boolean inheritPerms = HiveConf.getBoolVar(conf,
           HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
 
       // check if srcf contains nested sub-directories
       FileStatus[] srcs;
+      FileSystem srcFs;
       try {
-        srcs = fs.globStatus(srcf);
+        srcFs = srcf.getFileSystem(conf);
+        srcs = srcFs.globStatus(srcf);
       } catch (IOException e) {
         throw new HiveException("Getting globStatus " + srcf.toString(), e);
       }
@@ -2400,7 +2416,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
         LOG.info("No sources specified to move: " + srcf);
         return;
       }
-      List<List<Path[]>> result = checkPaths(conf, fs, srcs, destf, true);
+      List<List<Path[]>> result = checkPaths(conf, destFs, srcs, srcFs, destf,
+          true);
 
       HadoopShims shims = ShimLoader.getHadoopShims();
       if (oldPath != null) {
@@ -2414,7 +2431,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
               FileUtils.trashFilesUnderDir(fs2, oldPath, conf);
             }
             if (inheritPerms) {
-              inheritFromTable(tablePath, destf, conf, fs);
+              inheritFromTable(tablePath, destf, conf, destFs);
             }
           }
         } catch (Exception e) {
@@ -2427,51 +2444,51 @@ private void constructOneLBLocationMap(FileStatus fSta,
       if (srcs.length == 1 && srcs[0].isDir()) {
         // rename can fail if the parent doesn't exist
         Path destfp = destf.getParent();
-        if (!fs.exists(destfp)) {
-          boolean success = fs.mkdirs(destfp);
+        if (!destFs.exists(destfp)) {
+          boolean success = destFs.mkdirs(destfp);
           if (!success) {
             LOG.warn("Error creating directory " + destf.toString());
           }
           if (inheritPerms && success) {
-            inheritFromTable(tablePath, destfp, conf, fs);
+            inheritFromTable(tablePath, destfp, conf, destFs);
           }
         }
-
+        
         // Copy/move each file under the source directory to avoid to delete the destination
         // directory if it is the root of an HDFS encryption zone.
         for (List<Path[]> sdpairs : result) {
           for (Path[] sdpair : sdpairs) {
             Path destParent = sdpair[1].getParent();
-            FileSystem destFs = destParent.getFileSystem(conf);
-            if (!destFs.isDirectory(destParent)) {
-              boolean success = fs.mkdirs(destParent);
+            FileSystem destFsP = destParent.getFileSystem(conf);
+            if (!destFsP.isDirectory(destParent)) {
+              boolean success = destFs.mkdirs(destParent);
               if (!success) {
                 LOG.warn("Error creating directory " + destParent);
               }
               if (inheritPerms && success) {
-                inheritFromTable(tablePath, destParent, conf, fs);
+                inheritFromTable(tablePath, destParent, conf, destFs);
               }
             }
-            if (!moveFile(conf, sdpair[0], sdpair[1], fs, true)) {
+            if (!moveFile(conf, sdpair[0], sdpair[1], destFs, true, isSrcLocal)) {
               throw new IOException("Unable to move file/directory from " + sdpair[0] +
                 " to " + sdpair[1]);
             }
           }
         }
       } else { // srcf is a file or pattern containing wildcards
-        if (!fs.exists(destf)) {
-          boolean success = fs.mkdirs(destf);
+        if (!destFs.exists(destf)) {
+          boolean success = destFs.mkdirs(destf);
           if (!success) {
             LOG.warn("Error creating directory " + destf.toString());
           }
           if (inheritPerms && success) {
-            inheritFromTable(tablePath, destf, conf, fs);
+            inheritFromTable(tablePath, destf, conf, destFs);
           }
         }
         // srcs must be a list of files -- ensured by LoadSemanticAnalyzer
         for (List<Path[]> sdpairs : result) {
           for (Path[] sdpair : sdpairs) {
-            if (!moveFile(conf, sdpair[0], sdpair[1], fs, true)) {
+            if (!moveFile(conf, sdpair[0], sdpair[1], destFs, true, isSrcLocal)) {
               throw new IOException("Error moving: " + sdpair[0] + " into: " + sdpair[1]);
             }
           }

@@ -89,7 +89,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVE_INSERT_INTO_MULTILEVEL_DIRS)) {
           deletePath = createTargetPath(targetPath, fs);
         }
-        if (!Hive.moveFile(conf, sourcePath, targetPath, fs, true)) {
+        if (!Hive.moveFile(conf, sourcePath, targetPath, fs, true,false)) {
           try {
             if (deletePath != null) {
               fs.delete(deletePath, true);
@@ -249,13 +249,13 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
           // Get all files from the src directory
           FileStatus[] dirs;
           ArrayList<FileStatus> files;
-          FileSystem fs;
+          FileSystem srcFs; // source filesystem
           try {
-            fs = table.getDataLocation().getFileSystem(conf);
-            dirs = fs.globStatus(tbd.getSourcePath());
+            srcFs = tbd.getSourcePath().getFileSystem(conf);
+            dirs = srcFs.globStatus(tbd.getSourcePath());
             files = new ArrayList<FileStatus>();
             for (int i = 0; (dirs != null && i < dirs.length); i++) {
-              files.addAll(Arrays.asList(fs.listStatus(dirs[i].getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER)));
+              files.addAll(Arrays.asList(srcFs.listStatus(dirs[i].getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER)));
               // We only check one file, so exit the loop when we have at least
               // one.
               if (files.size() > 0) {
@@ -269,7 +269,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
           if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVECHECKFILEFORMAT)) {
             // Check if the file format of the file matches that of the table.
             boolean flag = HiveFileFormatUtils.checkInputFormat(
-                fs, conf, tbd.getTable().getInputFileFormatClass(), files);
+                srcFs, conf, tbd.getTable().getInputFileFormatClass(), files);
             if (!flag) {
               throw new HiveException(
                   "Wrong file format. Please check the file's format.");
@@ -282,7 +282,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         if (tbd.getPartitionSpec().size() == 0) {
           dc = new DataContainer(table.getTTable());
           db.loadTable(tbd.getSourcePath(), tbd.getTable()
-              .getTableName(), tbd.getReplace(), tbd.getHoldDDLTime());
+              .getTableName(), tbd.getReplace(), tbd.getHoldDDLTime(), work.isSrcLocal());
           if (work.getOutputs() != null) {
             work.getOutputs().add(new WriteEntity(table,
                 (tbd.getReplace() ? WriteEntity.WriteType.INSERT_OVERWRITE :
@@ -411,11 +411,13 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
             db.validatePartitionNameCharacters(partVals);
             db.loadPartition(tbd.getSourcePath(), tbd.getTable().getTableName(),
                 tbd.getPartitionSpec(), tbd.getReplace(), tbd.getHoldDDLTime(),
-                tbd.getInheritTableSpecs(), isSkewedStoredAsDirs(tbd));
-          	Partition partn = db.getPartition(table, tbd.getPartitionSpec(), false);
+                tbd.getInheritTableSpecs(), isSkewedStoredAsDirs(tbd), work.isSrcLocal());
+            Partition partn = db.getPartition(table, tbd.getPartitionSpec(),
+                false);
 
-          	if (bucketCols != null || sortCols != null) {
-          	  updatePartitionBucketSortColumns(table, partn, bucketCols, numBuckets, sortCols);
+            if (bucketCols != null || sortCols != null) {
+              updatePartitionBucketSortColumns(table, partn, bucketCols,
+                  numBuckets, sortCols);
             }
 
           	dc = new DataContainer(table.getTTable(), partn.getTPartition());
