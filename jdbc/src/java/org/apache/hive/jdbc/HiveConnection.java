@@ -337,6 +337,11 @@ public class HiveConnection implements java.sql.Connection {
       openReq.setConfiguration(openConf);
     }
 
+    // Store the user name in the open request in case no non-sasl authentication
+    if (HIVE_AUTH_SIMPLE.equals(sessConfMap.get(HIVE_AUTH_TYPE))) {
+      openReq.setUsername(sessConfMap.get(HIVE_AUTH_USER));
+    }
+
     try {
       TOpenSessionResp openResp = client.OpenSession(openReq);
 
