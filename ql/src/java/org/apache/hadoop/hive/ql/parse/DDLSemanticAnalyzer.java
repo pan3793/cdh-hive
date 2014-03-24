@@ -439,8 +439,30 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
    case HiveParser.TOK_EXCHANGEPARTITION:
       analyzeExchangePartition(ast);
       break;
+   case HiveParser.TOK_SHOW_SET_ROLE:
+     analyzeSetShowRole(ast);
+     break;
     default:
       throw new SemanticException("Unsupported command.");
+    }
+  }
+
+  private void analyzeSetShowRole(ASTNode ast) throws SemanticException {
+    switch (ast.getChildCount()) {
+      case 0:
+        ctx.setResFile(new Path(ctx.getLocalTmpFileURI()));
+        rootTasks.add(hiveAuthorizationTaskFactory.createShowCurrentRoleTask(
+        getInputs(), getOutputs(), ctx.getResFile()));
+        setFetchTask(createFetchTask(RoleDDLDesc.getSchema()));
+        break;
+      case 1:
+        rootTasks.add(hiveAuthorizationTaskFactory.createSetRoleTask(
+        BaseSemanticAnalyzer.unescapeIdentifier(ast.getChild(0).getText()),
+        getInputs(), getOutputs()));
+        break;
+      default:
+        throw new SemanticException("Internal error. ASTNode expected to have 0 or 1 child. "
+        + ast.dump());
     }
   }
 

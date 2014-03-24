@@ -216,7 +216,7 @@ public class CliDriver {
       }
     } else { // local mode
       try {
-        CommandProcessor proc = CommandProcessorFactory.get(tokens[0], (HiveConf) conf);
+        CommandProcessor proc = CommandProcessorFactory.get(tokens, (HiveConf) conf);
         ret = processLocalCmd(cmd, proc, ss);
       } catch (SQLException e) {
         console.printError("Failed processing command " + tokens[0] + " " + e.getLocalizedMessage(),

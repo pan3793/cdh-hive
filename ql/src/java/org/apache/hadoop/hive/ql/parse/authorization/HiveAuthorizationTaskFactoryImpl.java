@@ -328,4 +328,18 @@ public class HiveAuthorizationTaskFactoryImpl extends AbstractHiveAuthorizationT
   private String toMessage(ErrorMsg message, Object detail) {
     return detail == null ? message.getMsg() : message.getMsg(detail.toString());
   }
+
+  @Override
+  public Task<? extends Serializable> createSetRoleTask(String roleName,
+      HashSet<ReadEntity> inputs, HashSet<WriteEntity> outputs)
+      throws SemanticException {
+    throw new SemanticException("SET ROLE is only supported by Sentry. Please enable Sentry.");
+  }
+
+  @Override
+  public Task<? extends Serializable> createShowCurrentRoleTask(
+      HashSet<ReadEntity> inputs, HashSet<WriteEntity> outputs, Path resFile)
+      throws SemanticException {
+    throw new SemanticException("SHOW CURRENT ROLES is only supported by Sentry. Please enable Sentry.");
+  }
 }
