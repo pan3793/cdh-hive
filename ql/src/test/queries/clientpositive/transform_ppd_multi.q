@@ -1,35 +1,21 @@
 set hive.optimize.ppd=true;
 
+CREATE TABLE multi1(id int, name string);
+CREATE TABLE multi2(id int, name string);
+--multi-insert case: transform has two filter children (HIVE-6395)
 EXPLAIN EXTENDED
 FROM (
   FROM srcpart src
   SELECT TRANSFORM(src.ds, src.key, src.value)
          USING 'cat' AS (ds, tkey, tvalue)
-  WHERE src.ds = '2008-04-08' 
-  CLUSTER BY tkey 
 ) tmap
-SELECT tmap.tkey, tmap.tvalue WHERE tmap.tkey < 100;
+INSERT OVERWRITE TABLE multi1 SELECT tmap.tkey, tmap.tvalue WHERE tmap.tkey < 100
+INSERT OVERWRITE TABLE multi2 SELECT tmap.tkey, tmap.tvalue WHERE tmap.tkey > 100;
 
-FROM (
-  FROM srcpart src
-  SELECT TRANSFORM(src.ds, src.key, src.value)
-         USING 'cat' AS (ds, tkey, tvalue) 
-  WHERE src.ds = '2008-04-08' 
-  CLUSTER BY tkey 
-) tmap
-SELECT tmap.tkey, tmap.tvalue WHERE tmap.tkey < 100;
-
---multi-insert case, extract has two filter children.
-CREATE TABLE MULTI1(id int, name string);
-CREATE TABLE MULTI2(id int, name string);
-
-EXPLAIN EXTENDED
 FROM (
   FROM srcpart src
   SELECT TRANSFORM(src.ds, src.key, src.value)
          USING 'cat' AS (ds, tkey, tvalue)
-  WHERE src.ds = '2008-04-08' 
-  CLUSTER BY tkey 
 ) tmap
 INSERT OVERWRITE TABLE multi1 SELECT tmap.tkey, tmap.tvalue WHERE tmap.tkey < 100
 INSERT OVERWRITE TABLE multi2 SELECT tmap.tkey, tmap.tvalue WHERE tmap.tkey > 100;

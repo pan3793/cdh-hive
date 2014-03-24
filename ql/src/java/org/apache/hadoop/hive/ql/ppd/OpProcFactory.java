@@ -173,6 +173,13 @@ public final class OpProcFactory {
       OpWalkerInfo owi = (OpWalkerInfo) procCtx;
       Operator<? extends OperatorDesc> op =
         (Operator<? extends OperatorDesc>) nd;
+      List<Operator<? extends OperatorDesc>> opList = ((FilterOperator) op).getParentOperators();
+      if (opList != null && opList.size() == 1 &&
+          (opList.get(0).getChildOperators().size() > 1)) {
+        //do not push down for filter siblings.  Will result in a wrong filter, see HIVE-6395.
+          return null;
+      }
+
       ExprNodeDesc predicate = (((FilterOperator) nd).getConf()).getPredicate();
       ExprWalkerInfo ewi = new ExprWalkerInfo();
       // Don't push a sampling predicate since createFilter() always creates filter
