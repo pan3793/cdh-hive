@@ -26,6 +26,7 @@ import org.apache.hadoop.hive.ql.hooks.ReadEntity;
 import org.apache.hadoop.hive.ql.hooks.WriteEntity;
 import org.apache.hadoop.hive.ql.parse.ASTNode;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
+import org.apache.hadoop.hive.ql.plan.DDLWork;
 
 /**
  * HiveAuthorizationTaskFactory creates DDL authorization related
@@ -62,4 +63,8 @@ public interface HiveAuthorizationTaskFactory {
 
   public Task<? extends Serializable> createShowCurrentRoleTask(HashSet<ReadEntity> inputs,
       HashSet<WriteEntity> outputs, Path resFile) throws SemanticException;
+
+  public Task<? extends Serializable> createShowRolesTask(ASTNode ast, Path resFile,
+      HashSet<ReadEntity> inputs, HashSet<WriteEntity> outputs) throws SemanticException;
+
 }

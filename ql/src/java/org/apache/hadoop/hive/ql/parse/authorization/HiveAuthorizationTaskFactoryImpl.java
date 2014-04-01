@@ -342,4 +342,14 @@ public class HiveAuthorizationTaskFactoryImpl extends AbstractHiveAuthorizationT
       throws SemanticException {
     throw new SemanticException("SHOW CURRENT ROLES is only supported by Sentry. Please enable Sentry.");
   }
+
+  @Override
+  public Task<? extends Serializable> createShowRolesTask(ASTNode ast, Path resFile,
+      HashSet<ReadEntity> inputs, HashSet<WriteEntity> outputs) throws SemanticException {
+    RoleDDLDesc showRolesDesc = new RoleDDLDesc(null, null, RoleDDLDesc.RoleOperation.SHOW_ROLES,
+        null);
+    showRolesDesc.setResFile(resFile.toString());
+    return TaskFactory.get(new DDLWork(inputs, outputs, showRolesDesc), conf);
+  }
+
 }
