@@ -117,7 +117,23 @@
     </profile>
    <profile>
       <id>hadoop-2</id>
-
+      <dependencies>
+    <!-- dependencies are always listed in sorted order by groupId, artifectId -->
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-mapreduce-client-common</artifactId>
+          <version>${hadoop-23.version}</version>
+          <optional>true</optional>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-mapreduce-client-core</artifactId>
+          <version>${hadoop-23.version}</version>
+          <optional>true</optional>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 
