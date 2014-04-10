@@ -47,6 +47,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsShell;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaException;
 import org.apache.hadoop.hive.metastore.HiveMetaHook;
@@ -2052,9 +2053,26 @@ public class Hive {
     try {
       // create the destination if it does not exist
       if (!fs.exists(destf)) {
-        fs.mkdirs(destf);
         if (inheritPerms) {
-          fs.setPermission(destf, fs.getFileStatus(destf.getParent()).getPermission());
+          //need to find last existing path, and apply its permission on entire subtree.
+          Path path = destf;
+          List<Path> pathsToSet = new ArrayList<Path>();
+          while (!fs.exists(path)) {
+            pathsToSet.add(path);
+            path = path.getParent();
+          }
+
+          //at the end of this loop, path is the last existing path (the real parent).
+          fs.mkdirs(destf);
+          FsPermission parentPerm = fs.getFileStatus(path).getPermission();
+          for (Path pathToSet : pathsToSet) {
+            LOG.info("setting permission of parent folder: " + path.toString() +
+              " on new directory: " + pathToSet.toString());
+            fs.setPermission(pathToSet, parentPerm);
+          }
+        } else {
+          //simply make the directory.
+          fs.mkdirs(destf);
         }
       }
     } catch (IOException e) {
