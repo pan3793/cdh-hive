@@ -18,8 +18,6 @@
 
 package org.apache.hadoop.hive.ql.lockmgr;
 
-import java.util.Arrays;
-
 import org.apache.hadoop.hive.ql.metadata.DummyPartition;
 import org.apache.hadoop.hive.ql.metadata.Partition;
 import org.apache.hadoop.hive.ql.metadata.Table;
@@ -180,19 +178,6 @@ public class HiveLockObject {
 
   public void setData(HiveLockObjectData data) {
     this.data = data;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof HiveLockObject)) {
-      return false;
-    }
-
-    HiveLockObject tgt = (HiveLockObject) o;
-    return Arrays.equals(pathNames, tgt.pathNames) &&
-        data == null ? tgt.getData() == null :
-        tgt.getData() != null && data.equals(tgt.getData());
   }
 
   private static String removeDelimiter(String in) {
