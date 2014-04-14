@@ -569,6 +569,16 @@ public class Hadoop23Shims extends HadoopShimsSecure {
             return "mapreduce.job.cache.symlink.create";
           }
           return "mapred.create.symlink";
+        case CLASSPATH_ARCHIVES:
+          if(mr2) {
+            return "mapreduce.job.classpath.archives";
+          }
+          return "mapred.job.classpath.archives";
+        case CLASSPATH_FILES:
+          if(mr2) {
+            return "mapreduce.job.classpath.files";
+          }
+          return "mapred.job.classpath.files";
       }
 
       return "";
