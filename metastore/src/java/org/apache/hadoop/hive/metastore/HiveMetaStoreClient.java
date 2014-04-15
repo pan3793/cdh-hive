@@ -178,6 +178,14 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
     metastoreUris[index] = tmp;
   }
 
+  /**
+   * Returns true if the Metastore Service is running in the same JVM as the client.
+   * @return
+   */
+  public boolean isMetaStoreLocal() {
+    return localMetaStore;
+  }
+
   public void reconnect() throws MetaException {
     if (localMetaStore) {
       // For direct DB connections we don't yet support reestablishing connections.
