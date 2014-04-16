@@ -18,16 +18,21 @@
 
 package org.apache.hadoop.hive.common;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
-
 import org.apache.hadoop.util.Shell;
 
 
@@ -35,6 +40,7 @@ import org.apache.hadoop.util.Shell;
  * Collection of file manipulation utilities common across Hive.
  */
 public final class FileUtils {
+  private static final Log LOG = LogFactory.getLog(FileUtils.class.getName());
 
   /**
    * Variant of Path.makeQualified that qualifies the input path against the default file system
@@ -157,7 +163,7 @@ public final class FileUtils {
     for (char c : clist) {
       charToEscape.set(c);
     }
-    
+
     if(Shell.WINDOWS){
       //On windows, following chars need to be escaped as well
       char [] winClist = {' ', '<','>','|'};
@@ -280,4 +286,71 @@ public final class FileUtils {
     return lbDirName;
   }
 
+
+  public static boolean isOwnerOfFileHierarchy(FileSystem fs, FileStatus fileStatus, String userName)
+      throws IOException {
+    if (!fileStatus.getOwner().equals(userName)) {
+      return false;
+    }
+
+    if (!fileStatus.isDir()) {
+      // no sub dirs to be checked
+      return true;
+    }
+    // check all children
+    FileStatus[] childStatuses = fs.listStatus(fileStatus.getPath());
+    for (FileStatus childStatus : childStatuses) {
+      // check children recursively
+      if (!isOwnerOfFileHierarchy(fs, childStatus, userName)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Creates the directory and all necessary parent directories.
+   * @param fs FileSystem to use
+   * @param f path to create.
+   * @param inheritPerms whether directory inherits the permission of the last-existing parent path
+   * @return true if directory created successfully.  False otherwise, including if it exists.
+   * @throws IOException exception in creating the directory
+   */
+  public static boolean mkdir(FileSystem fs, Path f, boolean inheritPerms) throws IOException {
+    LOG.info("Creating directory if it doesn't exist: " + f);
+    if (!inheritPerms) {
+      //just create the directory
+      return fs.mkdirs(f);
+    } else {
+      //Check if the directory already exists. We want to change the permission
+      //to that of the parent directory only for newly created directories.
+      try {
+        return fs.getFileStatus(f).isDir();
+      } catch (FileNotFoundException ignore) {
+      }
+      //inherit perms: need to find last existing parent path, and apply its permission on entire subtree.
+      Path path = f;
+      List<Path> pathsToSet = new ArrayList<Path>();
+      while (!fs.exists(path)) {
+        pathsToSet.add(path);
+        path = path.getParent();
+      }
+      //at the end of this loop, path is the last-existing parent path.
+      boolean success = fs.mkdirs(f);
+      if (!success) {
+        return false;
+      } else {
+        FsPermission parentPerm = fs.getFileStatus(path).getPermission();
+        String parentGroup = fs.getFileStatus(path).getGroup();
+        for (Path pathToSet : pathsToSet) {
+          String currOwner = fs.getFileStatus(pathToSet).getOwner();
+          LOG.info("Setting permission and group of parent directory: " + path.toString() +
+            " on new directory: " + pathToSet.toString());
+          fs.setPermission(pathToSet, parentPerm);
+          fs.setOwner(pathToSet, currOwner, parentGroup);
+        }
+        return true;
+      }
+    }
+  }
 }

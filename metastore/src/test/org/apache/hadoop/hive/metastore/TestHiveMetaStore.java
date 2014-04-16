@@ -380,7 +380,7 @@ public abstract class TestHiveMetaStore extends TestCase {
 
       // create dir for /mpart5
       Path mp5Path = new Path(mpart5.getSd().getLocation());
-      warehouse.mkdirs(mp5Path);
+      warehouse.mkdirs(mp5Path, true);
       assertTrue(fs.exists(mp5Path));
       assertEquals(dbPermission, fs.getFileStatus(mp5Path).getPermission());
 
@@ -854,8 +854,8 @@ public abstract class TestHiveMetaStore extends TestCase {
 
   public void testDatabaseLocationWithPermissionProblems() throws Exception {
 
-    // Note: The following test will fail if you are running this test as root. Setting 
-    // permission to '0' on the database folder will not preclude root from being able 
+    // Note: The following test will fail if you are running this test as root. Setting
+    // permission to '0' on the database folder will not preclude root from being able
     // to create the necessary files.
 
     if (System.getProperty("user.name").equals("root")) {
@@ -1757,7 +1757,7 @@ public abstract class TestHiveMetaStore extends TestCase {
     } catch (TException e) {
       e.printStackTrace();
       assert (false);
-    } 
+    }
     assert (threwException);
   }
 
@@ -2106,7 +2106,7 @@ public abstract class TestHiveMetaStore extends TestCase {
    * at least works correctly.
    */
   public void testSynchronized() throws Exception {
-    int currentNumberOfDbs = client.getAllDatabases().size(); 
+    int currentNumberOfDbs = client.getAllDatabases().size();
 
     IMetaStoreClient synchronizedClient =
       HiveMetaStoreClient.newSynchronizedClient(client);
