@@ -391,7 +391,9 @@ public class HashTableSinkOperator extends TerminalOperator<HashTableSinkDesc> i
   @Override
   public void closeOp(boolean abort) throws HiveException {
     try {
-      if (mapJoinTables != null) {
+      if (mapJoinTables == null) {
+        LOG.debug("mapJoinTables is null");
+      } else {
         // get tmp file URI
         String tmpURI = this.getExecContext().getLocalWork().getTmpFileURI();
         LOG.info("Get TMP URI: " + tmpURI);
@@ -427,7 +429,7 @@ public class HashTableSinkOperator extends TerminalOperator<HashTableSinkDesc> i
 
       super.closeOp(abort);
     } catch (Exception e) {
-      LOG.error("Generate Hashtable error");
+      LOG.error("Generate Hashtable error", e);
       e.printStackTrace();
     }
   }

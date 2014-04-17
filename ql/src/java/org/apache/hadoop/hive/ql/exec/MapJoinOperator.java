@@ -193,8 +193,9 @@ public class MapJoinOperator extends AbstractMapJoinOperator<MapJoinDesc> implem
         hashtable.initilizePersistentHash(path.toUri().getPath());
       }
     } catch (Exception e) {
-      LOG.error("Load Distributed Cache Error");
-      throw new HiveException(e.getMessage());
+      String msg = "Load Distributed Cache Error: " + e.getMessage();
+      LOG.error(msg, e);
+      throw new HiveException(msg, e);
     }
   }
 
