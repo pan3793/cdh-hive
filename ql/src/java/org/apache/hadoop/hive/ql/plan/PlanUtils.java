@@ -83,7 +83,7 @@ public final class PlanUtils {
     FIELD, JEXL
   };
 
-  public static long getCountForMapJoinDumpFilePrefix() {
+  public static synchronized long getCountForMapJoinDumpFilePrefix() {
     return countForMapJoinDumpFilePrefix++;
   }
 

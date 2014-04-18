@@ -161,6 +161,8 @@ public class MapJoinOperator extends AbstractMapJoinOperator<MapJoinDesc> implem
         }
       }
     } catch (Exception e) {
+      String msg = "Unxpected exception: " + e.getMessage();
+      LOG.error(msg, e);    	
       throw new HiveException(e);
     }
   }
@@ -226,8 +228,10 @@ public class MapJoinOperator extends AbstractMapJoinOperator<MapJoinDesc> implem
           storage[pos] = null;
         }
       }
-    } catch (SerDeException e) {
-      throw new HiveException(e);
+    } catch (Exception e) {
+      String msg = "Unxpected exception: " + e.getMessage();
+      LOG.error(msg, e);
+      throw new HiveException(msg, e);
     }
   }
 

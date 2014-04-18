@@ -339,14 +339,15 @@ public class MapredLocalTask extends Task<MapredLocalWork> implements Serializab
         setUpFetchOpContext(fetchOp, alias, bigTableBucket);
       }
 
+      // get the root operator
+      Operator<? extends OperatorDesc> forwardOp = work.getAliasToWork().get(alias);
       if (fetchOp.isEmptyTable()) {
         //generate empty hashtable for empty table
         this.generateDummyHashTable(alias, bigTableBucket);
+        forwardOp.close(false);
         continue;
       }
 
-      // get the root operator
-      Operator<? extends OperatorDesc> forwardOp = work.getAliasToWork().get(alias);
       // walk through the operator tree
       while (true) {
         InspectableObject row = fetchOp.getNextRow();
@@ -371,6 +372,9 @@ public class MapredLocalTask extends Task<MapredLocalWork> implements Serializab
 
   private void initializeOperators(Map<FetchOperator, JobConf> fetchOpJobConfMap)
       throws HiveException {
+    for (Map.Entry<String, Operator<? extends OperatorDesc>> entry : work.getAliasToWork().entrySet()) {
+      LOG.debug("initializeOperators: " +  entry.getKey() + ", children = "  + entry.getValue().getChildOperators());
+    }
     // this mapper operator is used to initialize all the operators
     for (Map.Entry<String, FetchWork> entry : work.getAliasToFetchWork().entrySet()) {
       JobConf jobClone = new JobConf(job);
@@ -412,6 +416,7 @@ public class MapredLocalTask extends Task<MapredLocalWork> implements Serializab
 
   private void generateDummyHashTable(String alias, String bigBucketFileName)
       throws HiveException,IOException {
+    LOG.debug("generating dummy for " + alias);
     // find the (byte)tag for the map join(HashTableSinkOperator)
     Operator<? extends OperatorDesc> parentOp = work.getAliasToWork().get(alias);
     Operator<? extends OperatorDesc> childOp = parentOp.getChildOperators().get(0);
