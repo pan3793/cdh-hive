@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.security.authorization;
 
 import java.util.EnumSet;
+
 import org.apache.hadoop.hive.ql.parse.HiveParser;
 
 /**
@@ -34,6 +35,7 @@ public class Privilege {
     CREATE,
     DROP,
     INDEX,
+    INSERT,
     LOCK,
     SELECT,
     SHOW_DATABASE,
@@ -55,6 +57,8 @@ public class Privilege {
       return PrivilegeType.DROP;
     case HiveParser.TOK_PRIV_INDEX:
       return PrivilegeType.INDEX;
+    case HiveParser.TOK_PRIV_INSERT:
+      return PrivilegeType.INSERT;
     case HiveParser.TOK_PRIV_LOCK:
       return PrivilegeType.LOCK;
     case HiveParser.TOK_PRIV_SELECT:
@@ -80,6 +84,8 @@ public class Privilege {
       return PrivilegeType.DROP;
     } else if (canonicalizedName.equals("index")) {
       return PrivilegeType.INDEX;
+    } else if (canonicalizedName.equals("insert")) {
+      return PrivilegeType.INSERT;
     } else if (canonicalizedName.equals("lock")) {
       return PrivilegeType.LOCK;
     } else if (canonicalizedName.equals("select")) {
@@ -145,6 +151,8 @@ public class Privilege {
       return "Drop";
     case INDEX:
       return "Index";
+    case INSERT:
+      return "Insert";
     case LOCK:
       return "Lock";
     case SELECT:
@@ -175,6 +183,9 @@ public class Privilege {
       PrivilegeScope.ALLSCOPE_EXCEPT_COLUMN);
 
   public static Privilege INDEX = new Privilege(PrivilegeType.INDEX,
+      PrivilegeScope.ALLSCOPE);
+
+  public static Privilege INSERT = new Privilege(PrivilegeType.INSERT,
       PrivilegeScope.ALLSCOPE);
 
   public static Privilege LOCK = new Privilege(PrivilegeType.LOCK,

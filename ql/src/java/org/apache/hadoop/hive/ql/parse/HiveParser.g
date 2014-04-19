@@ -265,6 +265,7 @@ TOK_PRIV_ALTER_METADATA;
 TOK_PRIV_ALTER_DATA;
 TOK_PRIV_DROP;
 TOK_PRIV_INDEX;
+TOK_PRIV_INSERT;
 TOK_PRIV_LOCK;
 TOK_PRIV_SELECT;
 TOK_PRIV_SHOW_DATABASE;
@@ -306,6 +307,8 @@ TOK_WINDOWVALUES;
 TOK_WINDOWRANGE;
 TOK_IGNOREPROTECTION;
 TOK_EXCHANGEPARTITION;
+TOK_SERVER;
+TOK_URI;
 }
 
 
@@ -1358,6 +1361,8 @@ privilegeObject
 @after {msgs.pop();}
     : KW_ON (table=KW_TABLE|KW_DATABASE) identifier partitionSpec?
     -> ^(TOK_PRIV_OBJECT identifier $table? partitionSpec?)
+    | KW_ON KW_URI (path=StringLiteral) -> ^(TOK_PRIV_OBJECT $path TOK_URI)
+    | KW_ON KW_SERVER identifier -> ^(TOK_PRIV_OBJECT identifier TOK_SERVER)
     ;
 
 privilegeList
@@ -1386,6 +1391,7 @@ privilegeType
     | KW_LOCK -> ^(TOK_PRIV_LOCK)
     | KW_SELECT -> ^(TOK_PRIV_SELECT)
     | KW_SHOW_DATABASE -> ^(TOK_PRIV_SHOW_DATABASE)
+    | KW_INSERT -> ^(TOK_PRIV_INSERT)
     ;
 
 principalSpecification

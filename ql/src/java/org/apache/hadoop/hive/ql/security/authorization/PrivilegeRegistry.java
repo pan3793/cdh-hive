@@ -37,6 +37,7 @@ public class PrivilegeRegistry {
     Registry.put(Privilege.CREATE.getPriv(), Privilege.CREATE);
     Registry.put(Privilege.DROP.getPriv(), Privilege.DROP);
     Registry.put(Privilege.INDEX.getPriv(), Privilege.INDEX);
+    Registry.put(Privilege.INSERT.getPriv(), Privilege.INSERT);
     Registry.put(Privilege.LOCK.getPriv(), Privilege.LOCK);
     Registry.put(Privilege.SELECT.getPriv(), Privilege.SELECT);
     Registry.put(Privilege.SHOW_DATABASE.getPriv(),
