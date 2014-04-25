@@ -31,7 +31,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
  */
 public abstract class AbstractService implements Service {
 
-  private static final Log LOG = LogFactory.getLog(AbstractService.class);
+  protected static final Log LOG = LogFactory.getLog(AbstractService.class);
 
   /**
    * Service state: initially {@link STATE#NOTINITED}.

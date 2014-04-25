@@ -41,11 +41,17 @@ public abstract class Operation {
   public static final Log LOG = LogFactory.getLog(Operation.class.getName());
   public static final long DEFAULT_FETCH_MAX_ROWS = 100;
   protected boolean hasResultSet;
+  private long operationTimeout;
+  private long lastAccessTime;
 
   protected Operation(HiveSession parentSession, OperationType opType) {
     super();
     this.parentSession = parentSession;
+    this.configuration = parentSession.getHiveConf();
     opHandle = new OperationHandle(opType);
+    lastAccessTime = System.currentTimeMillis();
+    operationTimeout = HiveConf.getTimeInMsec(configuration,
+        HiveConf.ConfVars.HIVE_SERVER2_IDLE_OPERATION_TIMEOUT);
   }
 
   public void setConfiguration(HiveConf configuration) {
@@ -81,16 +87,40 @@ public abstract class Operation {
     opHandle.setHasResultSet(hasResultSet);
   }
 
-  protected final OperationState setState(OperationState newState) throws HiveSQLException {
+  public boolean isTimedOut(long current) {
+    if (operationTimeout == 0) {
+      return false;
+    }
+    if (operationTimeout > 0) {
+      // check only when it's in terminal state
+      return state.isTerminal() && getLastAccessTime() + operationTimeout <= current;
+    }
+    return getLastAccessTime() + -operationTimeout <= current;
+  }
+
+  public long getLastAccessTime() {
+    return lastAccessTime;
+  }
+
+  public long getOperationTimeout() {
+    return operationTimeout;
+  }
+
+  public void setOperationTimeout(long operationTimeout) {
+    this.operationTimeout = operationTimeout;
+  }
+
+  protected final void setState(OperationState newState) throws HiveSQLException {
     state.validateTransition(newState);
     this.state = newState;
-    return this.state;
+    this.lastAccessTime = System.currentTimeMillis();
   }
 
   protected final void assertState(OperationState state) throws HiveSQLException {
     if (this.state != state) {
       throw new HiveSQLException("Expected state " + state + ", but found " + this.state);
     }
+    this.lastAccessTime = System.currentTimeMillis();
   }
 
   protected final void assertAtLeastState(OperationState state) throws HiveSQLException {

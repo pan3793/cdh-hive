@@ -18,6 +18,7 @@
 
 package org.apache.hive.service.cli.operation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -132,12 +133,16 @@ public class OperationManager extends AbstractService {
     return operation;
   }
 
-  public synchronized Operation getOperation(OperationHandle operationHandle) throws HiveSQLException {
-    Operation operation = handleToOperation.get(operationHandle);
+  public Operation getOperation(OperationHandle operationHandle) throws HiveSQLException {
+    Operation operation = _getOperation(operationHandle);
     if (operation == null) {
       throw new HiveSQLException("Invalid OperationHandle: " + operationHandle);
     }
     return operation;
+  }
+
+  private synchronized Operation _getOperation(OperationHandle operationHandle) {
+    return handleToOperation.get(operationHandle);
   }
 
   private synchronized void addOperation(Operation operation) {
@@ -177,5 +182,29 @@ public class OperationManager extends AbstractService {
       FetchOrientation orientation, long maxRows)
       throws HiveSQLException {
     return getOperation(opHandle).getNextRowSet(orientation, maxRows);
- }
+  }
+
+  public List<OperationHandle> closeExpiredOperations(OperationHandle[] handles) {
+    List<OperationHandle> removed = new ArrayList<OperationHandle>();
+    long current = System.currentTimeMillis();
+    for (OperationHandle handle : handles) {
+      Operation operation = _getOperation(handle);
+      if (operation == null) {
+        LOG.warn("Invalid Operation " + handle);
+        removed.add(handle);
+        continue;
+      }
+      if (operation.isTimedOut(current)) {
+        LOG.warn("Operation " + handle + " is Timed-out and will be closed");
+        try {
+          closeOperation(operation.getHandle());
+        } catch (Exception e) {
+          LOG.warn("Exception is thrown closing operation " + operation.getHandle(), e);
+        }
+        removed.add(handle);
+      }
+    }
+    return removed;
+  }
+
 }

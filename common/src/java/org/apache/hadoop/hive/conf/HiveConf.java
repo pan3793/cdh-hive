@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -716,6 +717,10 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true),
     HIVE_SERVER2_TABLE_TYPE_MAPPING("hive.server2.table.type.mapping", "HIVE"),
 
+    HIVE_SERVER2_SESSION_CHECK_INTERVAL("hive.server2.session.check.interval", "0"),
+    HIVE_SERVER2_IDLE_SESSION_TIMEOUT("hive.server2.idle.session.timeout", "0"),
+    HIVE_SERVER2_IDLE_OPERATION_TIMEOUT("hive.server2.idle.operation.timeout", "0"),
+
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", null),
 
     // If this is set all move tasks at the end of a multi-insert query will only begin once all
@@ -990,6 +995,36 @@ public class HiveConf extends Configuration {
     assert (var.valClass == String.class);
     conf.set(var.varname, val);
   }
+
+  private static final Pattern TIME_PATTERN = Pattern.compile("(-?\\d+)\\s*([a-zA-Z]*)");
+
+  public static long getTimeInMsec(Configuration conf, ConfVars var) {
+    return toTimeInMsec(getVar(conf, var));
+  }
+
+  public static long toTimeInMsec(String value) {
+    Matcher matcher = TIME_PATTERN.matcher(value);
+    if (!matcher.matches()) {
+      throw new IllegalArgumentException("Invalid time value " + value);
+    }
+    long timePart = Long.valueOf(matcher.group(1));
+    String unitPart = matcher.group(2);
+    if (unitPart == null || unitPart.isEmpty() || unitPart.equalsIgnoreCase("msec")) {
+      return timePart;
+    }
+    unitPart = unitPart.toLowerCase();
+    if (unitPart.startsWith("s")) {
+      return TimeUnit.MILLISECONDS.convert(timePart, TimeUnit.SECONDS);
+    } else if (unitPart.startsWith("m")) {
+      return TimeUnit.MILLISECONDS.convert(timePart, TimeUnit.MINUTES);
+    } else if (unitPart.startsWith("h")) {
+      return TimeUnit.MILLISECONDS.convert(timePart, TimeUnit.HOURS);
+    } else if (unitPart.startsWith("d")) {
+      return TimeUnit.MILLISECONDS.convert(timePart, TimeUnit.DAYS);
+    }
+    throw new IllegalArgumentException("Invalid time value " + value);
+  }
+
 
   public static ConfVars getConfVars(String name) {
     return vars.get(name);

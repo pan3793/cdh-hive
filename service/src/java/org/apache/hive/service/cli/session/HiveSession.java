@@ -59,6 +59,8 @@ public interface HiveSession {
 
   public HiveConf getHiveConf();
 
+  public long getLastAccessTime();
+
   public IMetaStoreClient getMetaStoreClient() throws HiveSQLException;
 
   /**
@@ -185,4 +187,6 @@ public interface HiveSession {
 
   public void renewDelegationToken(HiveAuthFactory authFactory, String tokenStr)
       throws HiveSQLException;
+
+  public void closeExpiredOperations();
 }

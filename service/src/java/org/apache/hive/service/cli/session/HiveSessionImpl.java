@@ -78,6 +78,8 @@ public class HiveSessionImpl implements HiveSession {
   private IMetaStoreClient metastoreClient = null;
   private String ipAddress;
   private final Set<OperationHandle> opHandleSet = new HashSet<OperationHandle>();
+  
+  private long lastAccessTime;
 
   public HiveSessionImpl(String username, String password, Map<String, String> sessionConf, String ipAddress) {
     this.username = username;
@@ -93,6 +95,7 @@ public class HiveSessionImpl implements HiveSession {
     hiveConf.set(ConfVars.HIVESESSIONID.varname,
         sessionHandle.getHandleIdentifier().toString());
     sessionState = new SessionState(hiveConf);
+    lastAccessTime = System.currentTimeMillis();
   }
 
   @Override
@@ -116,11 +119,13 @@ public class HiveSessionImpl implements HiveSession {
 
   protected synchronized void acquire() throws HiveSQLException {
     SessionState.start(sessionState);
+    lastAccessTime = System.currentTimeMillis();
   }
 
   protected synchronized void release() {
     assert sessionState != null;
     // no need to release sessionState...
+    lastAccessTime = System.currentTimeMillis();
   }
 
   @Override
@@ -434,6 +439,20 @@ public class HiveSessionImpl implements HiveSession {
   public void setUserName(String userName) {
     this.username = userName;
   }
+
+  public long getLastAccessTime() {
+    return lastAccessTime;
+  }
+
+  @Override
+  public void closeExpiredOperations() {
+    OperationHandle[] handles = opHandleSet.toArray(new OperationHandle[0]);
+    if (handles.length > 0) {
+      OperationManager manager = sessionManager.getOperationManager();
+      opHandleSet.removeAll(manager.closeExpiredOperations(handles));
+    }
+  }
+
 
   @Override
   public void cancelOperation(OperationHandle opHandle) throws HiveSQLException {

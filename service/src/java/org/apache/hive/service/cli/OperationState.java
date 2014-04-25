@@ -25,29 +25,25 @@ import org.apache.hive.service.cli.thrift.TOperationState;
  *
  */
 public enum OperationState {
-  INITIALIZED(TOperationState.INITIALIZED_STATE),
-  RUNNING(TOperationState.RUNNING_STATE),
-  FINISHED(TOperationState.FINISHED_STATE),
-  CANCELED(TOperationState.CANCELED_STATE),
-  CLOSED(TOperationState.CLOSED_STATE),
-  ERROR(TOperationState.ERROR_STATE),
-  UNKNOWN(TOperationState.UKNOWN_STATE);
+  INITIALIZED(TOperationState.INITIALIZED_STATE, false),
+  RUNNING(TOperationState.RUNNING_STATE, false),
+  FINISHED(TOperationState.FINISHED_STATE, true),
+  CANCELED(TOperationState.CANCELED_STATE, true),
+  CLOSED(TOperationState.CLOSED_STATE, true),
+  ERROR(TOperationState.ERROR_STATE, true),
+  UNKNOWN(TOperationState.UKNOWN_STATE, false);
 
   private final TOperationState tOperationState;
+  private final boolean terminal;
 
-  OperationState(TOperationState tOperationState) {
+  OperationState(TOperationState tOperationState, boolean terminal) {
     this.tOperationState = tOperationState;
+    this.terminal = terminal;
   }
 
 
   public static OperationState getOperationState(TOperationState tOperationState) {
-    // TODO: replace this with a Map?
-    for (OperationState opState : values()) {
-      if (tOperationState.equals(opState.tOperationState)) {
-        return opState;
-      }
-    }
-    return OperationState.UNKNOWN;
+    return OperationState.values()[tOperationState.getValue()];
   }
 
   public static void validateTransition(OperationState oldState, OperationState newState)
@@ -78,12 +74,17 @@ public enum OperationState {
     default:
       // fall-through
     }
-    throw new HiveSQLException("Illegal Operation state transition");
+    throw new HiveSQLException("Illegal Operation state transition " +
+        "from " + oldState + " to " + newState);
   }
 
   public void validateTransition(OperationState newState)
   throws HiveSQLException {
     validateTransition(this, newState);
+  }
+
+  public boolean isTerminal() {
+    return terminal;
   }
 
   public TOperationState toTOperationState() {

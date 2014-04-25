@@ -804,6 +804,32 @@
 </property>
 
 <property>
+  <name>hive.server2.session.check.interval</name>
+  <value>0</value>
+  <description>The check interval for sessions, which would be disabled with zero or minus value.
+    Accepts a numeric value which is msec by default but also can be used with other time units appended (sec, min, hour, day).
+  </description>
+</property>
+
+<property>
+  <name>hive.server2.idle.session.timeout</name>
+  <value>0</value>
+  <description>Session will be closed when it's not accessed for this duration, which can be disabled with zero or minus value.
+    Accepts a numeric value which is msec by default but also can be used with other time units appended (sec, min, hour, day).
+  </description>
+</property>
+
+<property>
+  <name>hive.server2.idle.operation.timeout</name>
+  <value>0</value>
+  <description>Operation will be closed when it's not accessed for this duration of time (msec), which can be disabled with zero value.
+    Accepts a numeric value which is msec by default but also can be used with other time units appended (sec, min, hour, day).
+    With positive value, it's checked for operations in terminal state only (FINISHED, CANCELED, CLOSED, ERROR).
+    With negative value, it's checked for all of the operations regardless of state.
+  </description>
+</property>
+
+<property>
   <name>hive.binary.record.max.length</name>
   <value>1000</value>
   <description>Read from a binary stream and treat each hive.binary.record.max.length bytes as a record.
