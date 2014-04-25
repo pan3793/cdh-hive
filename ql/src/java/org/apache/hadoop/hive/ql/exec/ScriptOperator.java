@@ -41,6 +41,7 @@ import org.apache.hadoop.hive.ql.plan.ScriptDesc;
 import org.apache.hadoop.hive.ql.plan.api.OperatorType;
 import org.apache.hadoop.hive.serde2.Deserializer;
 import org.apache.hadoop.hive.serde2.SerDeException;
+import org.apache.hadoop.hive.serde2.SerDeUtils;
 import org.apache.hadoop.hive.serde2.Serializer;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.io.BytesWritable;
@@ -243,8 +244,8 @@ public class ScriptOperator extends Operator<ScriptDesc> implements
 
       scriptOutputDeserializer = conf.getScriptOutputInfo()
           .getDeserializerClass().newInstance();
-      scriptOutputDeserializer.initialize(hconf, conf.getScriptOutputInfo()
-          .getProperties());
+      SerDeUtils.initializeSerDe(scriptOutputDeserializer, hconf,
+                                 conf.getScriptOutputInfo().getProperties(), null);
 
       scriptInputSerializer = (Serializer) conf.getScriptInputInfo()
           .getDeserializerClass().newInstance();

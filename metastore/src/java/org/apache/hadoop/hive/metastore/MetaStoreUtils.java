@@ -61,6 +61,7 @@ import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.Deserializer;
 import org.apache.hadoop.hive.serde2.SerDeException;
+import org.apache.hadoop.hive.serde2.SerDeUtils;
 import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
 import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
@@ -341,7 +342,7 @@ public class MetaStoreUtils {
     try {
       Deserializer deserializer = ReflectionUtils.newInstance(conf.getClassByName(lib).
         asSubclass(Deserializer.class), conf);
-      deserializer.initialize(conf, MetaStoreUtils.getTableMetadata(table));
+      SerDeUtils.initializeSerDe(deserializer, conf, MetaStoreUtils.getTableMetadata(table), null);
       return deserializer;
     } catch (RuntimeException e) {
       throw e;
@@ -377,7 +378,8 @@ public class MetaStoreUtils {
     try {
       Deserializer deserializer = ReflectionUtils.newInstance(conf.getClassByName(lib).
         asSubclass(Deserializer.class), conf);
-      deserializer.initialize(conf, MetaStoreUtils.getPartitionMetadata(part, table));
+      SerDeUtils.initializeSerDe(deserializer, conf, MetaStoreUtils.getTableMetadata(table),
+                                 MetaStoreUtils.getPartitionMetadata(part, table));
       return deserializer;
     } catch (RuntimeException e) {
       throw e;
