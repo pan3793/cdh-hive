@@ -181,6 +181,7 @@ import org.apache.hadoop.hive.serde2.Deserializer;
 import org.apache.hadoop.hive.serde2.MetadataTypedColumnsetSerDe;
 import org.apache.hadoop.hive.serde2.NullStructSerDe;
 import org.apache.hadoop.hive.serde2.SerDeException;
+import org.apache.hadoop.hive.serde2.SerDeUtils;
 import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
 import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
@@ -6022,7 +6023,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     try {
       Deserializer deserializer = table_desc.getDeserializerClass()
           .newInstance();
-      deserializer.initialize(conf, table_desc.getProperties());
+      SerDeUtils.initializeSerDe(deserializer, conf, table_desc.getProperties(), null);
       oi = (StructObjectInspector) deserializer.getObjectInspector();
     } catch (Exception e) {
       throw new SemanticException(e);
@@ -6301,7 +6302,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     try {
       Deserializer deserializer = table_desc.getDeserializerClass()
           .newInstance();
-      deserializer.initialize(conf, table_desc.getProperties());
+      SerDeUtils.initializeSerDe(deserializer, conf, table_desc.getProperties(), null);
       oi = (StructObjectInspector) deserializer.getObjectInspector();
     } catch (Exception e) {
       throw new SemanticException(e);

@@ -63,6 +63,13 @@ public class AvroSerDe extends AbstractSerDe {
   private static String TABLE_COMMENT = "comment";
 
   @Override
+  public void initialize(Configuration configuration, Properties tableProperties,
+                         Properties partitionProperties) throws SerDeException {
+    // Avro should always use the table properties for initialization (see HIVE-6835).
+    initialize(configuration, tableProperties);
+  }
+
+  @Override
   public void initialize(Configuration configuration, Properties properties) throws SerDeException {
     // Reset member variables so we don't get in a half-constructed state
     if (schema != null) {
