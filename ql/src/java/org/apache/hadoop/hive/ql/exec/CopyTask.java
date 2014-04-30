@@ -24,9 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hive.common.FileUtils;
-import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.DriverContext;
 import org.apache.hadoop.hive.ql.parse.LoadSemanticAnalyzer;
 import org.apache.hadoop.hive.ql.plan.CopyWork;
@@ -70,8 +69,7 @@ public class CopyTask extends Task<CopyWork> implements Serializable {
         }
       }
 
-      boolean inheritPerms = conf.getBoolVar(HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
-      if (!FileUtils.mkdir(dstFs, toPath, inheritPerms)) {
+      if (!dstFs.mkdirs(toPath)) {
         console.printError("Cannot make target directory: " + toPath.toString());
         return 2;
       }
@@ -79,8 +77,8 @@ public class CopyTask extends Task<CopyWork> implements Serializable {
       for (FileStatus oneSrc : srcs) {
         console.printInfo("Copying file: " + oneSrc.getPath().toString());
         LOG.debug("Copying file: " + oneSrc.getPath().toString());
-        if (!FileUtils.copy(srcFs, oneSrc.getPath(), dstFs, toPath,
-            false, // delete source
+        if (!FileUtil.copy(srcFs, oneSrc.getPath(), dstFs, toPath, false, // delete
+            // source
             true, // overwrite destination
             conf)) {
           console.printError("Failed to copy: '" + oneSrc.getPath().toString()
