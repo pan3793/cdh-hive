@@ -566,7 +566,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         firePreEvent(new PreCreateDatabaseEvent(db, this));
 
         if (!wh.isDir(dbPath)) {
-          if (!wh.mkdirs(dbPath, false)) {
+          if (!wh.mkdirs(dbPath)) {
             throw new MetaException("Unable to create database path " + dbPath +
                 ", failed to create database " + db.getName());
           }
@@ -1060,7 +1060,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
         if (tblPath != null) {
           if (!wh.isDir(tblPath)) {
-            if (!wh.mkdirs(tblPath, true)) {
+            if (!wh.mkdirs(tblPath)) {
               throw new MetaException(tblPath
                   + " is not a directory or unable to create one");
             }
@@ -1532,7 +1532,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         }
 
         if (!wh.isDir(partLocation)) {
-          if (!wh.mkdirs(partLocation, true)) {
+          if (!wh.mkdirs(partLocation)) {
             throw new MetaException(partLocation
                 + " is not a directory or unable to create one");
           }
@@ -1756,7 +1756,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           // mkdirs() because if the file system is read-only, mkdirs will
           // throw an exception even if the directory already exists.
           if (!wh.isDir(partLocation)) {
-            if (!wh.mkdirs(partLocation, true)) {
+            if (!wh.mkdirs(partLocation)) {
               throw new MetaException(partLocation
                   + " is not a directory or unable to create one");
             }
