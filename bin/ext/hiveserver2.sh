@@ -39,7 +39,7 @@ hiveserver2() {
     done
   fi
 
-  exec $HADOOP jar $JAR $CLASS "$@"
+  exec $HADOOP jar $JAR $CLASS $HIVE_OPTS "$@"
 }
 
 hiveserver2_help() {
