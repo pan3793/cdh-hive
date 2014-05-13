@@ -238,5 +238,10 @@ public class ArrayWritableObjectInspector extends SettableStructObjectInspector 
     public ObjectInspector getFieldObjectInspector() {
       return inspector;
     }
+
+    @Override
+    public int getFieldID() {
+      return index;
+    }
   }
 }
