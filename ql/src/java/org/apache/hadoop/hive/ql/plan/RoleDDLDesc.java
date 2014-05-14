@@ -40,12 +40,22 @@ public class RoleDDLDesc extends DDLDesc implements Serializable {
   private String roleOwnerName;
 
   /**
-   * thrift ddl for the result of show role.
+   * thrift ddl for the result of show roles.
    */
-  private static String schema = "role#string";
+  private static final String roleNameSchema = "role#string";
 
-  public static String getSchema() {
-    return schema;
+  /**
+   * thrift ddl for the result of show role grant principalName
+   */
+  private static final String roleShowGrantSchema = "role,grant_option,grant_time,grantor#"
+      + "string:boolean:bigint:string";
+
+  public static String getRoleNameSchema() {
+    return roleNameSchema;
+  }
+
+  public static String getRoleShowGrantSchema() {
+    return roleShowGrantSchema;
   }
 
   public static enum RoleOperation {

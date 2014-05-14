@@ -453,7 +453,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
         ctx.setResFile(new Path(ctx.getLocalTmpFileURI()));
         rootTasks.add(hiveAuthorizationTaskFactory.createShowCurrentRoleTask(
         getInputs(), getOutputs(), ctx.getResFile()));
-        setFetchTask(createFetchTask(RoleDDLDesc.getSchema()));
+        setFetchTask(createFetchTask(RoleDDLDesc.getRoleNameSchema()));
         break;
       case 1:
         rootTasks.add(hiveAuthorizationTaskFactory.createSetRoleTask(
@@ -525,7 +525,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
         createShowRoleGrantTask(ast, ctx.getResFile(), getInputs(), getOutputs());
     if(task != null) {
       rootTasks.add(task);
-      setFetchTask(createFetchTask(RoleDDLDesc.getSchema()));
+      setFetchTask(createFetchTask(RoleDDLDesc.getRoleShowGrantSchema()));
     }
   }
 
@@ -535,7 +535,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
 
     if (roleDDLTask != null) {
       rootTasks.add(roleDDLTask);
-      setFetchTask(createFetchTask(RoleDDLDesc.getSchema()));
+      setFetchTask(createFetchTask(RoleDDLDesc.getRoleNameSchema()));
     }
   }
 
