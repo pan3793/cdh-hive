@@ -35,7 +35,9 @@ import org.apache.hadoop.hive.ql.exec.mapjoin.MapJoinMemoryExhaustionHandler;
 import org.apache.hadoop.hive.ql.exec.persistence.HashMapWrapper;
 import org.apache.hadoop.hive.ql.exec.persistence.MapJoinKeyObject;
 import org.apache.hadoop.hive.ql.exec.persistence.MapJoinKey;
+import org.apache.hadoop.hive.ql.exec.persistence.MapJoinKey;
 import org.apache.hadoop.hive.ql.exec.persistence.MapJoinObjectSerDeContext;
+import org.apache.hadoop.hive.ql.exec.persistence.MapJoinPersistableTableContainer;
 import org.apache.hadoop.hive.ql.exec.persistence.MapJoinEagerRowContainer;
 import org.apache.hadoop.hive.ql.exec.persistence.MapJoinRowContainer;
 import org.apache.hadoop.hive.ql.exec.persistence.MapJoinTableContainer;
@@ -92,7 +94,7 @@ public class HashTableSinkOperator extends TerminalOperator<HashTableSinkDesc> i
   private transient Byte[] order; // order in which the results should
   private Configuration hconf;
 
-  private transient MapJoinTableContainer[] mapJoinTables;
+  private transient MapJoinPersistableTableContainer[] mapJoinTables;
   private transient MapJoinTableContainerSerDe[] mapJoinTableSerdes;
 
   private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
@@ -164,11 +166,8 @@ public class HashTableSinkOperator extends TerminalOperator<HashTableSinkDesc> i
         }
       }
     }
-    mapJoinTables = new MapJoinTableContainer[tagLen];
+    mapJoinTables = new MapJoinPersistableTableContainer[tagLen];
     mapJoinTableSerdes = new MapJoinTableContainerSerDe[tagLen];
-    int hashTableThreshold = HiveConf.getIntVar(hconf, HiveConf.ConfVars.HIVEHASHTABLETHRESHOLD);
-    float hashTableLoadFactor = HiveConf.getFloatVar(hconf,
-        HiveConf.ConfVars.HIVEHASHTABLELOADFACTOR);
     hashTableScale = HiveConf.getLongVar(hconf, HiveConf.ConfVars.HIVEHASHTABLESCALE);
     if (hashTableScale <= 0) {
       hashTableScale = 1;
@@ -183,7 +182,7 @@ public class HashTableSinkOperator extends TerminalOperator<HashTableSinkDesc> i
         if (pos == posBigTableAlias) {
           continue;
         }
-        mapJoinTables[pos] = new HashMapWrapper(hashTableThreshold, hashTableLoadFactor);
+        mapJoinTables[pos] = new HashMapWrapper(hconf);
         TableDesc valueTableDesc = conf.getValueTblFilteredDescs().get(pos);
         SerDe valueSerDe = (SerDe) ReflectionUtils.newInstance(valueTableDesc.getDeserializerClass(), null);
         valueSerDe.initialize(null, valueTableDesc.getProperties());
@@ -234,7 +233,7 @@ public class HashTableSinkOperator extends TerminalOperator<HashTableSinkDesc> i
         joinValuesObjectInspectors[alias], joinFilters[alias], joinFilterObjectInspectors[alias],
         filterMaps == null ? null : filterMaps[alias]);
     }
-    MapJoinTableContainer tableContainer = mapJoinTables[alias];
+    MapJoinPersistableTableContainer tableContainer = mapJoinTables[alias];
     MapJoinRowContainer rowContainer = tableContainer.get(key);
     if (rowContainer == null) {
       if(value.length != 0) {
@@ -280,7 +279,7 @@ public class HashTableSinkOperator extends TerminalOperator<HashTableSinkDesc> i
     LOG.info("Temp URI for side table: " + tmpURI);
     for (byte tag = 0; tag < mapJoinTables.length; tag++) {
       // get the key and value
-      MapJoinTableContainer tableContainer = mapJoinTables[tag];
+      MapJoinPersistableTableContainer tableContainer = mapJoinTables[tag];
       if (tableContainer == null) {
         continue;
       }
