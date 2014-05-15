@@ -142,6 +142,6 @@
 
     <!-- Test Dependencies -->
     <dependency org="junit" name="junit" rev="${junit.version}" conf="test->default" />
-    
+    <dependency org="com.twitter" name="parquet-hive-bundle" rev="${parquet.version}"/>
   </dependencies>
 </ivy-module>

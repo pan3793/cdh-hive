@@ -4799,13 +4799,13 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           colInfo.setAlias(nm[1]);
         }
 
+        String colName = colInfo.getInternalName();  //default column name
         if (field_schemas != null) {
           FieldSchema col = new FieldSchema();
-          if (nm[1] != null) {
-            col.setName(unescapeIdentifier(colInfo.getAlias()).toLowerCase()); // remove ``
-          } else {
-            col.setName(colInfo.getInternalName());
+          if (!("".equals(nm[0])) && nm[1] != null) {
+            colName = unescapeIdentifier(colInfo.getAlias()).toLowerCase(); // remove ``
           }
+          col.setName(colName);;
           col.setType(colInfo.getType().getTypeName());
           field_schemas.add(col);
         }
@@ -4816,7 +4816,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         }
 
         first = false;
-        cols = cols.concat(colInfo.getInternalName());
+        cols = cols.concat(colName);
 
         // Replace VOID type with string when the output is a temp table or
         // local files.
