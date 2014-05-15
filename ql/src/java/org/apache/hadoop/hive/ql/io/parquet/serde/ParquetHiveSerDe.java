@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.io.IOConstants;
 import org.apache.hadoop.hive.ql.io.parquet.writable.BinaryWritable;
 import org.apache.hadoop.hive.serde2.AbstractSerDe;
@@ -36,6 +37,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.StructField;
 import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.BinaryObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.BooleanObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.ByteObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.DoubleObjectInspector;
@@ -240,6 +242,9 @@ public class ParquetHiveSerDe extends AbstractSerDe {
       return new ShortWritable((short) ((ShortObjectInspector) inspector).get(obj));
     case STRING:
       return new BinaryWritable(Binary.fromString(((StringObjectInspector) inspector).getPrimitiveJavaObject(obj)));
+    case DECIMAL:
+      HiveDecimal hd = (HiveDecimal)inspector.getPrimitiveJavaObject(obj);
+      return new BinaryWritable(Binary.fromByteArray(hd.unscaledValue().toByteArray()));
     default:
       throw new SerDeException("Unknown primitive : " + inspector.getPrimitiveCategory());
     }
