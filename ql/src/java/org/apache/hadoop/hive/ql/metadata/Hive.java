@@ -2303,14 +2303,11 @@ private void constructOneLBLocationMap(FileStatus fSta,
         try {
           FileSystem fs2 = oldPath.getFileSystem(conf);
           if (fs2.exists(oldPath)) {
-            // use FsShell to move data to .Trash first rather than delete permanently
-            FsShell fshell = new FsShell();
-            fshell.setConf(conf);
-            fshell.run(new String[]{"-rmr", oldPath.toString()});
+            FileUtils.trashFilesUnderDir(fs2, oldPath, conf);
           }
         } catch (Exception e) {
           //swallow the exception
-          LOG.warn("Directory " + oldPath.toString() + " canot be removed.");
+          LOG.warn("Directory " + oldPath.toString() + " canot be removed:" + StringUtils.stringifyException(e));
         }
       }
 
