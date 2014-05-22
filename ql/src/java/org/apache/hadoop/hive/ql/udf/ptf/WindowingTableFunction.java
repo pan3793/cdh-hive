@@ -22,6 +22,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.exec.PTFOperator;
 import org.apache.hadoop.hive.ql.exec.PTFPartition;
 import org.apache.hadoop.hive.ql.exec.PTFPartition.PTFPartitionIterator;
@@ -687,6 +688,8 @@ public class WindowingTableFunction extends TableFunctionEvaluator {
       case DOUBLE:
       case FLOAT:
         return new DoubleValueBoundaryScanner(vbDef, order, vbDef.getExpressionDef());
+      case DECIMAL:
+        return new HiveDecimalValueBoundaryScanner(vbDef, order, vbDef.getExpressionDef());
       case STRING:
         return new StringValueBoundaryScanner(vbDef, order, vbDef.getExpressionDef());
       }
@@ -743,6 +746,37 @@ public class WindowingTableFunction extends TableFunctionEvaluator {
       double d2 = PrimitiveObjectInspectorUtils.getDouble(v2,
           (PrimitiveObjectInspector) expressionDef.getOI());
       return d1 == d2;
+    }
+  }
+
+  public static class HiveDecimalValueBoundaryScanner extends ValueBoundaryScanner {
+    public HiveDecimalValueBoundaryScanner(BoundaryDef bndDef, Order order,
+        PTFExpressionDef expressionDef) {
+      super(bndDef,order,expressionDef);
+    }
+
+    @Override
+    public boolean isGreater(Object v1, Object v2, int amt) {
+      HiveDecimal d1 = PrimitiveObjectInspectorUtils.getHiveDecimal(v1,
+          (PrimitiveObjectInspector) expressionDef.getOI());
+      HiveDecimal d2 = PrimitiveObjectInspectorUtils.getHiveDecimal(v2,
+          (PrimitiveObjectInspector) expressionDef.getOI());
+      if ( d1 == null || d2 == null ) {
+        return false;
+      }
+      return d1.subtract(d2).intValue() > amt;
+    }
+
+    @Override
+    public boolean isEqual(Object v1, Object v2) {
+      HiveDecimal d1 = PrimitiveObjectInspectorUtils.getHiveDecimal(v1,
+          (PrimitiveObjectInspector) expressionDef.getOI());
+      HiveDecimal d2 = PrimitiveObjectInspectorUtils.getHiveDecimal(v2,
+          (PrimitiveObjectInspector) expressionDef.getOI());
+      if ( d1 == null || d2 == null ) {
+        return false;
+      }
+      return d1.equals(d2);
     }
   }
 
