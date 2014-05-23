@@ -140,7 +140,7 @@ public class SessionState {
 
   private CreateTableAutomaticGrant createTableGrants;
 
-  private List<MapRedStats> lastMapRedStatsList;
+  private Map<String, MapRedStats> mapRedStats;
 
   private Map<String, String> hiveVariables;
 
@@ -881,12 +881,12 @@ public class SessionState {
     this.createTableGrants = createTableGrants;
   }
 
-  public List<MapRedStats> getLastMapRedStatsList() {
-    return lastMapRedStatsList;
+  public Map<String, MapRedStats> getMapRedStats() {
+    return mapRedStats;
   }
 
-  public void setLastMapRedStatsList(List<MapRedStats> lastMapRedStatsList) {
-    this.lastMapRedStatsList = lastMapRedStatsList;
+  public void setMapRedStats(Map<String, MapRedStats> mapRedStats) {
+    this.mapRedStats = mapRedStats;
   }
 
   public void setStackTraces(Map<String, List<List<String>>> stackTraces) {
