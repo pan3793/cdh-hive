@@ -565,7 +565,7 @@ public class BeeLine {
       } else if (args[i].equals("-f")) {
         getOpts().setScriptFile(args[i++ + 1]);
       } else {
-        return error(loc("unrecognized-argument", args[i]));
+        files.add(args[i]);
       }
     }
 
