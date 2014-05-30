@@ -37,7 +37,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.StructField;
 import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.BinaryObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.BooleanObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.ByteObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.DoubleObjectInspector;
@@ -46,6 +45,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.IntObjectInspecto
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.LongObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.ShortObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
+import org.apache.hadoop.hive.serde2.typeinfo.DecimalTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.StructTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
@@ -66,11 +66,20 @@ import parquet.io.api.Binary;
  *
  */
 public class ParquetHiveSerDe extends AbstractSerDe {
-
   public static final Text MAP_KEY = new Text("key");
   public static final Text MAP_VALUE = new Text("value");
   public static final Text MAP = new Text("map");
   public static final Text ARRAY = new Text("bag");
+
+  // Map precision to the number bytes needed for binary conversion.
+  public static final int PRECISION_TO_BYTE_COUNT[] = new int[38];
+  static {
+    for (int prec = 1; prec <= 38; prec++) {
+      // Estimated number of bytes needed.
+      PRECISION_TO_BYTE_COUNT[prec - 1] = (int)
+          Math.ceil((Math.log(Math.pow(10, prec) - 1) / Math.log(2) + 1) / 8);
+    }
+  }
 
   private SerDeStats stats;
   private ObjectInspector objInspector;
@@ -244,7 +253,19 @@ public class ParquetHiveSerDe extends AbstractSerDe {
       return new BinaryWritable(Binary.fromString(((StringObjectInspector) inspector).getPrimitiveJavaObject(obj)));
     case DECIMAL:
       HiveDecimal hd = (HiveDecimal)inspector.getPrimitiveJavaObject(obj);
-      return new BinaryWritable(Binary.fromByteArray(hd.unscaledValue().toByteArray()));
+      DecimalTypeInfo decTypeInfo = (DecimalTypeInfo) inspector.getTypeInfo();
+      int prec = decTypeInfo.precision();
+      int scale = decTypeInfo.scale();
+      byte[] src = hd.setScale(scale).unscaledValue().toByteArray();
+      // Estimated number of bytes needed.
+      int bytes =  PRECISION_TO_BYTE_COUNT[prec - 1];
+      if (bytes == src.length) {
+        // No padding needed.
+        return new BinaryWritable(Binary.fromByteArray(src));
+      }
+      byte[] tgt = new byte[bytes];
+      System.arraycopy(src, 0, tgt, bytes - src.length, src.length); // Padding leading zeroes.
+      return new BinaryWritable(Binary.fromByteArray(tgt));
     default:
       throw new SerDeException("Unknown primitive : " + inspector.getPrimitiveCategory());
     }
