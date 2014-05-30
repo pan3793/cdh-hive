@@ -17,30 +17,37 @@
  */
 package org.apache.hadoop.hive.shims;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.Integer;
-import java.net.InetSocketAddress;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
-import java.util.Properties;
 import java.net.URI;
-import java.io.FileNotFoundException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FsShell;
+import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.ProxyFileSystem;
-import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.fs.Trash;
+import org.apache.hadoop.fs.permission.AclEntry;
+import org.apache.hadoop.fs.permission.AclEntryScope;
+import org.apache.hadoop.fs.permission.AclEntryType;
+import org.apache.hadoop.fs.permission.AclStatus;
+import org.apache.hadoop.fs.permission.FsAction;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
-import org.apache.hadoop.mapred.MiniMRCluster;
 import org.apache.hadoop.mapred.ClusterStatus;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.MiniMRCluster;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.WebHCatJTShim23;
 import org.apache.hadoop.mapreduce.Job;
@@ -53,13 +60,18 @@ import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.task.JobContextImpl;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.hadoop.net.NetUtils;
-import org.apache.hadoop.util.Progressable;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.util.KerberosName;
+import org.apache.hadoop.util.Progressable;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.AllocationConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.QueuePlacementPolicy;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * Implemention of shims against Hadoop 0.23.0.
@@ -199,6 +211,10 @@ public class Hadoop23Shims extends HadoopShimsSecure {
   @Override
   public void setMRFramework(Configuration conf, String framework) {
     conf.set("mapreduce.framework.name", framework);
+  }
+
+  protected boolean isExtendedAclEnabled(Configuration conf) {
+    return Objects.equal(conf.get("dfs.namenode.acls.enabled"), "true");
   }
 
   @Override
@@ -464,6 +480,115 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
   private boolean isMR2(Configuration conf) {
     return "yarn".equalsIgnoreCase(conf.get("mapreduce.framework.name"));
+  }
+
+  @Override
+  public HdfsFileStatus getFullFileStatus(Configuration conf, FileSystem fs,
+      Path file) throws IOException {
+    FileStatus fileStatus = fs.getFileStatus(file);
+    AclStatus aclStatus = null;
+    if (isExtendedAclEnabled(conf)) {
+      aclStatus = fs.getAclStatus(file);
+    }
+    return new Hadoop23FileStatus(fileStatus, aclStatus);
+  }
+
+  @Override
+  public void setFullFileStatus(Configuration conf, HdfsFileStatus sourceStatus,
+    FileSystem fs, Path target) throws IOException {
+    String group = sourceStatus.getFileStatus().getGroup();
+    //use FsShell to change group, permissions, and extended ACL's recursively
+    try {
+      FsShell fsShell = new FsShell();
+      fsShell.setConf(conf);
+      run(fsShell, new String[]{"-chgrp", "-R", group, target.toString()});
+
+      if (isExtendedAclEnabled(conf)) {
+        AclStatus aclStatus = ((Hadoop23FileStatus) sourceStatus).getAclStatus();
+        List<AclEntry> aclEntries = aclStatus.getEntries();
+        removeBaseAclEntries(aclEntries);
+
+        //the ACL api's also expect the tradition user/group/other permission in the form of ACL
+        FsPermission sourcePerm = sourceStatus.getFileStatus().getPermission();
+        aclEntries.add(newAclEntry(AclEntryScope.ACCESS, AclEntryType.USER, sourcePerm.getUserAction()));
+        aclEntries.add(newAclEntry(AclEntryScope.ACCESS, AclEntryType.GROUP, sourcePerm.getGroupAction()));
+        aclEntries.add(newAclEntry(AclEntryScope.ACCESS, AclEntryType.OTHER, sourcePerm.getOtherAction()));
+
+        //construct the -setfacl command
+        String aclEntry = Joiner.on(",").join(aclStatus.getEntries());
+        run(fsShell, new String[]{"-setfacl", "-R", "--set", aclEntry, target.toString()});
+      } else {
+        String permission = Integer.toString(sourceStatus.getFileStatus().getPermission().toShort(), 8);
+        run(fsShell, new String[]{"-chmod", "-R", permission, target.toString()});
+      }
+    } catch (Exception e) {
+      throw new IOException("Unable to set permissions of " + target, e);
+    }
+    try {
+      if (LOG.isDebugEnabled()) {  //some trace logging
+        getFullFileStatus(conf, fs, target).debugLog();
+      }
+    } catch (Exception e) {
+      //ignore.
+    }
+  }
+
+  public class Hadoop23FileStatus implements HdfsFileStatus {
+    private FileStatus fileStatus;
+    private AclStatus aclStatus;
+    public Hadoop23FileStatus(FileStatus fileStatus, AclStatus aclStatus) {
+      this.fileStatus = fileStatus;
+      this.aclStatus = aclStatus;
+    }
+    @Override
+    public FileStatus getFileStatus() {
+      return fileStatus;
+    }
+    public AclStatus getAclStatus() {
+      return aclStatus;
+    }
+    @Override
+    public void debugLog() {
+      if (fileStatus != null) {
+        LOG.debug(fileStatus.toString());
+      }
+      if (aclStatus != null) {
+        LOG.debug(aclStatus.toString());
+      }
+    }
+  }
+
+  /**
+   * Create a new AclEntry with scope, type and permission (no name).
+   *
+   * @param scope
+   *          AclEntryScope scope of the ACL entry
+   * @param type
+   *          AclEntryType ACL entry type
+   * @param permission
+   *          FsAction set of permissions in the ACL entry
+   * @return AclEntry new AclEntry
+   */
+  private AclEntry newAclEntry(AclEntryScope scope, AclEntryType type,
+      FsAction permission) {
+    return new AclEntry.Builder().setScope(scope).setType(type)
+        .setPermission(permission).build();
+  }
+
+  /**
+   * Removes basic permission acls (unamed acls) from the list of acl entries
+   * @param entries acl entries to remove from.
+   */
+  private void removeBaseAclEntries(List<AclEntry> entries) {
+    Iterables.removeIf(entries, new Predicate<AclEntry>() {
+      @Override
+      public boolean apply(AclEntry input) {
+          if (input.getName() == null) {
+            return true;
+          }
+          return false;
+      }
+  });
   }
 
   class ProxyFileSystem23 extends ProxyFileSystem {

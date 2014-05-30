@@ -648,6 +648,51 @@ public class Hadoop20Shims implements HadoopShims {
   }
 
   @Override
+  public HdfsFileStatus getFullFileStatus(Configuration conf, FileSystem fs, Path file)
+      throws IOException {
+    return new Hadoop20FileStatus(fs.getFileStatus(file));
+  }
+
+  @Override
+  public void setFullFileStatus(Configuration conf, HdfsFileStatus sourceStatus,
+    FileSystem fs, Path target) throws IOException {
+    String group = sourceStatus.getFileStatus().getGroup();
+    String permission = Integer.toString(sourceStatus.getFileStatus().getPermission().toShort(), 8);
+    //use FsShell to change group and permissions recursively
+    try {
+      FsShell fshell = new FsShell();
+      fshell.setConf(conf);
+      run(fshell, new String[]{"-chgrp", "-R", group, target.toString()});
+      run(fshell, new String[]{"-chmod", "-R", permission, target.toString()});
+    } catch (Exception e) {
+      throw new IOException("Unable to set permissions of " + target, e);
+    }
+    try {
+      if (LOG.isDebugEnabled()) {  //some trace logging
+        getFullFileStatus(conf, fs, target).debugLog();
+      }
+    } catch (Exception e) {
+      //ignore.
+    }
+  }
+
+  public class Hadoop20FileStatus implements HdfsFileStatus {
+    private FileStatus fileStatus;
+    public Hadoop20FileStatus(FileStatus fileStatus) {
+      this.fileStatus = fileStatus;
+    }
+    @Override
+    public FileStatus getFileStatus() {
+      return fileStatus;
+    }
+    public void debugLog() {
+      if (fileStatus != null) {
+        LOG.debug(fileStatus.toString());
+      }
+    }
+  }
+
+  @Override
   public void authorizeProxyAccess(String proxyUser, UserGroupInformation realUserUgi,
       String ipAddress, Configuration conf) throws IOException {
     // This hadoop version doesn't have proxy verification
@@ -773,5 +818,10 @@ public class Hadoop20Shims implements HadoopShims {
   @Override
   public FileSystem createProxyFileSystem(FileSystem fs, URI uri) {
     return new ProxyFileSystem(fs, uri);
+  }
+
+  protected void run(FsShell shell, String[] command) throws Exception {
+    LOG.debug(ArrayUtils.toString(command));
+    shell.run(command);
   }
 }

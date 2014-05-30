@@ -31,11 +31,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FsShell;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.hive.io.HiveIOExceptionHandlerUtil;
@@ -664,4 +666,10 @@ public abstract class HadoopShimsSecure implements HadoopShims {
 
   @Override
   abstract public FileSystem createProxyFileSystem(FileSystem fs, URI uri);
+
+  protected void run(FsShell shell, String[] command) throws Exception {
+    LOG.debug(ArrayUtils.toString(command));
+    int retval = shell.run(command);
+    LOG.debug("Return value is :" + retval);
+  }
 }
