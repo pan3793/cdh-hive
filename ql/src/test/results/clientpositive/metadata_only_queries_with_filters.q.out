@@ -270,7 +270,7 @@ POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2014).s SIMPLE [(over10k)over10k.
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2014).si SIMPLE [(over10k)over10k.FieldSchema(name:si, type:smallint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2014).t SIMPLE [(over10k)over10k.FieldSchema(name:t, type:tinyint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2014).ts SIMPLE [(over10k)over10k.FieldSchema(name:ts, type:timestamp, comment:null), ]
-2322	2322	2322	2322	2322	2322	2322	65791	0	99.9800033569336	0.0
+2322	2322	2322	2322	2322	2322	2322	65791	4294967296	99.9800033569336	0.03
 PREHOOK: query: explain 
 select count(*), count(1), sum(1), sum(2), count(s), count(bo), count(bin), count(si), max(i), min(b), max(f), min(d) from stats_tbl_part where dt > 2010
 PREHOOK: type: QUERY
@@ -335,7 +335,7 @@ POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2014).s SIMPLE [(over10k)over10k.
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2014).si SIMPLE [(over10k)over10k.FieldSchema(name:si, type:smallint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2014).t SIMPLE [(over10k)over10k.FieldSchema(name:t, type:tinyint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2014).ts SIMPLE [(over10k)over10k.FieldSchema(name:ts, type:timestamp, comment:null), ]
-2219	2219	2219	4438	2219	2219	2219	2219	65791	0	99.95999908447266	0.0
+2219	2219	2219	4438	2219	2219	2219	2219	65791	4294967296	99.95999908447266	0.04
 PREHOOK: query: drop table stats_tbl_part
 PREHOOK: type: DROPTABLE
 PREHOOK: Input: default@stats_tbl_part
