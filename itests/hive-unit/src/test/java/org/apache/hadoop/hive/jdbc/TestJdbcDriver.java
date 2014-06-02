@@ -429,7 +429,7 @@ public class TestJdbcDriver extends TestCase {
     assertTrue(res.next());
     assertEquals(-1, res.getInt(1));
     assertEquals(false, res.getBoolean(2));
-    assertEquals(-1.1d, res.getDouble(3));
+    assertEquals(-1.1d, res.getDouble(3), 0.001d);
     assertEquals("", res.getString(4));
     assertEquals("[]", res.getString(5));
     assertEquals("{}", res.getString(6));
@@ -437,7 +437,7 @@ public class TestJdbcDriver extends TestCase {
     assertEquals("[null, null, null]", res.getString(8));
     assertEquals(-1, res.getByte(9));
     assertEquals(-1, res.getShort(10));
-    assertEquals(-1.0f, res.getFloat(11));
+    assertEquals(-1.0f, res.getFloat(11), 0.001f);
     assertEquals(-1, res.getLong(12));
     assertEquals("[]", res.getString(13));
     assertEquals("{}", res.getString(14));
@@ -453,7 +453,7 @@ public class TestJdbcDriver extends TestCase {
     assertTrue(res.next());
     assertEquals(1, res.getInt(1));
     assertEquals(true, res.getBoolean(2));
-    assertEquals(1.1d, res.getDouble(3));
+    assertEquals(1.1d, res.getDouble(3), 0.001d);
     assertEquals("1", res.getString(4));
     assertEquals("[1, 2]", res.getString(5));
     assertEquals("{1=x, 2=y}", res.getString(6));
@@ -461,7 +461,7 @@ public class TestJdbcDriver extends TestCase {
     assertEquals("[a, 9, 2.2]", res.getString(8));
     assertEquals(1, res.getByte(9));
     assertEquals(1, res.getShort(10));
-    assertEquals(1.0f, res.getFloat(11));
+    assertEquals(1.0f, res.getFloat(11), 0.001f);
     assertEquals(1, res.getLong(12));
     assertEquals("[[a, b], [c, d]]", res.getString(13));
     assertEquals("{1={11=12, 13=14}, 2={21=22}}", res.getString(14));
