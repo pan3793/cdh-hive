@@ -58,7 +58,7 @@ POSTHOOK: Output: default@testdate
 POSTHOOK: Lineage: testdate.dt EXPRESSION []
 POSTHOOK: Lineage: testdate.dt EXPRESSION []
 POSTHOOK: Lineage: testdate.dt EXPRESSION []
-POSTHOOK: Lineage: testdate.dt EXPRESSION [(testdate)testdate.FieldSchema(name:dt, type:date, comment:null), (testdate)testdate.FieldSchema(name:dt, type:date, comment:null), (testdate)testdate.FieldSchema(name:dt, type:date, comment:null), ]
+POSTHOOK: Lineage: testdate.dt EXPRESSION []
 POSTHOOK: Lineage: testdate.id SIMPLE []
 POSTHOOK: Lineage: testdate.id SIMPLE []
 POSTHOOK: Lineage: testdate.id SIMPLE []

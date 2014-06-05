@@ -74,6 +74,8 @@ POSTHOOK: query: SELECT value, count(*) FROM parq_dec GROUP BY value ORDER BY va
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@parq_dec
 #### A masked pattern was here ####
+POSTHOOK: Lineage: parq_dec.name SIMPLE [(dec)dec.FieldSchema(name:name, type:string, comment:null), ]
+POSTHOOK: Lineage: parq_dec.value EXPRESSION [(dec)dec.FieldSchema(name:value, type:decimal(8,4), comment:null), ]
 -12.25	1
 0	1
 4.33	1

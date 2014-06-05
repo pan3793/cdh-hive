@@ -104,7 +104,7 @@ STAGE PLANS:
                         Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
         Reducer 11 
             Reduce Operator Tree:
-              Extract
+              Select Operator
                 Limit
                   Number of rows: 1
                   Select Operator
@@ -121,7 +121,7 @@ STAGE PLANS:
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
         Reducer 2 
             Reduce Operator Tree:
-              Extract
+              Select Operator
                 Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
                 Limit
                   Number of rows: 1
@@ -135,10 +135,11 @@ STAGE PLANS:
                       sort order: +
                       Map-reduce partition columns: _col0 (type: int)
                       Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
-                      value expressions: _col0 (type: int)
         Reducer 3 
             Reduce Operator Tree:
-              Extract
+              Select Operator
+                expressions: KEY.reducesinkkey0 (type: int)
+                outputColumnNames: _col0
                 Select Operator
                   expressions: _col0 (type: int)
                   outputColumnNames: _col0
@@ -150,7 +151,7 @@ STAGE PLANS:
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
         Reducer 6 
             Reduce Operator Tree:
-              Extract
+              Select Operator
                 Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
                 Limit
                   Number of rows: 1
@@ -164,10 +165,11 @@ STAGE PLANS:
                       sort order: +
                       Map-reduce partition columns: _col0 (type: int)
                       Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
-                      value expressions: _col0 (type: int)
         Reducer 7 
             Reduce Operator Tree:
-              Extract
+              Select Operator
+                expressions: KEY.reducesinkkey0 (type: int)
+                outputColumnNames: _col0
                 Select Operator
                   expressions: _col0 (type: int)
                   outputColumnNames: _col0
@@ -179,7 +181,7 @@ STAGE PLANS:
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
         Reducer 9 
             Reduce Operator Tree:
-              Extract
+              Select Operator
                 Limit
                   Number of rows: 1
                   Select Operator

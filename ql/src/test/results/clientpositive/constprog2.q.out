@@ -41,7 +41,7 @@ STAGE PLANS:
                Inner Join 0 to 1
           condition expressions:
             0 
-            1 {VALUE._col1}
+            1 {VALUE._col0}
           outputColumnNames: _col5
           Statistics: Num rows: 1598 Data size: 3196 Basic stats: COMPLETE Column stats: NONE
           Select Operator

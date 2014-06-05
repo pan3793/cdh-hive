@@ -66,7 +66,7 @@ STAGE PLANS:
                   sort order: +
                   Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
       Reduce Operator Tree:
-        Extract
+        Select Operator
           Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           File Output Operator
             compressed: false

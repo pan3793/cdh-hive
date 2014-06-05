@@ -333,7 +333,6 @@ STAGE PLANS:
                   sort order: +
                   Statistics: Num rows: 15 Data size: 60 Basic stats: COMPLETE Column stats: NONE
                   tag: -1
-                  value expressions: _col0 (type: int)
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -481,7 +480,9 @@ STAGE PLANS:
         /fact_tz/ds=1/x=484 [fact_daily]
       Needs Tagging: false
       Reduce Operator Tree:
-        Extract
+        Select Operator
+          expressions: KEY.reducesinkkey0 (type: int)
+          outputColumnNames: _col0
           Statistics: Num rows: 15 Data size: 60 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false

@@ -50,7 +50,6 @@ STAGE PLANS:
               sort order: +
               Map-reduce partition columns: foo (type: int)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: foo (type: int)
           TableScan
             alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -59,14 +58,14 @@ STAGE PLANS:
               sort order: +
               Map-reduce partition columns: foo (type: int)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: foo (type: int), bar (type: int)
+              value expressions: bar (type: int)
       Reduce Operator Tree:
         Join Operator
           condition map:
                Left Outer Join0 to 1
           condition expressions:
-            0 {VALUE._col0}
-            1 {VALUE._col0} {VALUE._col1}
+            0 {KEY.reducesinkkey0}
+            1 {KEY.reducesinkkey0} {VALUE._col0}
           outputColumnNames: _col0, _col5, _col6
           Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           Filter Operator
@@ -120,7 +119,6 @@ STAGE PLANS:
               sort order: +
               Map-reduce partition columns: foo (type: int)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: foo (type: int)
           TableScan
             alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -129,14 +127,14 @@ STAGE PLANS:
               sort order: +
               Map-reduce partition columns: foo (type: int)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: foo (type: int), bar (type: int)
+              value expressions: bar (type: int)
       Reduce Operator Tree:
         Join Operator
           condition map:
                Left Outer Join0 to 1
           condition expressions:
-            0 {VALUE._col0}
-            1 {VALUE._col0} {VALUE._col1}
+            0 {KEY.reducesinkkey0}
+            1 {KEY.reducesinkkey0} {VALUE._col0}
           outputColumnNames: _col0, _col5, _col6
           Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           Filter Operator
@@ -193,7 +191,6 @@ STAGE PLANS:
                 sort order: +
                 Map-reduce partition columns: foo (type: int)
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-                value expressions: foo (type: int)
           TableScan
             alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -202,14 +199,13 @@ STAGE PLANS:
               sort order: +
               Map-reduce partition columns: foo (type: int)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: foo (type: int)
       Reduce Operator Tree:
         Join Operator
           condition map:
                Inner Join 0 to 1
           condition expressions:
-            0 {VALUE._col0}
-            1 {VALUE._col0}
+            0 {KEY.reducesinkkey0}
+            1 {KEY.reducesinkkey0}
           outputColumnNames: _col0, _col5
           Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           Select Operator
@@ -252,7 +248,6 @@ STAGE PLANS:
               sort order: +
               Map-reduce partition columns: foo (type: int)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: foo (type: int)
           TableScan
             alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -267,8 +262,8 @@ STAGE PLANS:
           condition map:
                Left Outer Join0 to 1
           condition expressions:
-            0 {VALUE._col0}
-            1 {VALUE._col1}
+            0 {KEY.reducesinkkey0}
+            1 {VALUE._col0}
           outputColumnNames: _col0, _col6
           Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           Filter Operator

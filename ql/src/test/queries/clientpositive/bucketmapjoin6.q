@@ -1,4 +1,7 @@
 set hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat;
+
+-- SORT_QUERY_RESULTS
+
 create table tmp1 (a string, b string) clustered by (a) sorted by (a) into 10 buckets;
 
 create table tmp2 (a string, b string) clustered by (a) sorted by (a) into 10 buckets;
