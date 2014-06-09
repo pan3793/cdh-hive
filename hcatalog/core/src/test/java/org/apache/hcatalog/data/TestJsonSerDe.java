@@ -19,6 +19,7 @@
 package org.apache.hcatalog.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,13 +30,11 @@ import junit.framework.TestCase;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.serde.serdeConstants;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @deprecated Use/modify {@link org.apache.hive.hcatalog.data.TestJsonSerDe} instead
- */
 public class TestJsonSerDe extends TestCase {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestJsonSerDe.class);
@@ -213,5 +212,25 @@ public class TestJsonSerDe extends TestCase {
       sb.append(HiveConf.getColumnInternalName(i));
     }
     return sb.toString();
+  }
+
+  public void testUpperCaseKey() throws Exception {
+    Configuration conf = new Configuration();
+    Properties props = new Properties();
+
+    props.put(serdeConstants.LIST_COLUMNS, "empid,name");
+    props.put(serdeConstants.LIST_COLUMN_TYPES, "int,string");
+    JsonSerDe rjsd = new JsonSerDe();
+    rjsd.initialize(conf, props);
+
+    Text text1 = new Text("{ \"empId\" : 123, \"name\" : \"John\" } ");
+    Text text2 = new Text("{ \"empId\" : 456, \"name\" : \"Jane\" } ");
+
+    HCatRecord expected1 = new DefaultHCatRecord(Arrays.<Object>asList(123, "John"));
+    HCatRecord expected2 = new DefaultHCatRecord(Arrays.<Object>asList(456, "Jane"));
+
+    assertTrue(HCatDataCheckUtil.recordsEqual((HCatRecord)rjsd.deserialize(text1), expected1));
+    assertTrue(HCatDataCheckUtil.recordsEqual((HCatRecord)rjsd.deserialize(text2), expected2));
+
   }
 }
