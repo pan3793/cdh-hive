@@ -174,7 +174,7 @@ public class StatObjectConverter {
       doubleStats.setLowValue(mStatsObj.getDoubleLowValue());
       doubleStats.setNumDVs(mStatsObj.getNumDVs());
       colStatsData.setDoubleStats(doubleStats);
-    } else if (colType.equals("decimal")) {
+    } else if (colType.startsWith("decimal")) {
       DecimalColumnStatsData decimalStats = new DecimalColumnStatsData();
       decimalStats.setNumNulls(mStatsObj.getNumNulls());
       decimalStats.setHighValue(createThriftDecimal(mStatsObj.getDecimalHighValue()));
@@ -285,7 +285,7 @@ public class StatObjectConverter {
      doubleStats.setLowValue(mStatsObj.getDoubleLowValue());
      doubleStats.setNumDVs(mStatsObj.getNumDVs());
      colStatsData.setDoubleStats(doubleStats);
-   } else if (colType.equals("decimal")) {
+   } else if (colType.startsWith("decimal")) {
      DecimalColumnStatsData decimalStats = new DecimalColumnStatsData();
      decimalStats.setNumNulls(mStatsObj.getNumNulls());
      decimalStats.setHighValue(createThriftDecimal(mStatsObj.getDecimalHighValue()));
@@ -348,7 +348,7 @@ public class StatObjectConverter {
       doubleStats.setLowValue((Double)dlow);
       doubleStats.setNumDVs((Long)dist);
       data.setDoubleStats(doubleStats);
-    } else if (colType.equals("decimal")) {
+    } else if (colType.startsWith("decimal")) {
       DecimalColumnStatsData decimalStats = new DecimalColumnStatsData();
       decimalStats.setNumNulls((Long)nulls);
       decimalStats.setHighValue(createThriftDecimal((String)dechigh));
