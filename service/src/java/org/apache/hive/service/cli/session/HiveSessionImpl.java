@@ -38,6 +38,7 @@ import org.apache.hadoop.hive.ql.exec.ListSinkOperator;
 import org.apache.hadoop.hive.ql.history.HiveHistory;
 import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.ql.processors.SetProcessor;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.common.util.HiveVersionInfo;
@@ -51,7 +52,6 @@ import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.log.LogManager;
-import org.apache.hive.service.cli.operation.Operation;
 import org.apache.hive.service.cli.operation.ExecuteStatementOperation;
 import org.apache.hive.service.cli.operation.GetCatalogsOperation;
 import org.apache.hive.service.cli.operation.GetColumnsOperation;
@@ -60,6 +60,7 @@ import org.apache.hive.service.cli.operation.GetSchemasOperation;
 import org.apache.hive.service.cli.operation.GetTableTypesOperation;
 import org.apache.hive.service.cli.operation.GetTypeInfoOperation;
 import org.apache.hive.service.cli.operation.MetadataOperation;
+import org.apache.hive.service.cli.operation.Operation;
 import org.apache.hive.service.cli.operation.OperationManager;
 import org.apache.hive.service.cli.thrift.TProtocolVersion;
 
@@ -107,12 +108,6 @@ public class HiveSessionImpl implements HiveSession {
       LOG.warn("Error setting scheduler queue ", e1);
     }
 
-    //set conf properties specified by user from client side
-    if (sessionConfMap != null) {
-      for (Map.Entry<String, String> entry : sessionConfMap.entrySet()) {
-        hiveConf.verifyAndSet(entry.getKey(), entry.getValue());
-      }
-    }
     // set an explicit session name to control the download directory name
     hiveConf.set(ConfVars.HIVESESSIONID.varname,
         sessionHandle.getHandleIdentifier().toString());
@@ -120,9 +115,28 @@ public class HiveSessionImpl implements HiveSession {
     hiveConf.set(ListSinkOperator.OUTPUT_FORMATTER,
         FetchFormatter.ThriftFormatter.class.getName());
     hiveConf.setInt(ListSinkOperator.OUTPUT_PROTOCOL, protocol.getValue());
+
     sessionState = new SessionState(hiveConf, username);
     sessionState.setIsHiveServerQuery(true);
     SessionState.start(sessionState);
+
+    //set conf properties specified by user from client side
+    if (sessionConfMap != null) {
+      configureSession(sessionConfMap);
+    }
+  }
+
+  private void configureSession(Map<String, String> sessionConfMap) {
+    for (Map.Entry<String, String> entry : sessionConfMap.entrySet()) {
+      String key = entry.getKey();
+      if (key.startsWith("set:")) {
+        SetProcessor.setVariable(key.substring(4), entry.getValue());
+      } else if (key.startsWith("use:")) {
+        SessionState.get().setCurrentDatabase(entry.getValue());
+      } else {
+        hiveConf.verifyAndSet(key, entry.getValue());
+      }
+    }
   }
 
   @Override
