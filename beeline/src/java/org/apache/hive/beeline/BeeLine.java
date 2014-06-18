@@ -24,6 +24,7 @@ package org.apache.hive.beeline;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -76,7 +77,9 @@ import jline.ClassNameCompletor;
 import jline.Completor;
 import jline.ConsoleReader;
 import jline.FileNameCompletor;
+import jline.History;
 import jline.SimpleCompletor;
+import org.apache.hadoop.io.IOUtils;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
@@ -102,7 +105,7 @@ import org.apache.hadoop.io.IOUtils;
  * </ul>
  *
  */
-public class BeeLine {
+public class BeeLine implements Closeable {
   private static final ResourceBundle resourceBundle =
       ResourceBundle.getBundle(BeeLine.class.getSimpleName());
   private final BeeLineSignalHandler signalHandler = null;
@@ -123,6 +126,8 @@ public class BeeLine {
   private ConsoleReader consoleReader;
   private List<String> batch = null;
   private final Reflector reflector;
+
+  private History history;
 
   private static final Options options = new Options();
 
@@ -293,6 +298,13 @@ public class BeeLine {
         .withDescription("the authentication type")
         .create('a'));
 
+    // -i <init file>
+    options.addOption(OptionBuilder
+        .hasArg()
+        .withArgName("init")
+        .withDescription("script file for initialization")
+        .create('i'));
+
     // -e <query>
     options.addOption(OptionBuilder
         .hasArgs()
@@ -300,7 +312,7 @@ public class BeeLine {
         .withDescription("query that should be executed")
         .create('e'));
 
-    // -f <file>
+    // -f <script file>
     options.addOption(OptionBuilder
         .hasArg()
         .withArgName("file")
@@ -620,7 +632,7 @@ public class BeeLine {
       return false;
     }
 
-    String driver = null, user = null, pass = null, url = null, cmd = null;
+    String driver = null, user = null, pass = null, url = null;
     String auth = null;
 
 
@@ -645,6 +657,7 @@ public class BeeLine {
     getOpts().setAuthType(auth);
     pass = cl.getOptionValue("p");
     url = cl.getOptionValue("u");
+    getOpts().setInitFile(cl.getOptionValue("i"));
     getOpts().setScriptFile(cl.getOptionValue("f"));
     if (cl.getOptionValues('e') != null) {
       commands = Arrays.asList(cl.getOptionValues('e'));
@@ -676,7 +689,6 @@ public class BeeLine {
       dispatch("!properties " + i.next());
     }
 
-
     if (commands.size() > 0) {
       // for single command execute, disable color
       getOpts().setColor(false);
@@ -699,7 +711,6 @@ public class BeeLine {
    * global variable <code>exit</code> is true.
    */
   public int begin(String[] args, InputStream inputStream) throws IOException {
-    int status = ERRNO_OK;
     try {
       // load the options first, so we can override on the command line
       getOpts().load();
@@ -707,55 +718,72 @@ public class BeeLine {
       // nothing
     }
 
-    if (!(initArgs(args))) {
-      usage();
-      return ERRNO_ARGS;
-    }
-
-    ConsoleReader reader = null;
-    boolean runningScript = (getOpts().getScriptFile() != null);
-    if (runningScript) {
-      try {
-        FileInputStream scriptStream = new FileInputStream(getOpts().getScriptFile());
-        reader = getConsoleReader(scriptStream);
-      } catch (Throwable t) {
-        handleException(t);
-        commands.quit(null);
-        status = ERRNO_OTHER;
-      }
-    } else {
-      reader = getConsoleReader(inputStream);
-    }
-
     try {
-      info(getApplicationTitle());
-    } catch (Exception e) {
-      // ignore
-    }
+      if (!initArgs(args)) {
+        usage();
+        return ERRNO_ARGS;
+      }
 
+      if (getOpts().getScriptFile() != null) {
+        return executeFile(getOpts().getScriptFile());
+      }
+      try {
+        info(getApplicationTitle());
+      } catch (Exception e) {
+        // ignore
+      }
+      ConsoleReader reader = getConsoleReader(inputStream);
+      return execute(reader, false);
+    } finally {
+      close();
+    }
+  }
+
+  int runInit() {
+    String initFile = getOpts().getInitFile();
+    if (initFile != null) {
+      info("Running init script " + initFile);
+      try {
+        return executeFile(initFile);
+      } finally {
+        exit = false;
+      }
+    }
+    return ERRNO_OK;
+  }
+
+  private int executeFile(String fileName) {
+    FileInputStream initStream = null;
+    try {
+      initStream = new FileInputStream(fileName);
+      return execute(getConsoleReader(initStream), true);
+    } catch (Throwable t) {
+      handleException(t);
+      return ERRNO_OTHER;
+    } finally {
+      IOUtils.closeStream(initStream);
+      consoleReader = null;
+      output("");   // dummy new line
+    }
+  }
+
+  private int execute(ConsoleReader reader, boolean exitOnError) {
     while (!exit) {
       try {
         // Execute one instruction; terminate on executing a script if there is an error
-        if (!dispatch(reader.readLine(getPrompt())) && runningScript) {
-          commands.quit(null);
-          status = ERRNO_OTHER;
+        if (!dispatch(reader.readLine(getPrompt())) && exitOnError) {
+          return ERRNO_OTHER;
         }
-      } catch (EOFException eof) {
-        // CTRL-D
-        commands.quit(null);
       } catch (Throwable t) {
         handleException(t);
-        status = ERRNO_OTHER;
+        return ERRNO_OTHER;
       }
     }
-    // ### NOTE jvs 10-Aug-2004: Clean up any outstanding
-    // connections automatically.
-    commands.closeall(null);
-    return status;
+    return ERRNO_OK;
   }
 
+  @Override
   public void close() {
-    commands.quit(null);
     commands.closeall(null);
   }
 
@@ -824,7 +852,7 @@ public class BeeLine {
    * Dispatch the specified line to the appropriate {@link CommandHandler}.
    *
    * @param line
-   *          the commmand-line to dispatch
+   *          the command-line to dispatch
    * @return true if the command was "successful"
    */
   boolean dispatch(String line) {
@@ -1437,6 +1465,8 @@ public class BeeLine {
 
     if (e instanceof SQLException) {
       handleSQLException((SQLException) e);
+    } else if (e instanceof EOFException) {
+      setExit(true);  // CTRL-D
     } else if (!(getOpts().getVerbose())) {
       if (e.getMessage() == null) {
         error(e.getClass().getName());

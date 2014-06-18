@@ -89,6 +89,7 @@ class BeeLineOpts implements Completor {
   private String historyFile = new File(saveDir(), "history").getAbsolutePath();
 
   private String scriptFile = null;
+  private String initFile = null;
   private String authType = null;
   private char delimiterForDSV = DEFAULT_DELIMITER_FOR_DSV;
 
@@ -359,6 +360,14 @@ class BeeLineOpts implements Completor {
 
   public String getScriptFile() {
     return scriptFile;
+  }
+
+  public String getInitFile() {
+    return initFile;
+  }
+
+  public void setInitFile(String initFile) {
+    this.initFile = initFile;
   }
 
   public void setColor(boolean color) {
