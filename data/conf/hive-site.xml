@@ -186,4 +186,10 @@
   <description>The default SerDe hive will use for the rcfile format</description>
 </property>
 
+<property>
+  <name>hive.security.authorization.task.factory</name>
+  <value>org.apache.hadoop.hive.ql.parse.authorization.HiveAuthorizationTaskFactoryImpl</value>
+  <description>The default SerDe hive will use for the rcfile format</description>
+</property>
+    
 </configuration>
