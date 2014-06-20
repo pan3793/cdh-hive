@@ -1341,15 +1341,20 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
       outputs.add(new WriteEntity(tab, writeType));
     }
     else {
-      inputs.add(new ReadEntity(tab));
+      ReadEntity re = new ReadEntity(tab);
+      // In the case of altering a table for its partitions we don't need to lock the table
+      // itself, just the partitions.  But the table will have a ReadEntity.  So mark that
+      // ReadEntity as no lock.
+      re.noLockNeeded();
+      inputs.add(re);
+
       if (isFullSpec(tab, partSpec)) {
         // Fully specified partition spec
         Partition part = getPartition(tab, partSpec, true);
         outputs.add(new WriteEntity(part, writeType));
       } else {
         // Partial partition spec supplied. Make sure this is allowed.
-        if (desc == null
-            || !AlterTableDesc.doesAlterTableTypeSupportPartialPartitionSpec(desc.getOp())) {
+        if (!AlterTableDesc.doesAlterTableTypeSupportPartialPartitionSpec(desc.getOp())) {
           throw new SemanticException(
               ErrorMsg.ALTER_TABLE_TYPE_PARTIAL_PARTITION_SPEC_NO_SUPPORTED, desc.getOp().name());
         } else if (!conf.getBoolVar(HiveConf.ConfVars.DYNAMICPARTITIONING)) {
