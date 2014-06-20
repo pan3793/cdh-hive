@@ -60,14 +60,10 @@ import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
-import org.apache.hadoop.hive.metastore.api.BinaryColumnStatsData;
-import org.apache.hadoop.hive.metastore.api.BooleanColumnStatsData;
 import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
-import org.apache.hadoop.hive.metastore.api.ColumnStatisticsData;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsDesc;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.Database;
-import org.apache.hadoop.hive.metastore.api.DoubleColumnStatsData;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.HiveObjectPrivilege;
 import org.apache.hadoop.hive.metastore.api.HiveObjectRef;
@@ -76,7 +72,6 @@ import org.apache.hadoop.hive.metastore.api.Index;
 import org.apache.hadoop.hive.metastore.api.InvalidInputException;
 import org.apache.hadoop.hive.metastore.api.InvalidObjectException;
 import org.apache.hadoop.hive.metastore.api.InvalidPartitionException;
-import org.apache.hadoop.hive.metastore.api.LongColumnStatsData;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.metastore.api.Order;
@@ -90,7 +85,6 @@ import org.apache.hadoop.hive.metastore.api.Role;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.SkewedInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
-import org.apache.hadoop.hive.metastore.api.StringColumnStatsData;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.api.Type;
 import org.apache.hadoop.hive.metastore.api.UnknownDBException;
@@ -4901,50 +4895,7 @@ public class ObjectStore implements RawStore, Configurable {
 
 
   private ColumnStatisticsObj getTableColumnStatisticsObj(MTableColumnStatistics mStatsObj) {
-    ColumnStatisticsObj statsObj = new ColumnStatisticsObj();
-    statsObj.setColType(mStatsObj.getColType());
-    statsObj.setColName(mStatsObj.getColName());
-    String colType = mStatsObj.getColType();
-    ColumnStatisticsData colStatsData = new ColumnStatisticsData();
-
-    if (colType.equalsIgnoreCase("boolean")) {
-      BooleanColumnStatsData boolStats = new BooleanColumnStatsData();
-      boolStats.setNumFalses(mStatsObj.getNumFalses());
-      boolStats.setNumTrues(mStatsObj.getNumTrues());
-      boolStats.setNumNulls(mStatsObj.getNumNulls());
-      colStatsData.setBooleanStats(boolStats);
-    } else if (colType.equalsIgnoreCase("string")) {
-      StringColumnStatsData stringStats = new StringColumnStatsData();
-      stringStats.setNumNulls(mStatsObj.getNumNulls());
-      stringStats.setAvgColLen(mStatsObj.getAvgColLen());
-      stringStats.setMaxColLen(mStatsObj.getMaxColLen());
-      stringStats.setNumDVs(mStatsObj.getNumDVs());
-      colStatsData.setStringStats(stringStats);
-    } else if (colType.equalsIgnoreCase("binary")) {
-      BinaryColumnStatsData binaryStats = new BinaryColumnStatsData();
-      binaryStats.setNumNulls(mStatsObj.getNumNulls());
-      binaryStats.setAvgColLen(mStatsObj.getAvgColLen());
-      binaryStats.setMaxColLen(mStatsObj.getMaxColLen());
-      colStatsData.setBinaryStats(binaryStats);
-    } else if (colType.equalsIgnoreCase("bigint") || colType.equalsIgnoreCase("int") ||
-        colType.equalsIgnoreCase("smallint") || colType.equalsIgnoreCase("tinyint") ||
-        colType.equalsIgnoreCase("timestamp")) {
-      LongColumnStatsData longStats = new LongColumnStatsData();
-      longStats.setNumNulls(mStatsObj.getNumNulls());
-      longStats.setHighValue(mStatsObj.getLongHighValue());
-      longStats.setLowValue(mStatsObj.getLongLowValue());
-      longStats.setNumDVs(mStatsObj.getNumDVs());
-      colStatsData.setLongStats(longStats);
-   } else if (colType.equalsIgnoreCase("double") || colType.equalsIgnoreCase("float")) {
-     DoubleColumnStatsData doubleStats = new DoubleColumnStatsData();
-     doubleStats.setNumNulls(mStatsObj.getNumNulls());
-     doubleStats.setHighValue(mStatsObj.getDoubleHighValue());
-     doubleStats.setLowValue(mStatsObj.getDoubleLowValue());
-     doubleStats.setNumDVs(mStatsObj.getNumDVs());
-     colStatsData.setDoubleStats(doubleStats);
-   }
-   statsObj.setStatsData(colStatsData);
-   return statsObj;
+   return StatObjectConverter.getTableColumnStatisticsObj(mStatsObj);
   }
 
   private ColumnStatisticsDesc getTableColumnStatisticsDesc(MTableColumnStatistics mStatsObj) {
@@ -4975,52 +4926,8 @@ public class ObjectStore implements RawStore, Configurable {
   }
 
 
-  private ColumnStatisticsObj getPartitionColumnStatisticsObj(MPartitionColumnStatistics mStatsObj)
-  {
-    ColumnStatisticsObj statsObj = new ColumnStatisticsObj();
-    statsObj.setColType(mStatsObj.getColType());
-    statsObj.setColName(mStatsObj.getColName());
-    String colType = mStatsObj.getColType();
-    ColumnStatisticsData colStatsData = new ColumnStatisticsData();
-
-    if (colType.equalsIgnoreCase("boolean")) {
-      BooleanColumnStatsData boolStats = new BooleanColumnStatsData();
-      boolStats.setNumFalses(mStatsObj.getNumFalses());
-      boolStats.setNumTrues(mStatsObj.getNumTrues());
-      boolStats.setNumNulls(mStatsObj.getNumNulls());
-      colStatsData.setBooleanStats(boolStats);
-    } else if (colType.equalsIgnoreCase("string")) {
-      StringColumnStatsData stringStats = new StringColumnStatsData();
-      stringStats.setNumNulls(mStatsObj.getNumNulls());
-      stringStats.setAvgColLen(mStatsObj.getAvgColLen());
-      stringStats.setMaxColLen(mStatsObj.getMaxColLen());
-      stringStats.setNumDVs(mStatsObj.getNumDVs());
-      colStatsData.setStringStats(stringStats);
-    } else if (colType.equalsIgnoreCase("binary")) {
-      BinaryColumnStatsData binaryStats = new BinaryColumnStatsData();
-      binaryStats.setNumNulls(mStatsObj.getNumNulls());
-      binaryStats.setAvgColLen(mStatsObj.getAvgColLen());
-      binaryStats.setMaxColLen(mStatsObj.getMaxColLen());
-      colStatsData.setBinaryStats(binaryStats);
-    } else if (colType.equalsIgnoreCase("tinyint") || colType.equalsIgnoreCase("smallint") ||
-        colType.equalsIgnoreCase("int") || colType.equalsIgnoreCase("bigint") ||
-        colType.equalsIgnoreCase("timestamp")) {
-      LongColumnStatsData longStats = new LongColumnStatsData();
-      longStats.setNumNulls(mStatsObj.getNumNulls());
-      longStats.setHighValue(mStatsObj.getLongHighValue());
-      longStats.setLowValue(mStatsObj.getLongLowValue());
-      longStats.setNumDVs(mStatsObj.getNumDVs());
-      colStatsData.setLongStats(longStats);
-   } else if (colType.equalsIgnoreCase("double") || colType.equalsIgnoreCase("float")) {
-     DoubleColumnStatsData doubleStats = new DoubleColumnStatsData();
-     doubleStats.setNumNulls(mStatsObj.getNumNulls());
-     doubleStats.setHighValue(mStatsObj.getDoubleHighValue());
-     doubleStats.setLowValue(mStatsObj.getDoubleLowValue());
-     doubleStats.setNumDVs(mStatsObj.getNumDVs());
-     colStatsData.setDoubleStats(doubleStats);
-   }
-   statsObj.setStatsData(colStatsData);
-   return statsObj;
+  private ColumnStatisticsObj getPartitionColumnStatisticsObj(MPartitionColumnStatistics mStatsObj) {
+   return StatObjectConverter.getPartitionColumnStatisticsObj(mStatsObj);
   }
 
   private ColumnStatisticsDesc getPartitionColumnStatisticsDesc(
@@ -5033,72 +4940,6 @@ public class ObjectStore implements RawStore, Configurable {
     statsDesc.setLastAnalyzed(mStatsObj.getLastAnalyzed());
     return statsDesc;
   }
-
-  private void writeMPartitionColumnStatistics(MPartitionColumnStatistics mStatsObj,
-    List<String> partVal) throws NoSuchObjectException, MetaException, InvalidObjectException,
-    InvalidInputException
-  {
-    String dbName = mStatsObj.getDbName();
-    String tableName = mStatsObj.getTableName();
-    String partName = mStatsObj.getPartitionName();
-    String colName = mStatsObj.getColName();
-
-    LOG.info("Updating partition level column statistics for db=" + dbName + " tableName=" +
-      tableName + " partName=" + partName + " colName=" + colName);
-
-    MTable mTable = getMTable(mStatsObj.getDbName(), mStatsObj.getTableName());
-    boolean foundCol = false;
-
-    if (mTable == null) {
-      throw new
-        NoSuchObjectException("Table " + tableName +
-        " for which stats gathering is requested doesn't exist.");
-    }
-
-    MPartition mPartition =
-                 getMPartition(mStatsObj.getDbName(), mStatsObj.getTableName(), partVal);
-
-    if (mPartition == null) {
-      throw new
-        NoSuchObjectException("Partition " + partName +
-        " for which stats gathering is requested doesn't exist");
-    }
-
-    MStorageDescriptor mSDS = mPartition.getSd();
-    List<MFieldSchema> colList = mSDS.getCD().getCols();
-
-    for(MFieldSchema mCol:colList) {
-      if (mCol.getName().equals(mStatsObj.getColName().trim())) {
-        foundCol = true;
-        break;
-      }
-    }
-
-    if (!foundCol) {
-      throw new
-        NoSuchObjectException("Column " + colName +
-        " for which stats gathering is requested doesn't exist.");
-    }
-
-    MPartitionColumnStatistics oldStatsObj = getMPartitionColumnStatistics(dbName, tableName,
-                                                               partName, partVal, colName);
-    if (oldStatsObj != null) {
-      oldStatsObj.setAvgColLen(mStatsObj.getAvgColLen());
-      oldStatsObj.setLongHighValue(mStatsObj.getLongHighValue());
-      oldStatsObj.setDoubleHighValue(mStatsObj.getDoubleHighValue());
-      oldStatsObj.setLastAnalyzed(mStatsObj.getLastAnalyzed());
-      oldStatsObj.setLongLowValue(mStatsObj.getLongLowValue());
-      oldStatsObj.setDoubleLowValue(mStatsObj.getDoubleLowValue());
-      oldStatsObj.setMaxColLen(mStatsObj.getMaxColLen());
-      oldStatsObj.setNumDVs(mStatsObj.getNumDVs());
-      oldStatsObj.setNumFalses(mStatsObj.getNumFalses());
-      oldStatsObj.setNumTrues(mStatsObj.getNumTrues());
-      oldStatsObj.setNumNulls(mStatsObj.getNumNulls());
-    } else {
-      pm.makePersistent(mStatsObj);
-    }
- }
-
 
   @Override
   public boolean updateTableColumnStatistics(ColumnStatistics colStats)
