@@ -15,8 +15,9 @@ package org.apache.hadoop.hive.ql.io.parquet.write;
 
 import java.sql.Timestamp;
 
-import org.apache.hadoop.hive.ql.io.parquet.utils.NanoTimeUtils;
 import org.apache.hadoop.hive.ql.io.parquet.writable.BinaryWritable;
+import org.apache.hadoop.hive.ql.io.parquet.timestamp.NanoTime;
+import org.apache.hadoop.hive.ql.io.parquet.timestamp.NanoTimeUtils;
 import org.apache.hadoop.hive.serde2.io.ByteWritable;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
@@ -29,7 +30,6 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Writable;
 
-import parquet.example.data.simple.NanoTime;
 import parquet.io.ParquetEncodingException;
 import parquet.io.api.RecordConsumer;
 import parquet.schema.GroupType;
