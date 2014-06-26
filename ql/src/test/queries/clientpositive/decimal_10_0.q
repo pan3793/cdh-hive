@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS DECIMAL;
 
-CREATE TABLE DECIMAL (dec decimal);
+CREATE TABLE decimal_10_0 (dec decimal);
 
-LOAD DATA LOCAL INPATH '../../data/files/decimal_10_0.txt' OVERWRITE INTO TABLE DECIMAL;
+LOAD DATA LOCAL INPATH '../../data/files/decimal_10_0.txt' OVERWRITE INTO TABLE decimal_10_0;
 
-SELECT dec FROM DECIMAL;
+SELECT dec FROM decimal_10_0;
 
-DROP TABLE DECIMAL;
+DROP TABLE decimal_10_0;
