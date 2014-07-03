@@ -32,6 +32,8 @@ import org.apache.thrift.transport.TTransportFactory;
 
 public class ThriftBinaryCLIService extends ThriftCLIService {
 
+  private int requestTimeout;
+
   public ThriftBinaryCLIService(CLIService cliService) {
     super(cliService, "ThriftBinaryCLIService");
   }
@@ -63,6 +65,7 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
 
       minWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS);
       maxWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS);
+      requestTimeout = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT);
 
       TServerSocket serverSocket = null;
       if (!hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_USE_SSL)) {
@@ -81,7 +84,8 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
       .transportFactory(transportFactory)
       .protocolFactory(new TBinaryProtocol.Factory())
       .minWorkerThreads(minWorkerThreads)
-      .maxWorkerThreads(maxWorkerThreads);
+      .maxWorkerThreads(maxWorkerThreads)
+      .requestTimeout(requestTimeout);
 
       server = new TThreadPoolServer(sargs);
 

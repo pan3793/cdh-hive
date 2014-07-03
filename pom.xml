@@ -127,7 +127,7 @@
     <junit.version>4.10</junit.version>
     <kryo.version>2.22</kryo.version>
     <libfb303.version>0.9.0</libfb303.version>
-    <libthrift.version>0.9.0</libthrift.version>
+    <libthrift.version>0.9.0.cloudera.2</libthrift.version>
     <log4j.version>1.2.16</log4j.version>
     <mockito-all.version>1.9.5</mockito-all.version>
     <mina.version>2.0.0-M5</mina.version>
