@@ -62,7 +62,7 @@ STAGE PLANS:
                   tag: -1
                   value expressions:
                         expr: _col0
-                        type: struct<count:bigint,sum:double>
+                        type: struct<count:bigint,sum:double,input:string>
                         expr: _col1
                         type: double
                         expr: _col2

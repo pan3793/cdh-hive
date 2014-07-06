@@ -552,7 +552,7 @@ STAGE PLANS:
                   tag: -1
                   value expressions:
                         expr: _col0
-                        type: struct<count:bigint,sum:decimal(24,14)>
+                        type: struct<count:bigint,sum:decimal(30,10),input:decimal(20,10)>
                         expr: _col1
                         type: decimal(30,10)
       Reduce Operator Tree:

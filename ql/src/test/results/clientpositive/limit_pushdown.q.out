@@ -330,7 +330,7 @@ STAGE PLANS:
                   TopN Hash Memory Usage: 0.3
                   value expressions:
                         expr: _col1
-                        type: struct<count:bigint,sum:double>
+                        type: struct<count:bigint,sum:double,input:double>
       Reduce Operator Tree:
         Group By Operator
           aggregations:

@@ -82,9 +82,9 @@ STAGE PLANS:
                         expr: _col1
                         type: double
                         expr: _col2
-                        type: struct<count:bigint,sum:double>
+                        type: struct<count:bigint,sum:double,input:string>
                         expr: _col3
-                        type: struct<count:bigint,sum:double>
+                        type: struct<count:bigint,sum:double,input:string>
                         expr: _col4
                         type: string
                         expr: _col5

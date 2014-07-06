@@ -91,7 +91,7 @@ STAGE PLANS:
                   tag: -1
                   value expressions:
                         expr: _col3
-                        type: struct<count:bigint,sum:double>
+                        type: struct<count:bigint,sum:double,input:string>
                         expr: _col4
                         type: bigint
       Reduce Operator Tree:
@@ -218,7 +218,7 @@ STAGE PLANS:
                   tag: -1
                   value expressions:
                         expr: _col2
-                        type: struct<count:bigint,sum:double>
+                        type: struct<count:bigint,sum:double,input:string>
                         expr: _col3
                         type: bigint
       Reduce Operator Tree:
@@ -268,7 +268,7 @@ STAGE PLANS:
               tag: -1
               value expressions:
                     expr: _col3
-                    type: struct<count:bigint,sum:double>
+                    type: struct<count:bigint,sum:double,input:string>
                     expr: _col4
                     type: bigint
       Reduce Operator Tree:

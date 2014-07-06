@@ -46,7 +46,7 @@ STAGE PLANS:
                         expr: _col1
                         type: bigint
                         expr: _col2
-                        type: struct<count:bigint,sum:double>
+                        type: struct<count:bigint,sum:double,input:int>
                         expr: _col3
                         type: int
                         expr: _col4

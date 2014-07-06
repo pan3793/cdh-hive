@@ -1549,7 +1549,7 @@ STAGE PLANS:
                         expr: _col2
                         type: bigint
                         expr: _col3
-                        type: struct<count:bigint,sum:decimal(24,14)>
+                        type: struct<count:bigint,sum:decimal(30,10),input:decimal(20,10)>
       Reduce Operator Tree:
         Group By Operator
           aggregations:
