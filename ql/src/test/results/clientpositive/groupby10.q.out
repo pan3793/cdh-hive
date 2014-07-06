@@ -792,7 +792,7 @@ STAGE PLANS:
                     expr: _col1
                     type: double
                     expr: _col2
-                    type: struct<count:bigint,sum:double>
+                    type: struct<count:bigint,sum:double,input:string>
       Reduce Operator Tree:
         Group By Operator
           aggregations:
