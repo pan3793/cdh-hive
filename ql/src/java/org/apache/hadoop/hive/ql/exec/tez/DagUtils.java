@@ -199,6 +199,10 @@ public class DagUtils {
       inpFormat = BucketizedHiveInputFormat.class.getName();
     }
 
+    if (mapWork.isUseOneNullRowInputFormat()) {
+      inpFormat = CombineHiveInputFormat.class.getName();
+    }
+
     conf.set("mapred.mapper.class", ExecMapper.class.getName());
     conf.set("mapred.input.format.class", inpFormat);
 
@@ -404,7 +408,7 @@ public class DagUtils {
     Path tezDir = getTezDir(mrScratchDir);
 
     // set up the operator plan
-    Utilities.setMapWork(conf, mapWork, mrScratchDir, false);
+    Utilities.cacheMapWork(conf, mapWork, mrScratchDir);
 
     // create the directories FileSinkOperators need
     Utilities.createTmpDirs(conf, mapWork);
@@ -490,7 +494,8 @@ public class DagUtils {
       conf.setClass("mapred.input.format.class", CombineHiveInputFormat.class, InputFormat.class);
     }
 
-    if (HiveConf.getBoolVar(conf, ConfVars.HIVE_AM_SPLIT_GENERATION)) {
+    if (HiveConf.getBoolVar(conf, ConfVars.HIVE_AM_SPLIT_GENERATION)
+        && !mapWork.isUseOneNullRowInputFormat()) {
       // if we're generating the splits in the AM, we just need to set
       // the correct plugin.
       amSplitGeneratorClass = MRInputAMSplitGenerator.class;
@@ -500,6 +505,9 @@ public class DagUtils {
           new Path(tezDir, "split_"+mapWork.getName().replaceAll(" ", "_")));
       numTasks = inputSplitInfo.getNumTasks();
     }
+
+    // set up the operator plan
+    Utilities.setMapWork(conf, mapWork, mrScratchDir, false);
 
     byte[] serializedConf = MRHelpers.createUserPayloadFromConf(conf);
     map = new Vertex(mapWork.getName(),
