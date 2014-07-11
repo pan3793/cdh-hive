@@ -226,6 +226,7 @@ public class HiveSessionImpl implements HiveSession {
       // Cleanup opHandle in case the query is synchronous
       // Async query needs to retain and pass back the opHandle for error reporting
       if (!runAsync) {
+        getLogManager().destroyOperationLog(opHandle);
         operationManager.closeOperation(opHandle);
       }
       throw e;
@@ -246,6 +247,7 @@ public class HiveSessionImpl implements HiveSession {
       opHandleSet.add(opHandle);
       return opHandle;
     } catch (HiveSQLException e) {
+      getLogManager().destroyOperationLog(opHandle);
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
@@ -265,6 +267,7 @@ public class HiveSessionImpl implements HiveSession {
       opHandleSet.add(opHandle);
       return opHandle;
     } catch (HiveSQLException e) {
+      getLogManager().destroyOperationLog(opHandle);
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
@@ -285,6 +288,7 @@ public class HiveSessionImpl implements HiveSession {
       opHandleSet.add(opHandle);
       return opHandle;
     } catch (HiveSQLException e) {
+      getLogManager().destroyOperationLog(opHandle);
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
@@ -306,6 +310,7 @@ public class HiveSessionImpl implements HiveSession {
       opHandleSet.add(opHandle);
       return opHandle;
     } catch (HiveSQLException e) {
+      getLogManager().destroyOperationLog(opHandle);
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
@@ -325,6 +330,7 @@ public class HiveSessionImpl implements HiveSession {
       opHandleSet.add(opHandle);
       return opHandle;
     } catch (HiveSQLException e) {
+      getLogManager().destroyOperationLog(opHandle);
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
@@ -345,6 +351,7 @@ public class HiveSessionImpl implements HiveSession {
       opHandleSet.add(opHandle);
       return opHandle;
     } catch (HiveSQLException e) {
+      getLogManager().destroyOperationLog(opHandle);
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
@@ -365,6 +372,7 @@ public class HiveSessionImpl implements HiveSession {
       opHandleSet.add(opHandle);
       return opHandle;
     } catch (HiveSQLException e) {
+      getLogManager().destroyOperationLog(opHandle);
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
@@ -385,6 +393,7 @@ public class HiveSessionImpl implements HiveSession {
       }
       // Iterate through the opHandles and close their operations
       for (OperationHandle opHandle : opHandleSet) {
+        getLogManager().destroyOperationLog(opHandle);
         operationManager.closeOperation(opHandle);
       }
       opHandleSet.clear();
@@ -425,6 +434,7 @@ public class HiveSessionImpl implements HiveSession {
   public void closeOperation(OperationHandle opHandle) throws HiveSQLException {
     acquire();
     try {
+      getLogManager().destroyOperationLog(opHandle);
       operationManager.closeOperation(opHandle);
       opHandleSet.remove(opHandle);
     } finally {
