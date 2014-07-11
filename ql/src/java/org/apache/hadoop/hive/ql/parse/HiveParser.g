@@ -331,6 +331,8 @@ TOK_RESOURCE_LIST;
 TOK_COMPACT;
 TOK_SHOW_COMPACTIONS;
 TOK_SHOW_TRANSACTIONS;
+TOK_SERVER;
+TOK_URI;
 }
 
 
@@ -1457,6 +1459,8 @@ privilegeObject
 @after {popMsg(state);}
     : KW_ON privObjectType identifier partitionSpec?
     -> ^(TOK_PRIV_OBJECT identifier privObjectType partitionSpec?)
+    | KW_ON KW_URI (path=StringLiteral) -> ^(TOK_PRIV_OBJECT $path TOK_URI)
+    | KW_ON KW_SERVER identifier -> ^(TOK_PRIV_OBJECT identifier TOK_SERVER)
     ;
 
 
