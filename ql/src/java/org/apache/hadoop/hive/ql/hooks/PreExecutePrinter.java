@@ -63,10 +63,14 @@ public class PreExecutePrinter implements ExecuteWithHookContext {
     printEntities(console, outputs, "PREHOOK: Output: ");
   }
 
-  static void printEntities(LogHelper console, Set<?> entities, String prefix) {
+  static void printEntities(LogHelper console, Set<? extends Entity> entities, String prefix) {
     List<String> strings = new ArrayList<String>();
-    for (Object o : entities) {
-      strings.add(o.toString());
+    // TODO: Temp workaround till we fix all tests output to include the UDF type
+    for (Entity e : entities) {
+      if (Entity.Type.UDF.equals(e.getType())) {
+        continue;
+      }
+      strings.add(e.toString());
     }
     Collections.sort(strings);
     for (String s : strings) {
