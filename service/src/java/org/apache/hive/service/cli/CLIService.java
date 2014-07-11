@@ -399,11 +399,11 @@ public class CLIService extends CompositeService implements ICLIService {
   public void closeOperation(OperationHandle opHandle)
       throws HiveSQLException {
     startLogCapture(opHandle);
+    sessionManager.getLogManager().destroyOperationLog(opHandle);
     sessionManager.getOperationManager().getOperation(opHandle)
     .getParentSession().closeOperation(opHandle);
     LOG.debug(opHandle + ": closeOperation");
     sessionManager.clearIpAddress();
-    sessionManager.getLogManager().destroyOperationLog(opHandle);
     stopLogCapture();
   }
 
