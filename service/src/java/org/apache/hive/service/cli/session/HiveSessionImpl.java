@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -35,6 +36,8 @@ import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.exec.FetchFormatter;
 import org.apache.hadoop.hive.ql.exec.ListSinkOperator;
 import org.apache.hadoop.hive.ql.history.HiveHistory;
+import org.apache.hadoop.hive.ql.metadata.Hive;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.common.util.HiveVersionInfo;
@@ -182,14 +185,20 @@ public class HiveSessionImpl implements HiveSession {
 
   @Override
   public IMetaStoreClient getMetaStoreClient() throws HiveSQLException {
-    if (metastoreClient == null) {
-      try {
-        metastoreClient = new HiveMetaStoreClient(getHiveConf());
-      } catch (MetaException e) {
-        throw new HiveSQLException(e);
+    try {
+      IMetaStoreClient metastoreClient = Hive.get().getMSC();
+      if (!(StringUtils.isEmpty(hiveConf
+          .getVar(HiveConf.ConfVars.METASTOREURIS)))) {
+        // get a synchronized wrapper if the metastore is remote.
+        metastoreClient = HiveMetaStoreClient
+            .newSynchronizedClient(metastoreClient);
       }
+      return metastoreClient;
+    } catch (MetaException e) {
+      throw new HiveSQLException("Error acquiring metastore connection", e);
+    } catch (HiveException e) {
+      throw new HiveSQLException("Error acquiring metastore connection", e);
     }
-    return metastoreClient;
   }
 
   @Override

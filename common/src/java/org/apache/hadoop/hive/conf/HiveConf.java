@@ -369,6 +369,8 @@ public class HiveConf extends Configuration {
     DDL_CTL_PARAMETERS_WHITELIST("hive.ddl.createtablelike.properties.whitelist", ""),
     METASTORE_RAW_STORE_IMPL("hive.metastore.rawstore.impl",
         "org.apache.hadoop.hive.metastore.ObjectStore"),
+    METASTORE_CLIENT_IMPL("hive.metastore.client.impl",
+        "org.apache.hadoop.hive.metastore.HiveMetaStoreClient"),
     METASTORE_CONNECTION_DRIVER("javax.jdo.option.ConnectionDriverName",
         "org.apache.derby.jdbc.EmbeddedDriver"),
     METASTORE_MANAGER_FACTORY_CLASS("javax.jdo.PersistenceManagerFactoryClass",

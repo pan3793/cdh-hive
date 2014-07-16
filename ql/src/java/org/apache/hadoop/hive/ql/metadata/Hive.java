@@ -57,7 +57,6 @@ import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.HiveMetaException;
 import org.apache.hadoop.hive.metastore.HiveMetaHook;
 import org.apache.hadoop.hive.metastore.HiveMetaHookLoader;
-import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hadoop.hive.metastore.RetryingMetaStoreClient;
@@ -2439,7 +2438,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
         }
       };
     return RetryingMetaStoreClient.getProxy(conf, hookLoader,
-        HiveMetaStoreClient.class.getName());
+        getConf().getVar(ConfVars.METASTORE_CLIENT_IMPL));
   }
 
   /**

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hive.service.cli.FetchOrientation;
@@ -80,10 +79,6 @@ public class GetTablesOperation extends MetadataOperation {
     setState(OperationState.RUNNING);
     try {
       IMetaStoreClient metastoreClient = getParentSession().getMetaStoreClient();
-      if (!((HiveMetaStoreClient)metastoreClient).isMetaStoreLocal()) {
-        // get a synchronized wrapper if the metastore is remote.
-        metastoreClient = HiveMetaStoreClient.newSynchronizedClient(metastoreClient);
-      }
       String schemaPattern = convertSchemaPattern(schemaName);
       String tablePattern = convertIdentifierPattern(tableName, true);
       for (String dbName : metastoreClient.getDatabases(schemaPattern)) {
