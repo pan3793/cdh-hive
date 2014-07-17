@@ -961,9 +961,8 @@ public class HiveConf extends Configuration {
     // Enable list bucketing optimizer. Default value is false so that we disable it by default.
     HIVEOPTLISTBUCKETING("hive.optimize.listbucketing", false),
 
-    HIVE_CURRENT_DB("hive.current.db", "default"),
-
     // Allow TCP Keep alive socket option for for HiveServer or a maximum timeout for the socket.
+
     SERVER_READ_SOCKET_TIMEOUT("hive.server.read.socket.timeout", 10),
     SERVER_TCP_KEEP_ALIVE("hive.server.tcp.keepalive", true),
 
