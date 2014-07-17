@@ -82,6 +82,8 @@ class BeeLineOpts implements Completor {
   //This can be set for old behavior of nulls printed as empty strings
   private boolean nullEmptyString = false;
 
+  private boolean truncateTable = false;
+
   private final File rcFile = new File(saveDir(), "beeline.properties");
   private String historyFile = new File(saveDir(), "history").getAbsolutePath();
 
@@ -482,5 +484,12 @@ class BeeLineOpts implements Completor {
     this.hiveConfVariables = hiveConfVariables;
   }
 
+  public boolean getTruncateTable() {
+    return truncateTable;
+  }
+
+  public void setTruncateTable(boolean truncateTable) {
+    this.truncateTable = truncateTable;
+  }
 }
 
