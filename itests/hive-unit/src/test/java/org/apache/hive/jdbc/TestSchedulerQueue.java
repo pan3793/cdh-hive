@@ -19,6 +19,7 @@
 package org.apache.hive.jdbc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -26,8 +27,9 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
 import org.apache.hive.jdbc.miniHS2.MiniHS2;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,7 +40,6 @@ public class TestSchedulerQueue {
   private MiniHS2 miniHS2 = null;
   private static HiveConf conf = new HiveConf();
   private Connection hs2Conn = null;
-  private String dataFileDir = conf.get("test.data.files");
 
   @BeforeClass
   public static void beforeTest() throws Exception {
@@ -48,13 +49,10 @@ public class TestSchedulerQueue {
   @Before
   public void setUp() throws Exception {
     DriverManager.setLoginTimeout(0);
-    if (!System.getProperty("test.data.files", "").isEmpty()) {
-      dataFileDir = System.getProperty("test.data.files");
-    }
-    dataFileDir = dataFileDir.replace('\\', '/').replace("c:", "");
-    conf.set("mapred.jobtracker.taskScheduler", "org.apache.hadoop.mapred.FairScheduler");
-    conf.setBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ENABLE_DOAS, false);
     miniHS2 = new MiniHS2(conf, true);
+    miniHS2.setConfProperty(HiveConf.ConfVars.HIVE_SERVER2_ENABLE_DOAS.varname, "false");
+    miniHS2.setConfProperty(HiveConf.ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE.varname,
+        "true");
     miniHS2.start(new HashMap<String, String>());
   }
 
@@ -66,28 +64,37 @@ public class TestSchedulerQueue {
     if (miniHS2 != null && miniHS2.isStarted()) {
       miniHS2.stop();
     }
+    System.clearProperty("mapreduce.job.queuename");
   }
 
   /***
-   * Test SSL default queue mapping
+   * Verify that the test is running with MR2 and queue mapping defaults are set
+   * verify the queue mapping for the connected user
    * @throws Exception
    */
   @Test
   public void testFairSchedulerQueueMapping() throws Exception {
     hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL(), "user1", "bar");
     verifyProperty("mapreduce.framework.name", "yarn");
-    verifyProperty("mapred.jobtracker.taskScheduler", "org.apache.hadoop.mapred.FairScheduler");
-    verifyProperty("mapred.job.queue.name", "root.user1");
+    verifyProperty(HiveConf.ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE.varname,
+        "true");
+    verifyProperty(YarnConfiguration.RM_SCHEDULER,
+        "org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler");
+    verifyProperty("mapreduce.job.queuename", "root.user1");
   }
 
+  /***
+   * Test that the queue refresh by Hive doesn't happen when configured to be turned off
+   * @throws Exception
+   */
   @Test
-  public void testFairSchedulerQueueMappingDisabled() throws Exception {
-    miniHS2.setConfProperty(HiveConf.ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE.varname,
-        "false");
+  public void testQueueMappingCheckDisabled() throws Exception {
+    miniHS2.setConfProperty(
+        HiveConf.ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE.varname, "false");
     hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL(), "user1", "bar");
-    verifyProperty("mapred.job.queue.name", "default");
-    miniHS2.setConfProperty(HiveConf.ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE.varname,
-        "true");
+    verifyProperty(HiveConf.ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE.varname,
+        "false");
+    verifyProperty("mapreduce.job.queuename", YarnConfiguration.DEFAULT_QUEUE_NAME);
   }
 
   /**
@@ -101,7 +108,8 @@ public class TestSchedulerQueue {
     ResultSet res = stmt.executeQuery("set " + propertyName);
     assertTrue(res.next());
     String results[] = res.getString(1).split("=");
-    assertEquals(expectedValue, results[1]);
+    assertEquals("Property should be set", results.length, 2);
+    assertEquals("Property should be set", expectedValue, results[1]);
   }
 
 }

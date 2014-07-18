@@ -21,14 +21,20 @@ package org.apache.hive.jdbc.miniHS2;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.HiveMetaStore;
@@ -38,7 +44,10 @@ import org.apache.hadoop.hive.shims.HadoopShims.MiniMrShim;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.cli.CLIServiceClient;
+import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.SessionHandle;
+import org.apache.hive.service.cli.session.HiveSessionHook;
+import org.apache.hive.service.cli.session.HiveSessionHookContext;
 import org.apache.hive.service.cli.thrift.ThriftBinaryCLIService;
 import org.apache.hive.service.cli.thrift.ThriftCLIServiceClient;
 import org.apache.hive.service.cli.thrift.ThriftHttpCLIService;
@@ -49,8 +58,8 @@ import com.google.common.io.Files;
 public class MiniHS2 extends AbstractHiveService {
   private static final String driverName = "org.apache.hive.jdbc.HiveDriver";
   private HiveServer2 hiveServer2 = null;
-  private MiniMrShim mr;
-  private MiniDFSShim dfs;
+  private static MiniMrShim mr;
+  private static MiniDFSShim dfs;
   private final File baseDir;
   private final Path baseDfsDir;
   private static final AtomicLong hs2Counter = new AtomicLong();
@@ -70,8 +79,7 @@ public class MiniHS2 extends AbstractHiveService {
       fs = dfs.getFileSystem();
       mr = ShimLoader.getHadoopShims().getMiniMrCluster(hiveConf, 4,
           fs.getUri().toString(), 1);
-      // store the config in system properties
-      mr.setupConfiguration(getHiveConf());
+      setupMiniMrConfig(hiveConf);
       baseDfsDir =  new Path(new Path(fs.getUri()), "/base");
     } else {
       fs = FileSystem.getLocal(hiveConf);
@@ -102,6 +110,47 @@ public class MiniHS2 extends AbstractHiveService {
         baseDir.getPath() + File.separator + "scratch");
   }
 
+  /**
+   * HiveServer2 sessions don't inherit from the global config. As a workaroud,
+   * the  test framework is creating a new hive site and injecting that into
+   * HiveConf using reflection.
+   * @param hiveConf
+   * @throws IOException
+   */
+  private void setupMiniMrConfig(HiveConf hiveConf) throws IOException {
+    // store the MR config properties in hiveConf
+    mr.setupConfiguration(hiveConf);
+
+    // write out the updated hive configuration
+    File hiveSite = new File(baseDir, "hive-site.xml");
+    FileOutputStream out = new FileOutputStream(hiveSite );
+    hiveConf.writeXml(out);
+    out.close();
+
+    // reset the hive-site location to the new file in HiveConf
+    resetHiveConfFile(hiveSite.toURI().toURL());
+  }
+
+  // set the private static field hiveSiteURL in HiveConf
+  private void resetHiveConfFile(URL hiveSiteFile) throws IOException {
+    Field f;
+    try {
+      f = HiveConf.class.getDeclaredField("hiveSiteURL");
+    } catch (NoSuchFieldException e) {
+      throw new IOException("Failed to modify HiveConf", e);
+    } catch (SecurityException e) {
+      throw new IOException("Failed to modify HiveConf", e);
+    }
+    f.setAccessible(true);
+    try {
+      f.set(null, hiveSiteFile);
+    } catch (IllegalArgumentException e) {
+      throw new IOException("Failed to modify HiveConf", e);
+    } catch (IllegalAccessException e) {
+      throw new IOException("Failed to modify HiveConf", e);
+    }
+  }
+
   public void start(Map<String, String> confOverlay) throws Exception {
     hiveServer2 = new HiveServer2();
     // Set confOverlay parameters
@@ -122,6 +171,7 @@ public class MiniHS2 extends AbstractHiveService {
       if (mr != null) {
         mr.shutdown();
         mr = null;
+        resetHiveConfFile(HiveConf.class.getResource("hive-site.xml"));
       }
       if (dfs != null) {
         dfs.shutdown();
@@ -129,6 +179,8 @@ public class MiniHS2 extends AbstractHiveService {
       }
     } catch (IOException e) {
       // Ignore errors cleaning up miniMR
+    } finally {
+      clearProperties();
     }
     FileUtils.deleteQuietly(baseDir);
   }

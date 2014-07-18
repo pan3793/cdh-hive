@@ -135,16 +135,6 @@ public class SessionManager extends CompositeService {
     handleToSession.put(session.getSessionHandle(), session);
 
     try {
-      // reload the scheduler queue if possible
-      if (!withImpersonation &&
-          session.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE)) {
-        ShimLoader.getHadoopShims().
-          refreshDefaultQueue(session.getHiveConf(), session.getUserName());
-      }
-    } catch (IOException e1) {
-      LOG.warn("Error setting scheduler queue ", e1);
-    }
-    try {
       executeSessionHooks(session);
     } catch (Exception e) {
       throw new HiveSQLException("Failed to execute session hooks", e);
