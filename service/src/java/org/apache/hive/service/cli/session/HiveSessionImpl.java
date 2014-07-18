@@ -36,6 +36,7 @@ import org.apache.hadoop.hive.ql.exec.FetchFormatter;
 import org.apache.hadoop.hive.ql.exec.ListSinkOperator;
 import org.apache.hadoop.hive.ql.history.HiveHistory;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.common.util.HiveVersionInfo;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.FetchOrientation;
@@ -89,6 +90,16 @@ public class HiveSessionImpl implements HiveSession {
     this.sessionHandle = new SessionHandle(protocol);
     this.hiveConf = new HiveConf(serverhiveConf);
     this.ipAddress = ipAddress;
+
+    try {
+      // reload the scheduler queue if possible
+      if (hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE)) {
+        ShimLoader.getHadoopShims().
+          refreshDefaultQueue(hiveConf, username);
+      }
+    } catch (IOException e1) {
+      LOG.warn("Error setting scheduler queue ", e1);
+    }
 
     //set conf properties specified by user from client side
     if (sessionConfMap != null) {

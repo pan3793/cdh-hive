@@ -73,6 +73,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.Progressable;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.AllocationConfiguration;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.QueuePlacementPolicy;
 import org.apache.tez.test.MiniTezCluster;
 
@@ -85,6 +86,7 @@ import com.google.common.collect.Iterables;
  * Implemention of shims against Hadoop 0.23.0.
  */
 public class Hadoop23Shims extends HadoopShimsSecure {
+  private static final String MR2_JOB_QUEUE_PROPERTY = "mapreduce.job.queuename";
 
   HadoopShims.MiniDFSShim cluster = null;
 
@@ -293,9 +295,9 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       QueuePlacementPolicy queuePolicy = allocConf.getPlacementPolicy();
       if (queuePolicy != null) {
         requestedQueue = queuePolicy.assignAppToQueue(requestedQueue, userName);
-        LOG.debug("Setting queue name to " + requestedQueue + " for user " + userName);
         if (StringUtils.isNotBlank(requestedQueue)) {
-          conf.set("mapred.job.queue.name", requestedQueue);
+          LOG.debug("Setting queue name to " + requestedQueue + " for user " + userName);
+          conf.set(MR2_JOB_QUEUE_PROPERTY, requestedQueue);
         }
       }
     }
@@ -303,8 +305,8 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
   // verify if the configured scheduler is fair scheduler
   private boolean isFairScheduler (Configuration conf) {
-    return "org.apache.hadoop.mapred.FairScheduler".
-          equalsIgnoreCase(conf.get("mapred.jobtracker.taskScheduler", ""));
+    return FairScheduler.class.getName().
+        equalsIgnoreCase(conf.get(YarnConfiguration.RM_SCHEDULER));
   }
 
   /**
@@ -365,6 +367,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
         conf.set(pair.getKey(), pair.getValue());
       }
     }
+
   }
 
   /**
