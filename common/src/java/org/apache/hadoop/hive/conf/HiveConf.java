@@ -634,6 +634,7 @@ public class HiveConf extends Configuration {
     HIVEPPDRECOGNIZETRANSITIVITY("hive.ppd.recognizetransivity", true), // predicate pushdown
     HIVEPPDREMOVEDUPLICATEFILTERS("hive.ppd.remove.duplicatefilters", true),
     HIVEMETADATAONLYQUERIES("hive.optimize.metadataonly", true),
+    HIVENULLSCANOPTIMIZE("hive.optimize.null.scan", true),
     // push predicates down to storage handlers
     HIVEOPTPPD_STORAGE("hive.optimize.ppd.storage", true),
     HIVEOPTGROUPBY("hive.optimize.groupby", true), // optimize group by
@@ -1194,16 +1195,26 @@ public class HiveConf extends Configuration {
     }
 
     enum VarType {
-      STRING { @Override
-      void checkType(String value) throws Exception { } },
-      INT { @Override
-      void checkType(String value) throws Exception { Integer.valueOf(value); } },
-      LONG { @Override
-      void checkType(String value) throws Exception { Long.valueOf(value); } },
-      FLOAT { @Override
-      void checkType(String value) throws Exception { Float.valueOf(value); } },
-      BOOLEAN { @Override
-      void checkType(String value) throws Exception { Boolean.valueOf(value); } };
+      STRING {
+        @Override
+        void checkType(String value) throws Exception { }
+      },
+      INT {
+        @Override
+        void checkType(String value) throws Exception { Integer.valueOf(value); }
+      },
+      LONG {
+        @Override
+        void checkType(String value) throws Exception { Long.valueOf(value); }
+      },
+      FLOAT {
+        @Override
+        void checkType(String value) throws Exception { Float.valueOf(value); }
+      },
+      BOOLEAN {
+        @Override
+        void checkType(String value) throws Exception { Boolean.valueOf(value); }
+      };
 
       boolean isType(String value) {
         try { checkType(value); } catch (Exception e) { return false; }
