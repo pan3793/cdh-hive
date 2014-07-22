@@ -187,6 +187,20 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
   }
 
   @Override
+  public TGetLogResp GetLog(TGetLogReq req) throws TException {
+    TGetLogResp resp = new TGetLogResp();
+    try {
+      String log = cliService.getLog(new OperationHandle(req.getOperationHandle()));
+      resp.setStatus(OK_STATUS);
+      resp.setLog(log);
+    } catch (Exception e) {
+      e.printStackTrace();
+      resp.setStatus(HiveSQLException.toTStatus(e));
+    }
+    return resp;
+  }
+
+  @Override
   public TOpenSessionResp OpenSession(TOpenSessionReq req) throws TException {
     LOG.info("Client protocol version: " + req.getClient_protocol());
     TOpenSessionResp resp = new TOpenSessionResp();

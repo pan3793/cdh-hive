@@ -1120,6 +1120,22 @@ struct TRenewDelegationTokenResp {
   1: required TStatus status
 }
 
+// GetLog()
+//
+// Fetch operation log from the server corresponding to
+// a particular OperationHandle.
+struct TGetLogReq {
+  // Operation whose log is requested
+  1: required TOperationHandle operationHandle
+}
+
+struct TGetLogResp {
+  1: required TStatus status
+
+  2: required string log
+
+}
+
 service TCLIService {
 
   TOpenSessionResp OpenSession(1:TOpenSessionReq req);
@@ -1159,4 +1175,6 @@ service TCLIService {
   TCancelDelegationTokenResp CancelDelegationToken(1:TCancelDelegationTokenReq req);
 
   TRenewDelegationTokenResp RenewDelegationToken(1:TRenewDelegationTokenReq req);
+
+  TGetLogResp GetLog(1:TGetLogReq req);
 }

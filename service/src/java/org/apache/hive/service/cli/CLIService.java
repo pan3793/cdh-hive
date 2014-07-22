@@ -48,6 +48,7 @@ import org.apache.hive.service.cli.operation.Operation;
 import org.apache.hive.service.cli.session.HiveSession;
 import org.apache.hive.service.cli.session.SessionManager;
 import org.apache.hive.service.cli.thrift.TProtocolVersion;
+import org.apache.hive.service.cli.log.OperationLog;
 
 /**
  * CLIService.
@@ -381,10 +382,12 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public void cancelOperation(OperationHandle opHandle)
       throws HiveSQLException {
+    startLogCapture(opHandle);
     sessionManager.getOperationManager().getOperation(opHandle)
     .getParentSession().cancelOperation(opHandle);
     LOG.debug(opHandle + ": cancelOperation()");
     sessionManager.clearIpAddress();
+    stopLogCapture();
   }
 
   /* (non-Javadoc)
@@ -393,10 +396,13 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public void closeOperation(OperationHandle opHandle)
       throws HiveSQLException {
+    startLogCapture(opHandle);
     sessionManager.getOperationManager().getOperation(opHandle)
     .getParentSession().closeOperation(opHandle);
     LOG.debug(opHandle + ": closeOperation");
     sessionManager.clearIpAddress();
+    sessionManager.getLogManager().destroyOperationLog(opHandle);
+    stopLogCapture();
   }
 
   /* (non-Javadoc)
@@ -405,10 +411,12 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public TableSchema getResultSetMetadata(OperationHandle opHandle)
       throws HiveSQLException {
+    startLogCapture(opHandle);
     TableSchema tableSchema = sessionManager.getOperationManager()
         .getOperation(opHandle).getParentSession().getResultSetMetadata(opHandle);
     LOG.debug(opHandle + ": getResultSetMetadata()");
     sessionManager.clearIpAddress();
+    stopLogCapture();
     return tableSchema;
   }
 
@@ -418,10 +426,12 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public RowSet fetchResults(OperationHandle opHandle, FetchOrientation orientation, long maxRows)
       throws HiveSQLException {
+    startLogCapture(opHandle);
     RowSet rowSet = sessionManager.getOperationManager().getOperation(opHandle)
         .getParentSession().fetchResults(opHandle, orientation, maxRows);
     LOG.debug(opHandle + ": fetchResults()");
     sessionManager.clearIpAddress();
+    stopLogCapture();
     return rowSet;
   }
 
@@ -431,10 +441,12 @@ public class CLIService extends CompositeService implements ICLIService {
   @Override
   public RowSet fetchResults(OperationHandle opHandle)
       throws HiveSQLException {
+    startLogCapture(opHandle);
     RowSet rowSet = sessionManager.getOperationManager().getOperation(opHandle)
         .getParentSession().fetchResults(opHandle);
     LOG.debug(opHandle + ": fetchResults()");
     sessionManager.clearIpAddress();
+    stopLogCapture();
     return rowSet;
   }
 
@@ -517,5 +529,26 @@ public class CLIService extends CompositeService implements ICLIService {
     } catch (HiveSQLException e) {
       LOG.error("Unable to set userName in sessions", e);
     }
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.hive.service.cli.ICLIService#getLog(org.apache.hive.service.cli.OperationHandle)
+   */
+   @Override
+   public String getLog(OperationHandle opHandle)
+      throws HiveSQLException {
+     OperationLog log = sessionManager.getLogManager().getOperationLogByOperation(opHandle, false);
+     LOG.info(opHandle  + ": getLog()");
+     sessionManager.clearIpAddress();
+     return log.readOperationLog();
+   }
+
+  private void startLogCapture(OperationHandle operationHandle) throws HiveSQLException {
+    sessionManager.getLogManager().unregisterCurrentThread();
+    sessionManager.getLogManager().registerCurrentThread(operationHandle);
+  }
+
+  private void stopLogCapture() {
+    sessionManager.getLogManager().unregisterCurrentThread();
   }
 }

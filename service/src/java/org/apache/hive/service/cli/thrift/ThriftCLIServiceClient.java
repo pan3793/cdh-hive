@@ -450,4 +450,19 @@ public class ThriftCLIServiceClient extends CLIServiceClient {
       throw new HiveSQLException(e);
     }
   }
+
+  @Override
+  public String getLog(OperationHandle opHandle) throws HiveSQLException {
+    try {
+      TGetLogReq req = new TGetLogReq();
+      req.setOperationHandle(opHandle.toTOperationHandle());
+      TGetLogResp resp = cliService.GetLog(req);
+      checkStatus(resp.getStatus());
+      return new String(resp.getLog());
+    } catch (HiveSQLException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new HiveSQLException(e);
+    }
+  }
 }

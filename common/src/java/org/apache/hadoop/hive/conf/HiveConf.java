@@ -936,6 +936,8 @@ public class HiveConf extends Configuration {
     HIVE_SECURITY_COMMAND_WHITELIST("hive.security.command.whitelist", "set,reset,dfs,add,delete,compile"),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", "hive.security.authenticator.manager,hive.security.authorization.manager"),
+    HIVE_SERVER2_IN_MEM_LOGGING("hive.server2.in.mem.logging", true),
+    HIVE_SERVER2_IN_MEM_LOG_SIZE("hive.server2.in.mem.log.size", 128 * 1024),
 
     // If this is set all move tasks at the end of a multi-insert query will only begin once all
     // outputs are ready

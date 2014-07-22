@@ -195,11 +195,18 @@ public class SQLOperation extends ExecuteStatementOperation {
               // User information is part of the metastore client member in Hive
               Hive.set(sessionHive);
               SessionState.setCurrentSessionState(parentSessionState);
+              getParentSession().getSessionManager().
+                  getLogManager().unregisterCurrentThread();
               try {
+                getParentSession().getSessionManager().
+                    getLogManager().registerCurrentThread(getHandle());
                 runInternal(opConfig);
               } catch (HiveSQLException e) {
                 setOperationException(e);
                 LOG.error("Error running hive query: ", e);
+             } finally {
+               getParentSession().getSessionManager().
+                   getLogManager().unregisterCurrentThread();
               }
               return null;
             }

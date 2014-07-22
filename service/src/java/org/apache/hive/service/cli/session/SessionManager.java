@@ -39,6 +39,7 @@ import org.apache.hive.service.CompositeService;
 import org.apache.hive.service.auth.TSetIpAddressProcessor;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.SessionHandle;
+import org.apache.hive.service.cli.log.LogManager;
 import org.apache.hive.service.cli.operation.OperationManager;
 import org.apache.hive.service.cli.thrift.TProtocolVersion;
 
@@ -54,6 +55,7 @@ public class SessionManager extends CompositeService {
       new ConcurrentHashMap<SessionHandle, HiveSession>();
   private final OperationManager operationManager = new OperationManager();
   private ThreadPoolExecutor backgroundOperationPool;
+  private LogManager logManager = new LogManager();
 
   public SessionManager() {
     super("SessionManager");
@@ -81,6 +83,10 @@ public class SessionManager extends CompositeService {
         keepAliveTime, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(backgroundPoolQueueSize));
     backgroundOperationPool.allowCoreThreadTimeOut(true);
     addService(operationManager);
+    logManager = new LogManager();
+    logManager.setSessionManager(this);
+
+    addService(logManager);
     super.init(hiveConf);
   }
 
@@ -131,6 +137,7 @@ public class SessionManager extends CompositeService {
     }
     session.setSessionManager(this);
     session.setOperationManager(operationManager);
+    session.setLogManager(logManager);
     session.open();
     handleToSession.put(session.getSessionHandle(), session);
 
@@ -160,6 +167,10 @@ public class SessionManager extends CompositeService {
 
   public OperationManager getOperationManager() {
     return operationManager;
+  }
+
+  public LogManager getLogManager() {
+    return logManager;
   }
 
   private static ThreadLocal<String> threadLocalIpAddress = new ThreadLocal<String>() {

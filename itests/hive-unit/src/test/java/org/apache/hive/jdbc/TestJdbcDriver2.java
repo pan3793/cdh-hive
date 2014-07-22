@@ -1890,6 +1890,31 @@ public class TestJdbcDriver2 {
     assertFalse(res.next());
   }
 
+  @Test
+  public void testGetLog() throws Exception {
+    HiveStatement stmt = (HiveStatement)con.createStatement();
+    assertNotNull("Statement is null", stmt);
+
+    ResultSet res = stmt.executeQuery("select count(*) from " + tableName);
+    ResultSetMetaData meta = res.getMetaData();
+
+    boolean moreRow = res.next();
+    while (moreRow) {
+      try {
+        moreRow = res.next();
+      } catch (SQLException e) {
+        throw e;
+      }
+    }
+
+    String log = stmt.getLog();
+    assertTrue("Operation Log looks incorrect" ,
+        log.contains("Parsing command: select count(*) from testHiveJdbcDriver_Table"));
+    assertTrue("Operation Log looks incorrect",
+        log.contains( "select count(*) from testHiveJdbcDriver_Table"));
+
+  }
+
   /**
    * If the Driver implementation understands the URL, it will return a Connection object;
    * otherwise it returns null
