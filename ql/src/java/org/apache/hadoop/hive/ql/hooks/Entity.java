@@ -314,7 +314,11 @@ public class Entity implements Serializable {
     case DUMMYPARTITION:
       return p.getName();
     case UDF:
-      return udf.getDisplayName();
+      if (udf == null) {
+        return "";
+      } else {
+        return udf.getDisplayName();
+      }
     default:
       return d;
     }
