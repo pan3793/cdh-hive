@@ -51,6 +51,7 @@ import org.apache.hive.service.server.ThreadFactoryWithGarbageCleanup;
 public class SessionManager extends CompositeService {
 
   private static final Log LOG = LogFactory.getLog(CompositeService.class);
+  public static final String HIVERCFILE = ".hiverc";
   private HiveConf hiveConf;
   private final Map<SessionHandle, HiveSession> handleToSession =
       new ConcurrentHashMap<SessionHandle, HiveSession>();
@@ -185,16 +186,17 @@ public class SessionManager extends CompositeService {
     HiveSession session;
     if (withImpersonation) {
       HiveSessionImplwithUGI hiveSessionUgi = new HiveSessionImplwithUGI(protocol, username, password,
-        hiveConf, sessionConf, TSetIpAddressProcessor.getUserIpAddress(), delegationToken);
+        hiveConf, TSetIpAddressProcessor.getUserIpAddress(), delegationToken);
       session = HiveSessionProxy.getProxy(hiveSessionUgi, hiveSessionUgi.getSessionUgi());
       hiveSessionUgi.setProxySession(session);
     } else {
-      session = new HiveSessionImpl(protocol, username, password, hiveConf, sessionConf,
+      session = new HiveSessionImpl(protocol, username, password, hiveConf,
           TSetIpAddressProcessor.getUserIpAddress());
     }
     session.setSessionManager(this);
     session.setOperationManager(operationManager);
     session.setLogManager(logManager);
+    session.initialize(sessionConf);
     session.open();
     handleToSession.put(session.getSessionHandle(), session);
 

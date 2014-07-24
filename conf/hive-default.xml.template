@@ -1816,6 +1816,16 @@
 </property>
 
 <property>
+  <key>hive.global.init.file.location</key>
+  <value/>
+  <description>
+    The location of HS2 global init file (.hiverc).
+    If the property is not set, then HS2 will search for the file in $HIVE_CONF_DIR/.
+    If the property is set, the value must be a valid path where the init file is located.
+  </description>
+</property>
+
+<property>
   <name>hive.autogen.columnalias.prefix.label</name>
   <value>_c</value>
   <description>String used as a prefix when auto generating column alias.
