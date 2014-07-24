@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
-import org.apache.hadoop.hive.serde2.typeinfo.DecimalTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.ListTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.MapTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.StructTypeInfo;
@@ -25,7 +24,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 
 import parquet.schema.ConversionPatterns;
-import parquet.schema.DecimalMetadata;
 import parquet.schema.GroupType;
 import parquet.schema.MessageType;
 import parquet.schema.OriginalType;
@@ -33,7 +31,6 @@ import parquet.schema.PrimitiveType;
 import parquet.schema.PrimitiveType.PrimitiveTypeName;
 import parquet.schema.Type;
 import parquet.schema.Type.Repetition;
-import parquet.schema.Types;
 
 public class HiveSchemaConverter {
 
@@ -61,7 +58,7 @@ public class HiveSchemaConverter {
   private static Type convertType(final String name, final TypeInfo typeInfo, final Repetition repetition) {
     if (typeInfo.getCategory().equals(Category.PRIMITIVE)) {
       if (typeInfo.equals(TypeInfoFactory.stringTypeInfo)) {
-        return new PrimitiveType(repetition, PrimitiveTypeName.BINARY, name, OriginalType.UTF8);
+        return new PrimitiveType(repetition, PrimitiveTypeName.BINARY, name);
       } else if (typeInfo.equals(TypeInfoFactory.intTypeInfo) ||
           typeInfo.equals(TypeInfoFactory.shortTypeInfo) ||
           typeInfo.equals(TypeInfoFactory.byteTypeInfo)) {
@@ -81,13 +78,6 @@ public class HiveSchemaConverter {
         throw new UnsupportedOperationException("Timestamp type not implemented");
       } else if (typeInfo.equals(TypeInfoFactory.voidTypeInfo)) {
         throw new UnsupportedOperationException("Void type not implemented");
-      } else if (typeInfo instanceof DecimalTypeInfo) {
-        DecimalTypeInfo decimalTypeInfo = (DecimalTypeInfo) typeInfo;
-        int prec = decimalTypeInfo.precision();
-        int scale = decimalTypeInfo.scale();
-        int bytes = ParquetHiveSerDe.PRECISION_TO_BYTE_COUNT[prec - 1];
-        return Types.optional(PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY).length(bytes).as(OriginalType.DECIMAL).
-        		scale(scale).precision(prec).named(name);
       } else if (typeInfo.equals(TypeInfoFactory.unknownTypeInfo)) {
         throw new UnsupportedOperationException("Unknown type not implemented");
       } else {

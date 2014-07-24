@@ -21,7 +21,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.io.IOConstants;
 import org.apache.hadoop.hive.ql.io.parquet.writable.BinaryWritable;
 import org.apache.hadoop.hive.serde2.AbstractSerDe;
@@ -251,27 +250,6 @@ public class ParquetHiveSerDe extends AbstractSerDe {
       return new ShortWritable((short) ((ShortObjectInspector) inspector).get(obj));
     case STRING:
       return new BinaryWritable(Binary.fromString(((StringObjectInspector) inspector).getPrimitiveJavaObject(obj)));
-    case DECIMAL:
-      HiveDecimal hd = (HiveDecimal)inspector.getPrimitiveJavaObject(obj);
-      DecimalTypeInfo decTypeInfo = (DecimalTypeInfo) inspector.getTypeInfo();
-      int prec = decTypeInfo.precision();
-      int scale = decTypeInfo.scale();
-      byte[] src = hd.setScale(scale).unscaledValue().toByteArray();
-      // Estimated number of bytes needed.
-      int bytes =  PRECISION_TO_BYTE_COUNT[prec - 1];
-      if (bytes == src.length) {
-        // No padding needed.
-        return new BinaryWritable(Binary.fromByteArray(src));
-      }
-      byte[] tgt = new byte[bytes];
-      if ( hd.signum() == -1) {
-        // For negative number, initializing bits to 1
-        for (int i = 0; i < bytes; i++) {
-          tgt[i] |= 0xFF;
-        }
-      }
-      System.arraycopy(src, 0, tgt, bytes - src.length, src.length); // Padding leading zeroes/ones.
-      return new BinaryWritable(Binary.fromByteArray(tgt));
     default:
       throw new SerDeException("Unknown primitive : " + inspector.getPrimitiveCategory());
     }
