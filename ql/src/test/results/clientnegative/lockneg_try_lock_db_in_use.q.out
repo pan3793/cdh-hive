@@ -42,5 +42,5 @@ POSTHOOK: Lineage: tstsrcpart PARTITION(ds=2008-04-08,hr=11).value SIMPLE [(srcp
 lockneg2@tstsrcpart	SHARED
 PREHOOK: query: lock database lockneg2 exclusive
 PREHOOK: type: LOCKDATABASE
-conflicting lock present for lockneg2 mode EXCLUSIVE
+Unable to acquire EXPLICIT, EXCLUSIVE lock lockneg2 after 1 attempts.
 FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask
