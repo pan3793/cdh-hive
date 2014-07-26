@@ -30,8 +30,13 @@ STAGE PLANS:
             alias: src
             Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
+<<<<<<< HEAD
               predicate: (key > 100) (type: boolean)
               Statistics: Num rows: 19 Data size: 1903 Basic stats: COMPLETE Column stats: NONE
+=======
+              predicate: ((key > 100) and key is not null) (type: boolean)
+              Statistics: Num rows: 19 Data size: 3807 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 44c4e54... HIVE-5771 : Constant propagation optimizer for Hive (Ted Xu via Ashutosh Chauhan)
               Reduce Output Operator
                 key expressions: key (type: string)
                 sort order: +
@@ -42,8 +47,13 @@ STAGE PLANS:
             alias: srcpart
             Statistics: Num rows: 58 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
+<<<<<<< HEAD
               predicate: (key > 100) (type: boolean)
               Statistics: Num rows: 19 Data size: 3807 Basic stats: COMPLETE Column stats: NONE
+=======
+              predicate: ((key > 100) and key is not null) (type: boolean)
+              Statistics: Num rows: 19 Data size: 1903 Basic stats: COMPLETE Column stats: NONE
+>>>>>>> 44c4e54... HIVE-5771 : Constant propagation optimizer for Hive (Ted Xu via Ashutosh Chauhan)
               Reduce Output Operator
                 key expressions: key (type: string)
                 sort order: +

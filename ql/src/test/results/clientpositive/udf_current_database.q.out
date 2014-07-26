@@ -22,7 +22,7 @@ STAGE PLANS:
             Row Limit Per Split: 1
             Statistics: Num rows: 0 Data size: 1 Basic stats: PARTIAL Column stats: COMPLETE
             Select Operator
-              expressions: current_database() (type: string)
+              expressions: 'default' (type: string)
               outputColumnNames: _col0
               Statistics: Num rows: 0 Data size: 1 Basic stats: PARTIAL Column stats: COMPLETE
               File Output Operator
@@ -73,7 +73,7 @@ STAGE PLANS:
             Row Limit Per Split: 1
             Statistics: Num rows: 0 Data size: 1 Basic stats: PARTIAL Column stats: COMPLETE
             Select Operator
-              expressions: current_database() (type: string)
+              expressions: 'xxx' (type: string)
               outputColumnNames: _col0
               Statistics: Num rows: 0 Data size: 1 Basic stats: PARTIAL Column stats: COMPLETE
               File Output Operator
@@ -120,7 +120,7 @@ STAGE PLANS:
           Row Limit Per Split: 1
           Statistics: Num rows: 0 Data size: 1 Basic stats: PARTIAL Column stats: COMPLETE
           Select Operator
-            expressions: current_database() (type: string)
+            expressions: 'default' (type: string)
             outputColumnNames: _col0
             Statistics: Num rows: 0 Data size: 1 Basic stats: PARTIAL Column stats: COMPLETE
             ListSink
@@ -157,7 +157,7 @@ STAGE PLANS:
           Row Limit Per Split: 1
           Statistics: Num rows: 0 Data size: 1 Basic stats: PARTIAL Column stats: COMPLETE
           Select Operator
-            expressions: current_database() (type: string)
+            expressions: 'xxx' (type: string)
             outputColumnNames: _col0
             Statistics: Num rows: 0 Data size: 1 Basic stats: PARTIAL Column stats: COMPLETE
             ListSink
