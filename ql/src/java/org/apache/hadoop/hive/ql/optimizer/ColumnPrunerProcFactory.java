@@ -30,6 +30,7 @@ import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.hive.ql.exec.AbstractMapJoinOperator;
 import org.apache.hadoop.hive.ql.exec.ColumnInfo;
 import org.apache.hadoop.hive.ql.exec.CommonJoinOperator;
 import org.apache.hadoop.hive.ql.exec.FilterOperator;
@@ -39,6 +40,7 @@ import org.apache.hadoop.hive.ql.exec.LateralViewForwardOperator;
 import org.apache.hadoop.hive.ql.exec.LateralViewJoinOperator;
 import org.apache.hadoop.hive.ql.exec.MapJoinOperator;
 import org.apache.hadoop.hive.ql.exec.Operator;
+import org.apache.hadoop.hive.ql.exec.OperatorFactory;
 import org.apache.hadoop.hive.ql.exec.PTFOperator;
 import org.apache.hadoop.hive.ql.exec.ReduceSinkOperator;
 import org.apache.hadoop.hive.ql.exec.RowSchema;
@@ -50,6 +52,7 @@ import org.apache.hadoop.hive.ql.lib.Node;
 import org.apache.hadoop.hive.ql.lib.NodeProcessor;
 import org.apache.hadoop.hive.ql.lib.NodeProcessorCtx;
 import org.apache.hadoop.hive.ql.metadata.VirtualColumn;
+import org.apache.hadoop.hive.ql.parse.OpParseContext;
 import org.apache.hadoop.hive.ql.parse.RowResolver;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.AggregationDesc;
@@ -85,6 +88,7 @@ public final class ColumnPrunerProcFactory {
    * Node Processor for Column Pruning on Filter Operators.
    */
   public static class ColumnPrunerFilterProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
       FilterOperator op = (FilterOperator) nd;
@@ -118,6 +122,7 @@ public final class ColumnPrunerProcFactory {
    * Node Processor for Column Pruning on Group By Operators.
    */
   public static class ColumnPrunerGroupByProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
       GroupByOperator op = (GroupByOperator) nd;
@@ -151,6 +156,69 @@ public final class ColumnPrunerProcFactory {
     return new ColumnPrunerGroupByProc();
   }
 
+  public static class ColumnPrunerScriptProc implements NodeProcessor {
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
+        Object... nodeOutputs) throws SemanticException {
+
+      ColumnPrunerProcCtx cppCtx = (ColumnPrunerProcCtx) ctx;
+      Operator<? extends OperatorDesc> op = (Operator<? extends OperatorDesc>) nd;
+      RowResolver inputRR = cppCtx.getParseContext().getOpParseCtx().get(op)
+          .getRowResolver();
+
+      List<String> prunedCols = cppCtx.getPrunedColList(op.getChildOperators()
+          .get(0));
+      Operator<? extends OperatorDesc> parent = op.getParentOperators().get(0);
+      RowResolver parentRR = cppCtx.getParseContext().getOpParseCtx()
+          .get(parent).getRowResolver();
+      List<ColumnInfo> sig = parentRR.getRowSchema().getSignature();
+      List<String> colList = new ArrayList<String>();
+      for (ColumnInfo cI : sig) {
+        colList.add(cI.getInternalName());
+      }
+
+      if (prunedCols.size() != inputRR.getRowSchema().getSignature().size()
+          && !(op.getChildOperators().get(0) instanceof SelectOperator)) {
+        ArrayList<ExprNodeDesc> exprs = new ArrayList<ExprNodeDesc>();
+        ArrayList<String> outputs = new ArrayList<String>();
+        Map<String, ExprNodeDesc> colExprMap = new HashMap<String, ExprNodeDesc>();
+        RowResolver outputRS = new RowResolver();
+        for (String internalName : prunedCols) {
+          String[] nm = inputRR.reverseLookup(internalName);
+          ColumnInfo valueInfo = inputRR.get(nm[0], nm[1]);
+          ExprNodeDesc colDesc = new ExprNodeColumnDesc(valueInfo.getType(),
+              valueInfo.getInternalName(), nm[0], valueInfo.getIsVirtualCol());
+          exprs.add(colDesc);
+          outputs.add(internalName);
+          outputRS.put(nm[0], nm[1],
+              new ColumnInfo(internalName, valueInfo.getType(), nm[0],
+                  valueInfo.getIsVirtualCol(), valueInfo.isHiddenVirtualCol()));
+          colExprMap.put(internalName, colDesc);
+        }
+        SelectDesc select = new SelectDesc(exprs, outputs, false);
+
+        Operator<? extends OperatorDesc> child = op.getChildOperators().get(0);
+        op.removeChild(child);
+        SelectOperator sel = (SelectOperator) OperatorFactory.getAndMakeChild(
+            select, new RowSchema(outputRS.getColumnInfos()), op);
+        OperatorFactory.makeChild(sel, child);
+
+        OpParseContext parseCtx = new OpParseContext(outputRS);
+        cppCtx.getParseContext().getOpParseCtx().put(sel, parseCtx);
+
+        sel.setColumnExprMap(colExprMap);
+      }
+
+      cppCtx.getPrunedColLists().put(op, colList);
+      return null;
+    }
+  }
+
+  public static ColumnPrunerScriptProc getScriptProc() {
+    return new ColumnPrunerScriptProc();
+  }
+
   /**
    * - Pruning can only be done for Windowing. PTFs are black boxes,
    *   we assume all columns are needed.
@@ -159,7 +227,8 @@ public final class ColumnPrunerProcFactory {
    * - finally we set the prunedColList on the ColumnPrunerContx;
    *   and update the RR & signature on the PTFOp.
    */
-  public static class ColumnPrunerPTFProc implements NodeProcessor {
+  public static class ColumnPrunerPTFProc extends ColumnPrunerScriptProc {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
 
@@ -290,6 +359,7 @@ public final class ColumnPrunerProcFactory {
    * The Default Node Processor for Column Pruning.
    */
   public static class ColumnPrunerDefaultProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
       ColumnPrunerProcCtx cppCtx = (ColumnPrunerProcCtx) ctx;
@@ -314,6 +384,7 @@ public final class ColumnPrunerProcFactory {
    * store needed columns in tableScanDesc.
    */
   public static class ColumnPrunerTableScanProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
       TableScanOperator scanOp = (TableScanOperator) nd;
@@ -386,6 +457,7 @@ public final class ColumnPrunerProcFactory {
    * The Node Processor for Column Pruning on Reduce Sink Operators.
    */
   public static class ColumnPrunerReduceSinkProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
       ReduceSinkOperator op = (ReduceSinkOperator) nd;
@@ -394,6 +466,7 @@ public final class ColumnPrunerProcFactory {
 
       List<String> colLists = new ArrayList<String>();
       ArrayList<ExprNodeDesc> keys = conf.getKeyCols();
+      LOG.debug("Reduce Sink Operator " + op.getIdentifier() + " key:" + keys);
       for (ExprNodeDesc key : keys) {
         colLists = Utilities.mergeUniqElems(colLists, key.getCols());
       }
@@ -422,6 +495,7 @@ public final class ColumnPrunerProcFactory {
         boolean hasUnresolvedReference = false;
         boolean[] flags = new boolean[conf.getValueCols().size()];
         Map<String, ExprNodeDesc> exprMap = op.getColumnExprMap();
+
         for (String childCol : childCols) {
           ExprNodeDesc desc = exprMap.get(childCol);
           int index = conf.getValueCols().indexOf(desc);
@@ -475,6 +549,7 @@ public final class ColumnPrunerProcFactory {
    * The Node Processor for Column Pruning on Lateral View Join Operators.
    */
   public static class ColumnPrunerLateralViewJoinProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
       LateralViewJoinOperator op = (LateralViewJoinOperator) nd;
@@ -569,6 +644,7 @@ public final class ColumnPrunerProcFactory {
    * The Node Processor for Column Pruning on Select Operators.
    */
   public static class ColumnPrunerSelectProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
       SelectOperator op = (SelectOperator) nd;
@@ -738,6 +814,12 @@ public final class ColumnPrunerProcFactory {
           nm = oldRR.reverseLookup(outputCol);
         }
 
+        // In case there are multiple columns referenced to the same column name, we won't
+        // do row resolve once more because the ColumnInfo in row resolver is already removed
+        if (nm == null) {
+          continue;
+        }
+
         // Only remove information of a column if it is not a key,
         // i.e. this column is not appearing in keyExprs of the RS
         if (ExprNodeDescUtils.indexOf(outputColExpr, keyExprs) == -1) {
@@ -785,6 +867,7 @@ public final class ColumnPrunerProcFactory {
    * The Node Processor for Column Pruning on Join Operators.
    */
   public static class ColumnPrunerJoinProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
       JoinOperator op = (JoinOperator) nd;
@@ -807,9 +890,10 @@ public final class ColumnPrunerProcFactory {
    * The Node Processor for Column Pruning on Map Join Operators.
    */
   public static class ColumnPrunerMapJoinProc implements NodeProcessor {
+    @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx ctx,
         Object... nodeOutputs) throws SemanticException {
-      MapJoinOperator op = (MapJoinOperator) nd;
+      AbstractMapJoinOperator<MapJoinDesc> op = (AbstractMapJoinOperator<MapJoinDesc>) nd;
       pruneJoinOperator(ctx, op, op.getConf(), op.getColumnExprMap(), op
           .getConf().getRetainList(), true);
       return null;
@@ -868,6 +952,7 @@ public final class ColumnPrunerProcFactory {
     List<Operator<? extends OperatorDesc>> childOperators = op
         .getChildOperators();
 
+    LOG.info("JOIN " + op.getIdentifier() + " oldExprs: " + conf.getExprs());
     List<String> childColLists = cppCtx.genColLists(op);
     if (childColLists == null) {
         return;
@@ -975,6 +1060,7 @@ public final class ColumnPrunerProcFactory {
       rs.add(col);
     }
 
+    LOG.info("JOIN " + op.getIdentifier() + " newExprs: " + conf.getExprs());
     op.setColumnExprMap(newColExprMap);
     conf.setOutputColumnNames(outputCols);
     op.getSchema().setSignature(rs);

@@ -112,7 +112,7 @@ public class MapJoinOperator extends AbstractMapJoinOperator<MapJoinDesc> implem
       hashTblInitedOnce = false;
     }
   }
-
+  
   public void generateMapMetaData() throws HiveException, SerDeException {
     // generate the meta data for key
     // index for key is -1
