@@ -558,13 +558,14 @@ public class Context {
   }
 
   public void restoreOriginalTracker() {
+    if (originalMRFramework != null) {
+      ShimLoader.getHadoopShims().setMRFramework(conf, originalMRFramework);
+      originalMRFramework = null;
+    }
+
     if (originalTracker != null) {
       ShimLoader.getHadoopShims().setJobLauncherRpcAddress(conf, originalTracker);
       originalTracker = null;
-      if (originalMRFramework != null) {
-        ShimLoader.getHadoopShims().setMRFramework(conf, originalMRFramework);
-        originalMRFramework = null;
-      }
     }
   }
 
