@@ -230,16 +230,18 @@ public class QTestUtil {
     return logDir;
   }
 
-  private String getHadoopMainVersion(String input) {
-    if (input == null) {
-      return null;
+  /**
+   * Upstream, the Shim class will translate between hadoop versions and several versions as understood by the unit tests.
+   * As there is only one shimloader in cdh hive (Hadoop23Shim), this is hacky solution to do an equivalent.
+   */
+  private String getMajorVersion() {
+    if (hadoopVer.startsWith("0.20")) {
+      return "0.20";
+    } else if (hadoopVer.contains("mr1")) {
+      return "0.20S";
+    } else {
+      return "0.23";
     }
-    Pattern p = Pattern.compile("^(\\d+\\.\\d+).*");
-    Matcher m = p.matcher(input);
-    if (m.matches()) {
-      return m.group(1);
-    }
-    return null;
   }
 
   public void initConf() throws Exception {
@@ -345,7 +347,7 @@ public class QTestUtil {
     }
     conf = new HiveConf(Driver.class);
     this.miniMr = (clusterType == MiniClusterType.mr);
-    this.hadoopVer = getHadoopMainVersion(hadoopVer);
+    this.hadoopVer = hadoopVer;
     qMap = new TreeMap<String, String>();
     qSkipSet = new HashSet<String>();
     qSortSet = new HashSet<String>();
@@ -465,7 +467,7 @@ public class QTestUtil {
     boolean excludeQuery = false;
     boolean includeQuery = false;
     Set<String> versionSet = new HashSet<String>();
-    String hadoopVer = ShimLoader.getMajorVersion();
+    String hadoopVer = getMajorVersion();
 
     Matcher matcher = pattern.matcher(query);
 
