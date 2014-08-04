@@ -4168,10 +4168,14 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     tbl.setInputFormatClass(crtTbl.getInputFormat());
     tbl.setOutputFormatClass(crtTbl.getOutputFormat());
 
-    tbl.getTTable().getSd().setInputFormat(
-        tbl.getInputFormatClass().getName());
-    tbl.getTTable().getSd().setOutputFormat(
-        tbl.getOutputFormatClass().getName());
+    // only persist input/ouput format to metadata when it is explicitly specified.
+    // Otherwise, load lazily via StorageHandler at query time.
+    if (crtTbl.getInputFormat() != null && !crtTbl.getInputFormat().isEmpty()) {
+      tbl.getTTable().getSd().setInputFormat(tbl.getInputFormatClass().getName());
+    }
+    if (crtTbl.getOutputFormat() != null && !crtTbl.getOutputFormat().isEmpty()) {
+      tbl.getTTable().getSd().setOutputFormat(tbl.getOutputFormatClass().getName());
+    }
 
     if (crtTbl.isExternal()) {
       tbl.setProperty("EXTERNAL", "TRUE");
