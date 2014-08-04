@@ -778,6 +778,8 @@ public class HiveConf extends Configuration {
     // For HBase storage handler
     HIVE_HBASE_WAL_ENABLED("hive.hbase.wal.enabled", true),
     HIVE_HBASE_GENERATE_HFILES("hive.hbase.generatehfiles", false),
+    HIVE_HBASE_SNAPSHOT_NAME("hive.hbase.snapshot.name", null),
+    HIVE_HBASE_SNAPSHOT_RESTORE_DIR("hive.hbase.snapshot.restoredir", "/tmp"),
 
     // For har files
     HIVEARCHIVEENABLED("hive.archive.enabled", false),
