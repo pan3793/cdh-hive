@@ -286,7 +286,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       } else {
         delegationTokenStr = cliService.getDelegationTokenFromMetaStore(userName);
       }
-      sessionHandle = cliService.openSessionWithImpersonation(userName, req.getPassword(),
+      sessionHandle = cliService.openSessionWithImpersonation(protocol, userName, req.getPassword(),
           req.getConfiguration(), delegationTokenStr);
     } else {
       sessionHandle = cliService.openSession(protocol, userName, req.getPassword(),
