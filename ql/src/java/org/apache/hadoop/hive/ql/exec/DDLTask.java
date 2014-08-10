@@ -2142,7 +2142,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     final String ROW_FORMAT = "row_format";
     final String TBL_LOCATION = "tbl_location";
     final String TBL_PROPERTIES = "tbl_properties";
-    boolean isHbaseTable = false;
+    boolean needsLocation = true;
     StringBuilder createTab_str = new StringBuilder();
 
     String tableName = showCreateTbl.getTableName();
@@ -2154,9 +2154,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       FileSystem fs = resFile.getFileSystem(conf);
       outStream = fs.create(resFile);
 
-      if (tbl.getStorageHandler() != null) {
-        isHbaseTable = tbl.getStorageHandler().toString().equals("org.apache.hadoop.hive.hbase.HBaseStorageHandler");
-      }
+      needsLocation = doesTableNeedLocation(tbl);
 
       if (tbl.isView()) {
         String createTab_stmt = "CREATE VIEW `" + tableName + "` AS " + tbl.getViewExpandedText();
@@ -2173,7 +2171,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       createTab_str.append("<" + LIST_PARTITIONS + ">\n");
       createTab_str.append("<" + SORT_BUCKET + ">\n");
       createTab_str.append("<" + ROW_FORMAT + ">\n");
-      if (!isHbaseTable) {
+      if (needsLocation) {
         createTab_str.append("LOCATION\n");
         createTab_str.append("<" + TBL_LOCATION + ">\n");
       }
@@ -2348,7 +2346,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       createTab_stmt.add(SORT_BUCKET, tbl_sort_bucket);
       createTab_stmt.add(ROW_FORMAT, tbl_row_format);
       // Table location should not be printed with hbase backed tables
-      if (!isHbaseTable) {
+      if (needsLocation) {
         createTab_stmt.add(TBL_LOCATION, tbl_location);
       }
       createTab_stmt.add(TBL_PROPERTIES, tbl_properties);
@@ -4197,7 +4195,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       tbl.getTTable().getSd().setOutputFormat(tbl.getOutputFormatClass().getName());
     }
 
-    if (!Utilities.isDefaultNameNode(conf) && tbl.getTTable().getSd().isSetLocation()) {
+    if (!Utilities.isDefaultNameNode(conf) && doesTableNeedLocation(tbl)) {
       // If location is specified - ensure that it is a full qualified name
       makeLocationQualified(tbl.getDbName(), tbl.getTTable().getSd(), tbl.getTableName());
     }
@@ -4583,5 +4581,16 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
           Utilities.getQualifiedPath(conf, new Path(HiveConf.getVar(conf, HiveConf.ConfVars.METASTOREWAREHOUSE),
               database.getName().toLowerCase() + ".db")));
     }
+  }
+
+  private static boolean doesTableNeedLocation(Table tbl) {
+    // If we are ok with breaking compatibility of existing 3rd party StorageHandlers,
+    // this method could be moved to the HiveStorageHandler interface.
+    boolean retval = true;
+    if (tbl.getStorageHandler() != null) {
+      retval = !tbl.getStorageHandler().toString().equals(
+          "org.apache.hadoop.hive.hbase.HBaseStorageHandler");
+    }
+    return retval;
   }
 }
