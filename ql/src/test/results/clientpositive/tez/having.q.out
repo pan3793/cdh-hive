@@ -1203,7 +1203,7 @@ POSTHOOK: query: EXPLAIN SELECT key, COUNT(value) FROM src GROUP BY key HAVING c
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1
+  Stage-0 is a root stage
 
 STAGE PLANS:
   Stage: Stage-1
@@ -1259,8 +1259,6 @@ STAGE PLANS:
   Stage: Stage-0
     Fetch Operator
       limit: -1
-      Processor Tree:
-        ListSink
 
 PREHOOK: query: SELECT key, COUNT(value) FROM src GROUP BY key HAVING count(value) >= 4
 PREHOOK: type: QUERY
