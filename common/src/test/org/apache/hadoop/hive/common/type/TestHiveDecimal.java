@@ -50,8 +50,8 @@ public class TestHiveDecimal {
     Assert.assertEquals("-1786135888657847525803324040144343378.1", dec.toString());
 
     dec = HiveDecimal.create("005.34000");
-    Assert.assertEquals(dec.precision(), 3);
-    Assert.assertEquals(dec.scale(), 2);
+    Assert.assertEquals(dec.precision(), 6);
+    Assert.assertEquals(dec.scale(), 5);
 
     dec = HiveDecimal.create("178613588865784752580332404014434337809799306448796128931113691624");
     Assert.assertNull(dec);
@@ -92,7 +92,7 @@ public class TestHiveDecimal {
   public void testMultiply() {
     HiveDecimal dec1 = HiveDecimal.create("0.00001786135888657847525803");
     HiveDecimal dec2 = HiveDecimal.create("3.0000123456789");
-    Assert.assertNull(dec1.multiply(dec2));
+    Assert.assertNotNull(dec1.multiply(dec2));
 
     dec1 = HiveDecimal.create("178613588865784752580323232232323444.4");
     dec2 = HiveDecimal.create("178613588865784752580302323232.3");
@@ -101,6 +101,14 @@ public class TestHiveDecimal {
     dec1 = HiveDecimal.create("47.324");
     dec2 = HiveDecimal.create("9232.309");
     Assert.assertEquals("436909.791116", dec1.multiply(dec2).toString());
+
+    dec1 = HiveDecimal.create("3.140");
+    dec2 = HiveDecimal.create("1.00");
+    Assert.assertEquals("3.14000", dec1.multiply(dec2).toString());
+
+    dec1 = HiveDecimal.create("43.010");
+    dec2 = HiveDecimal.create("2");
+    Assert.assertEquals("86.020", dec1.multiply(dec2).toString());
   }
 
   @Test
@@ -111,6 +119,9 @@ public class TestHiveDecimal {
     HiveDecimal dec1 = HiveDecimal.create("0.000017861358882");
     dec1 = dec1.pow(3);
     Assert.assertNull(dec1);
+
+    dec1 = HiveDecimal.create("3.140");
+    Assert.assertEquals("9.859600", dec1.pow(2).toString());
   }
 
   @Test
@@ -118,6 +129,14 @@ public class TestHiveDecimal {
     HiveDecimal dec1 = HiveDecimal.create("3.14");
     HiveDecimal dec2 = HiveDecimal.create("3");
     Assert.assertNotNull(dec1.divide(dec2));
+
+    dec1 = HiveDecimal.create("15");
+    dec2 = HiveDecimal.create("5");
+    Assert.assertEquals("3", dec1.divide(dec2).toString());
+
+    dec1 = HiveDecimal.create("3.140");
+    dec2 = HiveDecimal.create("1.00");
+    Assert.assertEquals("3.14", dec1.divide(dec2).toString());
   }
 
   @Test
@@ -125,6 +144,18 @@ public class TestHiveDecimal {
     HiveDecimal dec1 = HiveDecimal.create("99999999999999999999999999999999999");
     HiveDecimal dec2 = HiveDecimal.create("1");
     Assert.assertNotNull(dec1.add(dec2));
+
+    dec1 = HiveDecimal.create("3.140");
+    dec2 = HiveDecimal.create("1.00");
+    Assert.assertEquals("4.140", dec1.add(dec2).toString());
+  }
+
+
+  @Test
+  public void testSubtract() {
+      HiveDecimal dec1 = HiveDecimal.create("3.140");
+      HiveDecimal dec2 = HiveDecimal.create("1.00");
+      Assert.assertEquals("2.140", dec1.subtract(dec2).toString());
   }
 
   @Test
@@ -133,6 +164,12 @@ public class TestHiveDecimal {
     HiveDecimal hd2 = HiveDecimal.create("9.8");
     HiveDecimal dec = hd1.remainder(hd2).add(hd2).remainder(hd2);
     Assert.assertEquals("6.89", dec.toString());
+  }
+
+  @Test
+  public void testHashCode() {
+      Assert.assertEquals(HiveDecimal.create("9").hashCode(), HiveDecimal.create("9.00").hashCode());
+      Assert.assertEquals(HiveDecimal.create("0").hashCode(), HiveDecimal.create("0.00").hashCode());
   }
 
   @Test
@@ -145,7 +182,7 @@ public class TestHiveDecimal {
 
   @Test
   public void testBinaryConversion() {
-    testBinaryConversion("0.0");
+    testBinaryConversion("0.00");
     testBinaryConversion("-12.25");
     testBinaryConversion("234.79");
   }
