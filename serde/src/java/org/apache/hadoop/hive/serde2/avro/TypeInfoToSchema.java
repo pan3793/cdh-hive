@@ -38,7 +38,6 @@ import java.util.List;
  */
 public class TypeInfoToSchema {
 
-  private static final Schema.Parser PARSER = new Schema.Parser();
   private long recordCounter = 0;
 
   /**
@@ -106,13 +105,13 @@ public class TypeInfoToSchema {
         schema = Schema.create(Schema.Type.STRING);
         break;
       case CHAR:
-        schema = PARSER.parse("{" +
+        schema = AvroSerdeUtils.getSchemaFor("{" +
             "\"type\":\"" + AvroSerDe.AVRO_STRING_TYPE_NAME + "\"," +
             "\"logicalType\":\"" + AvroSerDe.CHAR_TYPE_NAME + "\"," +
             "\"maxLength\":" + ((CharTypeInfo) typeInfo).getLength() + "}");
         break;
       case VARCHAR:
-        schema = PARSER.parse("{" +
+        schema = AvroSerdeUtils.getSchemaFor("{" +
             "\"type\":\"" + AvroSerDe.AVRO_STRING_TYPE_NAME + "\"," +
             "\"logicalType\":\"" + AvroSerDe.VARCHAR_TYPE_NAME + "\"," +
             "\"maxLength\":" + ((VarcharTypeInfo) typeInfo).getLength() + "}");
@@ -145,14 +144,14 @@ public class TypeInfoToSchema {
         DecimalTypeInfo decimalTypeInfo = (DecimalTypeInfo) typeInfo;
         String precision = String.valueOf(decimalTypeInfo.precision());
         String scale = String.valueOf(decimalTypeInfo.scale());
-        schema = PARSER.parse("{" +
+        schema = AvroSerdeUtils.getSchemaFor("{" +
             "\"type\":\"bytes\"," +
             "\"logicalType\":\"decimal\"," +
             "\"precision\":" + precision + "," +
             "\"scale\":" + scale + "}");
         break;
       case DATE:
-        schema = PARSER.parse("{" +
+        schema = AvroSerdeUtils.getSchemaFor("{" +
             "\"type\":\"" + AvroSerDe.AVRO_INT_TYPE_NAME + "\"," +
             "\"logicalType\":\"" + AvroSerDe.DATE_TYPE_NAME + "\"}");
         break;
