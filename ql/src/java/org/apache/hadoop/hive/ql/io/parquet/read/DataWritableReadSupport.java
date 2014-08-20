@@ -93,7 +93,9 @@ public class DataWritableReadSupport extends ReadSupport<ArrayWritable> {
 
       final List<Type> typeListWanted = new ArrayList<Type>();
       for (final Integer idx : indexColumnsWanted) {
-        typeListWanted.add(tableSchema.getType(listColumns.get(idx)));
+        if (idx < listColumns.size()) { 
+	   typeListWanted.add(tableSchema.getType(listColumns.get(idx)));
+        }
       }
       requestedSchemaByUser = new MessageType(fileSchema.getName(), typeListWanted);
 
