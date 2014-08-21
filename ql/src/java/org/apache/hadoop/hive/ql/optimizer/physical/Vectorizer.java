@@ -774,10 +774,8 @@ public class Vectorizer implements PhysicalPlanResolver {
 
     // Not using method column.getIsVirtualCol() because partitioning columns are also
     // treated as virtual columns in ColumnInfo.
-    for (VirtualColumn vc : VirtualColumn.VIRTUAL_COLUMNS) {
-      if (column.getInternalName().equals(vc.getName())) {
+    if (VirtualColumn.VIRTUAL_COLUMN_NAMES.contains(column.getInternalName())) {
         return true;
-      }
     }
     return false;
   }
