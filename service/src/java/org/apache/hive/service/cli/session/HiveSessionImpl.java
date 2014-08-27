@@ -63,6 +63,7 @@ import org.apache.hive.service.cli.operation.MetadataOperation;
 import org.apache.hive.service.cli.operation.Operation;
 import org.apache.hive.service.cli.operation.OperationManager;
 import org.apache.hive.service.cli.thrift.TProtocolVersion;
+import org.apache.hive.service.server.ThreadWithGarbageCleanup;
 
 /**
  * HiveSession
@@ -111,11 +112,16 @@ public class HiveSessionImpl implements HiveSession {
     // set an explicit session name to control the download directory name
     hiveConf.set(ConfVars.HIVESESSIONID.varname,
         sessionHandle.getHandleIdentifier().toString());
-    // use thrift transportable formatter
+    // Use thrift transportable formatter
     hiveConf.set(ListSinkOperator.OUTPUT_FORMATTER,
         FetchFormatter.ThriftFormatter.class.getName());
     hiveConf.setInt(ListSinkOperator.OUTPUT_PROTOCOL, protocol.getValue());
 
+    /**
+     * Create a new SessionState object that will be associated with this HiveServer2 session.
+     * When the server executes multiple queries in the same session,
+     * this SessionState object is reused across multiple queries.
+     */
     sessionState = new SessionState(hiveConf, username);
     sessionState.setIsHiveServerQuery(true);
     SessionState.start(sessionState);
@@ -169,14 +175,26 @@ public class HiveSessionImpl implements HiveSession {
   }
 
   protected synchronized void acquire() throws HiveSQLException {
-    // need to make sure that the this connections session state is
-    // stored in the thread local for sessions.
+    // Need to make sure that the this HiveServer2's session's session state is
+    // stored in the thread local for the handler thread.
     SessionState.setCurrentSessionState(sessionState);
   }
 
+  /**
+   * 1. We'll remove the ThreadLocal SessionState as this thread might now serve
+   * other requests.
+   * 2. We'll cache the ThreadLocal RawStore object for this background thread for an orderly cleanup
+   * when this thread is garbage collected later.
+   * @see org.apache.hive.service.server.ThreadWithGarbageCleanup#finalize()
+   */
   protected synchronized void release() {
     assert sessionState != null;
     SessionState.detachSession();
+    if (ThreadWithGarbageCleanup.currentThread() instanceof ThreadWithGarbageCleanup) {
+      ThreadWithGarbageCleanup currentThread =
+          (ThreadWithGarbageCleanup) ThreadWithGarbageCleanup.currentThread();
+      currentThread.cacheThreadLocalRawStore();
+    }
   }
 
   @Override
@@ -440,7 +458,7 @@ public class HiveSessionImpl implements HiveSession {
     try {
       acquire();
       /**
-       *  For metadata operations like getTables(), getColumns() etc,
+       * For metadata operations like getTables(), getColumns() etc,
        * the session allocates a private metastore handler which should be
        * closed at the end of the session
        */
