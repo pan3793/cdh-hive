@@ -188,4 +188,8 @@ SELECT translate(CAST('abcd' AS CHAR(5)), CAST('aba' AS VARCHAR(5)), CAST('123' 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 #### A masked pattern was here ####
+POSTHOOK: Lineage: table_input.input SIMPLE []
+POSTHOOK: Lineage: table_translate.from_string SIMPLE []
+POSTHOOK: Lineage: table_translate.input_string SIMPLE []
+POSTHOOK: Lineage: table_translate.to_string SIMPLE []
 12cd	12cd
