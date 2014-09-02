@@ -621,7 +621,6 @@ public class HCatUtil {
     }
   }
 
-
   public static boolean isHadoop23() {
     String version = org.apache.hadoop.util.VersionInfo.getVersion();
     if (version.matches("\\b0\\.23\\..+\\b")||version.matches("\\b2\\..*"))

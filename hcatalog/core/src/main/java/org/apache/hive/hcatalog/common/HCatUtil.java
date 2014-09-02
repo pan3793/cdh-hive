@@ -653,6 +653,16 @@ public class HCatUtil {
       return true;
     return false;
   }
+
+  public static boolean isMR2() {
+    try {
+      Class.forName("org.apache.hadoop.yarn.util.YarnVersionInfo");
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+    return true;
+  }
+
   /**
    * Used by various tests to make sure the path is safe for Windows
    */

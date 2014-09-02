@@ -363,7 +363,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       JobConf jConf = mr.createJobConf();
       for (Map.Entry<String, String> pair: jConf) {
         // TODO figure out why this was wrapped in
-        // if(!"mapred.reduce.tasks".equalsIgnoreCase(pair.getKey()))
+        //if(!"mapred.reduce.tasks".equalsIgnoreCase(pair.getKey()))
         conf.set(pair.getKey(), pair.getValue());
       }
     }
@@ -550,9 +550,19 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       return NetUtils.createSocketAddr(addr);
     }
 
+    private boolean isMR2() {
+      try {
+        Class.forName("org.apache.hadoop.yarn.util.YarnVersionInfo");
+      } catch (ClassNotFoundException e) {
+        return false;
+      }
+
+      return true;
+    }
+
     @Override
     public String getPropertyName(PropertyName name) {
-      boolean mr2 = isMR2(new Configuration());
+      boolean mr2 = isMR2();
       switch (name) {
         case CACHE_ARCHIVES:
           if(mr2) {

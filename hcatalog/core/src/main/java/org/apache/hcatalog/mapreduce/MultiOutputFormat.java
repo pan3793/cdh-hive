@@ -49,6 +49,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskInputOutputContext;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hive.hcatalog.common.HCatUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,7 +156,7 @@ public class MultiOutputFormat extends OutputFormat<Writable, Writable> {
     configsToMerge.put(ShimLoader.getHadoopShims().getHCatShim().getPropertyName(HadoopShims.HCatHadoopShims.PropertyName.CACHE_ARCHIVES), COMMA_DELIM);
     configsToMerge.put(ShimLoader.getHadoopShims().getHCatShim().getPropertyName(HadoopShims.HCatHadoopShims.PropertyName.CACHE_FILES), COMMA_DELIM);
     String fileSep;
-    if ("yarn".equalsIgnoreCase(new Configuration().get("mapreduce.framework.name"))) {
+    if (HCatUtil.isMR2()) {
       fileSep = ",";
     } else {
       fileSep = System.getProperty("path.separator");
