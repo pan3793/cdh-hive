@@ -89,7 +89,6 @@ public class Hadoop23Shims extends HadoopShimsSecure {
   private static final String MR2_JOB_QUEUE_PROPERTY = "mapreduce.job.queuename";
 
   HadoopShims.MiniDFSShim cluster = null;
-
   final boolean zeroCopy;
 
   public Hadoop23Shims() {
@@ -101,6 +100,16 @@ public class Hadoop23Shims extends HadoopShimsSecure {
     } catch (ClassNotFoundException ce) {
     }
     this.zeroCopy = zcr;
+  }
+
+  private static boolean isMR2() {
+    try {
+      Class.forName("org.apache.hadoop.yarn.util.YarnVersionInfo");
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+
+    return true;
   }
 
   @Override
@@ -362,12 +371,16 @@ public class Hadoop23Shims extends HadoopShimsSecure {
     public void setupConfiguration(Configuration conf) {
       JobConf jConf = mr.createJobConf();
       for (Map.Entry<String, String> pair: jConf) {
-        // TODO figure out why this was wrapped in
-        //if(!"mapred.reduce.tasks".equalsIgnoreCase(pair.getKey()))
-        conf.set(pair.getKey(), pair.getValue());
+        // We estimate the number of reducers _only_ if the number
+        // of reduce tasks is not already set in the config to > 0.
+        // HiveConf.ConfVars.HADOOPNUMREDUCERS overrides the hadoop default
+        // of 1 to -1 (ensuring we always estimate the number of reducers).
+        // Let's not override it yet again (back to 1).
+        if(!"mapred.reduce.tasks".equalsIgnoreCase(pair.getKey()) &&
+           !"mapreduce.job.reduces".equalsIgnoreCase(pair.getKey()))
+          conf.set(pair.getKey(), pair.getValue());
       }
     }
-
   }
 
   /**
@@ -548,16 +561,6 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       String addr = conf.get("yarn.resourcemanager.address", "localhost:8032");
 
       return NetUtils.createSocketAddr(addr);
-    }
-
-    private boolean isMR2() {
-      try {
-        Class.forName("org.apache.hadoop.yarn.util.YarnVersionInfo");
-      } catch (ClassNotFoundException e) {
-        return false;
-      }
-
-      return true;
     }
 
     @Override
@@ -790,7 +793,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
   @Override
   public Map<String, String> getHadoopConfNames() {
     Map<String, String> ret = new HashMap<String, String>();
-    boolean mr2 = isMR2(new Configuration());
+    boolean mr2 = isMR2();
     if (mr2) {
       ret.put("HADOOPFS", "fs.defaultFS");
       ret.put("HADOOPMAPFILENAME", "mapreduce.map.input.file");
