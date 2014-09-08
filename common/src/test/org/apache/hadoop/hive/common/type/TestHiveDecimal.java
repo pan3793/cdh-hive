@@ -62,6 +62,30 @@ public class TestHiveDecimal {
     String decStr = "8.090000000000000000000000000000000000000123456";
     HiveDecimal dec = HiveDecimal.create(decStr);
     Assert.assertEquals("8.09", dec.toString());
+
+    // Leaving trailing zeros
+    Assert.assertEquals("0.0", HiveDecimal.enforcePrecisionScale(new BigDecimal("0.0"), 2, 1).toString());
+    Assert.assertEquals("0.00", HiveDecimal.enforcePrecisionScale(new BigDecimal("0.00"), 3, 2).toString());
+    Assert.assertEquals("0.0000", HiveDecimal.enforcePrecisionScale(new BigDecimal("0.0000"), 10, 4).toString());
+    Assert.assertEquals("100.00000", HiveDecimal.enforcePrecisionScale(new BigDecimal("100.00000"), 15, 5).toString());
+    Assert.assertEquals("100.00", HiveDecimal.enforcePrecisionScale(new BigDecimal("100.00"), 15, 5).toString());
+
+    // Rounding numbers
+    Assert.assertEquals("0.01", HiveDecimal.enforcePrecisionScale(new BigDecimal("0.012"), 3, 2).toString());
+    Assert.assertEquals("0.02", HiveDecimal.enforcePrecisionScale(new BigDecimal("0.015"), 3, 2).toString());
+    Assert.assertEquals("0.01", HiveDecimal.enforcePrecisionScale(new BigDecimal("0.0145"), 3, 2).toString());
+
+    // Rounding numbers that increase int digits
+    Assert.assertEquals("10",
+        HiveDecimal.enforcePrecisionScale(new BigDecimal("9.5"), 2, 0).toString());
+    Assert.assertNull(HiveDecimal.enforcePrecisionScale(new BigDecimal("9.5"), 1, 0));
+    Assert.assertEquals("9",
+        HiveDecimal.enforcePrecisionScale(new BigDecimal("9.4"), 1, 0).toString());
+
+    // Integers with no scale values are not modified (zeros are not null)
+    Assert.assertEquals("0", HiveDecimal.enforcePrecisionScale(new BigDecimal("0"), 1, 0).toString());
+    Assert.assertEquals("30", HiveDecimal.enforcePrecisionScale(new BigDecimal("30"), 2, 0).toString());
+    Assert.assertEquals("5", HiveDecimal.enforcePrecisionScale(new BigDecimal("5"), 3, 2).toString());
   }
 
   @Test

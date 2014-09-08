@@ -261,14 +261,14 @@ public class HiveDecimal implements Comparable<HiveDecimal> {
 
     bd = trim(bd);
 
+    if (bd.scale() > maxScale) {
+      bd = bd.setScale(maxScale, RoundingMode.HALF_UP);
+    }
+
     int maxIntDigits = maxPrecision - maxScale;
     int intDigits = bd.precision() - bd.scale();
     if (intDigits > maxIntDigits) {
       return null;
-    }
-
-    if (bd.scale() > maxScale) {
-      bd = bd.setScale(maxScale, RoundingMode.HALF_UP);
     }
 
     return bd;
