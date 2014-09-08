@@ -28,10 +28,12 @@ import org.apache.pig.ResourceSchema;
 import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.data.DataType;
 import org.apache.pig.impl.util.UDFContext;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestPigHCatUtil {
 
+  @Ignore("Flaky test")
   @Test
   public void testGetBagSubSchema() throws Exception {
 

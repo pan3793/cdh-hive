@@ -63,6 +63,7 @@ import org.apache.pig.tools.pigstats.PigStats;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -242,6 +243,8 @@ public class TestHCatLoader {
   /**
    * Test that value from Hive table are read properly in Pig
    */
+
+  @Ignore("Flaky test")
   @Test
   public void testReadDataPrimitiveTypes() throws Exception {
     AllTypesTable.testReadDataPrimitiveTypes();
