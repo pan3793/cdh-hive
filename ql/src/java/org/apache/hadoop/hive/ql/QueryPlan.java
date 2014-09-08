@@ -655,6 +655,10 @@ public class QueryPlan implements Serializable {
     this.rootTasks = rootTasks;
   }
 
+  public boolean isForExplain() {
+    return rootTasks.size() == 1 && rootTasks.get(0) instanceof ExplainTask;
+  }
+
   public FetchTask getFetchTask() {
     return fetchTask;
   }
