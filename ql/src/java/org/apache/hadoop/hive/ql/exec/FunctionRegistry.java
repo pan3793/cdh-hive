@@ -550,7 +550,7 @@ public final class FunctionRegistry {
         try {
           FunctionTask.addFunctionResources(func.getResourceUris());
         } catch (Exception e) {
-          LOG.error("Unable to load resources for " + dbName + "." + fName + ":" + e);
+          LOG.error("Unable to load resources for " + dbName + "." + fName + ":" + e.getMessage(), e);
           return null;
         }
 
