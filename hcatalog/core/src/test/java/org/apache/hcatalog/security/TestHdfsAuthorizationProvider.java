@@ -483,8 +483,9 @@ public class TestHdfsAuthorizationProvider {
 
     exec("ALTER TABLE foo1 PARTITION (b='2010-10-10') SET FILEFORMAT INPUTFORMAT "
         + "'org.apache.hadoop.hive.ql.io.RCFileInputFormat' OUTPUTFORMAT "
-        + "'org.apache.hadoop.hive.ql.io.RCFileOutputFormat' inputdriver "
-        + "'mydriver' outputdriver 'yourdriver'");
+        + "'org.apache.hadoop.hive.ql.io.RCFileOutputFormat' "
+        + "serde 'org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe' "
+        + "inputdriver 'mydriver' outputdriver 'yourdriver'");
 
     exec("ALTER TABLE foo1 DROP PARTITION (b='2010-10-10')");
     exec("ALTER TABLE foo1 DROP PARTITION (b='2010-10-11')");
