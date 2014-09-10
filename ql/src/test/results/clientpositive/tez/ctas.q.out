@@ -87,6 +87,7 @@ STAGE PLANS:
           columns: k string, value string
           input format: org.apache.hadoop.mapred.TextInputFormat
           output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
           name: nzhang_CTAS1
 
   Stage: Stage-3
@@ -229,6 +230,7 @@ STAGE PLANS:
           columns: key string, value string
           input format: org.apache.hadoop.mapred.TextInputFormat
           output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
           name: nzhang_ctas2
 
   Stage: Stage-3
@@ -580,6 +582,7 @@ STAGE PLANS:
           field delimiter: ,
           input format: org.apache.hadoop.mapred.TextInputFormat
           output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
           name: nzhang_ctas4
 
   Stage: Stage-3
@@ -669,7 +672,8 @@ TOK_CREATETABLE
             ','
          TOK_TABLEROWFORMATLINES
             '\012'
-   TOK_TBLTEXTFILE
+   TOK_FILEFORMAT_GENERIC
+      textfile
    TOK_QUERY
       TOK_FROM
          TOK_TABREF
@@ -836,6 +840,7 @@ STAGE PLANS:
           line delimiter: 
 
           output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
           name: nzhang_ctas5
 
   Stage: Stage-3
