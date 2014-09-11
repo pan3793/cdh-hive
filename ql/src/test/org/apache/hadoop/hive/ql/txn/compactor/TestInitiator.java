@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Tests for the compactor Initiator thread.
@@ -90,7 +91,7 @@ public class TestInitiator extends CompactorTest {
     txnHandler.findNextToCompact("nosuchhost-193892");
 
     HiveConf conf = new HiveConf();
-    HiveConf.setLongVar(conf, HiveConf.ConfVars.HIVE_COMPACTOR_WORKER_TIMEOUT, 1L);
+    conf.setTimeVar(HiveConf.ConfVars.HIVE_COMPACTOR_WORKER_TIMEOUT, 1L, TimeUnit.MILLISECONDS);
 
     startInitiator(conf);
 

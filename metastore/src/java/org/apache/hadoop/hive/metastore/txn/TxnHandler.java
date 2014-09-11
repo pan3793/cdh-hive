@@ -30,6 +30,7 @@ import org.apache.hadoop.util.StringUtils;
 
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A handler to answer transaction related calls that come into the metastore
@@ -108,7 +109,7 @@ public class TxnHandler {
       throw new RuntimeException(e);
     }
 
-    timeout = HiveConf.getIntVar(conf, HiveConf.ConfVars.HIVE_TXN_TIMEOUT) * 1000;
+    timeout = HiveConf.getTimeVar(conf, HiveConf.ConfVars.HIVE_TXN_TIMEOUT, TimeUnit.MILLISECONDS);
     deadlockCnt = 0;
     buildJumpTable();
   }

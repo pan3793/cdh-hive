@@ -19,6 +19,7 @@ package org.apache.hive.service.cli.operation;
 
 import java.util.EnumSet;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +32,7 @@ import org.apache.hive.service.cli.OperationStatus;
 import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
+import org.apache.hive.service.cli.log.OperationLog;
 import org.apache.hive.service.cli.session.HiveSession;
 import org.apache.hive.service.cli.thrift.TProtocolVersion;
 
@@ -46,14 +48,19 @@ public abstract class Operation {
   protected final boolean runAsync;
   protected volatile Future<?> backgroundHandle;
 
+  private long operationTimeout;
+  private long lastAccessTime;
+
   protected static final EnumSet<FetchOrientation> DEFAULT_FETCH_ORIENTATION_SET =
       EnumSet.of(FetchOrientation.FETCH_NEXT,FetchOrientation.FETCH_FIRST);
 
   protected Operation(HiveSession parentSession, OperationType opType, boolean runInBackground) {
-    super();
     this.parentSession = parentSession;
     this.runAsync = runInBackground;
     this.opHandle = new OperationHandle(opType, parentSession.getProtocolVersion());
+    lastAccessTime = System.currentTimeMillis();
+    operationTimeout = HiveConf.getTimeVar(parentSession.getHiveConf(),
+        HiveConf.ConfVars.HIVE_SERVER2_IDLE_OPERATION_TIMEOUT, TimeUnit.MILLISECONDS);
   }
 
   public Future<?> getBackgroundHandle() {
@@ -108,7 +115,31 @@ public abstract class Operation {
   protected final OperationState setState(OperationState newState) throws HiveSQLException {
     state.validateTransition(newState);
     this.state = newState;
+    this.lastAccessTime = System.currentTimeMillis();
     return this.state;
+  }
+
+  public boolean isTimedOut(long current) {
+    if (operationTimeout == 0) {
+      return false;
+    }
+    if (operationTimeout > 0) {
+      // check only when it's in terminal state
+      return state.isTerminal() && lastAccessTime + operationTimeout <= current;
+    }
+    return lastAccessTime + -operationTimeout <= current;
+  }
+
+  public long getLastAccessTime() {
+    return lastAccessTime;
+  }
+
+  public long getOperationTimeout() {
+    return operationTimeout;
+  }
+
+  public void setOperationTimeout(long operationTimeout) {
+    this.operationTimeout = operationTimeout;
   }
 
   protected void setOperationException(HiveSQLException operationException) {
@@ -119,6 +150,7 @@ public abstract class Operation {
     if (this.state != state) {
       throw new HiveSQLException("Expected state " + state + ", but found " + this.state);
     }
+    this.lastAccessTime = System.currentTimeMillis();
   }
 
   public boolean isRunning() {

@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,7 +96,6 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTOREURIS,
       HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES,
       HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES,
-      HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY,
       HiveConf.ConfVars.METASTORE_CLIENT_SOCKET_TIMEOUT,
       HiveConf.ConfVars.METASTOREPWD,
       HiveConf.ConfVars.METASTORECONNECTURLHOOK,
@@ -274,9 +274,9 @@ public class HiveConf extends Configuration {
     METASTORETHRIFTFAILURERETRIES("hive.metastore.failure.retries", 1),
 
     // Number of seconds the client should wait between connection attempts
-    METASTORE_CLIENT_CONNECT_RETRY_DELAY("hive.metastore.client.connect.retry.delay", 1),
+    METASTORE_CLIENT_CONNECT_RETRY_DELAY("hive.metastore.client.connect.retry.delay", "1s", new TimeValidator(TimeUnit.SECONDS)),
     // Socket timeout for the client connection (in seconds)
-    METASTORE_CLIENT_SOCKET_TIMEOUT("hive.metastore.client.socket.timeout", 600),
+    METASTORE_CLIENT_SOCKET_TIMEOUT("hive.metastore.client.socket.timeout", "600s", new TimeValidator(TimeUnit.SECONDS)),
     METASTOREPWD("javax.jdo.option.ConnectionPassword", "mine"),
     // Class name of JDO connection url hook
     METASTORECONNECTURLHOOK("hive.metastore.ds.connection.url.hook", ""),
@@ -292,7 +292,7 @@ public class HiveConf extends Configuration {
     // Number of attempts to retry connecting after there is a JDO datastore err
     HMSHANDLERATTEMPTS("hive.hmshandler.retry.attempts", 1),
     // Number of miliseconds to wait between attepting
-    HMSHANDLERINTERVAL("hive.hmshandler.retry.interval", 1000),
+    HMSHANDLERINTERVAL("hive.hmshandler.retry.interval", "1000ms", new TimeValidator(TimeUnit.MILLISECONDS)),
     // Whether to force reloading of the HMSHandler configuration (including
     // the connection URL, before the next metastore query that accesses the
     // datastore. Once reloaded, this value is reset to false. Used for
@@ -349,8 +349,8 @@ public class HiveConf extends Configuration {
     METASTORE_EVENT_LISTENERS("hive.metastore.event.listeners", ""),
     // should we do checks against the storage (usually hdfs) for operations like drop_partition
     METASTORE_AUTHORIZATION_STORAGE_AUTH_CHECKS("hive.metastore.authorization.storage.checks", false),
-    METASTORE_EVENT_CLEAN_FREQ("hive.metastore.event.clean.freq",0L),
-    METASTORE_EVENT_EXPIRY_DURATION("hive.metastore.event.expiry.duration",0L),
+    METASTORE_EVENT_CLEAN_FREQ("hive.metastore.event.clean.freq", "0s", new TimeValidator(TimeUnit.SECONDS)),
+    METASTORE_EVENT_EXPIRY_DURATION("hive.metastore.event.expiry.duration", "0s", new TimeValidator(TimeUnit.SECONDS)),
     METASTORE_EXECUTE_SET_UGI("hive.metastore.execute.setugi", false),
     METASTORE_PARTITION_NAME_WHITELIST_PATTERN(
         "hive.metastore.partition.name.whitelist.pattern", ""),
@@ -428,7 +428,7 @@ public class HiveConf extends Configuration {
     HIVE_CURRENT_DATABASE("hive.current.database", ""), // internal usage only
 
     // for hive script operator
-    HIVES_AUTO_PROGRESS_TIMEOUT("hive.auto.progress.timeout", 0),
+    HIVES_AUTO_PROGRESS_TIMEOUT("hive.auto.progress.timeout", "0s", new TimeValidator(TimeUnit.SECONDS)),
     HIVETABLENAME("hive.table.name", ""),
     HIVEPARTITIONNAME("hive.partition.name", ""),
     HIVESCRIPTAUTOPROGRESS("hive.script.auto.progress", false),
@@ -492,7 +492,7 @@ public class HiveConf extends Configuration {
     HIVE_LOG_INCREMENTAL_PLAN_PROGRESS("hive.querylog.enable.plan.progress", true),
 
     // The interval between logging the plan's progress in milliseconds
-    HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL("hive.querylog.plan.progress.interval", 60000L),
+    HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL("hive.querylog.plan.progress.interval", "60000ms", new TimeValidator(TimeUnit.MILLISECONDS)),
 
     // Default serde and record reader for user scripts
     HIVESCRIPTSERDE("hive.script.serde", "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"),
@@ -672,13 +672,13 @@ public class HiveConf extends Configuration {
     HIVE_STATS_DEFAULT_AGGREGATOR("hive.stats.default.aggregator",
         ""), // default stats aggregator if none of JDBC/HBase is specified
     HIVE_STATS_JDBC_TIMEOUT("hive.stats.jdbc.timeout",
-        30), // default timeout in sec for JDBC connection & SQL statements
+        "30s", new TimeValidator(TimeUnit.SECONDS)), // default timeout in sec for JDBC connection & SQL statements
     HIVE_STATS_ATOMIC("hive.stats.atomic",
         false), // whether to update metastore stats only if all stats are available
     HIVE_STATS_RETRIES_MAX("hive.stats.retries.max",
         0),     // maximum # of retries to insert/select/delete the stats DB
     HIVE_STATS_RETRIES_WAIT("hive.stats.retries.wait",
-        3000),  // # milliseconds to wait before the next retry
+        "3000ms", new TimeValidator(TimeUnit.MILLISECONDS)),  // # milliseconds to wait before the next retry
     HIVE_STATS_COLLECT_RAWDATASIZE("hive.stats.collect.rawdatasize", true),
     // should the raw data size be collected when analyzing tables
     CLIENT_STATS_COUNTERS("hive.client.stats.counters", ""),
@@ -726,7 +726,7 @@ public class HiveConf extends Configuration {
     HIVE_LOCK_MANAGER("hive.lock.manager", "org.apache.hadoop.hive.ql.lockmgr.zookeeper.ZooKeeperHiveLockManager"),
     HIVE_LOCK_NUMRETRIES("hive.lock.numretries", 100),
     HIVE_UNLOCK_NUMRETRIES("hive.unlock.numretries", 10),
-    HIVE_LOCK_SLEEP_BETWEEN_RETRIES("hive.lock.sleep.between.retries", 60),
+    HIVE_LOCK_SLEEP_BETWEEN_RETRIES("hive.lock.sleep.between.retries", "60s", new TimeValidator(TimeUnit.SECONDS)),
     HIVE_LOCK_MAPRED_ONLY("hive.lock.mapred.only.operation", false),
 
     HIVE_ZOOKEEPER_QUORUM("hive.zookeeper.quorum", ""),
@@ -740,7 +740,7 @@ public class HiveConf extends Configuration {
         "org.apache.hadoop.hive.ql.lockmgr.DummyTxnManager"),
     // time after which transactions are declared aborted if the client has
     // not sent a heartbeat, in seconds.
-    HIVE_TXN_TIMEOUT("hive.txn.timeout", 300),
+    HIVE_TXN_TIMEOUT("hive.txn.timeout", "300s", new TimeValidator(TimeUnit.SECONDS)),
 
     // Maximum number of transactions that can be fetched in one call to
     // open_txns().
@@ -758,11 +758,11 @@ public class HiveConf extends Configuration {
 
     // Time, in seconds, before a given compaction in working state is declared a failure and
     // returned to the initiated state.
-    HIVE_COMPACTOR_WORKER_TIMEOUT("hive.compactor.worker.timeout", 86400L),
+    HIVE_COMPACTOR_WORKER_TIMEOUT("hive.compactor.worker.timeout", "86400s", new TimeValidator(TimeUnit.SECONDS)),
 
     // Time in seconds between checks to see if any partitions need compacted.  This should be
     // kept high because each check for compaction requires many calls against the NameNode.
-    HIVE_COMPACTOR_CHECK_INTERVAL("hive.compactor.check.interval", 300L),
+    HIVE_COMPACTOR_CHECK_INTERVAL("hive.compactor.check.interval", "300s", new TimeValidator(TimeUnit.SECONDS)),
 
     // Number of delta files that must exist in a directory before the compactor will attempt a
     // minor compaction.
@@ -884,7 +884,8 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_THRIFT_HTTP_PATH("hive.server2.thrift.http.path", "cliservice"),
     HIVE_SERVER2_THRIFT_HTTP_MIN_WORKER_THREADS("hive.server2.thrift.http.min.worker.threads", 5),
     HIVE_SERVER2_THRIFT_HTTP_MAX_WORKER_THREADS("hive.server2.thrift.http.max.worker.threads", 500),
-    HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME("hive.server2.thrift.http.worker.keepalive.time", 60),
+    HIVE_SERVER2_THRIFT_HTTP_MAX_IDLE_TIME("hive.server2.thrift.http.max.idle.time", "1800s", new TimeValidator(TimeUnit.MILLISECONDS)),
+    HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME("hive.server2.thrift.http.worker.keepalive.time", "60s", new TimeValidator(TimeUnit.SECONDS)),
 
     // binary transport settings
     HIVE_SERVER2_THRIFT_PORT("hive.server2.thrift.port", 10000),
@@ -899,22 +900,22 @@ public class HiveConf extends Configuration {
     //timeout for the thrift client to login (in seconds)
     HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT("hive.server2.thrift.login.timeout", 20),
 
-    HIVE_SERVER2_THRIFT_WORKER_KEEPALIVE_TIME("hive.server2.thrift.worker.keepalive.time", 60),
+    HIVE_SERVER2_THRIFT_WORKER_KEEPALIVE_TIME("hive.server2.thrift.worker.keepalive.time", "60s", new TimeValidator(TimeUnit.SECONDS)),
     // Configuration for async thread pool in SessionManager
     // Number of async threads
     HIVE_SERVER2_ASYNC_EXEC_THREADS("hive.server2.async.exec.threads", 100),
     // Number of seconds HiveServer2 shutdown will wait for async threads to terminate
-    HIVE_SERVER2_ASYNC_EXEC_SHUTDOWN_TIMEOUT("hive.server2.async.exec.shutdown.timeout", 10),
+    HIVE_SERVER2_ASYNC_EXEC_SHUTDOWN_TIMEOUT("hive.server2.async.exec.shutdown.timeout", "10s", new TimeValidator(TimeUnit.SECONDS)),
     // Size of the wait queue for async thread pool in HiveServer2.
     // After hitting this limit, the async thread pool will reject new requests.
     HIVE_SERVER2_ASYNC_EXEC_WAIT_QUEUE_SIZE("hive.server2.async.exec.wait.queue.size", 100),
     // Number of seconds that an idle HiveServer2 async thread (from the thread pool)
     // will wait for a new task to arrive before terminating
-    HIVE_SERVER2_ASYNC_EXEC_KEEPALIVE_TIME("hive.server2.async.exec.keepalive.time", 10),
+    HIVE_SERVER2_ASYNC_EXEC_KEEPALIVE_TIME("hive.server2.async.exec.keepalive.time", "10s", new TimeValidator(TimeUnit.SECONDS)),
 
     // Time in milliseconds that HiveServer2 will wait,
     // before responding to asynchronous calls that use long polling
-    HIVE_SERVER2_LONG_POLLING_TIMEOUT("hive.server2.long.polling.timeout", 5000L),
+    HIVE_SERVER2_LONG_POLLING_TIMEOUT("hive.server2.long.polling.timeout", "5000ms", new TimeValidator(TimeUnit.MILLISECONDS)),
 
     // HiveServer2 auth configuration
     HIVE_SERVER2_AUTHENTICATION("hive.server2.authentication", "NONE",
@@ -941,6 +942,13 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE("hive.server2.map.fair.scheduler.queue", true),
 
     HIVE_SECURITY_COMMAND_WHITELIST("hive.security.command.whitelist", "set,reset,dfs,add,delete,compile"),
+
+    HIVE_SERVER2_SESSION_CHECK_INTERVAL("hive.server2.session.check.interval", "0ms",
+        new TimeValidator(TimeUnit.MILLISECONDS, 3000l, true, null, false)),
+    HIVE_SERVER2_IDLE_SESSION_TIMEOUT("hive.server2.idle.session.timeout", "0ms",
+        new TimeValidator(TimeUnit.MILLISECONDS)),
+    HIVE_SERVER2_IDLE_OPERATION_TIMEOUT("hive.server2.idle.operation.timeout", "0ms",
+        new TimeValidator(TimeUnit.MILLISECONDS)),
 
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list", "hive.security.authenticator.manager,hive.security.authorization.manager"),
     HIVE_SERVER2_IN_MEM_LOGGING("hive.server2.in.mem.logging", true),
@@ -978,7 +986,7 @@ public class HiveConf extends Configuration {
 
     // Allow TCP Keep alive socket option for for HiveServer or a maximum timeout for the socket.
 
-    SERVER_READ_SOCKET_TIMEOUT("hive.server.read.socket.timeout", 10),
+    SERVER_READ_SOCKET_TIMEOUT("hive.server.read.socket.timeout", "10s", new TimeValidator(TimeUnit.SECONDS)),
     SERVER_TCP_KEEP_ALIVE("hive.server.tcp.keepalive", true),
 
     // Whether to show the unquoted partition names in query results.
@@ -1035,7 +1043,7 @@ public class HiveConf extends Configuration {
     // Check if a plan contains a Cross Product.
     // If there is one, output a warning to the Session's console.
     HIVE_CHECK_CROSS_PRODUCT("hive.exec.check.crossproducts", true),
-    HIVE_LOCALIZE_RESOURCE_WAIT_INTERVAL("hive.localize.resource.wait.interval", 5000L), // in ms
+    HIVE_LOCALIZE_RESOURCE_WAIT_INTERVAL("hive.localize.resource.wait.interval", "5000ms", new TimeValidator(TimeUnit.MILLISECONDS)),
     HIVE_LOCALIZE_RESOURCE_NUM_WAIT_ATTEMPTS("hive.localize.resource.num.wait.attempts", 5),
     ;
 
@@ -1240,6 +1248,82 @@ public class HiveConf extends Configuration {
 
   public void setIntVar(ConfVars var, int val) {
     setIntVar(this, var, val);
+  }
+
+  public static long getTimeVar(Configuration conf, ConfVars var, TimeUnit outUnit) {
+    return toTime(getVar(conf, var), getDefaultTimeUnit(var), outUnit);
+  }
+
+  public static void setTimeVar(Configuration conf, ConfVars var, long time, TimeUnit timeunit) {
+    assert (var.valClass == String.class) : var.varname;
+    conf.set(var.varname, time + stringFor(timeunit));
+  }
+
+  public long getTimeVar(ConfVars var, TimeUnit outUnit) {
+    return getTimeVar(this, var, outUnit);
+  }
+
+  public void setTimeVar(ConfVars var, long time, TimeUnit outUnit) {
+    setTimeVar(this, var, time, outUnit);
+  }
+
+  private static TimeUnit getDefaultTimeUnit(ConfVars var) {
+    TimeUnit inputUnit = null;
+    if (var.validator instanceof TimeValidator) {
+      inputUnit = ((TimeValidator)var.validator).getTimeUnit();
+    }
+    return inputUnit;
+  }
+
+  public static long toTime(String value, TimeUnit inputUnit, TimeUnit outUnit) {
+    String[] parsed = parseTime(value.trim());
+    return outUnit.convert(Long.valueOf(parsed[0].trim().trim()), unitFor(parsed[1].trim(), inputUnit));
+  }
+
+  private static String[] parseTime(String value) {
+    char[] chars = value.toCharArray();
+    int i = 0;
+    for (; i < chars.length && (chars[i] == '-' || Character.isDigit(chars[i])); i++) {
+    }
+    return new String[] {value.substring(0, i), value.substring(i)};
+  }
+
+  public static TimeUnit unitFor(String unit, TimeUnit defaultUnit) {
+    unit = unit.trim().toLowerCase();
+    if (unit.isEmpty()) {
+      if (defaultUnit == null) {
+        throw new IllegalArgumentException("Time unit is not specified");
+      }
+      return defaultUnit;
+    } else if (unit.equals("d") || unit.startsWith("day")) {
+      return TimeUnit.DAYS;
+    } else if (unit.equals("h") || unit.startsWith("hour")) {
+      return TimeUnit.HOURS;
+    } else if (unit.equals("m") || unit.startsWith("min")) {
+      return TimeUnit.MINUTES;
+    } else if (unit.equals("s") || unit.startsWith("sec")) {
+      return TimeUnit.SECONDS;
+    } else if (unit.equals("ms") || unit.startsWith("msec")) {
+      return TimeUnit.MILLISECONDS;
+    } else if (unit.equals("us") || unit.startsWith("usec")) {
+      return TimeUnit.MICROSECONDS;
+    } else if (unit.equals("ns") || unit.startsWith("nsec")) {
+      return TimeUnit.NANOSECONDS;
+    }
+    throw new IllegalArgumentException("Invalid time unit " + unit);
+  }
+
+  public static String stringFor(TimeUnit timeunit) {
+    switch (timeunit) {
+      case DAYS: return "day";
+      case HOURS: return "hour";
+      case MINUTES: return "min";
+      case SECONDS: return "sec";
+      case MILLISECONDS: return "msec";
+      case MICROSECONDS: return "usec";
+      case NANOSECONDS: return "nsec";
+    }
+    throw new IllegalArgumentException("Invalid timeunit " + timeunit);
   }
 
   public static long getLongVar(Configuration conf, ConfVars var) {
@@ -1626,6 +1710,54 @@ public class HiveConf extends Configuration {
         return e.toString();
       }
       return null;
+    }
+  }
+
+  public static class TimeValidator implements Validator {
+
+    private final TimeUnit timeUnit;
+
+    private final Long min;
+    private final boolean minInclusive;
+
+    private final Long max;
+    private final boolean maxInclusive;
+
+    public TimeValidator(TimeUnit timeUnit) {
+      this(timeUnit, null, false, null, false);
+    }
+
+    public TimeValidator(TimeUnit timeUnit,
+        Long min, boolean minInclusive, Long max, boolean maxInclusive) {
+      this.timeUnit = timeUnit;
+      this.min = min;
+      this.minInclusive = minInclusive;
+      this.max = max;
+      this.maxInclusive = maxInclusive;
+    }
+
+    public TimeUnit getTimeUnit() {
+      return timeUnit;
+    }
+
+    @Override
+    public String validate(String value) {
+      try {
+        long time = HiveConf.toTime(value, timeUnit, timeUnit);
+        if (min != null && (minInclusive ? time < min : time <= min)) {
+          return value + " is smaller than " + timeString(min);
+        }
+        if (max != null && (maxInclusive ? time > max : time >= max)) {
+          return value + " is bigger than " + timeString(max);
+        }
+      } catch (Exception e) {
+        return e.toString();
+      }
+      return null;
+    }
+
+    private String timeString(long time) {
+      return time + " " + HiveConf.stringFor(timeUnit);
     }
   }
 

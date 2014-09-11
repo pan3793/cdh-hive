@@ -84,8 +84,8 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
   }
 
   @Override
-  protected synchronized void acquire() throws HiveSQLException {
-    super.acquire();
+  protected synchronized void acquire(boolean userAccess) {
+    super.acquire(userAccess);
     // if we have a metastore connection with impersonation, then set it first
     if (sessionHive != null) {
       Hive.set(sessionHive);
@@ -99,11 +99,11 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
   @Override
   public void close() throws HiveSQLException {
     try {
-    acquire();
+    acquire(true);
     ShimLoader.getHadoopShims().closeAllForUGI(sessionUgi);
     cancelDelegationToken();
     } finally {
-      release();
+      release(true);
       super.close();
     }
   }

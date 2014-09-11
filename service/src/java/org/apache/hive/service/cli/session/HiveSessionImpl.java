@@ -91,6 +91,8 @@ public class HiveSessionImpl implements HiveSession {
   private IMetaStoreClient metastoreClient = null;
   private final Set<OperationHandle> opHandleSet = new HashSet<OperationHandle>();
 
+  private volatile long lastAccessTime;
+
   public HiveSessionImpl(TProtocolVersion protocol, String username, String password,
       HiveConf serverhiveConf, Map<String, String> sessionConfMap, String ipAddress) {
     this.username = username;
@@ -124,6 +126,8 @@ public class HiveSessionImpl implements HiveSession {
      */
     sessionState = new SessionState(hiveConf, username);
     sessionState.setIsHiveServerQuery(true);
+
+    lastAccessTime = System.currentTimeMillis();
     SessionState.start(sessionState);
 
     //set conf properties specified by user from client side
@@ -174,10 +178,13 @@ public class HiveSessionImpl implements HiveSession {
     SessionState.start(sessionState);
   }
 
-  protected synchronized void acquire() throws HiveSQLException {
+  protected synchronized void acquire(boolean userAccess) {
     // Need to make sure that the this HiveServer2's session's session state is
     // stored in the thread local for the handler thread.
     SessionState.setCurrentSessionState(sessionState);
+    if (userAccess) {
+      lastAccessTime = System.currentTimeMillis();
+    }
   }
 
   /**
@@ -187,13 +194,15 @@ public class HiveSessionImpl implements HiveSession {
    * when this thread is garbage collected later.
    * @see org.apache.hive.service.server.ThreadWithGarbageCleanup#finalize()
    */
-  protected synchronized void release() {
-    assert sessionState != null;
+  protected synchronized void release(boolean userAccess) {
     SessionState.detachSession();
     if (ThreadWithGarbageCleanup.currentThread() instanceof ThreadWithGarbageCleanup) {
       ThreadWithGarbageCleanup currentThread =
           (ThreadWithGarbageCleanup) ThreadWithGarbageCleanup.currentThread();
       currentThread.cacheThreadLocalRawStore();
+    }
+    if (userAccess) {
+      lastAccessTime = System.currentTimeMillis();
     }
   }
 
@@ -247,7 +256,7 @@ public class HiveSessionImpl implements HiveSession {
   @Override
   public GetInfoValue getInfo(GetInfoType getInfoType)
       throws HiveSQLException {
-    acquire();
+    acquire(true);
     try {
       switch (getInfoType) {
       case CLI_SERVER_NAME:
@@ -267,7 +276,7 @@ public class HiveSessionImpl implements HiveSession {
         throw new HiveSQLException("Unrecognized GetInfoType value: "  + getInfoType.toString());
       }
     } finally {
-      release();
+      release(true);
     }
   }
 
@@ -286,7 +295,7 @@ public class HiveSessionImpl implements HiveSession {
   private OperationHandle executeStatementInternal(String statement, Map<String, String> confOverlay,
       boolean runAsync)
           throws HiveSQLException {
-    acquire();
+    acquire(true);
 
     OperationManager operationManager = getOperationManager();
     ExecuteStatementOperation operation = operationManager
@@ -304,14 +313,14 @@ public class HiveSessionImpl implements HiveSession {
       }
       throw e;
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public OperationHandle getTypeInfo()
       throws HiveSQLException {
-    acquire();
+    acquire(true);
 
     OperationManager operationManager = getOperationManager();
     GetTypeInfoOperation operation = operationManager.newGetTypeInfoOperation(getSession());
@@ -324,14 +333,14 @@ public class HiveSessionImpl implements HiveSession {
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public OperationHandle getCatalogs()
       throws HiveSQLException {
-    acquire();
+    acquire(true);
 
     OperationManager operationManager = getOperationManager();
     GetCatalogsOperation operation = operationManager.newGetCatalogsOperation(getSession());
@@ -344,14 +353,14 @@ public class HiveSessionImpl implements HiveSession {
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public OperationHandle getSchemas(String catalogName, String schemaName)
       throws HiveSQLException {
-    acquire();
+    acquire(true);
 
     OperationManager operationManager = getOperationManager();
     GetSchemasOperation operation =
@@ -365,7 +374,7 @@ public class HiveSessionImpl implements HiveSession {
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
-      release();
+      release(true);
     }
   }
 
@@ -373,7 +382,7 @@ public class HiveSessionImpl implements HiveSession {
   public OperationHandle getTables(String catalogName, String schemaName, String tableName,
       List<String> tableTypes)
           throws HiveSQLException {
-    acquire();
+    acquire(true);
 
     OperationManager operationManager = getOperationManager();
     MetadataOperation operation =
@@ -387,14 +396,14 @@ public class HiveSessionImpl implements HiveSession {
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public OperationHandle getTableTypes()
       throws HiveSQLException {
-    acquire();
+    acquire(true);
 
     OperationManager operationManager = getOperationManager();
     GetTableTypesOperation operation = operationManager.newGetTableTypesOperation(getSession());
@@ -407,14 +416,14 @@ public class HiveSessionImpl implements HiveSession {
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public OperationHandle getColumns(String catalogName, String schemaName,
       String tableName, String columnName)  throws HiveSQLException {
-    acquire();
+    acquire(true);
 
     OperationManager operationManager = getOperationManager();
     GetColumnsOperation operation = operationManager.newGetColumnsOperation(getSession(),
@@ -428,14 +437,14 @@ public class HiveSessionImpl implements HiveSession {
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public OperationHandle getFunctions(String catalogName, String schemaName, String functionName)
       throws HiveSQLException {
-    acquire();
+    acquire(true);
 
     OperationManager operationManager = getOperationManager();
     GetFunctionsOperation operation = operationManager
@@ -449,14 +458,14 @@ public class HiveSessionImpl implements HiveSession {
       operationManager.closeOperation(opHandle);
       throw e;
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public void close() throws HiveSQLException {
     try {
-      acquire();
+      acquire(true);
       /**
        * For metadata operations like getTables(), getColumns() etc,
        * the session allocates a private metastore handler which should be
@@ -478,7 +487,7 @@ public class HiveSessionImpl implements HiveSession {
     } catch (IOException ioe) {
       throw new HiveSQLException("Failure to close", ioe);
     } finally {
-      release();
+      release(true);
     }
   }
 
@@ -498,55 +507,86 @@ public class HiveSessionImpl implements HiveSession {
   }
 
   @Override
+  public long getLastAccessTime() {
+    return lastAccessTime;
+  }
+
+  @Override
+  public void closeExpiredOperations() {
+    OperationHandle[] handles = opHandleSet.toArray(new OperationHandle[opHandleSet.size()]);
+    if (handles.length > 0) {
+      List<Operation> operations = operationManager.removeExpiredOperations(handles);
+      if (!operations.isEmpty()) {
+        closeTimedOutOperations(operations);
+      }
+    }
+  }
+
+  private void closeTimedOutOperations(List<Operation> operations) {
+    acquire(false);
+    try {
+      for (Operation operation : operations) {
+        opHandleSet.remove(operation.getHandle());
+        try {
+          operation.close();
+        } catch (Exception e) {
+          LOG.warn("Exception is thrown closing timed-out operation " + operation.getHandle(), e);
+        }
+      }
+    } finally {
+      release(false);
+    }
+  }
+
+  @Override
   public void cancelOperation(OperationHandle opHandle) throws HiveSQLException {
-    acquire();
+    acquire(true);
     try {
       sessionManager.getOperationManager().cancelOperation(opHandle);
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public void closeOperation(OperationHandle opHandle) throws HiveSQLException {
-    acquire();
+    acquire(true);
     try {
       operationManager.closeOperation(opHandle);
       opHandleSet.remove(opHandle);
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public TableSchema getResultSetMetadata(OperationHandle opHandle) throws HiveSQLException {
-    acquire();
+    acquire(true);
     try {
       return sessionManager.getOperationManager().getOperationResultSetSchema(opHandle);
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
-  public RowSet fetchResults(OperationHandle opHandle, FetchOrientation orientation, long maxRows)
-      throws HiveSQLException {
-    acquire();
+  public RowSet fetchResults(OperationHandle opHandle, FetchOrientation orientation,
+      long maxRows) throws HiveSQLException {
+    acquire(true);
     try {
-      return sessionManager.getOperationManager()
-          .getOperationNextRowSet(opHandle, orientation, maxRows);
+        return operationManager.getOperationNextRowSet(opHandle, orientation, maxRows);
     } finally {
-      release();
+      release(true);
     }
   }
 
   @Override
   public RowSet fetchResults(OperationHandle opHandle) throws HiveSQLException {
-    acquire();
+    acquire(true);
     try {
       return sessionManager.getOperationManager().getOperationNextRowSet(opHandle);
     } finally {
-      release();
+      release(true);
     }
   }
 

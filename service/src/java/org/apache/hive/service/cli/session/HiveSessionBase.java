@@ -66,4 +66,6 @@ public interface HiveSessionBase {
   public String getIpAddress();
 
   public void setIpAddress(String ipAddress);
+
+  long getLastAccessTime();
 }
