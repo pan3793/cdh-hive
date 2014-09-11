@@ -86,7 +86,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVE_INSERT_INTO_MULTILEVEL_DIRS)) {
           deletePath = createTargetPath(targetPath, fs);
         }
-        if (!Hive.renameFile(conf, sourcePath, targetPath, fs, true)) {
+        if (!Hive.moveFile(conf, sourcePath, targetPath, fs, true)) {
           try {
             if (deletePath != null) {
               fs.delete(deletePath, true);

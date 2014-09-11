@@ -101,7 +101,6 @@ import org.apache.hadoop.hive.serde2.Deserializer;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
 import org.apache.hadoop.hive.shims.HadoopShims;
-import org.apache.hadoop.hive.shims.HadoopShims.HdfsFileStatus;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.util.StringUtils;
@@ -2233,8 +2232,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
   //method is called. when the replace value is true, this method works a little different
   //from mv command if the destf is a directory, it replaces the destf instead of moving under
   //the destf. in this case, the replaced destf still preserves the original destf's permission
-  public static boolean renameFile(HiveConf conf, Path srcf, Path destf, FileSystem fs,
-      boolean replace) throws HiveException {
+  public static boolean moveFile(HiveConf conf, Path srcf, Path destf, FileSystem fs,
+                                 boolean replace) throws HiveException {
     boolean success = false;
 
     //needed for perm inheritance.
@@ -2242,6 +2241,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
         HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
     HadoopShims shims = ShimLoader.getHadoopShims();
     HadoopShims.HdfsFileStatus destStatus = null;
+    HadoopShims.HdfsEncryptionShim hdfsEncryptionShim = SessionState.get().getHdfsEncryptionShim();
 
     try {
       if (inheritPerms || replace) {
@@ -2262,7 +2262,19 @@ private void constructOneLBLocationMap(FileStatus fSta,
           }
         }
       }
-      success = fs.rename(srcf, destf);
+
+      if ((hdfsEncryptionShim.isPathEncrypted(srcf) || hdfsEncryptionShim.isPathEncrypted(destf))
+          && !hdfsEncryptionShim.arePathsOnSameEncryptionZone(srcf, destf))
+      {
+        LOG.info("Copying source " + srcf + " to " + destf + " because HDFS encryption zones are different.");
+        success = FileUtils.copy(srcf.getFileSystem(conf), srcf, destf.getFileSystem(conf), destf,
+            true, // delete source
+            replace, // overwrite destination
+            conf);
+      } else {
+        success = fs.rename(srcf, destf);
+      }
+
       LOG.info((replace ? "Replacing src:" : "Renaming src:") + srcf.toString()
           + ";dest: " + destf.toString()  + ";Status:" + success);
     } catch (IOException ioe) {
@@ -2313,7 +2325,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     try {
       for (List<Path[]> sdpairs : result) {
         for (Path[] sdpair : sdpairs) {
-          if (!renameFile(conf, sdpair[0], sdpair[1], fs, false)) {
+          if (!moveFile(conf, sdpair[0], sdpair[1], fs, false)) {
             throw new IOException("Cannot move " + sdpair[0] + " to " + sdpair[1]);
           }
         }
@@ -2362,11 +2374,11 @@ private void constructOneLBLocationMap(FileStatus fSta,
         try {
           FileSystem fs2 = oldPath.getFileSystem(conf);
           if (fs2.exists(oldPath)) {
-            FileUtils.trashFilesUnderDir(fs2, oldPath, conf);
+            FileUtils.trashFilesUnderDir(fs2, oldPath, conf, Arrays.asList(conf.getVar(HiveConf.ConfVars.STAGINGDIR)));
           }
         } catch (Exception e) {
           //swallow the exception
-          LOG.warn("Directory " + oldPath.toString() + " canot be removed:" + StringUtils.stringifyException(e));
+          LOG.warn("Directory " + oldPath.toString() + " cannot be removed:" + StringUtils.stringifyException(e));
         }
       }
 
@@ -2384,10 +2396,15 @@ private void constructOneLBLocationMap(FileStatus fSta,
           }
         }
 
-        boolean b = renameFile(conf, srcs[0].getPath(), destf, fs, true);
-        if (!b) {
-          throw new HiveException("Unable to move results from " + srcs[0].getPath()
-              + " to destination directory: " + destf);
+        // Copy/move each file under the source directory to avoid to delete the destination
+        // directory if it is the root of an HDFS encryption zone.
+        for (List<Path[]> sdpairs : result) {
+          for (Path[] sdpair : sdpairs) {
+            if (!moveFile(conf, sdpair[0], sdpair[1], fs, true)) {
+              throw new IOException("Unable to move file/directory from " + sdpair[0] +
+                  " to " + sdpair[1]);
+            }
+          }
         }
       } else { // srcf is a file or pattern containing wildcards
         if (!fs.exists(destf)) {
@@ -2402,7 +2419,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
         // srcs must be a list of files -- ensured by LoadSemanticAnalyzer
         for (List<Path[]> sdpairs : result) {
           for (Path[] sdpair : sdpairs) {
-            if (!renameFile(conf, sdpair[0], sdpair[1], fs, true)) {
+            if (!moveFile(conf, sdpair[0], sdpair[1], fs, true)) {
               throw new IOException("Error moving: " + sdpair[0] + " into: " + sdpair[1]);
             }
           }

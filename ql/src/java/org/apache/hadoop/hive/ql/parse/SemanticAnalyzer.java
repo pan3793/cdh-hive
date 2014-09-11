@@ -190,6 +190,8 @@ import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
+import org.apache.hadoop.hive.shims.HadoopShims;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.mapred.InputFormat;
 
@@ -1420,7 +1422,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
                 throw new SemanticException(e);
               }
               try {
-                fname = ctx.getExternalTmpPath(
+                fname = ctx.getExtTmpPathRelTo(
                     FileUtils.makeQualified(location, conf).toUri()).toString();
               } catch (Exception e) {
                 throw new SemanticException(generateErrorMessage(ast,
@@ -1435,7 +1437,12 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
               }
             } else {
               qb.setIsQuery(true);
-              fname = ctx.getMRTmpPath().toString();
+              Path table_path = getStrongestEncryptedTablePath(qb);
+              if (table_path != null) {
+                fname = ctx.getExtTmpPathRelTo(table_path.toUri()).toString();
+              } else {
+                fname = ctx.getMRTmpPath().toString();
+              }
               ctx.setResDir(new Path(fname));
             }
           }
@@ -1490,6 +1497,44 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       LOG.error(org.apache.hadoop.util.StringUtils.stringifyException(e));
       throw new SemanticException(e.getMessage(), e);
     }
+  }
+
+  /**
+   * Gets the strongest encrypted table path.
+   *
+   * @param qb The QB object that contains a list of all table locations.
+   * @return The strongest encrypted path
+   * @throws HiveException if an error occurred attempting to compare the encryption strength
+   */
+  private Path getStrongestEncryptedTablePath(QB qb) throws HiveException {
+    List<String> tabAliases = new ArrayList<String>(qb.getTabAliases());
+    Path strongestPath = null;
+    HadoopShims shims = ShimLoader.getHadoopShims();
+    HadoopShims.HdfsEncryptionShim hdfsEncryptionShim = SessionState.get().getHdfsEncryptionShim();
+
+    for (String alias : tabAliases) {
+      Table tab = qb.getMetaData().getTableForAlias(alias);
+      if (tab != null) {
+        Path tablePath = tab.getDataLocation();
+        if (tablePath != null) {
+          try {
+            if (strongestPath == null) {
+              strongestPath = tablePath;
+            } else if (tablePath.toUri().getScheme().equals("hdfs")
+                && hdfsEncryptionShim.isPathEncrypted(tablePath))
+            {
+              if (hdfsEncryptionShim.comparePathKeyStrength(tablePath, strongestPath) > 0) {
+                strongestPath = tablePath;
+              }
+            }
+          } catch (IOException e) {
+            throw new HiveException("Cannot search for the most secure table path", e);
+          }
+        }
+      }
+    }
+
+    return strongestPath;
   }
 
   private void replaceViewReferenceWithDefinition(QB qb, Table tab,
@@ -5564,7 +5609,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         // on same namespace as tbl dir.
         queryTmpdir = dest_path.toUri().getScheme().equals("viewfs") ?
           ctx.getExtTmpPathRelTo(dest_path.getParent().toUri()) :
-          ctx.getExternalTmpPath(dest_path.toUri());
+          ctx.getExtTmpPathRelTo(dest_path.toUri());
       }
       if (dpCtx != null) {
         // set the root of the temporay path where dynamic partition columns will populate
@@ -5682,7 +5727,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       // on same namespace as tbl dir.
       queryTmpdir = dest_path.toUri().getScheme().equals("viewfs") ?
         ctx.getExtTmpPathRelTo(dest_path.getParent().toUri()) :
-        ctx.getExternalTmpPath(dest_path.toUri());
+        ctx.getExtTmpPathRelTo(dest_path.toUri());
       table_desc = Utilities.getTableDesc(dest_tab);
 
       // Add sorting/bucketing if needed
@@ -5739,7 +5784,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
         try {
           Path qPath = FileUtils.makeQualified(dest_path, conf);
-          queryTmpdir = ctx.getExternalTmpPath(qPath.toUri());
+          queryTmpdir = ctx.getExtTmpPathRelTo(qPath.toUri());
         } catch (Exception e) {
           throw new SemanticException("Error creating temporary folder on: "
               + dest_path, e);
@@ -5900,7 +5945,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     // it should be the same as the MoveWork's sourceDir.
     fileSinkDesc.setStatsAggPrefix(fileSinkDesc.getDirName().toString());
     if (HiveConf.getVar(conf, HIVESTATSDBCLASS).equalsIgnoreCase(StatDB.fs.name())) {
-      String statsTmpLoc = ctx.getExternalTmpPath(queryTmpdir.toUri()).toString();
+      String statsTmpLoc = ctx.getExtTmpPathRelTo(queryTmpdir.toUri()).toString();
       LOG.info("Set stats collection dir : " + statsTmpLoc);
       conf.set(StatsSetupConst.STATS_TMP_LOC, statsTmpLoc);
     }
@@ -8781,7 +8826,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       tsDesc.setGatherStats(false);
     } else {
       if (HiveConf.getVar(conf, HIVESTATSDBCLASS).equalsIgnoreCase(StatDB.fs.name())) {
-        String statsTmpLoc = ctx.getExternalTmpPath(tab.getPath().toUri()).toString();
+        String statsTmpLoc = ctx.getExtTmpPathRelTo(tab.getPath().toUri()).toString();
         LOG.info("Set stats collection dir : " + statsTmpLoc);
         conf.set(StatsSetupConst.STATS_TMP_LOC, statsTmpLoc);
       }

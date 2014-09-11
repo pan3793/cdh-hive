@@ -190,6 +190,59 @@ public class Context {
   }
 
   /**
+   * Gets a temporary staging directory related to a path.
+   * If a path already contains a staging directory, then returns the current directory; otherwise
+   * create the directory if needed.
+   *
+   * @param path URI of the temporary directory
+   * @param mkdir Create the directory if True.
+   * @return A temporary path.
+   */
+  private Path getStagingDir(Path path, boolean mkdir) {
+    final URI pathUri = path.toUri();
+    final String fileSystem = pathUri.getScheme() + ":" + pathUri.getAuthority();
+    final String stagingDir = HiveConf.getVar(conf, HiveConf.ConfVars.STAGINGDIR);
+    final String relateToPath = pathUri.getPath();
+
+    String stagingPathname;
+    if (relateToPath.indexOf(stagingDir) != -1) {
+      stagingPathname = relateToPath.substring(0, relateToPath.indexOf(stagingDir) + stagingDir.length());
+    } else {
+      stagingPathname = relateToPath + Path.SEPARATOR + stagingDir;
+    }
+
+    final String key = fileSystem + "-" + stagingPathname + "-" + TaskRunner.getTaskRunnerID();
+
+    Path dir = fsScratchDirs.get(key);
+    if (dir == null) {
+      dir = new Path(stagingPathname, "_" + this.executionId + "-" + TaskRunner.getTaskRunnerID());
+
+      if (mkdir) {
+        FileSystem fs;
+        try {
+          fs = dir.getFileSystem(conf);
+
+          dir = new Path(fs.makeQualified(dir).toString());
+          FsPermission fsPermission = new FsPermission(Short.parseShort(scratchDirPermission.trim(), 8));
+          if (!Utilities.createDirsWithPermission(conf, dir, fsPermission)) {
+            throw new IllegalStateException("Cannot make directory: " + dir.toString());
+          }
+
+          if (isHDFSCleanup) {
+            fs.deleteOnExit(dir);
+          }
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
+
+      fsScratchDirs.put(key, dir);
+    }
+
+    return dir;
+  }
+
+  /**
    * Get a tmp directory on specified URI
    *
    * @param scheme Scheme of the target FS
@@ -276,8 +329,7 @@ public class Context {
   }
 
   private Path getExternalScratchDir(URI extURI) {
-    return getScratchDir(extURI.getScheme(), extURI.getAuthority(),
-                         !explain, nonLocalScratchPath.toUri().getPath());
+    return getStagingDir(new Path(extURI.getPath()), !explain);
   }
 
   /**
@@ -352,8 +404,7 @@ public class Context {
    * path within /tmp
    */
   public Path getExtTmpPathRelTo(URI uri) {
-    return new Path (getScratchDir(uri.getScheme(), uri.getAuthority(), !explain, 
-    uri.getPath() + Path.SEPARATOR + "_" + this.executionId), EXT_PREFIX + nextPathId());
+    return new Path(getStagingDir(new Path(uri), !explain), EXT_PREFIX + nextPathId());
   }
 
   /**
