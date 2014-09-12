@@ -18,7 +18,6 @@
 package org.apache.hadoop.hive.shims;
 
 import java.io.IOException;
-import java.lang.Override;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -453,7 +452,6 @@ public class Hadoop20SShims extends HadoopShimsSecure {
     ret.put("HADOOPSPECULATIVEEXECREDUCERS", "mapred.reduce.tasks.speculative.execution");
     ret.put("MAPREDSETUPCLEANUPNEEDED", "mapred.committer.job.setup.cleanup.needed");
     ret.put("MAPREDTASKCLEANUPNEEDED", "mapreduce.job.committer.task.cleanup.needed");
-    ret.put("HADOOPSECURITYKEYPROVIDER", "hadoop.encryption.is.not.supported");
     return ret;
   }
 
@@ -483,30 +481,5 @@ public class Hadoop20SShims extends HadoopShimsSecure {
     FileSystem fs = FileSystem.get(uri, conf);
     conf.setBoolean("fs." + uri.getScheme() + ".impl.disable.cache", origDisableHDFSCache);
     return fs;
-  }
-
-  public static class HdfsEncryptionShim implements HadoopShims.HdfsEncryptionShim {
-    @Override
-    public boolean isPathEncrypted(Path path) throws IOException {
-    /* not supported */
-      return false;
-    }
-
-    @Override
-    public boolean arePathsOnSameEncryptionZone(Path path1, Path path2) throws IOException {
-    /* not supported */
-      return true;
-    }
-
-    @Override
-    public int comparePathKeyStrength(Path path1, Path path2) throws IOException {
-    /* not supported */
-      return 0;
-    }
-  }
-
-  @Override
-  public HdfsEncryptionShim createHdfsEncryptionShim(FileSystem fs, Configuration conf) throws IOException {
-    return new HdfsEncryptionShim();
   }
 }

@@ -686,48 +686,4 @@ public interface HadoopShims {
 
   public FileSystem getNonCachedFileSystem(URI uri, Configuration conf) throws IOException;
 
-  /**
-   * This interface encapsulates methods used to get encryption information from
-   * HDFS paths.
-   */
-  public interface HdfsEncryptionShim {
-    /**
-     * Checks if a given HDFS path is encrypted.
-     *
-     * @param path Path to HDFS file system
-     * @return True if it is encrypted; False otherwise.
-     * @throws IOException If an error occurred attempting to get encryption information
-     */
-    public boolean isPathEncrypted(Path path) throws IOException;
-
-    /**
-     * Checks if two HDFS paths are on the same encrypted or unencrypted zone.
-     *
-     * @param path1 Path to HDFS file system
-     * @param path2 Path to HDFS file system
-     * @return True if both paths are in the same zone; False otherwise.
-     * @throws IOException If an error occurred attempting to get encryption information
-     */
-    public boolean arePathsOnSameEncryptionZone(Path path1, Path path2) throws IOException;
-
-    /**
-     * Compares two encrypted path strengths.
-     *
-     * @param path1 HDFS path to compare.
-     * @param path2 HDFS path to compare.
-     * @return 1 if path1 is stronger; 0 if paths are equals; -1 if path1 is weaker.
-     * @throws IOException If an error occurred attempting to get encryption/key metadata
-     */
-    public int comparePathKeyStrength(Path path1, Path path2) throws IOException;
-  }
-
-  /**
-   * Returns a new instance of the HdfsEncryption shim.
-   *
-   * @param fs A FileSystem object to HDFS
-   * @param conf A Configuration object
-   * @return A new instance of the HdfsEncryption shim.
-   * @throws IOException If an error occurred while creating the instance.
-   */
-  public HdfsEncryptionShim createHdfsEncryptionShim(FileSystem fs, Configuration conf) throws IOException;
 }

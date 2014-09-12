@@ -551,23 +551,11 @@ public final class FileUtils {
    * @throws FileNotFoundException
    * @throws IOException
    */
-  public static boolean trashFilesUnderDir(FileSystem fs, Path f, Configuration conf, List<String> except)
-          throws FileNotFoundException, IOException {
+  public static boolean trashFilesUnderDir(FileSystem fs, Path f, Configuration conf) throws FileNotFoundException, IOException {
     FileStatus[] statuses = fs.listStatus(f, allPathFilter);
     boolean result = true;
     for (FileStatus status : statuses) {
-      // Loop into the list of file exceptions, and skip the file deletion if found
-      boolean skipFile = false;
-      for (String path : except) {
-        if (status.getPath().equals(new Path(f, path))) {
-            skipFile = true;
-            break;
-        }
-      }
-
-      if (!skipFile) {
-        result = result & moveToTrash(fs, status.getPath(), conf);
-      }
+      result = result & moveToTrash(fs, status.getPath(), conf);
     }
     return result;
   }

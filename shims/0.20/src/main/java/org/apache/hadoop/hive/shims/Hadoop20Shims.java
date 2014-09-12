@@ -816,7 +816,6 @@ public class Hadoop20Shims implements HadoopShims {
     ret.put("HADOOPSPECULATIVEEXECREDUCERS", "mapred.reduce.tasks.speculative.execution");
     ret.put("MAPREDSETUPCLEANUPNEEDED", "mapred.committer.job.setup.cleanup.needed");
     ret.put("MAPREDTASKCLEANUPNEEDED", "mapreduce.job.committer.task.cleanup.needed");
-    ret.put("HADOOPSECURITYKEYPROVIDER", "hadoop.encryption.is.not.supported");
     return ret;
   }
 
@@ -851,30 +850,5 @@ public class Hadoop20Shims implements HadoopShims {
   protected void run(FsShell shell, String[] command) throws Exception {
     LOG.debug(ArrayUtils.toString(command));
     shell.run(command);
-  }
-
-  public static class HdfsEncryptionShim implements HadoopShims.HdfsEncryptionShim {
-    @Override
-    public boolean isPathEncrypted(Path path) throws IOException {
-    /* not supported */
-      return false;
-    }
-
-    @Override
-    public boolean arePathsOnSameEncryptionZone(Path path1, Path path2) throws IOException {
-    /* not supported */
-      return true;
-    }
-
-    @Override
-    public int comparePathKeyStrength(Path path1, Path path2) throws IOException {
-    /* not supported */
-      return 0;
-    }
-  }
-
-  @Override
-  public HdfsEncryptionShim createHdfsEncryptionShim(FileSystem fs, Configuration conf) throws IOException {
-    return new HdfsEncryptionShim();
   }
 }

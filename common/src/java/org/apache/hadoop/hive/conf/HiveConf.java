@@ -179,7 +179,6 @@ public class HiveConf extends Configuration {
     SCRIPTWRAPPER("hive.exec.script.wrapper", null),
     PLAN("hive.exec.plan", ""),
     PLAN_SERIALIZATION("hive.plan.serialization.format","kryo"),
-    STAGINGDIR("hive.exec.stagingdir", ".hive-staging"),
     SCRATCHDIR("hive.exec.scratchdir", "/tmp/hive-" + System.getProperty("user.name")),
     LOCALSCRATCHDIR("hive.exec.local.scratchdir", System.getProperty("java.io.tmpdir") + File.separator + System.getProperty("user.name")),
     SCRATCHDIRPERMISSION("hive.scratch.dir.permission", "700"),
@@ -263,7 +262,6 @@ public class HiveConf extends Configuration {
     HADOOPSPECULATIVEEXECREDUCERS(ShimLoader.getHadoopShims().getHadoopConfNames().get("HADOOPSPECULATIVEEXECREDUCERS"), true),
     MAPREDSETUPCLEANUPNEEDED(ShimLoader.getHadoopShims().getHadoopConfNames().get("MAPREDSETUPCLEANUPNEEDED"), false),
     MAPREDTASKCLEANUPNEEDED(ShimLoader.getHadoopShims().getHadoopConfNames().get("MAPREDTASKCLEANUPNEEDED"), false),
-    HADOOPSECURITYKEYPROVIDER(ShimLoader.getHadoopShims().getHadoopConfNames().get("HADOOPSECURITYKEYPROVIDER"), null),
 
     // Metastore stuff. Be sure to update HiveConf.metaVars when you add
     // something here!
