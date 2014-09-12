@@ -147,6 +147,27 @@ SERDEPROPERTIES ('avro.schema.literal'='{
 POSTHOOK: type: ALTERTABLE_SERIALIZER
 POSTHOOK: Input: default@episodes_partitioned
 POSTHOOK: Output: default@episodes_partitioned
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
 PREHOOK: query: SELECT * FROM episodes_partitioned WHERE doctor_pt > 6
 PREHOOK: type: QUERY
 PREHOOK: Input: default@episodes_partitioned
@@ -159,9 +180,30 @@ POSTHOOK: Input: default@episodes_partitioned
 POSTHOOK: Input: default@episodes_partitioned@doctor_pt=11
 POSTHOOK: Input: default@episodes_partitioned@doctor_pt=9
 #### A masked pattern was here ####
-Rose	26 March 2005	9	0	9
-The Doctor's Wife	14 May 2011	11	0	11
-The Eleventh Hour	3 April 2010	11	0	11
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+Rose	26 March 2005	9	NULL	9
+The Doctor's Wife	14 May 2011	11	NULL	11
+The Eleventh Hour	3 April 2010	11	NULL	11
 PREHOOK: query: -- Verify that Fetch works in addition to Map
 SELECT * FROM episodes_partitioned ORDER BY air_date LIMIT 5
 PREHOOK: type: QUERY
@@ -186,11 +228,32 @@ POSTHOOK: Input: default@episodes_partitioned@doctor_pt=5
 POSTHOOK: Input: default@episodes_partitioned@doctor_pt=6
 POSTHOOK: Input: default@episodes_partitioned@doctor_pt=9
 #### A masked pattern was here ####
-An Unearthly Child	23 November 1963	1	0	1
-Horror of Fang Rock	3 September 1977	4	0	4
-Rose	26 March 2005	9	0	9
-The Doctor's Wife	14 May 2011	11	0	11
-The Eleventh Hour	3 April 2010	11	0	11
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+An Unearthly Child	23 November 1963	1	NULL	1
+Horror of Fang Rock	3 September 1977	4	NULL	4
+Rose	26 March 2005	9	NULL	9
+The Doctor's Wife	14 May 2011	11	NULL	11
+The Eleventh Hour	3 April 2010	11	NULL	11
 PREHOOK: query: -- Fetch w/filter to specific partition
 SELECT * FROM episodes_partitioned WHERE doctor_pt = 6
 PREHOOK: type: QUERY
@@ -203,7 +266,28 @@ POSTHOOK: type: QUERY
 POSTHOOK: Input: default@episodes_partitioned
 POSTHOOK: Input: default@episodes_partitioned@doctor_pt=6
 #### A masked pattern was here ####
-The Mysterious Planet	6 September 1986	6	0	6
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+The Mysterious Planet	6 September 1986	6	NULL	6
 PREHOOK: query: -- Fetch w/non-existent partition
 SELECT * FROM episodes_partitioned WHERE doctor_pt = 7 LIMIT 5
 PREHOOK: type: QUERY
@@ -214,3 +298,24 @@ SELECT * FROM episodes_partitioned WHERE doctor_pt = 7 LIMIT 5
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@episodes_partitioned
 #### A masked pattern was here ####
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=11).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=1).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=2).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=4).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=5).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=6).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).air_date SIMPLE [(episodes)episodes.FieldSchema(name:air_date, type:string, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).doctor SIMPLE [(episodes)episodes.FieldSchema(name:doctor, type:int, comment:from deserializer), ]
+POSTHOOK: Lineage: episodes_partitioned PARTITION(doctor_pt=9).title SIMPLE [(episodes)episodes.FieldSchema(name:title, type:string, comment:from deserializer), ]
