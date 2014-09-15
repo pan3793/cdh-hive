@@ -59,10 +59,6 @@ public class TestHiveDecimal {
 
   @Test
   public void testTrailingZeroRemovalAfterEnforcement() {
-    String decStr = "8.090000000000000000000000000000000000000123456";
-    HiveDecimal dec = HiveDecimal.create(decStr);
-    Assert.assertEquals("8.09", dec.toString());
-
     // Leaving trailing zeros
     Assert.assertEquals("0.0", HiveDecimal.enforcePrecisionScale(new BigDecimal("0.0"), 2, 1).toString());
     Assert.assertEquals("0.00", HiveDecimal.enforcePrecisionScale(new BigDecimal("0.00"), 3, 2).toString());
