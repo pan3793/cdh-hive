@@ -33,6 +33,7 @@ POSTHOOK: query: select count(*) from roottable
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@roottable
 #### A masked pattern was here ####
+POSTHOOK: Lineage: roottable.key SIMPLE [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 20
 PREHOOK: query: select count(*) from roottable
 PREHOOK: type: QUERY
@@ -42,4 +43,5 @@ POSTHOOK: query: select count(*) from roottable
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@roottable
 #### A masked pattern was here ####
+POSTHOOK: Lineage: roottable.key SIMPLE [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 20
