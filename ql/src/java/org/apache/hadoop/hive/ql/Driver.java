@@ -745,10 +745,11 @@ public class Driver implements CommandProcessor {
         break;
       case DUMMYPARTITION:
       case PARTITION:
+      case UDF:
         // not currently handled
         continue;
         default:
-          throw new AssertionError("Unexpected object type");
+          throw new AssertionError("Unexpected object type: " + privObject.getType());
       }
 
       HivePrivilegeObject hPrivObject = new HivePrivilegeObject(privObjType, dbname, tableURI);
