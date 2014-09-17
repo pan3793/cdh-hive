@@ -37,6 +37,8 @@ import org.apache.thrift.transport.TTransportFactory;
 
 public class ThriftBinaryCLIService extends ThriftCLIService {
 
+  private int requestTimeout;
+
   public ThriftBinaryCLIService(CLIService cliService) {
     super(cliService, "ThriftBinaryCLIService");
   }
@@ -70,6 +72,7 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
       maxWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS);
       workerKeepAliveTime = hiveConf.getTimeVar(
           ConfVars.HIVE_SERVER2_THRIFT_WORKER_KEEPALIVE_TIME, TimeUnit.SECONDS);
+      requestTimeout = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT);
       String threadPoolName = "HiveServer2-Handler-Pool";
       ExecutorService executorService = new ThreadPoolExecutor(minWorkerThreads, maxWorkerThreads,
           workerKeepAliveTime, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
@@ -91,6 +94,7 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
       .processorFactory(processorFactory)
       .transportFactory(transportFactory)
       .protocolFactory(new TBinaryProtocol.Factory())
+      .requestTimeout(requestTimeout)
       .executorService(executorService);
 
       server = new TThreadPoolServer(sargs);
