@@ -17,7 +17,11 @@
  */
 package org.apache.hive.beeline;
 
+import java.util.ArrayList;
 import java.util.IllegalFormatException;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 public class HiveSchemaHelper {
   public static final String DB_DERBY = "derby";
@@ -94,7 +98,7 @@ public class HiveSchemaHelper {
    *
    */
   private static abstract class AbstractCommandParser implements NestedScriptParser {
-    private String dbOpts = null;
+    private List<String> dbOpts = new ArrayList<String>();
 
     @Override
     public boolean isPartialCommand(String dbCommand) throws IllegalArgumentException{
@@ -136,10 +140,10 @@ public class HiveSchemaHelper {
 
     @Override
     public void setDbOpts(String dbOpts) {
-      this.dbOpts = dbOpts;
+      this.dbOpts = Lists.newArrayList(dbOpts.split(","));
     }
 
-    protected String getDbOpts() {
+    protected List<String> getDbOpts() {
       return dbOpts;
     }
   }
@@ -227,7 +231,10 @@ public class HiveSchemaHelper {
   // Postgres specific parser
   public static class PostgresCommandParser extends AbstractCommandParser {
     public static String POSTGRES_STRING_COMMAND_FILTER = "SET standard_conforming_strings";
+    public static String POSTGRES_CREATE_LANGUAGE = "CREATE LANGUAGE plpgsql";
     public static String POSTGRES_SKIP_STANDARD_STRING = "postgres.filter.81";
+    public static String POSTGRES_INCLUDE_CREATE_LANG = "postgres.filter.pre.9";
+
     private static String POSTGRES_NESTING_TOKEN = "\\i";
 
     @Override
@@ -253,8 +260,14 @@ public class HiveSchemaHelper {
     @Override
     public boolean isNonExecCommand(String dbCommand) {
       // Skip "standard_conforming_strings" command which is not supported in older postgres
-      if (POSTGRES_SKIP_STANDARD_STRING.equalsIgnoreCase(getDbOpts())) {
+      if (getDbOpts().contains(POSTGRES_SKIP_STANDARD_STRING)) {
         if (dbCommand.startsWith(POSTGRES_STRING_COMMAND_FILTER)) {
+          return true;
+        }
+      }
+      // execute "CREATE LANGUAGE " for pre-9.x postgres
+      if (!getDbOpts().contains(POSTGRES_INCLUDE_CREATE_LANG)) {
+        if (dbCommand.startsWith(POSTGRES_CREATE_LANGUAGE)) {
           return true;
         }
       }

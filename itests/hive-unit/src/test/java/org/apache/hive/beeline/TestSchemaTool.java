@@ -31,10 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaException;
 import org.apache.hadoop.hive.metastore.MetaStoreSchemaInfo;
-import org.apache.hive.beeline.HiveSchemaHelper;
 import org.apache.hive.beeline.HiveSchemaHelper.NestedScriptParser;
 import org.apache.hive.beeline.HiveSchemaHelper.PostgresCommandParser;
-import org.apache.hive.beeline.HiveSchemaTool;
 
 public class TestSchemaTool extends TestCase {
   private HiveSchemaTool schemaTool;
@@ -379,24 +377,26 @@ public class TestSchemaTool extends TestCase {
       "DROP TABLE IF EXISTS fooTab;",
       HiveSchemaHelper.PostgresCommandParser.POSTGRES_STRING_COMMAND_FILTER + ";",
       "CREATE TABLE fooTab(id INTEGER);",
+        HiveSchemaHelper.PostgresCommandParser.POSTGRES_CREATE_LANGUAGE + ";",
       "DROP TABLE footab;",
       "-- ending comment"
     };
 
-    String resultScriptwithFilter[] = {
+    String resultScriptwithoutFilter[] = {
       "DROP TABLE IF EXISTS fooTab",
       HiveSchemaHelper.PostgresCommandParser.POSTGRES_STRING_COMMAND_FILTER,
       "CREATE TABLE fooTab(id INTEGER)",
       "DROP TABLE footab",
     };
 
-    String resultScriptwithoutFilter[] = {
+    String resultScriptwithFilter[] = {
         "DROP TABLE IF EXISTS fooTab",
         "CREATE TABLE fooTab(id INTEGER)",
+        HiveSchemaHelper.PostgresCommandParser.POSTGRES_CREATE_LANGUAGE,
         "DROP TABLE footab",
       };
 
-    String expectedSQL = StringUtils.join(resultScriptwithFilter, System.getProperty("line.separator")) +
+    String expectedSQL = StringUtils.join(resultScriptwithoutFilter, System.getProperty("line.separator")) +
         System.getProperty("line.separator");
     File testScriptFile = generateTestScript(testScript);
     String flattenedSql = HiveSchemaTool.buildCommand(
@@ -404,10 +404,11 @@ public class TestSchemaTool extends TestCase {
         testScriptFile.getParentFile().getPath(), testScriptFile.getName());
     assertEquals(expectedSQL, flattenedSql);
 
-    System.setProperty(HiveSchemaHelper.PostgresCommandParser.POSTGRES_SKIP_STANDARD_STRING, "true");
+//    System.setProperty(HiveSchemaHelper.PostgresCommandParser.POSTGRES_SKIP_STANDARD_STRING, "true");
     NestedScriptParser postgresParser = HiveSchemaHelper.getDbCommandParser("postgres");
-    postgresParser.setDbOpts(PostgresCommandParser.POSTGRES_SKIP_STANDARD_STRING);
-    expectedSQL = StringUtils.join(resultScriptwithoutFilter, System.getProperty("line.separator")) +
+    postgresParser.setDbOpts(PostgresCommandParser.POSTGRES_SKIP_STANDARD_STRING
+        + "," + PostgresCommandParser.POSTGRES_INCLUDE_CREATE_LANG);
+    expectedSQL = StringUtils.join(resultScriptwithFilter, System.getProperty("line.separator")) +
         System.getProperty("line.separator");
     testScriptFile = generateTestScript(testScript);
     flattenedSql = HiveSchemaTool.buildCommand(
