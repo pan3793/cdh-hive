@@ -596,10 +596,6 @@ public class BeeLine {
 
 
     if (commands.size() > 0) {
-      // for single command execute, disable color
-      getOpts().setColor(false);
-      getOpts().setHeaderInterval(-1);
-
       for (Iterator<String> i = commands.iterator(); i.hasNext();) {
         String command = i.next().toString();
         debug(loc("executing-command", command));
