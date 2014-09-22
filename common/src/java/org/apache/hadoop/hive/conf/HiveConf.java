@@ -852,7 +852,7 @@ public class HiveConf extends Configuration {
     HIVE_EXEC_LOG4J_FILE("hive.exec.log4j.file", ""),
 
     // Hive global init file location
-    HIVE_GLOBAL_INIT_FILE_LOCATION("hive.global.init.file.location", System.getenv("HIVE_CONF_DIR")),
+    HIVE_SERVER2_GLOBAL_INIT_FILE_LOCATION("hive.server2.global.init.file.location", System.getenv("HIVE_CONF_DIR")),
 
     // prefix used to auto generated column aliases (this should be started with '_')
     HIVE_AUTOGEN_COLUMNALIAS_PREFIX_LABEL("hive.autogen.columnalias.prefix.label", "_c"),
