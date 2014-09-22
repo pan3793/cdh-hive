@@ -140,7 +140,9 @@ public class HiveSchemaHelper {
 
     @Override
     public void setDbOpts(String dbOpts) {
-      this.dbOpts = Lists.newArrayList(dbOpts.split(","));
+      if (dbOpts != null) {
+        this.dbOpts = Lists.newArrayList(dbOpts.split(","));
+      }
     }
 
     protected List<String> getDbOpts() {
