@@ -128,6 +128,14 @@ public class RestrictedHiveAuthorizationTaskFactoryImpl implements
     return null;
   }
 
+  @Override
+  public Task<? extends Serializable> createShowRolePrincipalsTask(ASTNode ast,
+      Path resFile, HashSet<ReadEntity> inputs, HashSet<WriteEntity> outputs)
+      throws SemanticException {
+    raiseAuthError();
+    return null;
+  }
+
   private void raiseAuthError() throws SemanticException {
     throw new SemanticException(
         "The current builtin authorization in Hive is incomplete and disabled.");
