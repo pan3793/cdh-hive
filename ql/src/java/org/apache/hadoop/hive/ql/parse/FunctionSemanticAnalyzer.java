@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
@@ -83,7 +85,7 @@ public class FunctionSemanticAnalyzer extends BaseSemanticAnalyzer {
         new CreateFunctionDesc(functionName, isTemporaryFunction, className, resources);
     rootTasks.add(TaskFactory.get(new FunctionWork(desc), conf));
 
-    addEntities(functionName, isTemporaryFunction);
+    addEntities(functionName, isTemporaryFunction, resources);
   }
 
   private void analyzeDropFunction(ASTNode ast) throws SemanticException {
@@ -108,7 +110,7 @@ public class FunctionSemanticAnalyzer extends BaseSemanticAnalyzer {
     DropFunctionDesc desc = new DropFunctionDesc(functionName, isTemporaryFunction);
     rootTasks.add(TaskFactory.get(new FunctionWork(desc), conf));
 
-    addEntities(functionName, isTemporaryFunction);
+    addEntities(functionName, isTemporaryFunction, null);
   }
 
   private ResourceType getResourceType(ASTNode token) throws SemanticException {
@@ -154,8 +156,15 @@ public class FunctionSemanticAnalyzer extends BaseSemanticAnalyzer {
   /**
    * Add write entities to the semantic analyzer to restrict function creation to priviliged users.
    */
-  private void addEntities(String functionName, boolean isTemporaryFunction)
-      throws SemanticException {
+  private void addEntities(String functionName, boolean isTemporaryFunction,
+      List<ResourceUri> resources) throws SemanticException {
+    // If the function is being added under a database 'namespace', then add an entity representing
+    // the database (only applicable to permanent/metastore functions).
+    // We also add a second entity representing the function name.
+    // The authorization api implementation can decide which entities it wants to use to
+    // authorize the create/drop function call.
+
+    // Add the relevant database 'namespace' as a WriteEntity
     Database database = null;
     if (isTemporaryFunction) {
       // This means temp function creation is also restricted.
@@ -172,6 +181,13 @@ public class FunctionSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
     if (database != null) {
       outputs.add(new WriteEntity(database, WriteEntity.WriteType.DDL_NO_LOCK));
+    }
+    if (resources != null) {
+      for (ResourceUri resource : resources) {
+        String uriPath = resource.getUri();
+        outputs.add(new WriteEntity(new Path(uriPath),
+            FileUtils.isLocalFile(conf, uriPath)));
+      }
     }
   }
 }
