@@ -4,6 +4,7 @@ PREHOOK: Output: database:default
 #### A masked pattern was here ####
 POSTHOOK: type: CREATEFUNCTION
 POSTHOOK: Output: database:default
+#### A masked pattern was here ####
 PREHOOK: query: create table udf_using (c1 string)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
