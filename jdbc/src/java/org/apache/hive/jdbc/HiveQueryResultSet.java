@@ -182,6 +182,7 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
     this.sessHandle = builder.sessHandle;
     this.fetchSize = builder.fetchSize;
     columnNames = new ArrayList<String>();
+    normalizedColumnNames = new ArrayList<String>();
     columnTypes = new ArrayList<String>();
     columnAttributes = new ArrayList<JdbcColumnAttributes>();
     if (builder.retrieveSchema) {
@@ -260,6 +261,7 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
         }
         String columnName = columns.get(pos).getColumnName();
         columnNames.add(columnName);
+        normalizedColumnNames.add(columnName.toLowerCase());
         TPrimitiveTypeEntry primitiveTypeEntry =
             columns.get(pos).getTypeDesc().getTypes().get(0).getPrimitiveEntry();
         String columnTypeName = TYPE_NAMES.get(primitiveTypeEntry.getType());
@@ -284,6 +286,10 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
     columnNames.addAll(colNames);
     columnTypes.addAll(colTypes);
     columnAttributes.addAll(colAttributes);
+
+    for (String colName : colNames) {
+      normalizedColumnNames.add(colName.toLowerCase());
+    }
   }
 
   @Override
