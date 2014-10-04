@@ -64,6 +64,7 @@ public abstract class HiveBaseResultSet implements ResultSet {
   protected boolean wasNull = false;
   protected TRow row;
   protected List<String> columnNames;
+  protected List<String> normalizedColumnNames;
   protected List<String> columnTypes;
   protected List<JdbcColumnAttributes> columnAttributes;
 
@@ -90,7 +91,7 @@ public abstract class HiveBaseResultSet implements ResultSet {
   }
 
   public int findColumn(String columnName) throws SQLException {
-    int columnIndex = columnNames.indexOf(columnName);
+    int columnIndex = normalizedColumnNames.indexOf(columnName.toLowerCase());
     if (columnIndex==-1) {
       throw new SQLException();
     } else {
