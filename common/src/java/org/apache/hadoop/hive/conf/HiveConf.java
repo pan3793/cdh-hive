@@ -777,6 +777,7 @@ public class HiveConf extends Configuration {
 
     // For HBase storage handler
     HIVE_HBASE_WAL_ENABLED("hive.hbase.wal.enabled", true),
+    HIVE_HBASE_GENERATE_HFILES("hive.hbase.generatehfiles", false),
 
     // For har files
     HIVEARCHIVEENABLED("hive.archive.enabled", false),
