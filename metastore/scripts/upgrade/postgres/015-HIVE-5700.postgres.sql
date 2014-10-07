@@ -1,6 +1,5 @@
 SELECT '< HIVE-5700 enforce single date format for partition column storage >';
 
-CREATE LANGUAGE plpgsql;
 -- Normalize the date partition column values as best we can. No schema changes.
 CREATE FUNCTION hive13_to_date(date_str text) RETURNS DATE AS $$ DECLARE dt DATE; BEGIN dt := date_str::DATE; RETURN dt; EXCEPTION WHEN others THEN RETURN null; END; $$ LANGUAGE plpgsql;
 

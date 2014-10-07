@@ -243,6 +243,7 @@ public class HiveSchemaTool {
       for (String scriptFile : upgradeScripts) {
         System.out.println("Upgrade script " + scriptFile);
         if (!dryRun) {
+          runPreUpgrade(scriptDir, scriptFile);
           runBeeLine(scriptDir, scriptFile);
           System.out.println("Completed " + scriptFile);
         }
@@ -338,6 +339,28 @@ public class HiveSchemaTool {
     }
     bfReader.close();
     return sb.toString();
+  }
+
+  // run the pre-upgrade script if exists. The errors from pre-upgrade is ignored
+  private void runPreUpgrade(String scriptDir, String scriptFile) {
+    String preUpgradeScript = MetaStoreSchemaInfo.getPreUpgradeScriptName(scriptFile);
+    File preUpgradeScriptFile = new File(scriptDir, preUpgradeScript);
+    if(!preUpgradeScriptFile.isFile()) {
+      return;
+    }
+
+    try {
+      runBeeLine(scriptDir, preUpgradeScript);
+      System.out.println("Completed " + preUpgradeScript);
+    } catch (Exception e) {
+      System.err.println("Warning in pre-upgrade " + preUpgradeScript + ": "
+          + e.getMessage());
+
+      // Ignore the pre-upgrade script errors
+      if (verbose) {
+        e.printStackTrace();
+      }
+    }
   }
 
   // run beeline on the given metastore scrip, flatten the nested scripts into single file

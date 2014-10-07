@@ -19,9 +19,11 @@
 package org.apache.hive.beeline;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Random;
 
 import junit.framework.TestCase;
@@ -38,6 +40,8 @@ public class TestSchemaTool extends TestCase {
   private HiveSchemaTool schemaTool;
   private HiveConf hiveConf;
   private String testMetastoreDB;
+  private PrintStream errStream;
+  private PrintStream outStream;
 
   @Override
   protected void setUp() throws Exception {
@@ -47,8 +51,10 @@ public class TestSchemaTool extends TestCase {
     System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname,
         "jdbc:derby:" + testMetastoreDB + ";create=true");
     hiveConf = new HiveConf(this.getClass());
-    schemaTool = new HiveSchemaTool(System.getProperty("test.tmp.dir"), hiveConf, "derby");
+    schemaTool = new HiveSchemaTool(System.getProperty("test.tmp.dir", "target/tmp"), hiveConf, "derby");
     System.setProperty("beeLine.system.exit", "true");
+    errStream = System.err;
+    outStream = System.out;
   }
 
   @Override
@@ -57,6 +63,8 @@ public class TestSchemaTool extends TestCase {
     if (metaStoreDir.exists()) {
       FileUtils.forceDeleteOnExit(metaStoreDir);
     }
+    System.setOut(outStream);
+    System.setErr(errStream);
   }
 
   /**
@@ -123,9 +131,30 @@ public class TestSchemaTool extends TestCase {
       throw new Exception("Hive operations shouldn't pass with older version schema");
     }
 
+    // generate dummy pre upgrade script with errors
+    writeDummyPreUpgradeScript("upgrade-0.11.0-to-0.12.0.derby.sql", "foo bar;");
+
+    // generate dummy pre upgrade script with valid sql
+    writeDummyPreUpgradeScript("upgrade-0.12.0-to-0.13.0.derby.sql", "CREATE TABLE schem_test (id integer);");
+    // capture system out and err schemaTool.setVerbose(true);
+    ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
+    PrintStream errPrintStream = new PrintStream(baosErr);
+    System.setErr(errPrintStream);
+    ByteArrayOutputStream baosOut = new ByteArrayOutputStream();
+    PrintStream outPrintStream = new PrintStream(baosOut);
+    System.setOut(outPrintStream);
     // upgrade schema from 0.7.0 to latest
     schemaTool.doUpgrade("0.7.0");
     // verify that driver works fine with latest schema
+    //verify that the schemaTool attempted to run pre-upgrade scripts and ignore errors
+    assertTrue(baosErr.toString().contains("pre-upgrade-0.11.0-to-0.12.0.derby.sql"));
+    assertTrue(baosErr.toString().contains("foo"));
+    assertFalse(baosErr.toString().contains("pre-upgrade-0.12.0-to-0.13.0.derby.sql"));
+
+    // verify that valid pre-upgrade script was executed correctly
+    assertTrue(baosOut.toString().contains(
+        "pre-upgrade-0.12.0-to-0.13.0.derby.sql"));
+
     schemaTool.verifySchemaVersion();
   }
 
@@ -429,5 +458,17 @@ public class TestSchemaTool extends TestCase {
     }
     out.close();
     return testScriptFile;
+  }
+
+  // write out a dummy pre-upgrade script with given SQL command
+  private void writeDummyPreUpgradeScript(String scriptFile, String sql) throws Exception {
+    String dummyPreScriptPath = System.getProperty("test.tmp.dir", "target/tmp") +
+        File.separatorChar + "scripts" + File.separatorChar + "metastore" +
+        File.separatorChar + "upgrade" + File.separatorChar + "derby" +
+        File.separatorChar + "pre-" + scriptFile;
+    FileWriter fstream = new FileWriter(dummyPreScriptPath);
+    BufferedWriter out = new BufferedWriter(fstream);
+    out.write(sql + System.getProperty("line.separator") + ";");
+    out.close();
   }
 }
