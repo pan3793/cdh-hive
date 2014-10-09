@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.parse;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +57,7 @@ public class TestColumnAccess {
     QueryPlan plan = driver.getPlan();
     // check access columns from ColumnAccessInfo
     ColumnAccessInfo columnAccessInfo = plan.getColumnAccessInfo();
-    List<String> cols = columnAccessInfo.getTableToColumnAccessMap().get("default@t1");
+    Collection<String> cols = columnAccessInfo.getTableToColumnAccessMap().get("default@t1");
     Assert.assertNotNull(cols);
     Assert.assertEquals(2, cols.size());
     Assert.assertNotNull(cols.contains("id1"));
@@ -80,7 +81,7 @@ public class TestColumnAccess {
     QueryPlan plan = driver.getPlan();
     // check access columns from ColumnAccessInfo
     ColumnAccessInfo columnAccessInfo = plan.getColumnAccessInfo();
-    List<String> cols = columnAccessInfo.getTableToColumnAccessMap().get("default@t1");
+    Collection<String> cols = columnAccessInfo.getTableToColumnAccessMap().get("default@t1");
     Assert.assertNotNull(cols);
     Assert.assertEquals(2, cols.size());
     Assert.assertNotNull(cols.contains("id1"));
@@ -117,7 +118,7 @@ public class TestColumnAccess {
     QueryPlan plan = driver.getPlan();
     // check access columns from ColumnAccessInfo
     ColumnAccessInfo columnAccessInfo = plan.getColumnAccessInfo();
-    List<String> cols = columnAccessInfo.getTableToColumnAccessMap().get("default@v1");
+    Collection<String> cols = columnAccessInfo.getTableToColumnAccessMap().get("default@v1");
     Assert.assertNull(cols);
     cols = columnAccessInfo.getTableToColumnAccessMap().get("default@t1");
     Assert.assertNotNull(cols);

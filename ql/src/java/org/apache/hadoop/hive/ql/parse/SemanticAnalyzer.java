@@ -9301,7 +9301,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     Map<String, Set<String>> tableToColumnAccessMap = columnAccessInfo.getTableToColumnAccessMap();
     if (tableToColumnAccessMap != null && !tableToColumnAccessMap.isEmpty()) {
       for(ReadEntity entity: inputs) {
-        List<String> cols;
+        Set<String> cols;
         switch (entity.getType()) {
           case TABLE:
             cols = tableToColumnAccessMap.get(entity.getTable().getCompleteName());
