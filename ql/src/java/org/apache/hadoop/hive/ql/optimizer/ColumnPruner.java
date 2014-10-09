@@ -29,6 +29,7 @@ import org.apache.hadoop.hive.ql.exec.FilterOperator;
 import org.apache.hadoop.hive.ql.exec.GroupByOperator;
 import org.apache.hadoop.hive.ql.exec.LateralViewForwardOperator;
 import org.apache.hadoop.hive.ql.exec.LateralViewJoinOperator;
+import org.apache.hadoop.hive.ql.exec.LimitOperator;
 import org.apache.hadoop.hive.ql.exec.MapJoinOperator;
 import org.apache.hadoop.hive.ql.exec.Operator;
 import org.apache.hadoop.hive.ql.exec.PTFOperator;
@@ -77,6 +78,7 @@ public class ColumnPruner implements Transform {
    * @param pactx
    *          the current parse context
    */
+  @Override
   public ParseContext transform(ParseContext pactx) throws SemanticException {
     pGraphContext = pactx;
     opToParseCtxMap = pGraphContext.getOpParseCtx();
@@ -118,6 +120,12 @@ public class ColumnPruner implements Transform {
     opRules.put(new RuleRegExp("R10",
         PTFOperator.getOperatorName() + "%"),
         ColumnPrunerProcFactory.getPTFProc());
+    opRules.put(new RuleRegExp("R11",
+        ScriptOperator.getOperatorName() + "%"),
+        ColumnPrunerProcFactory.getScriptProc());
+    opRules.put(new RuleRegExp("R12",
+        LimitOperator.getOperatorName() + "%"),
+        ColumnPrunerProcFactory.getLimitProc());
     opRules.put(new RuleRegExp("R13",
         UnionOperator.getOperatorName() + "%"),
         ColumnPrunerProcFactory.getUnionProc());
