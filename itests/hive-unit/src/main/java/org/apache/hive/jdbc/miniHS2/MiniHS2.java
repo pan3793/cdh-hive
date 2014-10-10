@@ -18,14 +18,16 @@
 
 package org.apache.hive.jdbc.miniHS2;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
@@ -42,6 +44,7 @@ import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hadoop.hive.shims.HadoopShims.MiniDFSShim;
 import org.apache.hadoop.hive.shims.HadoopShims.MiniMrShim;
 import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hive.jdbc.HiveConnection;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.cli.CLIServiceClient;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -58,20 +61,87 @@ import com.google.common.io.Files;
 public class MiniHS2 extends AbstractHiveService {
   private static final String driverName = "org.apache.hive.jdbc.HiveDriver";
   private HiveServer2 hiveServer2 = null;
-  private static MiniMrShim mr;
-  private static MiniDFSShim dfs;
   private final File baseDir;
   private final Path baseDfsDir;
   private static final AtomicLong hs2Counter = new AtomicLong();
   private static final String HS2_BINARY_MODE = "binary";
   private static final String HS2_HTTP_MODE = "http";
+  private MiniMrShim mr;
+  private MiniDFSShim dfs;
+  private boolean useMiniMR = false;
+  private boolean useMiniKdc = false;
+  private String serverPrincipal;
+  private String serverKeytab;
 
-  public MiniHS2(HiveConf hiveConf) throws IOException {
-    this(hiveConf, false);
+  public static class Builder {
+    private HiveConf hiveConf = new HiveConf();
+    private boolean useMiniMR = false;
+    private boolean useMiniKdc = false;
+    private String serverPrincipal;
+    private String serverKeytab;
+
+    public Builder() {
+    }
+
+    public Builder withMiniMR() {
+      this.useMiniMR = true;
+      return this;
+    }
+
+    public Builder withMiniKdc(String serverPrincipal, String serverKeytab) {
+      this.useMiniKdc = true;
+      this.serverPrincipal = serverPrincipal;
+      this.serverKeytab = serverKeytab;
+      return this;
+    }
+
+    public Builder withConf(HiveConf hiveConf) {
+      this.hiveConf = hiveConf;
+      return this;
+    }
+
+    public MiniHS2 build() throws Exception {
+      if (useMiniMR && useMiniKdc) {
+        throw new IOException("Can't create secure miniMr ... yet");
+      }
+      return new MiniHS2(hiveConf, useMiniMR, useMiniKdc, serverPrincipal, serverKeytab);
+    }
   }
 
-  public MiniHS2(HiveConf hiveConf, boolean useMiniMR) throws IOException {
+  public MiniMrShim getMr() {
+    return mr;
+  }
+
+  public void setMr(MiniMrShim mr) {
+    this.mr = mr;
+  }
+
+  public MiniDFSShim getDfs() {
+    return dfs;
+  }
+
+  public void setDfs(MiniDFSShim dfs) {
+    this.dfs = dfs;
+  }
+
+  public boolean isUseMiniMR() {
+    return useMiniMR;
+  }
+
+  public void setUseMiniMR(boolean useMiniMR) {
+    this.useMiniMR = useMiniMR;
+  }
+
+  public boolean isUseMiniKdc() {
+    return useMiniKdc;
+  }
+
+  private MiniHS2(HiveConf hiveConf, boolean useMiniMR, boolean useMiniKdc, String serverPrincipal, String serverKeytab) throws Exception {
     super(hiveConf, "localhost", MetaStoreUtils.findFreePort(), MetaStoreUtils.findFreePort());
+    this.useMiniMR = useMiniMR;
+    this.useMiniKdc = useMiniKdc;
+    this.serverPrincipal = serverPrincipal;
+    this.serverKeytab = serverKeytab;
     baseDir =  Files.createTempDir();
     FileSystem fs;
     if (useMiniMR) {
@@ -86,12 +156,18 @@ public class MiniHS2 extends AbstractHiveService {
       baseDfsDir = new Path("file://"+ baseDir.getPath());
     }
 
+    if (useMiniKdc) {
+      hiveConf.setVar(ConfVars.HIVE_SERVER2_KERBEROS_PRINCIPAL, serverPrincipal);
+      hiveConf.setVar(ConfVars.HIVE_SERVER2_KERBEROS_KEYTAB, serverKeytab);
+      hiveConf.setVar(ConfVars.HIVE_SERVER2_AUTHENTICATION, "KERBEROS");
+    }
+
+    String metaStoreURL =  "jdbc:derby:" + baseDir.getAbsolutePath() + File.separator + "test_metastore-" +
+        hs2Counter.incrementAndGet() + ";create=true";
     fs.mkdirs(baseDfsDir);
     Path wareHouseDir = new Path(baseDfsDir, "warehouse");
     fs.mkdirs(wareHouseDir);
     setWareHouseDir(wareHouseDir.toString());
-    String metaStoreURL =  "jdbc:derby:" + baseDir.getAbsolutePath() + File.separator + "test_metastore-" +
-        hs2Counter.incrementAndGet() + ";create=true";
 
     System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname, metaStoreURL);
     hiveConf.setVar(HiveConf.ConfVars.METASTORECONNECTURLKEY, metaStoreURL);
@@ -149,6 +225,14 @@ public class MiniHS2 extends AbstractHiveService {
     } catch (IllegalAccessException e) {
       throw new IOException("Failed to modify HiveConf", e);
     }
+  }
+
+  public MiniHS2(HiveConf hiveConf) throws Exception {
+    this(hiveConf, false);
+  }
+
+  public MiniHS2(HiveConf hiveConf, boolean useMiniMR) throws Exception {
+    this(hiveConf, useMiniMR, false, null, null);
   }
 
   public void start(Map<String, String> confOverlay) throws Exception {
@@ -226,13 +310,25 @@ public class MiniHS2 extends AbstractHiveService {
    * @return
    */
   public String getJdbcURL(String dbName, String urlExtension) {
-    assertNotNull("URL extension shouldn't be null", urlExtension);
+    assert urlExtension != null;
+    String krbConfig = "";
+    if (isUseMiniKdc()) {
+      krbConfig = ";principal=" + serverPrincipal;
+    }
+    return getBaseJdbcURL() + dbName + krbConfig + urlExtension;
+  }
+
+  /**
+   * Build base JDBC URL
+   * @return
+   */
+  public String getBaseJdbcURL() {
     String transportMode = getConfProperty(ConfVars.HIVE_SERVER2_TRANSPORT_MODE.varname);
     if(transportMode != null && (transportMode.equalsIgnoreCase(HS2_HTTP_MODE))) {
-      return "jdbc:hive2://" + getHost() + ":" + getHttpPort() + "/" + dbName;
+      return "jdbc:hive2://" + getHost() + ":" + getHttpPort() + "/";
     }
     else {
-      return "jdbc:hive2://" + getHost() + ":" + getBinaryPort() + "/" + dbName + urlExtension;
+      return "jdbc:hive2://" + getHost() + ":" + getBinaryPort() + "/";
     }
   }
 
@@ -250,7 +346,7 @@ public class MiniHS2 extends AbstractHiveService {
 
   private void waitForStartup() throws Exception {
     int waitTime = 0;
-    long startupTimeout = 1000L * 1000000000L;
+    long startupTimeout = 1000L * 1000L;
     CLIServiceClient hs2Client = getServiceClientInternal();
     SessionHandle sessionHandle = null;
     do {
@@ -260,7 +356,14 @@ public class MiniHS2 extends AbstractHiveService {
         throw new TimeoutException("Couldn't access new HiveServer2: " + getJdbcURL());
       }
       try {
-        sessionHandle = hs2Client.openSession("foo", "bar");
+        Map <String, String> sessionConf = new HashMap<String, String>();
+        /**
+        if (isUseMiniKdc()) {
+          getMiniKdc().loginUser(getMiniKdc().getDefaultUserPrincipal());
+          sessionConf.put("principal", serverPrincipal);
+        }
+        */
+        sessionHandle = hs2Client.openSession("foo", "bar", sessionConf);
       } catch (Exception e) {
         // service not started yet
         continue;
@@ -269,5 +372,4 @@ public class MiniHS2 extends AbstractHiveService {
       break;
     } while (true);
   }
-
 }

@@ -45,7 +45,7 @@ public class TestHiveServer2 {
   private Map<String, String> confOverlay;
 
   @BeforeClass
-  public static void beforeTest() throws IOException {
+  public static void beforeTest() throws Exception {
     miniHS2 = new MiniHS2(new HiveConf());
   }
 

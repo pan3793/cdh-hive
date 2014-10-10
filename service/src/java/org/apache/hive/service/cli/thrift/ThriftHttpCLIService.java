@@ -117,7 +117,7 @@ public class ThriftHttpCLIService extends ThriftCLIService {
       
       httpServer.addConnector(connector);
 
-      hiveAuthFactory = new HiveAuthFactory();
+      hiveAuthFactory = new HiveAuthFactory(hiveConf);
       TProcessorFactory processorFactory = hiveAuthFactory.getAuthProcFactory(this);
       TProcessor processor = processorFactory.getProcessor(null);
 
