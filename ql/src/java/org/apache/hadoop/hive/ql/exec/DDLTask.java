@@ -4588,8 +4588,9 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     // this method could be moved to the HiveStorageHandler interface.
     boolean retval = true;
     if (tbl.getStorageHandler() != null) {
-      retval = !tbl.getStorageHandler().toString().equals(
-          "org.apache.hadoop.hive.hbase.HBaseStorageHandler");
+      String name = tbl.getStorageHandler().getClass().getName();
+      retval = !(name.equals("org.apache.hadoop.hive.hbase.HBaseStorageHandler") ||
+          name.equals("org.apache.hcatalog.hbase.HBaseHCatStorageHandler"));
     }
     return retval;
   }
