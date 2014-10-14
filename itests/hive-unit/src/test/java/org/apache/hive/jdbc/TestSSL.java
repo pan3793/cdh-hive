@@ -375,6 +375,7 @@ public class TestSSL {
     miniHS2.start(new HashMap<String, String>());
 
     // make SSL connection
+    DriverManager.setLoginTimeout(60);
     hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL() + ";ssl=true;sslTrustStore=" +
         dataFileDir + File.separator + TRUST_STORE_NAME + ";trustStorePassword=" +
         KEY_STORE_PASSWORD, System.getProperty("user.name"), "bar");

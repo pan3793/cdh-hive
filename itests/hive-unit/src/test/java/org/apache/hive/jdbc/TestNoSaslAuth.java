@@ -35,19 +35,28 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestNoSaslAuth {
-  private static MiniHS2 miniHS2 = null;
-  private static String sessionUserName = "";
+  private static final Logger LOG = LoggerFactory.getLogger(TestNoSaslAuth.class);
+  private static MiniHS2 miniHS2;
+  private static String sessionUserName;
 
   public static class NoSaslSessionHook implements HiveSessionHook {
-    public static boolean checkUser = false;
+    private static boolean checkUser;
+    private static Throwable error;
 
     @Override
     public void run(HiveSessionHookContext sessionHookContext)
         throws HiveSQLException {
-      if (checkUser) {
-        Assert.assertEquals(sessionHookContext.getSessionUser(), sessionUserName);
+      try {
+        if (checkUser) {
+          Assert.assertEquals(sessionHookContext.getSessionUser(), sessionUserName);
+        }
+      } catch (Throwable t) {
+        error = t;
+        LOG.error("Error in NoSaslSessionHook: " + error, error);
       }
     }
   }
@@ -58,9 +67,9 @@ public class TestNoSaslAuth {
   public static void beforeTest() throws Exception {
     Class.forName(MiniHS2.getJdbcDriverName());
     HiveConf conf = new HiveConf();
-    System.setProperty(ConfVars.HIVE_SERVER2_AUTHENTICATION.varname, "NOSASL");
-    System.setProperty(ConfVars.HIVE_SUPPORT_CONCURRENCY.varname, "false");
-    System.setProperty(ConfVars.HIVE_SERVER2_ENABLE_DOAS.varname, "false");
+    conf.set(ConfVars.HIVE_SERVER2_AUTHENTICATION.varname, "NOSASL");
+    conf.set(ConfVars.HIVE_SUPPORT_CONCURRENCY.varname, "false");
+    conf.set(ConfVars.HIVE_SERVER2_ENABLE_DOAS.varname, "false");
     conf.setVar(ConfVars.HIVE_SERVER2_SESSION_HOOK,
         NoSaslSessionHook.class.getName());
     miniHS2 = new MiniHS2(conf);
@@ -71,6 +80,7 @@ public class TestNoSaslAuth {
   public void setUp() throws Exception {
     // enable the hook check after the server startup, 
     NoSaslSessionHook.checkUser = true;
+    NoSaslSessionHook.error = null;
   }
 
   @After
@@ -91,9 +101,13 @@ public class TestNoSaslAuth {
    * @throws Exception
    */
   @Test
-  public void testConnection() throws Exception {
+  public void testConnection() throws Throwable {
     sessionUserName = "user1";
     hs2Conn = DriverManager.getConnection(
         miniHS2.getJdbcURL() + ";auth=noSasl", sessionUserName, "foo");
+    Throwable error = NoSaslSessionHook.error;
+    if (error != null) {
+      throw error;
+    }
   }
 }
