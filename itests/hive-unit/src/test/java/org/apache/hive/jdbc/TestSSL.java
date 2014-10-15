@@ -50,10 +50,10 @@ public class TestSSL {
   private static final String HS2_BINARY_AUTH_MODE = "NONE";
   private static final String HS2_HTTP_AUTH_MODE = "NOSASL";
 
-  private MiniHS2 miniHS2 = null;
-  private static HiveConf conf = new HiveConf();
-  private Connection hs2Conn = null;
-  private String dataFileDir = conf.get("test.data.files");
+  private MiniHS2 miniHS2;
+  private HiveConf conf;
+  private Connection hs2Conn;
+  private String dataFileDir;
   private Map<String, String> confOverlay;
 
   @BeforeClass
@@ -63,8 +63,11 @@ public class TestSSL {
 
   @Before
   public void setUp() throws Exception {
+    conf = new HiveConf();
     DriverManager.setLoginTimeout(0);
-    if (!System.getProperty("test.data.files", "").isEmpty()) {
+    if (System.getProperty("test.data.files", "").isEmpty()) {
+      dataFileDir = conf.get("test.data.files");
+    } else {
       dataFileDir = System.getProperty("test.data.files");
     }
     dataFileDir = dataFileDir.replace('\\', '/').replace("c:", "");
@@ -367,19 +370,16 @@ public class TestSSL {
   @Test
   public void testSSLDeprecatConfig() throws Exception {
     // Start HS2 with SSL using old config
-    miniHS2.setConfProperty("hive.server2.enable.SSL", "true");
-    miniHS2.setConfProperty(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname,
-        dataFileDir + File.separator +  KEY_STORE_NAME);
-    miniHS2.setConfProperty(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname,
-        KEY_STORE_PASSWORD);
-    miniHS2.start(new HashMap<String, String>());
+    setSslConfOverlay(confOverlay); // this set hs2.use.ssl + some other stuff
+    confOverlay.remove(ConfVars.HIVE_SERVER2_USE_SSL.varname); // removes hs2.use.ssl
+    confOverlay.put("hive.server2.enable.SSL", "true"); // sets deprecated property which we are testing
+    miniHS2.start(confOverlay);
 
     // make SSL connection
     DriverManager.setLoginTimeout(60);
     hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL() + ";ssl=true;sslTrustStore=" +
         dataFileDir + File.separator + TRUST_STORE_NAME + ";trustStorePassword=" +
         KEY_STORE_PASSWORD, System.getProperty("user.name"), "bar");
-
     hs2Conn.close();
   }
 }
