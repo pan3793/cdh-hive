@@ -124,6 +124,10 @@ public class QB {
     return (outer_id == null ? alias : outer_id + ":" + alias);
   }
 
+  public String getAlias() {
+    return qbp.getAlias();
+  }
+
   public QBParseInfo getParseInfo() {
     return qbp;
   }
@@ -242,6 +246,12 @@ public class QB {
     return isQuery;
   }
 
+  // to decide whether to rewrite RR of subquery
+  public boolean isTopLevelSelectStarQuery() {
+    return !isCTAS() && qbp.isTopLevelSimpleSelectStarQuery();
+  }
+
+  // to find target for fetch task conversion optimizer (not allows subqueries)
   public boolean isSimpleSelectQuery() {
     return qbp.isSimpleSelectQuery() && aliasToSubq.isEmpty() && !isCTAS() &&
         !qbp.isAnalyzeCommand();
