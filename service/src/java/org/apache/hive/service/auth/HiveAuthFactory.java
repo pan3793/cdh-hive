@@ -22,9 +22,13 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.SSLServerSocket;
 import javax.security.auth.login.LoginException;
 import javax.security.sasl.Sasl;
 
@@ -217,7 +221,21 @@ public class HiveAuthFactory {
     } else {
       serverAddress = InetAddress.getByName(hiveHost);
     }
-    return TSSLTransportFactory.getServerSocket(portNum, 0, serverAddress, params);
+    TServerSocket thriftServerSocket = TSSLTransportFactory.getServerSocket(portNum, 0, serverAddress, params);
+    if (thriftServerSocket.getServerSocket() instanceof SSLServerSocket) {
+      SSLServerSocket sslServerSocket = (SSLServerSocket)thriftServerSocket.getServerSocket();
+      List<String> enabledProtocols = new ArrayList<String>();
+      for (String protocol : sslServerSocket.getEnabledProtocols()) {
+        if (protocol.toLowerCase().startsWith("ssl")) {
+          LOG.debug("Disabling SSL Protocol: " + protocol);
+        } else {
+          enabledProtocols.add(protocol);
+        }
+      }
+      sslServerSocket.setEnabledProtocols(enabledProtocols.toArray(new String[0]));
+      LOG.info("SSL Server Socket Enabled Protocols: " + Arrays.toString(sslServerSocket.getEnabledProtocols()));
+    }
+    return thriftServerSocket;
   }
 
   // retrieve delegation token for the given user
