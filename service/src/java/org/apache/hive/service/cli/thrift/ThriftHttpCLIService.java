@@ -102,6 +102,7 @@ public class ThriftHttpCLIService extends ThriftCLIService {
               " Not configured for SSL connection");
         }
         SslContextFactory sslContextFactory = new SslContextFactory();
+        sslContextFactory.addExcludeProtocols("SSLv2", "SSLv3");
         sslContextFactory.setKeyStorePath(keyStorePath);
         sslContextFactory.setKeyStorePassword(keyStorePassword);
         connector = new SslSelectChannelConnector(sslContextFactory);
