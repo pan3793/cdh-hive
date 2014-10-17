@@ -104,7 +104,7 @@ public abstract class AbstarctHiveService {
   }
 
   // get service host
-  protected String getHost() {
+  public String getHost() {
     return hostname;
   }
 
@@ -117,7 +117,7 @@ public abstract class AbstarctHiveService {
   }
 
   // get service port#
-  protected int getPort() {
+  public int getPort() {
     return port;
   }
 
