@@ -496,7 +496,8 @@ public final class SerDeUtils {
    * @return the overlayed properties
    */
   public static Properties createOverlayedProperties(Properties tblProps, Properties partProps) {
-    Properties props = new Properties(tblProps);
+    Properties props = new Properties();
+    props.putAll(tblProps);
     if (partProps != null) {
       props.putAll(partProps);
     }
