@@ -19,8 +19,10 @@
 
 package org.apache.hadoop.hive.ql;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +46,7 @@ import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Schema;
 import org.apache.hadoop.hive.ql.exec.ConditionalTask;
+import org.apache.hadoop.hive.ql.exec.ExplainTask;
 import org.apache.hadoop.hive.ql.exec.FetchTask;
 import org.apache.hadoop.hive.ql.exec.Operator;
 import org.apache.hadoop.hive.ql.exec.TableScanOperator;
@@ -482,6 +485,13 @@ public class Driver implements CommandProcessor {
         }
       }
 
+      if (conf.getBoolVar(ConfVars.HIVE_LOG_EXPLAIN_OUTPUT)) {
+        String explainOutput = getExplainOutput(sem, plan, tree.dump());
+        if (explainOutput != null) {
+          LOG.info("EXPLAIN output: " + explainOutput);
+        }
+      }
+
       //restore state after we're done executing a specific query
 
       return 0;
@@ -510,8 +520,35 @@ public class Driver implements CommandProcessor {
     }
   }
 
+  /**
+   * Returns EXPLAIN EXTENDED output for a semantically
+   * analyzed query.
+   *
+   * @param sem semantic analyzer for analyzed query
+   * @param plan query plan
+   * @param astStringTree AST tree dump
+   * @throws java.io.IOException
+   */
+  private String getExplainOutput(BaseSemanticAnalyzer sem, QueryPlan plan,
+      String astStringTree) throws IOException {
+    String ret = null;
+    ExplainTask task = new ExplainTask();
+    task.initialize(conf, plan, null);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PrintStream ps = new PrintStream(baos);
+    try {
+      task.getJSONPlan(ps, astStringTree, sem.getRootTasks(), sem.getFetchTask(),
+          false, true, true);
+      ret = baos.toString();
+    } catch (Exception e) {
+      LOG.warn("Exception generating explain output: " + e, e);
+    }
+
+    return ret;
+  }
+
   private void doAuthorization(BaseSemanticAnalyzer sem)
-    throws HiveException, AuthorizationException {
+      throws HiveException, AuthorizationException {
     HashSet<ReadEntity> inputs = sem.getInputs();
     HashSet<WriteEntity> outputs = sem.getOutputs();
     SessionState ss = SessionState.get();
