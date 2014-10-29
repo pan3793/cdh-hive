@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
@@ -419,7 +420,7 @@ public class SessionState {
     File tmpDir = new File(lScratchDir);
     String sessionID = conf.getVar(HiveConf.ConfVars.HIVESESSIONID);
     if (!tmpDir.exists()) {
-      if (!tmpDir.mkdirs()) {
+      if (!setupStagingDir(lScratchDir, conf)) {
         //Do another exists to check to handle possible race condition
         // Another thread might have created the dir, if that is why
         // mkdirs returned false, that is fine
@@ -1038,5 +1039,17 @@ public class SessionState {
 
   public void setAddedResource(boolean addedResouce) {
     this.addedResource = addedResouce;
+  }
+
+  // create the give Path if doesn't exists and make it writable
+  private static boolean setupStagingDir(String dirPath, HiveConf conf) throws IOException {
+    Path scratchDir = new Path(dirPath);
+    FileSystem fs = FileSystem.getLocal(conf);
+    FsPermission fsPermission = new FsPermission((short)0777);
+    if (!fs.exists(scratchDir)) {
+      return fs.mkdirs(scratchDir, fsPermission);
+    } else {
+      return false;
+    }
   }
 }
