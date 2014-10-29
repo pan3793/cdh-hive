@@ -490,11 +490,10 @@ public class CLIService extends CompositeService implements ICLIService {
     } else {
       fs = scratchDir.getFileSystem(hiveConf);
     }
-    if (!fs.exists(scratchDir)) {
-      fs.mkdirs(scratchDir);
-    }
     FsPermission fsPermission = new FsPermission((short)0777);
-    fs.setPermission(scratchDir, fsPermission);
+    if (!fs.exists(scratchDir)) {
+      fs.mkdirs(scratchDir, fsPermission);
+    }
   }
 
   @Override
