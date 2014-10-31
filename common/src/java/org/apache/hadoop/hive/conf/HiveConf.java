@@ -1,4 +1,4 @@
-/**
+  /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -179,6 +179,7 @@ public class HiveConf extends Configuration {
     SCRIPTWRAPPER("hive.exec.script.wrapper", null),
     PLAN("hive.exec.plan", ""),
     PLAN_SERIALIZATION("hive.plan.serialization.format","kryo"),
+    STAGINGDIR("hive.exec.stagingdir", ".hive-staging"),
     SCRATCHDIR("hive.exec.scratchdir", "/tmp/hive-" + System.getProperty("user.name")),
     LOCALSCRATCHDIR("hive.exec.local.scratchdir", System.getProperty("java.io.tmpdir") + File.separator + System.getProperty("user.name")),
     SCRATCHDIRPERMISSION("hive.scratch.dir.permission", "700"),
@@ -262,6 +263,7 @@ public class HiveConf extends Configuration {
     HADOOPSPECULATIVEEXECREDUCERS(ShimLoader.getHadoopShims().getHadoopConfNames().get("HADOOPSPECULATIVEEXECREDUCERS"), true),
     MAPREDSETUPCLEANUPNEEDED(ShimLoader.getHadoopShims().getHadoopConfNames().get("MAPREDSETUPCLEANUPNEEDED"), false),
     MAPREDTASKCLEANUPNEEDED(ShimLoader.getHadoopShims().getHadoopConfNames().get("MAPREDTASKCLEANUPNEEDED"), false),
+    HADOOPSECURITYKEYPROVIDER(ShimLoader.getHadoopShims().getHadoopConfNames().get("HADOOPSECURITYKEYPROVIDER"), null),
 
     // Metastore stuff. Be sure to update HiveConf.metaVars when you add
     // something here!
@@ -461,6 +463,8 @@ public class HiveConf extends Configuration {
     HIVE_GROUPBY_ORDERBY_POSITION_ALIAS("hive.groupby.orderby.position.alias", false),
     HIVE_NEW_JOB_GROUPING_SET_CARDINALITY("hive.new.job.grouping.set.cardinality", 30),
 
+    // Max filesize used to do a single copy (after that, distcp is used)
+    HIVE_EXEC_COPYFILE_MAXSIZE("hive.exec.copyfile.maxsize", 32L * 1024 * 1024), //32M
 
     // for hive udtf operator
     HIVEUDTFAUTOPROGRESS("hive.udtf.auto.progress", false),

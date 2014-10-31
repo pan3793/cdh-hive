@@ -82,6 +82,11 @@
       <version>${hadoop-23.version}</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-distcp</artifactId>
+      <version>${hadoop-23.version}</version>
+    </dependency>
    <dependency>
      <groupId>org.apache.tez</groupId>
      <artifactId>tez-tests</artifactId>

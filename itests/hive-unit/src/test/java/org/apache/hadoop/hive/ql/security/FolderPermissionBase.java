@@ -53,7 +53,7 @@ public abstract class FolderPermissionBase {
   protected static Path warehouseDir;
   protected static Path baseDfsDir;
 
-  public static final PathFilter hiddenFileFilter = new PathFilter(){
+  protected static final PathFilter hiddenFileFilter = new PathFilter(){
     public boolean accept(Path p){
       String name = p.getName();
       return !name.startsWith("_") && !name.startsWith(".");
@@ -301,7 +301,7 @@ public abstract class FolderPermissionBase {
     //case 1 is non-partitioned table.
     String tableName = "insert";
 
-    CommandProcessorResponse ret = driver.run("CREATE TABLE " + tableName + " (key string, value string)");
+    CommandProcessorResponse ret = driver.run("CREATE TABLE " +  tableName + " (key string, value string)");
     Assert.assertEquals(0,ret.getResponseCode());
 
     String tableLoc = warehouseDir + "/" + tableName;
@@ -592,7 +592,7 @@ public abstract class FolderPermissionBase {
 
   private List<String> listStatus(String locn) throws Exception {
     List<String> results = new ArrayList<String>();
-    FileStatus[] listStatus = fs.listStatus(new Path(locn));
+    FileStatus[] listStatus = fs.listStatus(new Path(locn), hiddenFileFilter);
     for (FileStatus status : listStatus) {
       results.add(status.getPath().toString());
     }

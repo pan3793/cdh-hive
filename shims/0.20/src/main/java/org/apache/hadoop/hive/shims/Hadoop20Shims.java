@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessControlException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
+import org.apache.hadoop.fs.DefaultFileAccess;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -816,6 +818,7 @@ public class Hadoop20Shims implements HadoopShims {
     ret.put("HADOOPSPECULATIVEEXECREDUCERS", "mapred.reduce.tasks.speculative.execution");
     ret.put("MAPREDSETUPCLEANUPNEEDED", "mapred.committer.job.setup.cleanup.needed");
     ret.put("MAPREDTASKCLEANUPNEEDED", "mapreduce.job.committer.task.cleanup.needed");
+    ret.put("HADOOPSECURITYKEYPROVIDER", "hadoop.encryption.is.not.supported");
     return ret;
   }
 
@@ -837,6 +840,12 @@ public class Hadoop20Shims implements HadoopShims {
   }
 
   @Override
+  public void checkFileAccess(FileSystem fs, FileStatus stat, FsAction action)
+      throws IOException, AccessControlException, Exception {
+    DefaultFileAccess.checkFileAccess(fs, stat, action);
+  }
+
+  @Override
   public FileSystem getNonCachedFileSystem(URI uri, Configuration conf) throws IOException {
     boolean origDisableHDFSCache =
         conf.getBoolean("fs." + uri.getScheme() + ".impl.disable.cache", false);
@@ -850,5 +859,35 @@ public class Hadoop20Shims implements HadoopShims {
   protected void run(FsShell shell, String[] command) throws Exception {
     LOG.debug(ArrayUtils.toString(command));
     shell.run(command);
+  }
+
+  @Override
+  public boolean runDistCp(Path src, Path dst, Configuration conf) throws IOException {
+    int rc;
+
+    // Creates the command-line parameters for distcp
+    String[] params = {"-update", "-skipcrccheck", src.toString(), dst.toString()};
+
+    try {
+      Class clazzDistCp = Class.forName("org.apache.hadoop.tools.DistCp");
+      Constructor c = clazzDistCp.getConstructor();
+      c.setAccessible(true);
+      Tool distcp = (Tool)c.newInstance();
+      distcp.setConf(conf);
+      rc = distcp.run(params);
+    } catch (ClassNotFoundException e) {
+      throw new IOException("Cannot find DistCp class package: " + e.getMessage());
+    } catch (NoSuchMethodException e) {
+      throw new IOException("Cannot get DistCp constructor: " + e.getMessage());
+    } catch (Exception e) {
+      throw new IOException("Cannot execute DistCp process: " + e, e);
+    }
+
+    return (0 == rc);
+  }
+
+  @Override
+  public HdfsEncryptionShim createHdfsEncryptionShim(FileSystem fs, Configuration conf) throws IOException {
+    return new HadoopShims.NoopHdfsEncryptionShim();
   }
 }

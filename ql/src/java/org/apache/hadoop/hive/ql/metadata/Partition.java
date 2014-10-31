@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
@@ -46,7 +47,6 @@ import org.apache.hadoop.hive.ql.io.HiveFileFormatUtils;
 import org.apache.hadoop.hive.ql.io.HiveOutputFormat;
 import org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat;
 import org.apache.hadoop.hive.serde2.Deserializer;
-import org.apache.hadoop.hive.serde2.SerDeUtils;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -350,7 +350,7 @@ public class Partition implements Serializable {
      * partition String pathPattern = this.partPath.toString() + "/*"; try {
      * FileSystem fs = FileSystem.get(this.table.getDataLocation(),
      * Hive.get().getConf()); FileStatus srcs[] = fs.globStatus(new
-     * Path(pathPattern)); numBuckets = srcs.length; } catch (Exception e) {
+     * Path(pathPattern), FileUtils.HIDDEN_FILES_PATH_FILTER); numBuckets = srcs.length; } catch (Exception e) {
      * throw new RuntimeException("Cannot get bucket count for table " +
      * this.table.getName(), e); } } return numBuckets;
      */
@@ -386,7 +386,7 @@ public class Partition implements Serializable {
         pathPattern = pathPattern + "/*";
       }
       LOG.info("Path pattern = " + pathPattern);
-      FileStatus srcs[] = fs.globStatus(new Path(pathPattern));
+      FileStatus srcs[] = fs.globStatus(new Path(pathPattern), FileUtils.HIDDEN_FILES_PATH_FILTER);
       Arrays.sort(srcs);
       for (FileStatus src : srcs) {
         LOG.info("Got file: " + src.getPath());

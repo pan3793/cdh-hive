@@ -24,6 +24,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.HiveStatsUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
@@ -86,7 +87,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVE_INSERT_INTO_MULTILEVEL_DIRS)) {
           deletePath = createTargetPath(targetPath, fs);
         }
-        if (!Hive.renameFile(conf, sourcePath, targetPath, fs, true)) {
+        if (!Hive.moveFile(conf, sourcePath, targetPath, fs, true)) {
           try {
             if (deletePath != null) {
               fs.delete(deletePath, true);
@@ -246,7 +247,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
             dirs = fs.globStatus(tbd.getSourcePath());
             files = new ArrayList<FileStatus>();
             for (int i = 0; (dirs != null && i < dirs.length); i++) {
-              files.addAll(Arrays.asList(fs.listStatus(dirs[i].getPath())));
+              files.addAll(Arrays.asList(fs.listStatus(dirs[i].getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER)));
               // We only check one file, so exit the loop when we have at least
               // one.
               if (files.size() > 0) {

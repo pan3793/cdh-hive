@@ -62,6 +62,7 @@ import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizer;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizerFactory;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveMetastoreClientFactoryImpl;
 import org.apache.hadoop.hive.ql.util.DosToUnix;
+import org.apache.hadoop.hive.shims.HadoopShims;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.util.ReflectionUtils;
 
@@ -164,6 +165,11 @@ public class SessionState {
       "hive.internal.ss.authz.settings.applied.marker";
 
   private boolean addedResource;
+
+  /**
+   * Gets information about HDFS encryption
+   */
+  private HadoopShims.HdfsEncryptionShim hdfsEncryptionShim;
 
   /**
    * Lineage state.
@@ -278,6 +284,21 @@ public class SessionState {
     return (conf.getVar(HiveConf.ConfVars.HIVESESSIONID));
   }
 
+  public HadoopShims.HdfsEncryptionShim getHdfsEncryptionShim() throws HiveException {
+    if (hdfsEncryptionShim == null) {
+      try {
+        FileSystem fs = FileSystem.get(conf);
+        if (fs.getUri().getScheme().equals("hdfs")) {
+          hdfsEncryptionShim = ShimLoader.getHadoopShims().createHdfsEncryptionShim(fs, conf);
+        }
+      } catch (Exception e) {
+        throw new HiveException(e);
+      }
+    }
+
+    return hdfsEncryptionShim;
+  }
+
   /**
    * Singleton Session object per thread.
    *
@@ -311,7 +332,6 @@ public class SessionState {
    * @throws HiveException
    */
   public static SessionState start(SessionState startSs) {
-
     setCurrentSessionState(startSs);
 
     if(startSs.hiveHist == null){
@@ -365,7 +385,6 @@ public class SessionState {
 
   /**
    * Setup authentication and authorization plugins for this session.
-   * @param startSs
    */
   private void setupAuth() {
 

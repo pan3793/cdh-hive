@@ -115,6 +115,7 @@ import com.google.common.collect.ImmutableList;
 public class QTestUtil {
 
   public static final String UTF_8 = "UTF-8";
+  private static final String QTEST_LEAVE_FILES = "QTEST_LEAVE_FILES";
   private static final Log LOG = LogFactory.getLog("QTestUtil");
 
   private String testWarehouse;
@@ -406,7 +407,10 @@ public class QTestUtil {
   }
 
   public void shutdown() throws Exception {
-    cleanUp();
+    if (System.getenv(QTEST_LEAVE_FILES) == null) {
+      cleanUp();
+    }
+    
     setup.tearDown();
     if (mr != null) {
       mr.shutdown();
@@ -579,6 +583,9 @@ public class QTestUtil {
    * Clear out any side effects of running tests
    */
   public void clearTestSideEffects() throws Exception {
+    if (System.getenv(QTEST_LEAVE_FILES) != null) {
+      return;
+    }
     // Delete any tables other than the source tables
     // and any databases other than the default database.
     for (String dbName : db.getAllDatabases()) {
@@ -1308,7 +1315,8 @@ public class QTestUtil {
       "^Deleted.*",
       ".*DagName:.*",
       ".*Input:.*/data/files/.*",
-      ".*Output:.*/data/files/.*"
+      ".*Output:.*/data/files/.*",
+      ".*.hive-staging.*"
   });
 
   public int checkCliDriverResults(String tname) throws Exception {

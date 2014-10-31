@@ -29,6 +29,7 @@ import org.apache.hadoop.fs.Path;
  */
 @Explain(displayName = "File Output Operator")
 public class FileSinkDesc extends AbstractOperatorDesc {
+  private static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory.getLog("FileSinkDesc");
   private static final long serialVersionUID = 1L;
 
   public enum DPSortState {

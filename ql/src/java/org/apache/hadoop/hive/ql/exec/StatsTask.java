@@ -303,7 +303,6 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
       String value = statsAggregator.aggregateStats(aggKey, statType);
       if (value != null && !value.isEmpty()) {
         long longValue = Long.parseLong(value);
-
         if (work.getLoadTableDesc() != null &&
             !work.getLoadTableDesc().getReplace()) {
           String originalValue = parameters.get(statType);

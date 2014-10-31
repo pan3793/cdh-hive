@@ -3327,7 +3327,6 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
   private int describeTable(Hive db, DescTableDesc descTbl) throws HiveException {
     String colPath = descTbl.getColumnPath();
     String tableName = descTbl.getTableName();
-
     // describe the table - populate the output stream
     Table tbl = db.getTable(tableName, false);
     Partition part = null;

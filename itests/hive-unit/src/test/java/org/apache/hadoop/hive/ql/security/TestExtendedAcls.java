@@ -85,14 +85,14 @@ public class TestExtendedAcls extends FolderPermissionBase {
     switch (permIndex) {
       case 0:
         FsPermission perm = fs.getFileStatus(new Path(locn)).getPermission();
-        Assert.assertEquals(perm.toString(), "rwxrwxrwx");
+        Assert.assertEquals("Location: " + locn, "rwxrwxrwx", perm.toString());
 
         List<AclEntry> actual = getAcl(locn);
         verifyAcls(aclSpec1, actual);
         break;
       case 1:
         perm = fs.getFileStatus(new Path(locn)).getPermission();
-        Assert.assertEquals(perm.toString(), "rwxrwxr-x");
+        Assert.assertEquals("Location: " + locn, "rwxrwxr-x", perm.toString());
 
         List<AclEntry> acls = getAcl(locn);
         verifyAcls(aclSpec2, acls);

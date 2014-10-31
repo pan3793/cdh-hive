@@ -240,10 +240,9 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
       // might seem redundant in the case
       // that the hive warehouse is also located in the local file system - but
       // that's just a test case.
-      String copyURIStr = ctx.getExternalTmpPath(toURI).toString();
-      URI copyURI = URI.create(copyURIStr);
-      rTask = TaskFactory.get(new CopyWork(new Path(fromURI), new Path(copyURI)), conf);
-      fromURI = copyURI;
+      Path copyPath = ctx.getExternalTmpPath(toURI);
+      rTask = TaskFactory.get(new CopyWork(new Path(fromURI), copyPath), conf);
+      fromURI = copyPath.toUri();
     }
 
     // create final load/move work
