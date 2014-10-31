@@ -22,9 +22,14 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLSocket;
 import javax.security.auth.login.LoginException;
 import javax.security.sasl.Sasl;
 
@@ -224,16 +229,42 @@ public class HiveAuthFactory {
 
   public static TTransport getSSLSocket(String host, int port, int loginTimeout)
       throws TTransportException {
-    return TSSLTransportFactory.getClientSocket(host, port, loginTimeout);
+    return getSSLSocket(host, port, loginTimeout, null);
   }
 
   public static TTransport getSSLSocket(String host, int port, int loginTimeout,
-      String trustStorePath, String trustStorePassWord) throws TTransportException {
+    TSSLTransportFactory.TSSLTransportParameters params)
+    throws TTransportException {
+    TSocket transport;
+    if (params == null) {
+      transport = TSSLTransportFactory.getClientSocket(host, port, loginTimeout);
+    } else {
+      transport = TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
+    }
+    if (transport.getSocket() instanceof SSLSocket) {
+      SSLSocket sslSocket = (SSLSocket)transport.getSocket();
+      List<String> enabledProtocols = new ArrayList<String>();
+      for (String protocol : sslSocket.getEnabledProtocols()) {
+        if (protocol.toLowerCase().startsWith("ssl")) {
+          LOG.debug("Client: Disabling SSL Protocol: " + protocol);
+        } else {
+          enabledProtocols.add(protocol);
+        }
+      }
+      sslSocket.setEnabledProtocols(enabledProtocols.toArray(new String[0]));
+      LOG.info("SSL Client Socket Enabled Protocols: " + Arrays.toString(sslSocket.getEnabledProtocols()));
+    }
+    return transport;
+  }
+
+  public static TTransport getSSLSocket(String host, int port, int loginTimeout,
+      String trustStorePath, String trustStorePassWord)
+    throws TTransportException {
     TSSLTransportFactory.TSSLTransportParameters params =
         new TSSLTransportFactory.TSSLTransportParameters();
     params.setTrustStore(trustStorePath, trustStorePassWord);
     params.requireClientAuth(true);
-    return TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
+    return getSSLSocket(host, port, loginTimeout, params);
   }
 
   public static TServerSocket getServerSocket(String hiveHost, int portNum)
@@ -259,7 +290,21 @@ public class HiveAuthFactory {
     } else {
       serverAddress = InetAddress.getByName(hiveHost);
     }
-    return TSSLTransportFactory.getServerSocket(portNum, 0, serverAddress, params);
+    TServerSocket thriftServerSocket = TSSLTransportFactory.getServerSocket(portNum, 0, serverAddress, params);
+    if (thriftServerSocket.getServerSocket() instanceof SSLServerSocket) {
+      SSLServerSocket sslServerSocket = (SSLServerSocket)thriftServerSocket.getServerSocket();
+      List<String> enabledProtocols = new ArrayList<String>();
+      for (String protocol : sslServerSocket.getEnabledProtocols()) {
+        if (protocol.toLowerCase().startsWith("ssl")) {
+          LOG.debug("Server: Disabling SSL Protocol: " + protocol);
+        } else {
+          enabledProtocols.add(protocol);
+        }
+      }
+      sslServerSocket.setEnabledProtocols(enabledProtocols.toArray(new String[0]));
+      LOG.info("SSL Server Socket Enabled Protocols: " + Arrays.toString(sslServerSocket.getEnabledProtocols()));
+    }
+    return thriftServerSocket;
   }
 
   public String getUserFromToken(String delegationToken) throws HiveSQLException {

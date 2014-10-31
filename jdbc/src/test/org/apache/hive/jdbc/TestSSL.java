@@ -10,15 +10,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.util.Shell;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hive.jdbc.miniHS2.MiniHS2;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestSSL {
+  private static final Logger LOG = LoggerFactory.getLogger(TestSSL.class);
   private static final String KEY_STORE_NAME = "keystore.jks";
   private static final String TRUST_STORE_NAME = "truststore.jks";
   private static final String KEY_STORE_PASSWORD = "HiveJdbc";
@@ -57,12 +63,50 @@ public class TestSSL {
     System.clearProperty(JAVA_TRUST_STORE_PASS_PROP);
   }
 
+  private int execCommand(String cmd) throws Exception {
+    int exitCode;
+    try {
+      String output = Shell.execCommand("bash", "-c", cmd);
+      LOG.info("Output from '" + cmd + "': " + output) ;
+      exitCode = 0;
+    } catch (Shell.ExitCodeException e) {
+      exitCode = e.getExitCode();
+      LOG.info("Error executing '" + cmd + "', exitCode = " + exitCode, e);
+    }
+    return exitCode;
+  }
+
+  /***
+   * Tests to ensure SSLv2 and SSLv3 are disabled
+   */
+  @Test
+  public void testSSLVersion() throws Exception {
+    Assume.assumeTrue(execCommand("which openssl") == 0); // we need openssl
+    Assume.assumeTrue(System.getProperty("os.name").toLowerCase()
+      .contains("linux")); // we depend on linux openssl exit codes
+
+    startSslSever();
+
+    hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL() + ";ssl=true;sslTrustStore=" +
+        dataFileDir + File.separator + TRUST_STORE_NAME + ";trustStorePassword=" +
+        KEY_STORE_PASSWORD, System.getProperty("user.name"), "bar");
+    hs2Conn.close();
+    Assert.assertEquals("Expected exit code of 1", 1,
+      execCommand("openssl s_client -connect " + miniHS2.getHost() + ":" + miniHS2.getPort()
+      + " -ssl2 < /dev/null"));
+    Assert.assertEquals("Expected exit code of 1", 1,
+      execCommand("openssl s_client -connect " + miniHS2.getHost() + ":" + miniHS2.getPort()
+      + " -ssl3 < /dev/null"));
+    miniHS2.stop();
+  }
+
   /***
    * Test SSL client with non-SSL server fails
    * @throws Exception
    */
   @Test
   public void testInvalidConfig() throws Exception {
+    miniHS2.setConfProperty(ConfVars.HIVE_SERVER2_USE_SSL.varname, "false");
     miniHS2.start();
     DriverManager.setLoginTimeout(4);
     try {
