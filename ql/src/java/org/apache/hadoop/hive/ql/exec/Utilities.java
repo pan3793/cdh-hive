@@ -587,21 +587,33 @@ public final class Utilities {
 
       Path planPath = getPlanPath(conf, name);
 
-      OutputStream out;
+      OutputStream out = null;
 
       if (HiveConf.getBoolVar(conf, ConfVars.HIVE_RPC_QUERY_PLAN)) {
         // add it to the conf
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        out = new DeflaterOutputStream(byteOut, new Deflater(Deflater.BEST_SPEED));
-        serializePlan(w, out, conf);
+        try {
+          out = new DeflaterOutputStream(byteOut, new Deflater(Deflater.BEST_SPEED));
+          serializePlan(w, out, conf);
+          out.close();
+          out = null;
+        } finally {
+          IOUtils.closeStream(out);
+        }
         LOG.info("Setting plan: "+planPath.toUri().getPath());
         conf.set(planPath.toUri().getPath(),
             Base64.encodeBase64String(byteOut.toByteArray()));
       } else {
         // use the default file system of the conf
         FileSystem fs = planPath.getFileSystem(conf);
-        out = fs.create(planPath);
-        serializePlan(w, out, conf);
+        try {
+          out = fs.create(planPath);
+          serializePlan(w, out, conf);
+          out.close();
+          out = null;
+        } finally {
+          IOUtils.closeStream(out);
+        }
 
         // Serialize the plan to the default hdfs instance
         // Except for hadoop local mode execution where we should be

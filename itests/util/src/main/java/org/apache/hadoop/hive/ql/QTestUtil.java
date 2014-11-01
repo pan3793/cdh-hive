@@ -1084,7 +1084,7 @@ public class QTestUtil {
       for (Task<? extends Serializable> plan : tasks) {
         Utilities.serializePlan(plan, ofs, conf);
       }
-
+      ofs.close();
       fixXml4JDK7(outf.getPath());
       maskPatterns(xmlPlanMask, outf.getPath());
 
@@ -1096,6 +1096,7 @@ public class QTestUtil {
       return exitVal;
     } finally {
       conf.set(HiveConf.ConfVars.PLAN_SERIALIZATION.varname, "kryo");
+      IOUtils.closeQuietly(ofs);
     }
   }
 
