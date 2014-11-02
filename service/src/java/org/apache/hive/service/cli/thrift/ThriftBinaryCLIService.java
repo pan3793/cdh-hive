@@ -90,10 +90,12 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
         serverSocket = HiveAuthFactory.getServerSSLSocket(hiveHost, portNum,
             keyStorePath, hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD));
       }
+      int maxMessageSize = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_MESSAGE_SIZE);
       TThreadPoolServer.Args sargs = new TThreadPoolServer.Args(serverSocket)
       .processorFactory(processorFactory)
       .transportFactory(transportFactory)
       .protocolFactory(new TBinaryProtocol.Factory())
+      .inputProtocolFactory(new TBinaryProtocol.Factory(true, true, maxMessageSize))
       .requestTimeout(requestTimeout)
       .executorService(executorService);
 
