@@ -21,6 +21,7 @@ import java.lang.IllegalArgumentException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge;
 import org.apache.hadoop.util.VersionInfo;
 import org.apache.log4j.AppenderSkeleton;
@@ -33,6 +34,8 @@ public abstract class ShimLoader {
   private static HadoopShims hadoopShims;
   private static JettyShims jettyShims;
   private static AppenderSkeleton eventCounter;
+  private static HadoopThriftAuthBridge hadoopThriftAuthBridge;
+  private static SchedulerShim schedulerShim;
 
   /**
    * The names of the classes for shimming Hadoop for each major version.
@@ -72,6 +75,25 @@ public abstract class ShimLoader {
   }
 
   /**
+   * The names of the classes for shimming {@link HadoopThriftAuthBridge}
+   */
+  private static final HashMap<String, String> HADOOP_THRIFT_AUTH_BRIDGE_CLASSES =
+      new HashMap<String, String>();
+
+  static {
+    HADOOP_THRIFT_AUTH_BRIDGE_CLASSES.put("0.20",
+        "org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge");
+    HADOOP_THRIFT_AUTH_BRIDGE_CLASSES.put("0.20S",
+        "org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S");
+    HADOOP_THRIFT_AUTH_BRIDGE_CLASSES.put("0.23",
+        "org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge23");
+  }
+
+
+  private static final String SCHEDULER_SHIM_CLASSE =
+    "org.apache.hadoop.hive.schshim.FairSchedulerShim";
+
+  /**
    * Factory method to get an instance of HadoopShims based on the
    * version of Hadoop on the classpath.
    */
@@ -108,6 +130,13 @@ public abstract class ShimLoader {
           return new HadoopThriftAuthBridge();
         }
       }
+
+  public static synchronized SchedulerShim getSchedulerShims() {
+    if (schedulerShim == null) {
+      schedulerShim = createShim(SCHEDULER_SHIM_CLASSE, SchedulerShim.class);
+    }
+    return schedulerShim;
+  }
 
   private static <T> T loadShims(Map<String, String> classMap, Class<T> xface) {
     String vers = getMajorVersion();
