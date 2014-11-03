@@ -357,10 +357,95 @@ public class TestBeeLineWithArgs {
     final String EXPECTED_PATTERN = "abc,,def";
 
     List<String> argList = getBaseArgs(JDBC_URL);
-    argList.add("--outputformat=csv");
+    argList.add("--outputformat=csv2");
 
     testScriptFile(TEST_NAME, SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
   }
+
+   /**
+    * Test writing output using DSV format, with custom delimiter ";"
+    */
+   @Test
+   public void testDSVOutput() throws Throwable {
+     String SCRIPT_TEXT = getFormatTestQuery();
+     List<String> argList = getBaseArgs(JDBC_URL);
+     argList.add("--outputformat=dsv");
+     argList.add("--delimiterForDSV=;");
+
+     final String EXPECTED_PATTERN = "1;NULL;defg;\"ab\"\"c\";1.0";
+     testScriptFile("testDSVOutput", SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
+   }
+
+   /**
+    * Test writing output using TSV (new) format
+    */
+   @Test
+   public void testTSV2Output() throws Throwable {
+     String SCRIPT_TEXT = getFormatTestQuery();
+     List<String> argList = getBaseArgs(JDBC_URL);
+     argList.add("--outputformat=tsv2");
+
+     final String EXPECTED_PATTERN = "1\tNULL\tdefg\t\"ab\"\"c\"\t1.0";
+     testScriptFile("testTSV2Output", SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
+   }
+
+   /**
+    * Test writing output using TSV deprecated format
+    */
+   @Test
+   public void testTSVOutput() throws Throwable {
+     String SCRIPT_TEXT = getFormatTestQuery();
+     List<String> argList = getBaseArgs(JDBC_URL);
+     argList.add("--outputformat=tsv");
+
+     final String EXPECTED_PATTERN = "'1'\t'NULL'\t'defg'\t'ab\"c\'\t'1.0'";
+     testScriptFile("testTSVOutput", SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
+   }
+
+
+   /**
+    * Test writing output using TSV deprecated format
+    * Check for deprecation message
+    */
+   @Test
+   public void testTSVOutputDeprecation() throws Throwable {
+     String SCRIPT_TEXT = getFormatTestQuery();
+     List<String> argList = getBaseArgs(JDBC_URL);
+     argList.add("--outputformat=tsv");
+
+     final String EXPECTED_PATTERN = "Format tsv is deprecated, please use tsv2";
+     testScriptFile("testTSVOutputDeprecation", SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
+   }
+
+   /**
+    * Test writing output using CSV deprecated format
+    * Check for deprecation message
+    */
+   @Test
+   public void testCSVOutputDeprecation() throws Throwable {
+     String SCRIPT_TEXT = getFormatTestQuery();
+     List<String> argList = getBaseArgs(JDBC_URL);
+     argList.add("--outputformat=csv");
+     final String EXPECTED_PATTERN = "Format csv is deprecated, please use csv2";
+     testScriptFile("testCSVOutputDeprecation", SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
+   }
+
+   /**
+    * Test writing output using CSV deprecated format
+    */
+   @Test
+   public void testCSVOutput() throws Throwable {
+     String SCRIPT_TEXT = getFormatTestQuery();
+     List<String> argList = getBaseArgs(JDBC_URL);
+     argList.add("--outputformat=csv");
+     final String EXPECTED_PATTERN = "'1','NULL','defg','ab\"c\','1.0'";
+     testScriptFile("testCSVOutput", SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
+   }
+
+   private String getFormatTestQuery() {
+     return "set hive.support.concurrency = false;\n" +
+         "select 1, null, 'defg', 'ab\"c', 1.0D from " + tableName + " limit 1 ;\n";
+   }
 
   /**
    * Select null from table , check if setting null to empty string works - Using beeling cmd line
@@ -373,9 +458,7 @@ public class TestBeeLineWithArgs {
     final String TEST_NAME = "testNullNonDefault";
     final String SCRIPT_TEXT = "set hive.support.concurrency = false;\n" +
                 "select 'abc',null,'def' from " + tableName + " limit 1 ;\n";
-    //final String EXPECTED_PATTERN = "| abc  |      | def  |";
-    final String EXPECTED_PATTERN = "abc,,def";
-
+    final String EXPECTED_PATTERN = "'abc','','def'";
     List<String> argList = getBaseArgs(JDBC_URL);
     argList.add("--nullemptystring=true");
     argList.add("--outputformat=csv");
