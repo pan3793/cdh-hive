@@ -73,7 +73,12 @@ public final class HiveFileFormatUtils {
         SequenceFileOutputFormat.class, HiveSequenceFileOutputFormat.class);
   }
 
-  static String realoutputFormat;
+  private static ThreadLocal<String> tRealOutputFormat = new ThreadLocal<String>() {
+    @Override
+    protected String initialValue() {
+      return null;
+    }
+  };
 
   @SuppressWarnings("unchecked")
   private static Map<Class<? extends OutputFormat>, Class<? extends HiveOutputFormat>>
@@ -104,11 +109,9 @@ public final class HiveFileFormatUtils {
     }
     Class<? extends HiveOutputFormat> result = outputFormatSubstituteMap
         .get(origin);
-    //register this output format into the map for the first time
-    if ((storagehandlerflag == true) && (result == null)) {
+    if ((storagehandlerflag == true) && (result == null || result == HivePassThroughOutputFormat.class)) {
       HiveFileFormatUtils.setRealOutputFormatClassName(origin.getName());
       result = HivePassThroughOutputFormat.class;
-      HiveFileFormatUtils.registerOutputFormatSubstitute((Class<? extends OutputFormat>) origin,HivePassThroughOutputFormat.class);
     }
     return result;
   }
@@ -119,7 +122,7 @@ public final class HiveFileFormatUtils {
   @SuppressWarnings("unchecked")
   public static String getRealOutputFormatClassName()
   {
-    return realoutputFormat;
+    return tRealOutputFormat.get();
   }
 
   /**
@@ -128,7 +131,7 @@ public final class HiveFileFormatUtils {
   public static void setRealOutputFormatClassName(
       String destination) {
     if (destination != null){
-      realoutputFormat = destination;
+      tRealOutputFormat.set(destination);
     }
     else {
       return;
