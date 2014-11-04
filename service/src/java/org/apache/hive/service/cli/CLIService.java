@@ -494,6 +494,11 @@ public class CLIService extends CompositeService implements ICLIService {
     if (!fs.exists(scratchDir)) {
       fs.mkdirs(scratchDir, fsPermission);
     }
+    try {
+      fs.setPermission(scratchDir, fsPermission);
+    } catch (IOException e) {
+      LOG.info("Unable to set permissions on " + scratchDir + ": " + e);
+    }
   }
 
   @Override
