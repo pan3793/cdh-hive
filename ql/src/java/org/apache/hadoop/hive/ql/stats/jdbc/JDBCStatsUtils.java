@@ -126,7 +126,7 @@ public class JDBCStatsUtils {
   public static String getCreate(String comment) {
     String create = "CREATE TABLE /* " + comment + " */ " + JDBCStatsUtils.getStatTableName() +
           " (" + getTimestampColumnName() + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
-          JDBCStatsUtils.getIdColumnName() + " VARCHAR(255) PRIMARY KEY ";
+          JDBCStatsUtils.getIdColumnName() + " VARCHAR(500) PRIMARY KEY ";
     for (int i = 0; i < supportedStats.size(); i++) {
       create += ", " + getStatColumnName(supportedStats.get(i)) + " BIGINT ";
     }
