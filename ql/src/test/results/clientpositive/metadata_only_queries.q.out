@@ -705,9 +705,11 @@ STAGE PLANS:
 
 PREHOOK: query: select count(*), sum(1), sum(0.2), count(1), count(s), count(bo), count(bin), count(si) from stats_tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@stats_tbl
 #### A masked pattern was here ####
 POSTHOOK: query: select count(*), sum(1), sum(0.2), count(1), count(s), count(bo), count(bin), count(si) from stats_tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@stats_tbl
 #### A masked pattern was here ####
 POSTHOOK: Lineage: stats_tbl.b SIMPLE [(over10k)over10k.FieldSchema(name:b, type:bigint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl.bin SIMPLE [(over10k)over10k.FieldSchema(name:bin, type:binary, comment:null), ]
@@ -814,9 +816,11 @@ STAGE PLANS:
 
 PREHOOK: query: select min(i), max(i), min(b), max(b), min(f), max(f), min(d), max(d) from stats_tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@stats_tbl
 #### A masked pattern was here ####
 POSTHOOK: query: select min(i), max(i), min(b), max(b), min(f), max(f), min(d), max(d) from stats_tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@stats_tbl
 #### A masked pattern was here ####
 POSTHOOK: Lineage: stats_tbl.b SIMPLE [(over10k)over10k.FieldSchema(name:b, type:bigint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl.bin SIMPLE [(over10k)over10k.FieldSchema(name:bin, type:binary, comment:null), ]
@@ -923,9 +927,11 @@ STAGE PLANS:
 
 PREHOOK: query: select count(*), sum(1), sum(0.2), count(1), count(s), count(bo), count(bin), count(si) from stats_tbl_part
 PREHOOK: type: QUERY
+PREHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
 POSTHOOK: query: select count(*), sum(1), sum(0.2), count(1), count(s), count(bo), count(bin), count(si) from stats_tbl_part
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
 POSTHOOK: Lineage: stats_tbl.b SIMPLE [(over10k)over10k.FieldSchema(name:b, type:bigint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl.bin SIMPLE [(over10k)over10k.FieldSchema(name:bin, type:binary, comment:null), ]
@@ -1032,9 +1038,11 @@ STAGE PLANS:
 
 PREHOOK: query: select min(i), max(i), min(b), max(b), min(f), max(f), min(d), max(d) from stats_tbl_part
 PREHOOK: type: QUERY
+PREHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
 POSTHOOK: query: select min(i), max(i), min(b), max(b), min(f), max(f), min(d), max(d) from stats_tbl_part
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
 POSTHOOK: Lineage: stats_tbl.b SIMPLE [(over10k)over10k.FieldSchema(name:b, type:bigint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl.bin SIMPLE [(over10k)over10k.FieldSchema(name:bin, type:binary, comment:null), ]

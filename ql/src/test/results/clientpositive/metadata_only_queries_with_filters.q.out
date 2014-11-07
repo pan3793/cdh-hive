@@ -244,9 +244,11 @@ STAGE PLANS:
 
 PREHOOK: query: select count(*), count(1), sum(1), count(s), count(bo), count(bin), count(si), max(i), min(b), max(f), min(d) from stats_tbl_part where dt = 2010
 PREHOOK: type: QUERY
+PREHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
 POSTHOOK: query: select count(*), count(1), sum(1), count(s), count(bo), count(bin), count(si), max(i), min(b), max(f), min(d) from stats_tbl_part where dt = 2010
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2010).b SIMPLE [(over10k)over10k.FieldSchema(name:b, type:bigint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2010).bin SIMPLE [(over10k)over10k.FieldSchema(name:bin, type:binary, comment:null), ]
@@ -309,9 +311,11 @@ STAGE PLANS:
 
 PREHOOK: query: select count(*), count(1), sum(1), sum(2), count(s), count(bo), count(bin), count(si), max(i), min(b), max(f), min(d) from stats_tbl_part where dt > 2010
 PREHOOK: type: QUERY
+PREHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
 POSTHOOK: query: select count(*), count(1), sum(1), sum(2), count(s), count(bo), count(bin), count(si), max(i), min(b), max(f), min(d) from stats_tbl_part where dt > 2010
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2010).b SIMPLE [(over10k)over10k.FieldSchema(name:b, type:bigint, comment:null), ]
 POSTHOOK: Lineage: stats_tbl_part PARTITION(dt=2010).bin SIMPLE [(over10k)over10k.FieldSchema(name:bin, type:binary, comment:null), ]
