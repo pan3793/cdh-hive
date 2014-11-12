@@ -19,6 +19,8 @@
 package org.apache.hive.service.cli.thrift;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -79,6 +81,10 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
           new ThreadFactoryWithGarbageCleanup(threadPoolName));
 
       TServerSocket serverSocket = null;
+      List<String> sslVersionBlacklist = new ArrayList<String>();
+      for (String sslVersion : hiveConf.getVar(ConfVars.HIVE_SSL_PROTOCOL_BLACKLIST).split(",")) {
+        sslVersionBlacklist.add(sslVersion);
+      }
       if (!hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_USE_SSL)) {
         serverSocket = HiveAuthFactory.getServerSocket(hiveHost, portNum);
       } else {
@@ -88,7 +94,7 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
               " Not configured for SSL connection");
         }
         serverSocket = HiveAuthFactory.getServerSSLSocket(hiveHost, portNum,
-            keyStorePath, hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD));
+            keyStorePath, hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD), sslVersionBlacklist);
       }
       TThreadPoolServer.Args sargs = new TThreadPoolServer.Args(serverSocket)
       .processorFactory(processorFactory)
