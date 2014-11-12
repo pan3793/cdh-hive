@@ -22,6 +22,8 @@ import java.net.InetSocketAddress;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -530,6 +532,10 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
 
 
       TServerSocket serverSocket = null;
+      List<String> sslVersionBlacklist = new ArrayList<String>();
+      for (String sslVersion : hiveConf.getVar(ConfVars.HIVE_SSL_PROTOCOL_BLACKLIST).split(",")) {
+        sslVersionBlacklist.add(sslVersion);
+      }
       if (!hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_USE_SSL)) {
         serverSocket = HiveAuthFactory.getServerSocket(hiveHost, portNum);
       } else {
@@ -539,7 +545,8 @@ public class ThriftCLIService extends AbstractService implements TCLIService.Ifa
               " Not configured for SSL connection");
         }
         serverSocket = HiveAuthFactory.getServerSSLSocket(hiveHost, portNum,
-            keyStorePath, hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD));
+            keyStorePath, hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD),
+            sslVersionBlacklist);
       }
       TThreadPoolServer.Args sargs = new TThreadPoolServer.Args(serverSocket)
       .processorFactory(processorFactory)
