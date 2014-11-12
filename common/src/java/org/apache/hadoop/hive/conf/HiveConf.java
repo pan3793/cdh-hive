@@ -735,6 +735,8 @@ public class HiveConf extends Configuration {
     HIVE_ENTITY_SEPARATOR("hive.entity.separator", "@"),
     HIVE_EXTENDED_ENITITY_CAPTURE("hive.entity.capture.input.URI", false),
 
+    HIVE_SSL_PROTOCOL_BLACKLIST("hive.ssl.protocol.blacklist", "SSLv2,SSLv3"),
+
     HIVE_SERVER2_MAX_START_ATTEMPTS("hive.server2.max.start.attempts", 30L),
 
     // binary or http
