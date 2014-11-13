@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -1268,7 +1269,7 @@ public class Hive {
       }
 
       if (replace) {
-        Hive.replaceFiles(loadPath, newPartPath, oldPartPath, getConf());
+        Hive.replaceFiles(tbl.getPath(), loadPath, newPartPath, oldPartPath, getConf());
       } else {
         FileSystem fs = tbl.getDataLocation().getFileSystem(conf);
         Hive.copyFiles(conf, loadPath, newPartPath, fs);
@@ -2368,6 +2369,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * srcf, destf, and tmppath should resident in the same DFS, but the oldPath can be in a
    * different DFS.
    *
+   * @param tablePath path of the table.  Used to identify permission inheritance.
    * @param srcf
    *          Source directory to be renamed to tmppath. It should be a
    *          leaf directory where the final data files reside. However it
@@ -2375,9 +2377,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @param destf
    *          The directory where the final data needs to go
    * @param oldPath
-   *          The directory where the old data location, need to be cleaned up.
+   *          The directory where the old data location, need to be cleaned up.  Most of time, will be the same
+   *          as destf, unless its across FileSystem boundaries.
    */
-  protected static void replaceFiles(Path srcf, Path destf, Path oldPath, HiveConf conf)
+  protected static void replaceFiles(Path tablePath, Path srcf, Path destf, Path oldPath, HiveConf conf)
       throws HiveException {
     try {
 
@@ -2398,6 +2401,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
       }
       List<List<Path[]>> result = checkPaths(conf, fs, srcs, destf, true);
 
+      HadoopShims shims = ShimLoader.getHadoopShims();
       if (oldPath != null) {
         try {
           FileSystem fs2 = oldPath.getFileSystem(conf);
@@ -2407,6 +2411,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
             //if ( !(fs2.equals(destf.getFileSystem(conf)) && FileUtils.isSubDir(oldPath, destf, fs2)))
             if (FileUtils.isSubDir(oldPath, destf, fs2)) {
               FileUtils.trashFilesUnderDir(fs2, oldPath, conf);
+            }
+            if (inheritPerms) {
+              inheritFromTable(tablePath, destf, conf, fs);
             }
           }
         } catch (Exception e) {
@@ -2425,9 +2432,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
             LOG.warn("Error creating directory " + destf.toString());
           }
           if (inheritPerms && success) {
-            FsPermission perm = fs.getFileStatus(destfp.getParent()).getPermission();
-            LOG.debug("Setting permissions on " + destfp + " to " + perm);
-            fs.setPermission(destfp, perm);
+            inheritFromTable(tablePath, destfp, conf, fs);
           }
         }
 
@@ -2442,15 +2447,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
               if (!success) {
                 LOG.warn("Error creating directory " + destParent);
               }
-              if (inheritPerms && success) {
-                FsPermission perm = fs.getFileStatus(destfp.getParent()).getPermission();
-                LOG.debug("Setting permissions on " + destfp + " to " + perm);
-                fs.setPermission(destfp, perm);
-              }
             }
             if (!moveFile(conf, sdpair[0], sdpair[1], fs, true)) {
               throw new IOException("Unable to move file/directory from " + sdpair[0] +
-                  " to " + sdpair[1]);
+                " to " + sdpair[1]);
             }
           }
         }
@@ -2461,9 +2461,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
             LOG.warn("Error creating directory " + destf.toString());
           }
           if (inheritPerms && success) {
-            FsPermission perm = fs.getFileStatus(destf.getParent()).getPermission();
-            LOG.debug("Setting permissions on " + destf + " to " + perm);
-            fs.setPermission(destf, perm);
+            inheritFromTable(tablePath, destf, conf, fs);
           }
         }
         // srcs must be a list of files -- ensured by LoadSemanticAnalyzer
@@ -2477,6 +2475,38 @@ private void constructOneLBLocationMap(FileStatus fSta,
       }
     } catch (IOException e) {
       throw new HiveException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * This method sets all paths from tablePath to destf (including destf) to have same permission as tablePath.
+   * @param tablePath path of table
+   * @param destf path of table-subdir.
+   * @param conf
+   * @param fs
+   */
+  private static void inheritFromTable(Path tablePath, Path destf, HiveConf conf, FileSystem fs) {
+    if (!FileUtils.isSubDir(destf, tablePath, fs)) {
+      //partition may not be under the parent.
+      return;
+    }
+    HadoopShims shims = ShimLoader.getHadoopShims();
+    //Calculate all the paths from the table dir, to destf
+    //At end of this loop, currPath is table dir, and pathsToSet contain list of all those paths.
+    Path currPath = destf;
+    List<Path> pathsToSet = new LinkedList<Path>();
+    while (!currPath.equals(tablePath)) {
+      pathsToSet.add(currPath);
+      currPath = currPath.getParent();
+    }
+
+    try {
+      HadoopShims.HdfsFileStatus fullFileStatus = shims.getFullFileStatus(conf, fs, currPath);
+      for (Path pathToSet : pathsToSet) {
+        shims.setFullFileStatus(conf, fullFileStatus, fs, pathToSet);
+      }
+    } catch (Exception e) {
+      LOG.warn("Error setting permissions or group of " + destf, e);
     }
   }
 

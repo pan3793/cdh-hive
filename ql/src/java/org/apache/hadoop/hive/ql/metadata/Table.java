@@ -670,7 +670,7 @@ public class Table implements Serializable {
    */
   protected void replaceFiles(Path srcf) throws HiveException {
     Path tableDest = getPath();
-    Hive.replaceFiles(srcf, tableDest, tableDest, Hive.get().getConf());
+    Hive.replaceFiles(tableDest, srcf, tableDest, tableDest, Hive.get().getConf());
   }
 
   /**

@@ -51,6 +51,8 @@ import org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer;
 import org.apache.hadoop.hive.ql.plan.*;
 import org.apache.hadoop.hive.ql.plan.api.StageType;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.shims.HadoopShims;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.util.StringUtils;
 
 import java.io.IOException;
@@ -146,8 +148,14 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         actualPath = actualPath.getParent();
       }
       fs.mkdirs(mkDirPath);
+      HadoopShims shims = ShimLoader.getHadoopShims();
       if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS)) {
-        fs.setPermission(mkDirPath, fs.getFileStatus(actualPath).getPermission());
+        try {
+          HadoopShims.HdfsFileStatus status = shims.getFullFileStatus(conf, fs, actualPath);
+          shims.setFullFileStatus(conf, status, fs, actualPath);
+        } catch (Exception e) {
+          LOG.warn("Error setting permissions or group of " + actualPath, e);
+        }
       }
     }
     return deletePath;
