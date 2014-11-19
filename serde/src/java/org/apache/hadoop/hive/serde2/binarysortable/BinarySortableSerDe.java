@@ -776,7 +776,8 @@ public class BinarySortableSerDe extends AbstractSerDe {
 
         // get the scale factor to turn big decimal into a decimal < 1
         int factor = dec.precision() - dec.scale();
-        factor = sign != -1 ? factor : -factor;
+        factor = sign == 1 ? factor : -factor;
+
         // convert the absolute big decimal to string
         dec.scaleByPowerOfTen(Math.abs(dec.scale()));
         String digits = dec.unscaledValue().toString();
