@@ -1448,7 +1448,9 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
               }
             } else {
               qb.setIsQuery(true);
-              ctx.setResDir(getStagingDirectoryPathname(qb));
+              Path stagingPath = getStagingDirectoryPathname(qb);
+              fname = stagingPath.toString();
+              ctx.setResDir(stagingPath);
             }
           }
           qb.getMetaData().setDestForAlias(name, fname,
