@@ -87,21 +87,10 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 2 <- Map 1 (BROADCAST_EDGE)
+        Map 1 <- Map 2 (BROADCAST_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: t2
-                  Statistics: Num rows: 1049 Data size: 117488 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: dec (type: decimal(4,0))
-                    sort order: +
-                    Map-reduce partition columns: dec (type: decimal(4,0))
-                    Statistics: Num rows: 1049 Data size: 117488 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: dec (type: decimal(4,0))
-        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: t1
@@ -128,6 +117,17 @@ STAGE PLANS:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+        Map 2 
+            Map Operator Tree:
+                TableScan
+                  alias: t2
+                  Statistics: Num rows: 1049 Data size: 117488 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: dec (type: decimal(4,0))
+                    sort order: +
+                    Map-reduce partition columns: dec (type: decimal(4,0))
+                    Statistics: Num rows: 1049 Data size: 117488 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: dec (type: decimal(4,0))
 
   Stage: Stage-0
     Fetch Operator

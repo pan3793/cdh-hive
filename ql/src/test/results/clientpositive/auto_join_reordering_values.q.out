@@ -197,17 +197,6 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: dim_pay_date
-            Statistics: Num rows: 1 Data size: 36 Basic stats: COMPLETE Column stats: NONE
-            GatherStats: false
-            Reduce Output Operator
-              key expressions: date (type: string)
-              sort order: +
-              Map-reduce partition columns: date (type: string)
-              Statistics: Num rows: 1 Data size: 36 Basic stats: COMPLETE Column stats: NONE
-              tag: 1
-              value expressions: date (type: string)
-          TableScan
             alias: orderpayment
             Statistics: Num rows: 1 Data size: 36 Basic stats: COMPLETE Column stats: NONE
             GatherStats: false
@@ -218,6 +207,17 @@ STAGE PLANS:
               Statistics: Num rows: 1 Data size: 36 Basic stats: COMPLETE Column stats: NONE
               tag: 0
               value expressions: dealid (type: int), cityid (type: int), userid (type: int)
+          TableScan
+            alias: dim_pay_date
+            Statistics: Num rows: 1 Data size: 36 Basic stats: COMPLETE Column stats: NONE
+            GatherStats: false
+            Reduce Output Operator
+              key expressions: date (type: string)
+              sort order: +
+              Map-reduce partition columns: date (type: string)
+              Statistics: Num rows: 1 Data size: 36 Basic stats: COMPLETE Column stats: NONE
+              tag: 1
+              value expressions: date (type: string)
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -266,7 +266,7 @@ STAGE PLANS:
               name: default.orderpayment_small
             name: default.orderpayment_small
       Truncated Path -> Alias:
-        /orderpayment_small [dim_pay_date, orderpayment]
+        /orderpayment_small [orderpayment, dim_pay_date]
       Needs Tagging: true
       Reduce Operator Tree:
         Join Operator

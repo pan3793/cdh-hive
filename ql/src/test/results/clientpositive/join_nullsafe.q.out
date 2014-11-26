@@ -29,21 +29,21 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
-            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-            Reduce Output Operator
-              key expressions: value (type: int)
-              sort order: +
-              Map-reduce partition columns: value (type: int)
-              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-              value expressions: key (type: int), value (type: int)
-          TableScan
             alias: a
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: int)
               sort order: +
               Map-reduce partition columns: key (type: int)
+              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+              value expressions: key (type: int), value (type: int)
+          TableScan
+            alias: b
+            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+            Reduce Output Operator
+              key expressions: value (type: int)
+              sort order: +
+              Map-reduce partition columns: value (type: int)
               Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
               value expressions: key (type: int), value (type: int)
       Reduce Operator Tree:
@@ -124,6 +124,15 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
+            alias: a
+            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+            Reduce Output Operator
+              key expressions: key (type: int)
+              sort order: +
+              Map-reduce partition columns: key (type: int)
+              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+              value expressions: key (type: int), value (type: int)
+          TableScan
             alias: b
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
@@ -134,15 +143,6 @@ STAGE PLANS:
               value expressions: key (type: int), value (type: int)
           TableScan
             alias: c
-            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-            Reduce Output Operator
-              key expressions: key (type: int)
-              sort order: +
-              Map-reduce partition columns: key (type: int)
-              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-              value expressions: key (type: int), value (type: int)
-          TableScan
-            alias: a
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: int)
@@ -220,6 +220,15 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
+            alias: a
+            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+            Reduce Output Operator
+              key expressions: key (type: int)
+              sort order: +
+              Map-reduce partition columns: key (type: int)
+              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+              value expressions: key (type: int), value (type: int)
+          TableScan
             alias: b
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
@@ -230,15 +239,6 @@ STAGE PLANS:
               value expressions: key (type: int), value (type: int)
           TableScan
             alias: c
-            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-            Reduce Output Operator
-              key expressions: key (type: int)
-              sort order: +
-              Map-reduce partition columns: key (type: int)
-              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-              value expressions: key (type: int), value (type: int)
-          TableScan
-            alias: a
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: int)
@@ -344,6 +344,15 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
+            alias: a
+            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+            Reduce Output Operator
+              key expressions: key (type: int), value (type: int)
+              sort order: ++
+              Map-reduce partition columns: key (type: int), value (type: int)
+              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+              value expressions: key (type: int), value (type: int)
+          TableScan
             alias: b
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
@@ -354,15 +363,6 @@ STAGE PLANS:
               value expressions: key (type: int), value (type: int)
           TableScan
             alias: c
-            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-            Reduce Output Operator
-              key expressions: key (type: int), value (type: int)
-              sort order: ++
-              Map-reduce partition columns: key (type: int), value (type: int)
-              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-              value expressions: key (type: int), value (type: int)
-          TableScan
-            alias: a
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: int), value (type: int)
@@ -441,6 +441,15 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
+            alias: a
+            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+            Reduce Output Operator
+              key expressions: key (type: int), value (type: int)
+              sort order: ++
+              Map-reduce partition columns: key (type: int), value (type: int)
+              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+              value expressions: key (type: int), value (type: int)
+          TableScan
             alias: b
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
@@ -451,15 +460,6 @@ STAGE PLANS:
               value expressions: key (type: int), value (type: int)
           TableScan
             alias: c
-            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-            Reduce Output Operator
-              key expressions: key (type: int), value (type: int)
-              sort order: ++
-              Map-reduce partition columns: key (type: int), value (type: int)
-              Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-              value expressions: key (type: int), value (type: int)
-          TableScan
-            alias: a
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: int), value (type: int)
@@ -1318,18 +1318,6 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
-            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
-            Filter Operator
-              predicate: value is null (type: boolean)
-              Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-              Reduce Output Operator
-                key expressions: value (type: int)
-                sort order: +
-                Map-reduce partition columns: value (type: int)
-                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-                value expressions: key (type: int), value (type: int)
-          TableScan
             alias: a
             Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
@@ -1339,6 +1327,18 @@ STAGE PLANS:
                 key expressions: key (type: int)
                 sort order: +
                 Map-reduce partition columns: key (type: int)
+                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                value expressions: key (type: int), value (type: int)
+          TableScan
+            alias: b
+            Statistics: Num rows: 3 Data size: 26 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: value is null (type: boolean)
+              Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+              Reduce Output Operator
+                key expressions: value (type: int)
+                sort order: +
+                Map-reduce partition columns: value (type: int)
                 Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
                 value expressions: key (type: int), value (type: int)
       Reduce Operator Tree:

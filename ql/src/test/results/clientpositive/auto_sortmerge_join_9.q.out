@@ -274,7 +274,7 @@ POSTHOOK: Lineage: tbl2.key EXPRESSION [(src)src.FieldSchema(name:key, type:stri
 POSTHOOK: Lineage: tbl2.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
-  Stage-3 depends on stages: Stage-1
+  Stage-2 depends on stages: Stage-1
   Stage-0 is a root stage
 
 STAGE PLANS:
@@ -325,7 +325,7 @@ STAGE PLANS:
                     output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                     serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -426,13 +426,13 @@ POSTHOOK: Lineage: tbl2.key EXPRESSION [(src)src.FieldSchema(name:key, type:stri
 POSTHOOK: Lineage: tbl2.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
-  Stage-9 depends on stages: Stage-1, Stage-5 , consists of Stage-10, Stage-11, Stage-3
-  Stage-10 has a backup stage: Stage-3
+  Stage-9 depends on stages: Stage-1, Stage-5 , consists of Stage-10, Stage-11, Stage-2
+  Stage-10 has a backup stage: Stage-2
   Stage-7 depends on stages: Stage-10
-  Stage-4 depends on stages: Stage-3, Stage-7, Stage-8
-  Stage-11 has a backup stage: Stage-3
+  Stage-3 depends on stages: Stage-2, Stage-7, Stage-8
+  Stage-11 has a backup stage: Stage-2
   Stage-8 depends on stages: Stage-11
-  Stage-3
+  Stage-2
   Stage-5 is a root stage
   Stage-0 is a root stage
 
@@ -528,7 +528,7 @@ STAGE PLANS:
       Local Work:
         Map Reduce Local Work
 
-  Stage: Stage-4
+  Stage: Stage-3
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -588,7 +588,7 @@ STAGE PLANS:
       Local Work:
         Map Reduce Local Work
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -2225,7 +2225,7 @@ STAGE DEPENDENCIES:
   Stage-6 is a root stage , consists of Stage-7, Stage-8, Stage-1
   Stage-7 has a backup stage: Stage-1
   Stage-4 depends on stages: Stage-7
-  Stage-3 depends on stages: Stage-1, Stage-4, Stage-5
+  Stage-2 depends on stages: Stage-1, Stage-4, Stage-5
   Stage-8 has a backup stage: Stage-1
   Stage-5 depends on stages: Stage-8
   Stage-1
@@ -2301,7 +2301,7 @@ STAGE PLANS:
                     output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                     serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -2517,13 +2517,13 @@ STAGE DEPENDENCIES:
   Stage-12 is a root stage , consists of Stage-18, Stage-19, Stage-1
   Stage-18 has a backup stage: Stage-1
   Stage-10 depends on stages: Stage-18
-  Stage-9 depends on stages: Stage-1, Stage-5, Stage-10, Stage-11, Stage-13, Stage-14 , consists of Stage-16, Stage-17, Stage-3
-  Stage-16 has a backup stage: Stage-3
+  Stage-9 depends on stages: Stage-1, Stage-5, Stage-10, Stage-11, Stage-13, Stage-14 , consists of Stage-16, Stage-17, Stage-2
+  Stage-16 has a backup stage: Stage-2
   Stage-7 depends on stages: Stage-16
-  Stage-4 depends on stages: Stage-3, Stage-7, Stage-8
-  Stage-17 has a backup stage: Stage-3
+  Stage-3 depends on stages: Stage-2, Stage-7, Stage-8
+  Stage-17 has a backup stage: Stage-2
   Stage-8 depends on stages: Stage-17
-  Stage-3
+  Stage-2
   Stage-19 has a backup stage: Stage-1
   Stage-11 depends on stages: Stage-19
   Stage-1
@@ -2649,7 +2649,7 @@ STAGE PLANS:
       Local Work:
         Map Reduce Local Work
 
-  Stage: Stage-4
+  Stage: Stage-3
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -2709,7 +2709,7 @@ STAGE PLANS:
       Local Work:
         Map Reduce Local Work
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan

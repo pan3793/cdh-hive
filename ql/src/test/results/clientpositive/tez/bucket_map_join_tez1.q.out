@@ -128,10 +128,21 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 1 <- Map 2 (CUSTOM_EDGE)
+        Map 2 <- Map 1 (CUSTOM_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: a
+                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: int)
+                    sort order: +
+                    Map-reduce partition columns: key (type: int)
+                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: key (type: int), value (type: string)
+        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: b
@@ -158,17 +169,6 @@ STAGE PLANS:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Map 2 
-            Map Operator Tree:
-                TableScan
-                  alias: a
-                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: int)
-                    sort order: +
-                    Map-reduce partition columns: key (type: int)
-                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: key (type: int), value (type: string)
 
   Stage: Stage-0
     Fetch Operator
@@ -200,11 +200,32 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 1 <- Reducer 3 (CUSTOM_EDGE)
-        Reducer 3 <- Map 2 (SIMPLE_EDGE)
+        Map 3 <- Reducer 2 (CUSTOM_EDGE)
+        Reducer 2 <- Map 1 (SIMPLE_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: srcbucket_mapjoin
+                  Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                  Select Operator
+                    expressions: key (type: int), value (type: string)
+                    outputColumnNames: key, value
+                    Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                    Group By Operator
+                      aggregations: sum(substr(value, 5))
+                      keys: key (type: int)
+                      mode: hash
+                      outputColumnNames: _col0, _col1
+                      Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                      Reduce Output Operator
+                        key expressions: _col0 (type: int)
+                        sort order: +
+                        Map-reduce partition columns: _col0 (type: int)
+                        Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                        value expressions: _col1 (type: double)
+        Map 3 
             Map Operator Tree:
                 TableScan
                   alias: b
@@ -231,28 +252,7 @@ STAGE PLANS:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Map 2 
-            Map Operator Tree:
-                TableScan
-                  alias: srcbucket_mapjoin
-                  Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                  Select Operator
-                    expressions: key (type: int), value (type: string)
-                    outputColumnNames: key, value
-                    Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                    Group By Operator
-                      aggregations: sum(substr(value, 5))
-                      keys: key (type: int)
-                      mode: hash
-                      outputColumnNames: _col0, _col1
-                      Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                      Reduce Output Operator
-                        key expressions: _col0 (type: int)
-                        sort order: +
-                        Map-reduce partition columns: _col0 (type: int)
-                        Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                        value expressions: _col1 (type: double)
-        Reducer 3 
+        Reducer 2 
             Reduce Operator Tree:
               Group By Operator
                 aggregations: sum(VALUE._col0)
@@ -297,22 +297,11 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 2 <- Map 4 (CUSTOM_EDGE)
-        Reducer 3 <- Map 1 (CUSTOM_SIMPLE_EDGE), Map 2 (SIMPLE_EDGE)
+        Map 1 <- Map 3 (CUSTOM_EDGE)
+        Reducer 2 <- Map 1 (SIMPLE_EDGE), Map 4 (CUSTOM_SIMPLE_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: b
-                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: int)
-                    sort order: +
-                    Map-reduce partition columns: key (type: int)
-                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: value (type: string)
-        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: tab_part
@@ -344,7 +333,7 @@ STAGE PLANS:
                           Map-reduce partition columns: _col0 (type: int)
                           Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                           value expressions: _col1 (type: double)
-        Map 4 
+        Map 3 
             Map Operator Tree:
                 TableScan
                   alias: tab
@@ -355,7 +344,18 @@ STAGE PLANS:
                     Map-reduce partition columns: key (type: int)
                     Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
                     value expressions: key (type: int), value (type: string)
-        Reducer 3 
+        Map 4 
+            Map Operator Tree:
+                TableScan
+                  alias: b
+                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: int)
+                    sort order: +
+                    Map-reduce partition columns: key (type: int)
+                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: value (type: string)
+        Reducer 2 
             Reduce Operator Tree:
               Group By Operator
                 aggregations: sum(VALUE._col0)
@@ -416,39 +416,12 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 1 <- Reducer 3 (CUSTOM_EDGE)
-        Map 2 <- Map 4 (CUSTOM_EDGE)
-        Reducer 3 <- Map 2 (SIMPLE_EDGE)
+        Map 1 <- Map 3 (CUSTOM_EDGE)
+        Map 4 <- Reducer 2 (CUSTOM_EDGE)
+        Reducer 2 <- Map 1 (SIMPLE_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: b
-                  Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
-                  Map Join Operator
-                    condition map:
-                         Inner Join 0 to 1
-                    condition expressions:
-                      0 {_col0} {_col1}
-                      1 {value}
-                    keys:
-                      0 _col1 (type: int)
-                      1 key (type: int)
-                    outputColumnNames: _col0, _col1, _col3
-                    Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
-                    Select Operator
-                      expressions: _col1 (type: int), _col0 (type: double), _col3 (type: string)
-                      outputColumnNames: _col0, _col1, _col2
-                      Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
-                      File Output Operator
-                        compressed: false
-                        Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
-                        table:
-                            input format: org.apache.hadoop.mapred.TextInputFormat
-                            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: x
@@ -480,7 +453,7 @@ STAGE PLANS:
                           Map-reduce partition columns: _col0 (type: int)
                           Statistics: Num rows: 266 Data size: 2822 Basic stats: COMPLETE Column stats: NONE
                           value expressions: _col1 (type: double)
-        Map 4 
+        Map 3 
             Map Operator Tree:
                 TableScan
                   alias: y
@@ -490,7 +463,34 @@ STAGE PLANS:
                     sort order: +
                     Map-reduce partition columns: key (type: int)
                     Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-        Reducer 3 
+        Map 4 
+            Map Operator Tree:
+                TableScan
+                  alias: b
+                  Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                  Map Join Operator
+                    condition map:
+                         Inner Join 0 to 1
+                    condition expressions:
+                      0 {_col0} {_col1}
+                      1 {value}
+                    keys:
+                      0 _col1 (type: int)
+                      1 key (type: int)
+                    outputColumnNames: _col0, _col1, _col3
+                    Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                    Select Operator
+                      expressions: _col1 (type: int), _col0 (type: double), _col3 (type: string)
+                      outputColumnNames: _col0, _col1, _col2
+                      Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                      File Output Operator
+                        compressed: false
+                        Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                        table:
+                            input format: org.apache.hadoop.mapred.TextInputFormat
+                            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+        Reducer 2 
             Reduce Operator Tree:
               Group By Operator
                 aggregations: sum(VALUE._col0)
@@ -535,31 +535,10 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 3 <- Map 1 (CUSTOM_EDGE), Map 2 (CUSTOM_EDGE)
+        Map 1 <- Map 2 (CUSTOM_EDGE), Map 3 (CUSTOM_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: b
-                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: int)
-                    sort order: +
-                    Map-reduce partition columns: key (type: int)
-                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: value (type: string)
-        Map 2 
-            Map Operator Tree:
-                TableScan
-                  alias: c
-                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: int)
-                    sort order: +
-                    Map-reduce partition columns: key (type: int)
-                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-        Map 3 
             Map Operator Tree:
                 TableScan
                   alias: a
@@ -589,6 +568,27 @@ STAGE PLANS:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+        Map 2 
+            Map Operator Tree:
+                TableScan
+                  alias: b
+                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: int)
+                    sort order: +
+                    Map-reduce partition columns: key (type: int)
+                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: value (type: string)
+        Map 3 
+            Map Operator Tree:
+                TableScan
+                  alias: c
+                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: int)
+                    sort order: +
+                    Map-reduce partition columns: key (type: int)
+                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
 
   Stage: Stage-0
     Fetch Operator
@@ -614,21 +614,10 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 2 <- Map 1 (CUSTOM_EDGE), Map 3 (CUSTOM_EDGE)
+        Map 1 <- Map 2 (CUSTOM_EDGE), Map 3 (CUSTOM_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: c
-                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: int)
-                    sort order: +
-                    Map-reduce partition columns: key (type: int)
-                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: value (type: string)
-        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: x
@@ -670,7 +659,7 @@ STAGE PLANS:
                                 input format: org.apache.hadoop.mapred.TextInputFormat
                                 output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                                 serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Map 3 
+        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: y
@@ -680,6 +669,17 @@ STAGE PLANS:
                     sort order: +
                     Map-reduce partition columns: key (type: int)
                     Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+        Map 3 
+            Map Operator Tree:
+                TableScan
+                  alias: c
+                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: int)
+                    sort order: +
+                    Map-reduce partition columns: key (type: int)
+                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: value (type: string)
 
   Stage: Stage-0
     Fetch Operator
@@ -709,11 +709,32 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 1 <- Reducer 3 (CUSTOM_EDGE)
-        Reducer 3 <- Map 2 (SIMPLE_EDGE)
+        Map 3 <- Reducer 2 (CUSTOM_EDGE)
+        Reducer 2 <- Map 1 (SIMPLE_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: srcbucket_mapjoin
+                  Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                  Select Operator
+                    expressions: key (type: int), value (type: string)
+                    outputColumnNames: key, value
+                    Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                    Group By Operator
+                      aggregations: sum(substr(value, 5))
+                      keys: key (type: int)
+                      mode: hash
+                      outputColumnNames: _col0, _col1
+                      Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                      Reduce Output Operator
+                        key expressions: _col0 (type: int)
+                        sort order: +
+                        Map-reduce partition columns: _col0 (type: int)
+                        Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                        value expressions: _col1 (type: double)
+        Map 3 
             Map Operator Tree:
                 TableScan
                   alias: b
@@ -740,28 +761,7 @@ STAGE PLANS:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Map 2 
-            Map Operator Tree:
-                TableScan
-                  alias: srcbucket_mapjoin
-                  Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                  Select Operator
-                    expressions: key (type: int), value (type: string)
-                    outputColumnNames: key, value
-                    Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                    Group By Operator
-                      aggregations: sum(substr(value, 5))
-                      keys: key (type: int)
-                      mode: hash
-                      outputColumnNames: _col0, _col1
-                      Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                      Reduce Output Operator
-                        key expressions: _col0 (type: int)
-                        sort order: +
-                        Map-reduce partition columns: _col0 (type: int)
-                        Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                        value expressions: _col1 (type: double)
-        Reducer 3 
+        Reducer 2 
             Reduce Operator Tree:
               Group By Operator
                 aggregations: sum(VALUE._col0)
@@ -806,11 +806,26 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 1 <- Reducer 3 (CUSTOM_EDGE)
-        Reducer 3 <- Map 2 (SIMPLE_EDGE)
+        Map 3 <- Reducer 2 (CUSTOM_EDGE)
+        Reducer 2 <- Map 1 (SIMPLE_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: srcbucket_mapjoin
+                  Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                  Select Operator
+                    expressions: key (type: int), value (type: string)
+                    outputColumnNames: key, value
+                    Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: key (type: int)
+                      sort order: +
+                      Map-reduce partition columns: key (type: int)
+                      Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
+                      value expressions: substr(value, 5) (type: string)
+        Map 3 
             Map Operator Tree:
                 TableScan
                   alias: b
@@ -837,22 +852,7 @@ STAGE PLANS:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Map 2 
-            Map Operator Tree:
-                TableScan
-                  alias: srcbucket_mapjoin
-                  Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                  Select Operator
-                    expressions: key (type: int), value (type: string)
-                    outputColumnNames: key, value
-                    Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                    Reduce Output Operator
-                      key expressions: key (type: int)
-                      sort order: +
-                      Map-reduce partition columns: key (type: int)
-                      Statistics: Num rows: 27 Data size: 2808 Basic stats: COMPLETE Column stats: NONE
-                      value expressions: substr(value, 5) (type: string)
-        Reducer 3 
+        Reducer 2 
             Reduce Operator Tree:
               Group By Operator
                 aggregations: sum(VALUE._col0)
@@ -897,10 +897,21 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 1 <- Map 2 (BROADCAST_EDGE)
+        Map 2 <- Map 1 (BROADCAST_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: a
+                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: value (type: string)
+                    sort order: +
+                    Map-reduce partition columns: value (type: string)
+                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: key (type: int), value (type: string)
+        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: b
@@ -927,17 +938,6 @@ STAGE PLANS:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Map 2 
-            Map Operator Tree:
-                TableScan
-                  alias: a
-                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: value (type: string)
-                    sort order: +
-                    Map-reduce partition columns: value (type: string)
-                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: key (type: int), value (type: string)
 
   Stage: Stage-0
     Fetch Operator
@@ -994,10 +994,21 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 1 <- Map 2 (CUSTOM_EDGE)
+        Map 2 <- Map 1 (CUSTOM_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: a
+                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: int)
+                    sort order: +
+                    Map-reduce partition columns: key (type: int)
+                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: key (type: int), value (type: string)
+        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: b
@@ -1024,17 +1035,6 @@ STAGE PLANS:
                             input format: org.apache.hadoop.mapred.TextInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Map 2 
-            Map Operator Tree:
-                TableScan
-                  alias: a
-                  Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: int)
-                    sort order: +
-                    Map-reduce partition columns: key (type: int)
-                    Statistics: Num rows: 242 Data size: 2566 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: key (type: int), value (type: string)
 
   Stage: Stage-0
     Fetch Operator
@@ -1058,31 +1058,10 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 3 <- Map 1 (BROADCAST_EDGE), Map 2 (CUSTOM_EDGE)
+        Map 1 <- Map 2 (CUSTOM_EDGE), Map 3 (BROADCAST_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: b
-                  Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: value (type: string)
-                    sort order: +
-                    Map-reduce partition columns: value (type: string)
-                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: key (type: int)
-        Map 2 
-            Map Operator Tree:
-                TableScan
-                  alias: c
-                  Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: int)
-                    sort order: +
-                    Map-reduce partition columns: key (type: int)
-                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
-        Map 3 
             Map Operator Tree:
                 TableScan
                   alias: a
@@ -1120,6 +1099,27 @@ STAGE PLANS:
                               input format: org.apache.hadoop.mapred.TextInputFormat
                               output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+        Map 2 
+            Map Operator Tree:
+                TableScan
+                  alias: c
+                  Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: int)
+                    sort order: +
+                    Map-reduce partition columns: key (type: int)
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+        Map 3 
+            Map Operator Tree:
+                TableScan
+                  alias: b
+                  Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: value (type: string)
+                    sort order: +
+                    Map-reduce partition columns: value (type: string)
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: key (type: int)
 
   Stage: Stage-0
     Fetch Operator

@@ -80,15 +80,6 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
-            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-            Reduce Output Operator
-              key expressions: UDFToDouble(key) (type: double)
-              sort order: +
-              Map-reduce partition columns: UDFToDouble(key) (type: double)
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-              value expressions: key (type: string), value (type: string)
-          TableScan
             alias: a
             Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
@@ -100,6 +91,15 @@ STAGE PLANS:
                 Map-reduce partition columns: (key + 1) (type: double)
                 Statistics: Num rows: 9 Data size: 1803 Basic stats: COMPLETE Column stats: NONE
                 value expressions: key (type: string), value (type: string)
+          TableScan
+            alias: b
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Reduce Output Operator
+              key expressions: UDFToDouble(key) (type: double)
+              sort order: +
+              Map-reduce partition columns: UDFToDouble(key) (type: double)
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              value expressions: key (type: string), value (type: string)
       Reduce Operator Tree:
         Join Operator
           condition map:

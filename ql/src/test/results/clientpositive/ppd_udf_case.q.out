@@ -34,7 +34,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 58 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: CASE (key) WHEN ('27') THEN (true) WHEN ('38') THEN (false) ELSE (null) END (type: boolean)
@@ -46,7 +46,7 @@ STAGE PLANS:
                 Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                 value expressions: key (type: string), value (type: string), ds (type: string), hr (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 58 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: CASE (key) WHEN ('27') THEN (true) WHEN ('38') THEN (false) ELSE (null) END (type: boolean)
@@ -176,7 +176,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 58 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: CASE (key) WHEN ('27') THEN (true) WHEN ('38') THEN (false) ELSE (null) END (type: boolean)
@@ -188,7 +188,7 @@ STAGE PLANS:
                 Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                 value expressions: key (type: string), value (type: string), ds (type: string), hr (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 58 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: CASE (key) WHEN ('27') THEN (true) WHEN ('38') THEN (false) ELSE (null) END (type: boolean)

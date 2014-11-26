@@ -118,6 +118,17 @@ STAGE PLANS:
         Map 1 
             Map Operator Tree:
                 TableScan
+                  alias: src
+                  Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: string)
+                    sort order: +
+                    Map-reduce partition columns: key (type: string)
+                    Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: key (type: string), value (type: string)
+        Map 3 
+            Map Operator Tree:
+                TableScan
                   alias: s1
                   Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
@@ -137,17 +148,6 @@ STAGE PLANS:
                           sort order: +
                           Map-reduce partition columns: _col0 (type: string)
                           Statistics: Num rows: 19 Data size: 1903 Basic stats: COMPLETE Column stats: NONE
-        Map 3 
-            Map Operator Tree:
-                TableScan
-                  alias: src
-                  Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: string)
-                    sort order: +
-                    Map-reduce partition columns: key (type: string)
-                    Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: key (type: string), value (type: string)
         Reducer 2 
             Reduce Operator Tree:
               Join Operator
@@ -356,23 +356,12 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Reducer 2 <- Map 1 (SIMPLE_EDGE)
-        Reducer 3 <- Reducer 2 (SIMPLE_EDGE)
-        Reducer 4 <- Map 5 (SIMPLE_EDGE), Reducer 3 (SIMPLE_EDGE)
+        Reducer 2 <- Map 1 (SIMPLE_EDGE), Reducer 5 (SIMPLE_EDGE)
+        Reducer 4 <- Map 3 (SIMPLE_EDGE)
+        Reducer 5 <- Reducer 4 (SIMPLE_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: part
-                  Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: p_mfgr (type: string), p_size (type: int)
-                    sort order: ++
-                    Map-reduce partition columns: p_mfgr (type: string)
-                    Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: p_mfgr (type: string), p_size (type: int)
-        Map 5 
             Map Operator Tree:
                 TableScan
                   alias: part
@@ -383,50 +372,18 @@ STAGE PLANS:
                     Map-reduce partition columns: UDFToDouble(p_size) (type: double)
                     Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
                     value expressions: p_name (type: string), p_size (type: int)
-        Reducer 2 
-            Reduce Operator Tree:
-              Extract
-                Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
-                PTF Operator
+        Map 3 
+            Map Operator Tree:
+                TableScan
+                  alias: part
                   Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
-                  Filter Operator
-                    predicate: (_wcol0 <= 2) (type: boolean)
-                    Statistics: Num rows: 10 Data size: 1057 Basic stats: COMPLETE Column stats: NONE
-                    Select Operator
-                      expressions: _col5 (type: int)
-                      outputColumnNames: _col0
-                      Statistics: Num rows: 10 Data size: 1057 Basic stats: COMPLETE Column stats: NONE
-                      Group By Operator
-                        aggregations: avg(_col0)
-                        mode: hash
-                        outputColumnNames: _col0
-                        Statistics: Num rows: 1 Data size: 0 Basic stats: PARTIAL Column stats: NONE
-                        Reduce Output Operator
-                          sort order: 
-                          Statistics: Num rows: 1 Data size: 0 Basic stats: PARTIAL Column stats: NONE
-                          value expressions: _col0 (type: struct<count:bigint,sum:double,input:int>)
-        Reducer 3 
-            Reduce Operator Tree:
-              Group By Operator
-                aggregations: avg(VALUE._col0)
-                mode: mergepartial
-                outputColumnNames: _col0
-                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-                Select Operator
-                  expressions: _col0 (type: double)
-                  outputColumnNames: _col0
-                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-                  Group By Operator
-                    keys: _col0 (type: double)
-                    mode: hash
-                    outputColumnNames: _col0
-                    Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-                    Reduce Output Operator
-                      key expressions: _col0 (type: double)
-                      sort order: +
-                      Map-reduce partition columns: _col0 (type: double)
-                      Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-        Reducer 4 
+                  Reduce Output Operator
+                    key expressions: p_mfgr (type: string), p_size (type: int)
+                    sort order: ++
+                    Map-reduce partition columns: p_mfgr (type: string)
+                    Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: p_mfgr (type: string), p_size (type: int)
+        Reducer 2 
             Reduce Operator Tree:
               Join Operator
                 condition map:
@@ -450,6 +407,49 @@ STAGE PLANS:
                           input format: org.apache.hadoop.mapred.TextInputFormat
                           output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                           serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+        Reducer 4 
+            Reduce Operator Tree:
+              Extract
+                Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
+                PTF Operator
+                  Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (_wcol0 <= 2) (type: boolean)
+                    Statistics: Num rows: 10 Data size: 1057 Basic stats: COMPLETE Column stats: NONE
+                    Select Operator
+                      expressions: _col5 (type: int)
+                      outputColumnNames: _col0
+                      Statistics: Num rows: 10 Data size: 1057 Basic stats: COMPLETE Column stats: NONE
+                      Group By Operator
+                        aggregations: avg(_col0)
+                        mode: hash
+                        outputColumnNames: _col0
+                        Statistics: Num rows: 1 Data size: 0 Basic stats: PARTIAL Column stats: NONE
+                        Reduce Output Operator
+                          sort order: 
+                          Statistics: Num rows: 1 Data size: 0 Basic stats: PARTIAL Column stats: NONE
+                          value expressions: _col0 (type: struct<count:bigint,sum:double,input:int>)
+        Reducer 5 
+            Reduce Operator Tree:
+              Group By Operator
+                aggregations: avg(VALUE._col0)
+                mode: mergepartial
+                outputColumnNames: _col0
+                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                Select Operator
+                  expressions: _col0 (type: double)
+                  outputColumnNames: _col0
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  Group By Operator
+                    keys: _col0 (type: double)
+                    mode: hash
+                    outputColumnNames: _col0
+                    Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: _col0 (type: double)
+                      sort order: +
+                      Map-reduce partition columns: _col0 (type: double)
+                      Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
 
   Stage: Stage-0
     Fetch Operator
@@ -828,26 +828,12 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Reducer 2 <- Map 1 (SIMPLE_EDGE), Reducer 5 (SIMPLE_EDGE)
-        Reducer 3 <- Map 6 (SIMPLE_EDGE), Reducer 2 (SIMPLE_EDGE)
-        Reducer 5 <- Map 4 (SIMPLE_EDGE)
+        Reducer 2 <- Map 1 (SIMPLE_EDGE)
+        Reducer 3 <- Map 5 (SIMPLE_EDGE), Reducer 2 (SIMPLE_EDGE)
+        Reducer 4 <- Map 6 (SIMPLE_EDGE), Reducer 3 (SIMPLE_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: li
-                  Statistics: Num rows: 756 Data size: 12099 Basic stats: COMPLETE Column stats: NONE
-                  Filter Operator
-                    predicate: (l_linenumber = 1) (type: boolean)
-                    Statistics: Num rows: 378 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
-                    Reduce Output Operator
-                      key expressions: l_partkey (type: int)
-                      sort order: +
-                      Map-reduce partition columns: l_partkey (type: int)
-                      Statistics: Num rows: 378 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
-                      value expressions: l_orderkey (type: int), l_suppkey (type: int)
-        Map 4 
             Map Operator Tree:
                 TableScan
                   alias: lineitem
@@ -866,6 +852,20 @@ STAGE PLANS:
                         sort order: +
                         Map-reduce partition columns: _col0 (type: int)
                         Statistics: Num rows: 3024 Data size: 12099 Basic stats: COMPLETE Column stats: NONE
+        Map 5 
+            Map Operator Tree:
+                TableScan
+                  alias: li
+                  Statistics: Num rows: 756 Data size: 12099 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (l_linenumber = 1) (type: boolean)
+                    Statistics: Num rows: 378 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: l_partkey (type: int)
+                      sort order: +
+                      Map-reduce partition columns: l_partkey (type: int)
+                      Statistics: Num rows: 378 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
+                      value expressions: l_orderkey (type: int), l_suppkey (type: int)
         Map 6 
             Map Operator Tree:
                 TableScan
@@ -890,6 +890,23 @@ STAGE PLANS:
                           Statistics: Num rows: 58 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
         Reducer 2 
             Reduce Operator Tree:
+              Group By Operator
+                keys: KEY._col0 (type: int)
+                mode: mergepartial
+                outputColumnNames: _col0
+                Statistics: Num rows: 1512 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
+                Select Operator
+                  expressions: _col0 (type: int)
+                  outputColumnNames: _col0
+                  Statistics: Num rows: 1512 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: _col0 (type: int)
+                    sort order: +
+                    Map-reduce partition columns: _col0 (type: int)
+                    Statistics: Num rows: 1512 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: _col0 (type: int)
+        Reducer 3 
+            Reduce Operator Tree:
               Join Operator
                 condition map:
                      Inner Join 0 to 1
@@ -904,7 +921,7 @@ STAGE PLANS:
                   Map-reduce partition columns: _col1 (type: int)
                   Statistics: Num rows: 1663 Data size: 6653 Basic stats: COMPLETE Column stats: NONE
                   value expressions: _col3 (type: int), _col0 (type: int)
-        Reducer 3 
+        Reducer 4 
             Reduce Operator Tree:
               Join Operator
                 condition map:
@@ -925,23 +942,6 @@ STAGE PLANS:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-        Reducer 5 
-            Reduce Operator Tree:
-              Group By Operator
-                keys: KEY._col0 (type: int)
-                mode: mergepartial
-                outputColumnNames: _col0
-                Statistics: Num rows: 1512 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
-                Select Operator
-                  expressions: _col0 (type: int)
-                  outputColumnNames: _col0
-                  Statistics: Num rows: 1512 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: _col0 (type: int)
-                    sort order: +
-                    Map-reduce partition columns: _col0 (type: int)
-                    Statistics: Num rows: 1512 Data size: 6049 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: _col0 (type: int)
 
   Stage: Stage-0
     Fetch Operator

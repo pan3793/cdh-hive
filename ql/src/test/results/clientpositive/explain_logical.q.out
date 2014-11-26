@@ -358,7 +358,7 @@ TOK_QUERY
 
 LOGICAL PLAN:
 s1 
-  TableScan (TS_1)
+  TableScan (TS_0)
     alias: s1
     Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
     Reduce Output Operator (RS_2)
@@ -387,7 +387,7 @@ s1
                 output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
 s2 
-  TableScan (TS_0)
+  TableScan (TS_1)
     alias: s2
     Statistics: Num rows: 116 Data size: 23248 Basic stats: COMPLETE Column stats: NONE
     Reduce Output Operator (RS_3)
@@ -576,10 +576,10 @@ TOK_QUERY
 
 LOGICAL PLAN:
 v4:src1:src 
-  TableScan (TS_3)
+  TableScan (TS_0)
     alias: src
     Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-    Select Operator (SEL_4)
+    Select Operator (SEL_1)
       expressions: key (type: string)
       outputColumnNames: _col0
       Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
@@ -611,10 +611,10 @@ v4:src1:src
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
 v4:src2:srcpart 
-  TableScan (TS_0)
+  TableScan (TS_2)
     alias: srcpart
     Statistics: Num rows: 116 Data size: 23248 Basic stats: COMPLETE Column stats: NONE
-    Select Operator (SEL_2)
+    Select Operator (SEL_4)
       expressions: key (type: string), value (type: string)
       outputColumnNames: _col1, _col2
       Statistics: Num rows: 116 Data size: 23248 Basic stats: COMPLETE Column stats: NONE

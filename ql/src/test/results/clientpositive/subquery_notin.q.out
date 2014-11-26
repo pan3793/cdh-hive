@@ -92,7 +92,7 @@ POSTHOOK: query: LOAD DATA LOCAL INPATH '../../data/files/lineitem.txt' OVERWRIT
 POSTHOOK: type: LOAD
 #### A masked pattern was here ####
 POSTHOOK: Output: default@lineitem
-Warning: Shuffle Join JOIN[18][tables = [src, sq_1_notin_nullcheck]] in Stage 'Stage-2:MAPRED' is a cross product
+Warning: Shuffle Join JOIN[18][tables = [src, sq_1_notin_nullcheck]] in Stage 'Stage-1:MAPRED' is a cross product
 PREHOOK: query: -- non agg, non corr
 explain
 select * 
@@ -112,13 +112,13 @@ where src.key not in
   )
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-1 is a root stage
+  Stage-4 is a root stage
+  Stage-1 depends on stages: Stage-4
   Stage-2 depends on stages: Stage-1
-  Stage-3 depends on stages: Stage-2
   Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-1
+  Stage: Stage-4
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -163,13 +163,9 @@ STAGE PLANS:
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-2
+  Stage: Stage-1
     Map Reduce
       Map Operator Tree:
-          TableScan
-            Reduce Output Operator
-              sort order: 
-              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           TableScan
             alias: src
             Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
@@ -177,6 +173,10 @@ STAGE PLANS:
               sort order: 
               Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               value expressions: key (type: string), value (type: string)
+          TableScan
+            Reduce Output Operator
+              sort order: 
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -193,7 +193,7 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -247,7 +247,7 @@ STAGE PLANS:
     Fetch Operator
       limit: -1
 
-Warning: Shuffle Join JOIN[18][tables = [src, sq_1_notin_nullcheck]] in Stage 'Stage-2:MAPRED' is a cross product
+Warning: Shuffle Join JOIN[18][tables = [src, sq_1_notin_nullcheck]] in Stage 'Stage-1:MAPRED' is a cross product
 PREHOOK: query: select * 
 from src 
 where src.key not in  ( select key from src s1 where s1.key > '2')
@@ -623,7 +623,7 @@ Manufacturer#4	almond azure aquamarine papaya violet	12
 Manufacturer#5	almond antique blue firebrick mint	31
 Manufacturer#5	almond aquamarine dodger light gainsboro	46
 Manufacturer#5	almond azure blanched chiffon midnight	23
-Warning: Shuffle Join JOIN[34][tables = [part, sq_1_notin_nullcheck]] in Stage 'Stage-6:MAPRED' is a cross product
+Warning: Shuffle Join JOIN[34][tables = [part, sq_1_notin_nullcheck]] in Stage 'Stage-1:MAPRED' is a cross product
 PREHOOK: query: -- agg, non corr
 explain
 select p_name, p_size 
@@ -645,16 +645,16 @@ part where part.p_size not in
   )
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-1 is a root stage
-  Stage-2 depends on stages: Stage-1
-  Stage-3 depends on stages: Stage-2, Stage-6
-  Stage-4 is a root stage
-  Stage-5 depends on stages: Stage-4
+  Stage-3 is a root stage
+  Stage-4 depends on stages: Stage-3
+  Stage-2 depends on stages: Stage-1, Stage-4
+  Stage-5 is a root stage
   Stage-6 depends on stages: Stage-5
+  Stage-1 depends on stages: Stage-6
   Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-1
+  Stage: Stage-3
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -690,7 +690,7 @@ STAGE PLANS:
                         output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                         serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-2
+  Stage: Stage-4
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -715,16 +715,9 @@ STAGE PLANS:
                   output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                   serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
-          TableScan
-            Reduce Output Operator
-              key expressions: _col0 (type: double)
-              sort order: +
-              Map-reduce partition columns: _col0 (type: double)
-              Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-              value expressions: _col0 (type: double)
           TableScan
             Reduce Output Operator
               key expressions: UDFToDouble(_col5) (type: double)
@@ -732,6 +725,13 @@ STAGE PLANS:
               Map-reduce partition columns: UDFToDouble(_col5) (type: double)
               Statistics: Num rows: 33 Data size: 3490 Basic stats: COMPLETE Column stats: NONE
               value expressions: _col1 (type: string), _col5 (type: int)
+          TableScan
+            Reduce Output Operator
+              key expressions: _col0 (type: double)
+              sort order: +
+              Map-reduce partition columns: _col0 (type: double)
+              Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+              value expressions: _col0 (type: double)
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -756,7 +756,7 @@ STAGE PLANS:
                     output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                     serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
 
-  Stage: Stage-4
+  Stage: Stage-5
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -792,7 +792,7 @@ STAGE PLANS:
                         output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                         serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-5
+  Stage: Stage-6
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -835,13 +835,9 @@ STAGE PLANS:
                             output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-6
+  Stage: Stage-1
     Map Reduce
       Map Operator Tree:
-          TableScan
-            Reduce Output Operator
-              sort order: 
-              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           TableScan
             alias: part
             Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
@@ -849,6 +845,10 @@ STAGE PLANS:
               sort order: 
               Statistics: Num rows: 30 Data size: 3173 Basic stats: COMPLETE Column stats: NONE
               value expressions: p_name (type: string), p_size (type: int)
+          TableScan
+            Reduce Output Operator
+              sort order: 
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -869,7 +869,7 @@ STAGE PLANS:
     Fetch Operator
       limit: -1
 
-Warning: Shuffle Join JOIN[34][tables = [part, sq_1_notin_nullcheck]] in Stage 'Stage-7:MAPRED' is a cross product
+Warning: Shuffle Join JOIN[34][tables = [part, sq_1_notin_nullcheck]] in Stage 'Stage-1:MAPRED' is a cross product
 PREHOOK: query: select p_name, p_size 
 from 
 part where part.p_size not in 
@@ -1266,7 +1266,7 @@ POSTHOOK: Input: default@lineitem
 139636	1
 175839	1
 182052	1
-Warning: Shuffle Join JOIN[18][tables = [src, sq_1_notin_nullcheck]] in Stage 'Stage-2:MAPRED' is a cross product
+Warning: Shuffle Join JOIN[18][tables = [src, sq_1_notin_nullcheck]] in Stage 'Stage-1:MAPRED' is a cross product
 PREHOOK: query: -- alternate not in syntax
 select * 
 from src 
@@ -1424,7 +1424,7 @@ POSTHOOK: type: CREATEVIEW
 POSTHOOK: Input: default@src
 POSTHOOK: Input: default@t1_v
 POSTHOOK: Output: default@T2_v
-Warning: Shuffle Join JOIN[24][tables = [t1_v, sq_1_notin_nullcheck]] in Stage 'Stage-2:MAPRED' is a cross product
+Warning: Shuffle Join JOIN[24][tables = [t1_v, sq_1_notin_nullcheck]] in Stage 'Stage-1:MAPRED' is a cross product
 PREHOOK: query: explain
 select * 
 from T1_v where T1_v.key not in (select T2_v.key from T2_v)
@@ -1434,13 +1434,13 @@ select *
 from T1_v where T1_v.key not in (select T2_v.key from T2_v)
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-1 is a root stage
+  Stage-4 is a root stage
+  Stage-1 depends on stages: Stage-4
   Stage-2 depends on stages: Stage-1
-  Stage-3 depends on stages: Stage-2
   Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-1
+  Stage: Stage-4
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -1492,13 +1492,9 @@ STAGE PLANS:
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-2
+  Stage: Stage-1
     Map Reduce
       Map Operator Tree:
-          TableScan
-            Reduce Output Operator
-              sort order: 
-              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           TableScan
             alias: src
             Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
@@ -1513,6 +1509,10 @@ STAGE PLANS:
                   sort order: 
                   Statistics: Num rows: 19 Data size: 1903 Basic stats: COMPLETE Column stats: NONE
                   value expressions: _col0 (type: string)
+          TableScan
+            Reduce Output Operator
+              sort order: 
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -1529,7 +1529,7 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -1583,7 +1583,7 @@ STAGE PLANS:
     Fetch Operator
       limit: -1
 
-Warning: Shuffle Join JOIN[24][tables = [t1_v, sq_1_notin_nullcheck]] in Stage 'Stage-2:MAPRED' is a cross product
+Warning: Shuffle Join JOIN[24][tables = [t1_v, sq_1_notin_nullcheck]] in Stage 'Stage-1:MAPRED' is a cross product
 PREHOOK: query: select * 
 from T1_v where T1_v.key not in (select T2_v.key from T2_v)
 PREHOOK: type: QUERY

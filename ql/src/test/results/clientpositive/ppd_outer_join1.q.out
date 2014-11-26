@@ -25,7 +25,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: ((key > 10) and (key < 20)) (type: boolean)
@@ -37,7 +37,7 @@ STAGE PLANS:
                 Statistics: Num rows: 3 Data size: 601 Basic stats: COMPLETE Column stats: NONE
                 value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: ((key > 10) and (key < 20)) (type: boolean)
@@ -129,7 +129,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: ((key > 10) and (key < 20)) (type: boolean)
@@ -141,7 +141,7 @@ STAGE PLANS:
                 Statistics: Num rows: 3 Data size: 601 Basic stats: COMPLETE Column stats: NONE
                 value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: ((key > 10) and (key < 20)) (type: boolean)

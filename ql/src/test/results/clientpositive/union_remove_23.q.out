@@ -64,33 +64,67 @@ FROM (
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1, Stage-3
-  Stage-2 is a root stage
-  Stage-3 depends on stages: Stage-2
+  Stage-2 depends on stages: Stage-1
+  Stage-0 depends on stages: Stage-2, Stage-4
+  Stage-4 is a root stage
 
 STAGE PLANS:
   Stage: Stage-1
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: inputtbl1
+            alias: a
             Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
-            Select Operator
-              expressions: key (type: string)
-              outputColumnNames: key
+            Reduce Output Operator
+              key expressions: key (type: string)
+              sort order: +
+              Map-reduce partition columns: key (type: string)
               Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
-              Group By Operator
-                aggregations: count(1)
-                keys: key (type: string)
-                mode: hash
-                outputColumnNames: _col0, _col1
-                Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
-                Reduce Output Operator
-                  key expressions: _col0 (type: string)
-                  sort order: +
-                  Map-reduce partition columns: _col0 (type: string)
-                  Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
-                  value expressions: _col1 (type: bigint)
+              value expressions: key (type: string)
+          TableScan
+            alias: b
+            Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
+            Reduce Output Operator
+              key expressions: key (type: string)
+              sort order: +
+              Map-reduce partition columns: key (type: string)
+              Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
+      Reduce Operator Tree:
+        Join Operator
+          condition map:
+               Inner Join 0 to 1
+          condition expressions:
+            0 {VALUE._col0}
+            1 
+          outputColumnNames: _col0
+          Statistics: Num rows: 0 Data size: 33 Basic stats: PARTIAL Column stats: NONE
+          Select Operator
+            expressions: _col0 (type: string)
+            outputColumnNames: _col0
+            Statistics: Num rows: 0 Data size: 33 Basic stats: PARTIAL Column stats: NONE
+            Group By Operator
+              aggregations: count(1)
+              keys: _col0 (type: string)
+              mode: hash
+              outputColumnNames: _col0, _col1
+              Statistics: Num rows: 0 Data size: 33 Basic stats: PARTIAL Column stats: NONE
+              File Output Operator
+                compressed: false
+                table:
+                    input format: org.apache.hadoop.mapred.SequenceFileInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
+                    serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
+
+  Stage: Stage-2
+    Map Reduce
+      Map Operator Tree:
+          TableScan
+            Reduce Output Operator
+              key expressions: _col0 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col0 (type: string)
+              Statistics: Num rows: 0 Data size: 33 Basic stats: PARTIAL Column stats: NONE
+              value expressions: _col1 (type: bigint)
       Reduce Operator Tree:
         Group By Operator
           aggregations: count(VALUE._col0)
@@ -121,62 +155,28 @@ STAGE PLANS:
               serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
               name: default.outputtbl1
 
-  Stage: Stage-2
+  Stage: Stage-4
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: inputtbl1
             Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
-            Reduce Output Operator
-              key expressions: key (type: string)
-              sort order: +
-              Map-reduce partition columns: key (type: string)
+            Select Operator
+              expressions: key (type: string)
+              outputColumnNames: key
               Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
-          TableScan
-            alias: a
-            Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
-            Reduce Output Operator
-              key expressions: key (type: string)
-              sort order: +
-              Map-reduce partition columns: key (type: string)
-              Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
-              value expressions: key (type: string)
-      Reduce Operator Tree:
-        Join Operator
-          condition map:
-               Inner Join 0 to 1
-          condition expressions:
-            0 {VALUE._col0}
-            1 
-          outputColumnNames: _col0
-          Statistics: Num rows: 0 Data size: 33 Basic stats: PARTIAL Column stats: NONE
-          Select Operator
-            expressions: _col0 (type: string)
-            outputColumnNames: _col0
-            Statistics: Num rows: 0 Data size: 33 Basic stats: PARTIAL Column stats: NONE
-            Group By Operator
-              aggregations: count(1)
-              keys: _col0 (type: string)
-              mode: hash
-              outputColumnNames: _col0, _col1
-              Statistics: Num rows: 0 Data size: 33 Basic stats: PARTIAL Column stats: NONE
-              File Output Operator
-                compressed: false
-                table:
-                    input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                    output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                    serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
-
-  Stage: Stage-3
-    Map Reduce
-      Map Operator Tree:
-          TableScan
-            Reduce Output Operator
-              key expressions: _col0 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col0 (type: string)
-              Statistics: Num rows: 0 Data size: 33 Basic stats: PARTIAL Column stats: NONE
-              value expressions: _col1 (type: bigint)
+              Group By Operator
+                aggregations: count(1)
+                keys: key (type: string)
+                mode: hash
+                outputColumnNames: _col0, _col1
+                Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
+                Reduce Output Operator
+                  key expressions: _col0 (type: string)
+                  sort order: +
+                  Map-reduce partition columns: _col0 (type: string)
+                  Statistics: Num rows: 0 Data size: 30 Basic stats: PARTIAL Column stats: NONE
+                  value expressions: _col1 (type: bigint)
       Reduce Operator Tree:
         Group By Operator
           aggregations: count(VALUE._col0)
@@ -219,16 +219,16 @@ FROM (
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@inputtbl1
 POSTHOOK: Output: default@outputtbl1
-POSTHOOK: Lineage: outputtbl1.key EXPRESSION [(inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), (inputtbl1)a.FieldSchema(name:key, type:string, comment:null), ]
-POSTHOOK: Lineage: outputtbl1.values EXPRESSION [(inputtbl1)inputtbl1.null, (inputtbl1)b.null, (inputtbl1)a.null, (inputtbl1)b.null, ]
+POSTHOOK: Lineage: outputtbl1.key EXPRESSION [(inputtbl1)a.FieldSchema(name:key, type:string, comment:null), (inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), ]
+POSTHOOK: Lineage: outputtbl1.values EXPRESSION [(inputtbl1)a.null, (inputtbl1)a.null, (inputtbl1)b.null, (inputtbl1)inputtbl1.null, ]
 PREHOOK: query: desc formatted outputTbl1
 PREHOOK: type: DESCTABLE
 PREHOOK: Input: default@outputtbl1
 POSTHOOK: query: desc formatted outputTbl1
 POSTHOOK: type: DESCTABLE
 POSTHOOK: Input: default@outputtbl1
-POSTHOOK: Lineage: outputtbl1.key EXPRESSION [(inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), (inputtbl1)a.FieldSchema(name:key, type:string, comment:null), ]
-POSTHOOK: Lineage: outputtbl1.values EXPRESSION [(inputtbl1)inputtbl1.null, (inputtbl1)b.null, (inputtbl1)a.null, (inputtbl1)b.null, ]
+POSTHOOK: Lineage: outputtbl1.key EXPRESSION [(inputtbl1)a.FieldSchema(name:key, type:string, comment:null), (inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), ]
+POSTHOOK: Lineage: outputtbl1.values EXPRESSION [(inputtbl1)a.null, (inputtbl1)a.null, (inputtbl1)b.null, (inputtbl1)inputtbl1.null, ]
 # col_name            	data_type           	comment             
 	 	 
 key                 	string              	                    
@@ -267,8 +267,8 @@ POSTHOOK: query: select * from outputTbl1 order by key, values
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@outputtbl1
 #### A masked pattern was here ####
-POSTHOOK: Lineage: outputtbl1.key EXPRESSION [(inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), (inputtbl1)a.FieldSchema(name:key, type:string, comment:null), ]
-POSTHOOK: Lineage: outputtbl1.values EXPRESSION [(inputtbl1)inputtbl1.null, (inputtbl1)b.null, (inputtbl1)a.null, (inputtbl1)b.null, ]
+POSTHOOK: Lineage: outputtbl1.key EXPRESSION [(inputtbl1)a.FieldSchema(name:key, type:string, comment:null), (inputtbl1)inputtbl1.FieldSchema(name:key, type:string, comment:null), ]
+POSTHOOK: Lineage: outputtbl1.values EXPRESSION [(inputtbl1)a.null, (inputtbl1)a.null, (inputtbl1)b.null, (inputtbl1)inputtbl1.null, ]
 1	1
 1	1
 2	1

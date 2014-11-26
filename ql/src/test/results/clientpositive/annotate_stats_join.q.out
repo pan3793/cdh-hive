@@ -278,17 +278,6 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
-            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-            GatherStats: false
-            Reduce Output Operator
-              key expressions: deptid (type: int)
-              sort order: +
-              Map-reduce partition columns: deptid (type: int)
-              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-              tag: 1
-              value expressions: deptid (type: int), deptname (type: string)
-          TableScan
             alias: e
             Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
             GatherStats: false
@@ -299,6 +288,17 @@ STAGE PLANS:
               Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
               tag: 0
               value expressions: lastname (type: string), deptid (type: int)
+          TableScan
+            alias: d
+            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+            GatherStats: false
+            Reduce Output Operator
+              key expressions: deptid (type: int)
+              sort order: +
+              Map-reduce partition columns: deptid (type: int)
+              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+              tag: 1
+              value expressions: deptid (type: int), deptname (type: string)
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -509,16 +509,16 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
-            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+            alias: e
+            Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
             GatherStats: false
             Reduce Output Operator
               key expressions: deptid (type: int)
               sort order: +
               Map-reduce partition columns: deptid (type: int)
-              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-              tag: 1
-              value expressions: deptid (type: int), deptname (type: string)
+              Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
+              tag: 0
+              value expressions: lastname (type: string), deptid (type: int)
           TableScan
             alias: e1
             Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
@@ -531,16 +531,16 @@ STAGE PLANS:
               tag: 2
               value expressions: lastname (type: string), deptid (type: int)
           TableScan
-            alias: e
-            Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
+            alias: d
+            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
             GatherStats: false
             Reduce Output Operator
               key expressions: deptid (type: int)
               sort order: +
               Map-reduce partition columns: deptid (type: int)
-              Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
-              tag: 0
-              value expressions: lastname (type: string), deptid (type: int)
+              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+              tag: 1
+              value expressions: deptid (type: int), deptname (type: string)
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -638,7 +638,7 @@ STAGE PLANS:
             name: default.emp_orc
       Truncated Path -> Alias:
         /dept_orc [d]
-        /emp_orc [e1, e]
+        /emp_orc [e, e1]
       Needs Tagging: true
       Reduce Operator Tree:
         Join Operator
@@ -751,17 +751,6 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
-            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-            GatherStats: false
-            Reduce Output Operator
-              key expressions: deptid (type: int)
-              sort order: +
-              Map-reduce partition columns: deptid (type: int)
-              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-              tag: 1
-              value expressions: deptid (type: int), deptname (type: string)
-          TableScan
             alias: e
             Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
             GatherStats: false
@@ -772,6 +761,17 @@ STAGE PLANS:
               Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
               tag: 0
               value expressions: lastname (type: string), deptid (type: int)
+          TableScan
+            alias: d
+            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+            GatherStats: false
+            Reduce Output Operator
+              key expressions: deptid (type: int)
+              sort order: +
+              Map-reduce partition columns: deptid (type: int)
+              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+              tag: 1
+              value expressions: deptid (type: int), deptname (type: string)
           TableScan
             alias: l
             Statistics: Num rows: 8 Data size: 796 Basic stats: COMPLETE Column stats: COMPLETE
@@ -1042,17 +1042,6 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
-            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-            GatherStats: false
-            Reduce Output Operator
-              key expressions: UDFToDouble(deptid) (type: double)
-              sort order: +
-              Map-reduce partition columns: UDFToDouble(deptid) (type: double)
-              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-              tag: 1
-              value expressions: deptid (type: int), deptname (type: string)
-          TableScan
             alias: e
             Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
             GatherStats: false
@@ -1063,6 +1052,17 @@ STAGE PLANS:
               Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
               tag: 0
               value expressions: lastname (type: string), deptid (type: int)
+          TableScan
+            alias: d
+            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+            GatherStats: false
+            Reduce Output Operator
+              key expressions: UDFToDouble(deptid) (type: double)
+              sort order: +
+              Map-reduce partition columns: UDFToDouble(deptid) (type: double)
+              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+              tag: 1
+              value expressions: deptid (type: int), deptname (type: string)
           TableScan
             alias: l
             Statistics: Num rows: 8 Data size: 796 Basic stats: COMPLETE Column stats: COMPLETE
@@ -1329,17 +1329,6 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
-            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-            GatherStats: false
-            Reduce Output Operator
-              key expressions: deptid (type: int), deptname (type: string)
-              sort order: ++
-              Map-reduce partition columns: deptid (type: int), deptname (type: string)
-              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-              tag: 1
-              value expressions: deptid (type: int), deptname (type: string)
-          TableScan
             alias: e
             Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
             GatherStats: false
@@ -1350,6 +1339,17 @@ STAGE PLANS:
               Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
               tag: 0
               value expressions: lastname (type: string), deptid (type: int)
+          TableScan
+            alias: d
+            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+            GatherStats: false
+            Reduce Output Operator
+              key expressions: deptid (type: int), deptname (type: string)
+              sort order: ++
+              Map-reduce partition columns: deptid (type: int), deptname (type: string)
+              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+              tag: 1
+              value expressions: deptid (type: int), deptname (type: string)
       Path -> Alias:
 #### A masked pattern was here ####
       Path -> Partition:
@@ -1580,17 +1580,6 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
-            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-            GatherStats: false
-            Reduce Output Operator
-              key expressions: deptid (type: int), deptname (type: string)
-              sort order: ++
-              Map-reduce partition columns: deptid (type: int), deptname (type: string)
-              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
-              tag: 1
-              value expressions: deptid (type: int), deptname (type: string)
-          TableScan
             alias: e
             Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
             GatherStats: false
@@ -1601,6 +1590,17 @@ STAGE PLANS:
               Statistics: Num rows: 6 Data size: 560 Basic stats: COMPLETE Column stats: COMPLETE
               tag: 0
               value expressions: lastname (type: string), deptid (type: int)
+          TableScan
+            alias: d
+            Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+            GatherStats: false
+            Reduce Output Operator
+              key expressions: deptid (type: int), deptname (type: string)
+              sort order: ++
+              Map-reduce partition columns: deptid (type: int), deptname (type: string)
+              Statistics: Num rows: 4 Data size: 384 Basic stats: COMPLETE Column stats: COMPLETE
+              tag: 1
+              value expressions: deptid (type: int), deptname (type: string)
           TableScan
             alias: l
             Statistics: Num rows: 8 Data size: 796 Basic stats: COMPLETE Column stats: COMPLETE

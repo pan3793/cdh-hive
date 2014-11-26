@@ -61,10 +61,10 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: x1
+            alias: x
             Statistics: Num rows: 1028 Data size: 22964 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
-              predicate: (c2 > 100) (type: boolean)
+              predicate: (c1 < 120) (type: boolean)
               Statistics: Num rows: 342 Data size: 7639 Basic stats: COMPLETE Column stats: NONE
               Select Operator
                 expressions: c3 (type: string), c1 (type: int)
@@ -161,10 +161,10 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: x
+            alias: x1
             Statistics: Num rows: 1028 Data size: 22964 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
-              predicate: (c1 < 120) (type: boolean)
+              predicate: (c2 > 100) (type: boolean)
               Statistics: Num rows: 342 Data size: 7639 Basic stats: COMPLETE Column stats: NONE
               Select Operator
                 expressions: c3 (type: string), c1 (type: int)

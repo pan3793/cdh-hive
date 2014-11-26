@@ -104,7 +104,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 116 Data size: 23248 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string), value (type: string)
@@ -113,7 +113,7 @@ STAGE PLANS:
               Statistics: Num rows: 116 Data size: 23248 Basic stats: COMPLETE Column stats: NONE
               value expressions: ds (type: string), hr (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 116 Data size: 23248 Basic stats: COMPLETE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string), value (type: string)
@@ -166,6 +166,17 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
+            alias: a
+            Statistics: Num rows: 232 Data size: 23248 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: (key = 103) (type: boolean)
+              Statistics: Num rows: 116 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
+              Reduce Output Operator
+                key expressions: key (type: string), hr (type: string), ds (type: string)
+                sort order: +++
+                Map-reduce partition columns: key (type: string), hr (type: string), ds (type: string)
+                Statistics: Num rows: 116 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
+          TableScan
             alias: b
             Statistics: Num rows: 232 Data size: 23248 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
@@ -177,17 +188,6 @@ STAGE PLANS:
                 Map-reduce partition columns: key (type: string), hr (type: string), ds (type: string)
                 Statistics: Num rows: 116 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
                 value expressions: ds (type: string), hr (type: string)
-          TableScan
-            alias: a
-            Statistics: Num rows: 232 Data size: 23248 Basic stats: COMPLETE Column stats: NONE
-            Filter Operator
-              predicate: (key = 103) (type: boolean)
-              Statistics: Num rows: 116 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
-              Reduce Output Operator
-                key expressions: key (type: string), hr (type: string), ds (type: string)
-                sort order: +++
-                Map-reduce partition columns: key (type: string), hr (type: string), ds (type: string)
-                Statistics: Num rows: 116 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:

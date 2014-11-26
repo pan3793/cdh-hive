@@ -26,7 +26,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -53,7 +53,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -105,7 +105,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -132,7 +132,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -184,7 +184,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -211,7 +211,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -263,7 +263,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -290,7 +290,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -345,7 +345,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -363,7 +363,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -449,7 +449,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -467,7 +467,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -553,7 +553,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -571,7 +571,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -650,17 +650,17 @@ explain
 select * from a join a b on (a.key=b.key) left outer join a c on (b.value=c.key) right outer join a d on (a.key=d.key)
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-2 is a root stage
+  Stage-1 is a root stage
+  Stage-2 depends on stages: Stage-1
   Stage-3 depends on stages: Stage-2
-  Stage-1 depends on stages: Stage-3
   Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-2
+  Stage: Stage-1
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -669,7 +669,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -693,7 +693,7 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -728,9 +728,16 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-1
+  Stage: Stage-3
     Map Reduce
       Map Operator Tree:
+          TableScan
+            Reduce Output Operator
+              key expressions: _col4 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col4 (type: string)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              value expressions: _col0 (type: string), _col1 (type: string), _col8 (type: string), _col9 (type: string), _col4 (type: string), _col5 (type: string)
           TableScan
             alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -740,13 +747,6 @@ STAGE PLANS:
               Map-reduce partition columns: key (type: string)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
-          TableScan
-            Reduce Output Operator
-              key expressions: _col4 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col4 (type: string)
-              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: _col0 (type: string), _col1 (type: string), _col8 (type: string), _col9 (type: string), _col4 (type: string), _col5 (type: string)
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -779,17 +779,17 @@ POSTHOOK: query: explain
 select * from a join a b on (a.key=b.key) left outer join a c on (b.value=c.key) full outer join a d on (a.key=d.key)
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-2 is a root stage
+  Stage-1 is a root stage
+  Stage-2 depends on stages: Stage-1
   Stage-3 depends on stages: Stage-2
-  Stage-1 depends on stages: Stage-3
   Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-2
+  Stage: Stage-1
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -798,7 +798,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -822,7 +822,7 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -857,9 +857,16 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-1
+  Stage: Stage-3
     Map Reduce
       Map Operator Tree:
+          TableScan
+            Reduce Output Operator
+              key expressions: _col4 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col4 (type: string)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              value expressions: _col0 (type: string), _col1 (type: string), _col8 (type: string), _col9 (type: string), _col4 (type: string), _col5 (type: string)
           TableScan
             alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -869,13 +876,6 @@ STAGE PLANS:
               Map-reduce partition columns: key (type: string)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
-          TableScan
-            Reduce Output Operator
-              key expressions: _col4 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col4 (type: string)
-              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: _col0 (type: string), _col1 (type: string), _col8 (type: string), _col9 (type: string), _col4 (type: string), _col5 (type: string)
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -908,17 +908,17 @@ POSTHOOK: query: explain
 select * from a join a b on (a.key=b.key) right outer join a c on (b.value=c.key) left outer join a d on (a.key=d.key)
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-2 is a root stage
+  Stage-1 is a root stage
+  Stage-2 depends on stages: Stage-1
   Stage-3 depends on stages: Stage-2
-  Stage-1 depends on stages: Stage-3
   Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-2
+  Stage: Stage-1
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -927,7 +927,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -951,7 +951,7 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -986,9 +986,16 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-1
+  Stage: Stage-3
     Map Reduce
       Map Operator Tree:
+          TableScan
+            Reduce Output Operator
+              key expressions: _col4 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col4 (type: string)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              value expressions: _col0 (type: string), _col1 (type: string), _col8 (type: string), _col9 (type: string), _col4 (type: string), _col5 (type: string)
           TableScan
             alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -998,13 +1005,6 @@ STAGE PLANS:
               Map-reduce partition columns: key (type: string)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
-          TableScan
-            Reduce Output Operator
-              key expressions: _col4 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col4 (type: string)
-              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: _col0 (type: string), _col1 (type: string), _col8 (type: string), _col9 (type: string), _col4 (type: string), _col5 (type: string)
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -1037,17 +1037,17 @@ POSTHOOK: query: explain
 select * from a join a b on (a.key=b.key) right outer join a c on (b.value=c.key) full outer join a d on (a.key=d.key)
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-2 is a root stage
+  Stage-1 is a root stage
+  Stage-2 depends on stages: Stage-1
   Stage-3 depends on stages: Stage-2
-  Stage-1 depends on stages: Stage-3
   Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-2
+  Stage: Stage-1
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -1056,7 +1056,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -1080,7 +1080,7 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-3
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
@@ -1115,9 +1115,16 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-1
+  Stage: Stage-3
     Map Reduce
       Map Operator Tree:
+          TableScan
+            Reduce Output Operator
+              key expressions: _col4 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col4 (type: string)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              value expressions: _col0 (type: string), _col1 (type: string), _col8 (type: string), _col9 (type: string), _col4 (type: string), _col5 (type: string)
           TableScan
             alias: d
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -1127,13 +1134,6 @@ STAGE PLANS:
               Map-reduce partition columns: key (type: string)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
-          TableScan
-            Reduce Output Operator
-              key expressions: _col4 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col4 (type: string)
-              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: _col0 (type: string), _col1 (type: string), _col8 (type: string), _col9 (type: string), _col4 (type: string), _col5 (type: string)
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -1168,16 +1168,16 @@ explain
 select * from a join a b on (a.key=b.key) left outer join a c on (b.value=c.key) left outer join a d on (c.key=d.key)
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-2 is a root stage
-  Stage-1 depends on stages: Stage-2
+  Stage-1 is a root stage
+  Stage-2 depends on stages: Stage-1
   Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-2
+  Stage: Stage-1
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: b
+            alias: a
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -1186,7 +1186,7 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
-            alias: a
+            alias: b
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
               key expressions: key (type: string)
@@ -1210,18 +1210,16 @@ STAGE PLANS:
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                 serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
-  Stage: Stage-1
+  Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: d
-            Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
-              key expressions: key (type: string)
+              key expressions: _col5 (type: string)
               sort order: +
-              Map-reduce partition columns: key (type: string)
+              Map-reduce partition columns: _col5 (type: string)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: key (type: string), value (type: string)
+              value expressions: _col4 (type: string), _col5 (type: string), _col0 (type: string), _col1 (type: string)
           TableScan
             alias: c
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
@@ -1232,12 +1230,14 @@ STAGE PLANS:
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               value expressions: key (type: string), value (type: string)
           TableScan
+            alias: d
+            Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Reduce Output Operator
-              key expressions: _col5 (type: string)
+              key expressions: key (type: string)
               sort order: +
-              Map-reduce partition columns: _col5 (type: string)
+              Map-reduce partition columns: key (type: string)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
-              value expressions: _col4 (type: string), _col5 (type: string), _col0 (type: string), _col1 (type: string)
+              value expressions: key (type: string), value (type: string)
       Reduce Operator Tree:
         Join Operator
           condition map:

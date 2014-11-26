@@ -23,21 +23,10 @@ STAGE PLANS:
   Stage: Stage-1
     Tez
       Edges:
-        Map 2 <- Map 1 (BROADCAST_EDGE)
+        Map 1 <- Map 2 (BROADCAST_EDGE)
 #### A masked pattern was here ####
       Vertices:
         Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: src2
-                  Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: string)
-                    sort order: +
-                    Map-reduce partition columns: key (type: string)
-                    Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                    value expressions: value (type: string)
-        Map 2 
             Map Operator Tree:
                 TableScan
                   alias: src1
@@ -65,6 +54,17 @@ STAGE PLANS:
                             output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                             serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                             name: default.dest_j1
+        Map 2 
+            Map Operator Tree:
+                TableScan
+                  alias: src2
+                  Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: string)
+                    sort order: +
+                    Map-reduce partition columns: key (type: string)
+                    Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: value (type: string)
 
   Stage: Stage-2
     Dependency Collection

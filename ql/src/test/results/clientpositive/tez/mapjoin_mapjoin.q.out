@@ -58,16 +58,6 @@ STAGE PLANS:
         Map 2 
             Map Operator Tree:
                 TableScan
-                  alias: src1
-                  Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: string)
-                    sort order: +
-                    Map-reduce partition columns: key (type: string)
-                    Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
-        Map 3 
-            Map Operator Tree:
-                TableScan
                   alias: src
                   Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                   Reduce Output Operator
@@ -75,6 +65,16 @@ STAGE PLANS:
                     sort order: +
                     Map-reduce partition columns: value (type: string)
                     Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+        Map 3 
+            Map Operator Tree:
+                TableScan
+                  alias: src1
+                  Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: string)
+                    sort order: +
+                    Map-reduce partition columns: key (type: string)
+                    Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
 
   Stage: Stage-0
     Fetch Operator
@@ -141,16 +141,6 @@ STAGE PLANS:
         Map 2 
             Map Operator Tree:
                 TableScan
-                  alias: src1
-                  Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: string)
-                    sort order: +
-                    Map-reduce partition columns: key (type: string)
-                    Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
-        Map 3 
-            Map Operator Tree:
-                TableScan
                   alias: src
                   Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
@@ -161,6 +151,16 @@ STAGE PLANS:
                       sort order: +
                       Map-reduce partition columns: value (type: string)
                       Statistics: Num rows: 19 Data size: 1903 Basic stats: COMPLETE Column stats: NONE
+        Map 3 
+            Map Operator Tree:
+                TableScan
+                  alias: src1
+                  Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: string)
+                    sort order: +
+                    Map-reduce partition columns: key (type: string)
+                    Statistics: Num rows: 2 Data size: 216 Basic stats: COMPLETE Column stats: NONE
 
   Stage: Stage-0
     Fetch Operator
@@ -230,22 +230,22 @@ STAGE PLANS:
         Map 3 
             Map Operator Tree:
                 TableScan
-                  alias: src1
-                  Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                  Reduce Output Operator
-                    key expressions: key (type: string)
-                    sort order: +
-                    Map-reduce partition columns: key (type: string)
-                    Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-        Map 4 
-            Map Operator Tree:
-                TableScan
                   alias: src
                   Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                   Reduce Output Operator
                     key expressions: value (type: string)
                     sort order: +
                     Map-reduce partition columns: value (type: string)
+                    Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+        Map 4 
+            Map Operator Tree:
+                TableScan
+                  alias: src1
+                  Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    key expressions: key (type: string)
+                    sort order: +
+                    Map-reduce partition columns: key (type: string)
                     Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
         Reducer 2 
             Reduce Operator Tree:

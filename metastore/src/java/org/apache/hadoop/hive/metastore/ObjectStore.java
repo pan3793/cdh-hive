@@ -959,7 +959,8 @@ public class ObjectStore implements RawStore, Configurable {
 
   /** Makes shallow copy of a map to avoid DataNucleus mucking with our objects. */
   private <K, V> Map<K, V> convertMap(Map<K, V> dnMap) {
-    return (dnMap == null) ? null : Maps.newHashMap(dnMap);
+    // Must be deterministic order map - see HIVE-8707
+    return (dnMap == null) ? null : Maps.newLinkedHashMap(dnMap);
   }
 
   private Table convertToTable(MTable mtbl) throws MetaException {

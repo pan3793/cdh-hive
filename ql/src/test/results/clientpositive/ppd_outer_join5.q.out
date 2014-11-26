@@ -39,7 +39,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: t3
+            alias: t1
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Filter Operator
               predicate: (id = 20) (type: boolean)
@@ -63,7 +63,7 @@ STAGE PLANS:
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
                 value expressions: id (type: int), key (type: string), value (type: string)
           TableScan
-            alias: t1
+            alias: t3
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Filter Operator
               predicate: (id = 20) (type: boolean)
@@ -114,7 +114,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: t3
+            alias: t1
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Filter Operator
               predicate: (id = 20) (type: boolean)
@@ -138,7 +138,7 @@ STAGE PLANS:
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
                 value expressions: id (type: int), key (type: string), value (type: string)
           TableScan
-            alias: t1
+            alias: t3
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Filter Operator
               predicate: (id = 20) (type: boolean)
@@ -189,7 +189,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: t3
+            alias: t1
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Filter Operator
               predicate: (id = 20) (type: boolean)
@@ -213,7 +213,7 @@ STAGE PLANS:
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
                 value expressions: id (type: int), key (type: string), value (type: string)
           TableScan
-            alias: t1
+            alias: t3
             Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
             Filter Operator
               predicate: (id = 20) (type: boolean)

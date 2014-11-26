@@ -741,19 +741,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string), value (type: string)
-              outputColumnNames: _col0, _col1
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string)
+              outputColumnNames: _col0
+              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col1 (type: string)
+                key expressions: _col0 (type: string)
                 sort order: +
-                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -767,14 +767,14 @@ STAGE PLANS:
   Stage: Stage-10
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $INTNAME 
+        $INTNAME1 
           Fetch Operator
             limit: -1
         $INTNAME2 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $INTNAME 
+        $INTNAME1 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -862,7 +862,7 @@ STAGE PLANS:
         $INTNAME 
           Fetch Operator
             limit: -1
-        $INTNAME1 
+        $INTNAME2 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
@@ -877,7 +877,7 @@ STAGE PLANS:
                 0 _col0 (type: string)
                 1 _col0 (type: string)
                 2 _col0 (type: string)
-        $INTNAME1 
+        $INTNAME2 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -925,14 +925,14 @@ STAGE PLANS:
   Stage: Stage-12
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $INTNAME1 
+        $INTNAME 
           Fetch Operator
             limit: -1
-        $INTNAME2 
+        $INTNAME1 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $INTNAME1 
+        $INTNAME 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -943,7 +943,7 @@ STAGE PLANS:
                 0 _col0 (type: string)
                 1 _col0 (type: string)
                 2 _col0 (type: string)
-        $INTNAME2 
+        $INTNAME1 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -996,12 +996,6 @@ STAGE PLANS:
               key expressions: _col0 (type: string)
               sort order: +
               Map-reduce partition columns: _col0 (type: string)
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-          TableScan
-            Reduce Output Operator
-              key expressions: _col0 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           TableScan
             Reduce Output Operator
@@ -1010,6 +1004,12 @@ STAGE PLANS:
               Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               value expressions: _col0 (type: string), _col1 (type: string)
+          TableScan
+            Reduce Output Operator
+              key expressions: _col0 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col0 (type: string)
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -1042,19 +1042,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string)
-              outputColumnNames: _col0
-              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string), value (type: string)
+              outputColumnNames: _col0, _col1
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col0 (type: string)
+                key expressions: _col1 (type: string)
                 sort order: +
-                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string)
+                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                value expressions: _col0 (type: string), _col1 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -1076,7 +1076,7 @@ STAGE PLANS:
                 key expressions: _col1 (type: string)
                 sort order: +
                 Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string), _col1 (type: string)
+                value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
           Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
@@ -1157,19 +1157,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string), value (type: string)
-              outputColumnNames: _col0, _col1
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string)
+              outputColumnNames: _col0
+              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col1 (type: string)
+                key expressions: _col0 (type: string)
                 sort order: +
-                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -1183,14 +1183,14 @@ STAGE PLANS:
   Stage: Stage-9
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $INTNAME 
+        $INTNAME1 
           Fetch Operator
             limit: -1
         $INTNAME2 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $INTNAME 
+        $INTNAME1 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -1278,7 +1278,7 @@ STAGE PLANS:
         $INTNAME 
           Fetch Operator
             limit: -1
-        $INTNAME1 
+        $INTNAME2 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
@@ -1293,7 +1293,7 @@ STAGE PLANS:
                 0 _col0 (type: string)
                 1 _col0 (type: string)
                 2 _col0 (type: string)
-        $INTNAME1 
+        $INTNAME2 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -1346,12 +1346,6 @@ STAGE PLANS:
               key expressions: _col0 (type: string)
               sort order: +
               Map-reduce partition columns: _col0 (type: string)
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-          TableScan
-            Reduce Output Operator
-              key expressions: _col0 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           TableScan
             Reduce Output Operator
@@ -1360,6 +1354,12 @@ STAGE PLANS:
               Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               value expressions: _col0 (type: string), _col1 (type: string)
+          TableScan
+            Reduce Output Operator
+              key expressions: _col0 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col0 (type: string)
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -1392,19 +1392,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string)
-              outputColumnNames: _col0
-              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string), value (type: string)
+              outputColumnNames: _col0, _col1
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col0 (type: string)
+                key expressions: _col1 (type: string)
                 sort order: +
-                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string)
+                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                value expressions: _col0 (type: string), _col1 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -1426,7 +1426,7 @@ STAGE PLANS:
                 key expressions: _col1 (type: string)
                 sort order: +
                 Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string), _col1 (type: string)
+                value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
           Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
@@ -1505,19 +1505,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string), value (type: string)
-              outputColumnNames: _col0, _col1
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string)
+              outputColumnNames: _col0
+              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col1 (type: string)
+                key expressions: _col0 (type: string)
                 sort order: +
-                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -1531,14 +1531,14 @@ STAGE PLANS:
   Stage: Stage-8
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $INTNAME 
+        $INTNAME1 
           Fetch Operator
             limit: -1
         $INTNAME2 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $INTNAME 
+        $INTNAME1 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -1628,12 +1628,6 @@ STAGE PLANS:
               key expressions: _col0 (type: string)
               sort order: +
               Map-reduce partition columns: _col0 (type: string)
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-          TableScan
-            Reduce Output Operator
-              key expressions: _col0 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           TableScan
             Reduce Output Operator
@@ -1642,6 +1636,12 @@ STAGE PLANS:
               Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               value expressions: _col0 (type: string), _col1 (type: string)
+          TableScan
+            Reduce Output Operator
+              key expressions: _col0 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col0 (type: string)
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -1674,19 +1674,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string)
-              outputColumnNames: _col0
-              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string), value (type: string)
+              outputColumnNames: _col0, _col1
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col0 (type: string)
+                key expressions: _col1 (type: string)
                 sort order: +
-                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string)
+                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                value expressions: _col0 (type: string), _col1 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -1708,7 +1708,7 @@ STAGE PLANS:
                 key expressions: _col1 (type: string)
                 sort order: +
                 Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string), _col1 (type: string)
+                value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
           Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
@@ -1787,19 +1787,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string), value (type: string)
-              outputColumnNames: _col0, _col1
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string)
+              outputColumnNames: _col0
+              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col1 (type: string)
+                key expressions: _col0 (type: string)
                 sort order: +
-                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -1813,14 +1813,14 @@ STAGE PLANS:
   Stage: Stage-8
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $INTNAME1 
+        $INTNAME 
           Fetch Operator
             limit: -1
-        $INTNAME2 
+        $INTNAME1 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $INTNAME1 
+        $INTNAME 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -1831,7 +1831,7 @@ STAGE PLANS:
                 0 _col0 (type: string)
                 1 _col0 (type: string)
                 2 _col0 (type: string)
-        $INTNAME2 
+        $INTNAME1 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -1910,12 +1910,6 @@ STAGE PLANS:
               key expressions: _col0 (type: string)
               sort order: +
               Map-reduce partition columns: _col0 (type: string)
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-          TableScan
-            Reduce Output Operator
-              key expressions: _col0 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           TableScan
             Reduce Output Operator
@@ -1924,6 +1918,12 @@ STAGE PLANS:
               Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               value expressions: _col0 (type: string), _col1 (type: string)
+          TableScan
+            Reduce Output Operator
+              key expressions: _col0 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col0 (type: string)
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -1956,19 +1956,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string)
-              outputColumnNames: _col0
-              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string), value (type: string)
+              outputColumnNames: _col0, _col1
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col0 (type: string)
+                key expressions: _col1 (type: string)
                 sort order: +
-                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string)
+                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                value expressions: _col0 (type: string), _col1 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -1990,7 +1990,7 @@ STAGE PLANS:
                 key expressions: _col1 (type: string)
                 sort order: +
                 Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string), _col1 (type: string)
+                value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
           Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
@@ -2069,19 +2069,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string), value (type: string)
-              outputColumnNames: _col0, _col1
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string)
+              outputColumnNames: _col0
+              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col1 (type: string)
+                key expressions: _col0 (type: string)
                 sort order: +
-                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -2095,14 +2095,14 @@ STAGE PLANS:
   Stage: Stage-8
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $INTNAME1 
+        $INTNAME 
           Fetch Operator
             limit: -1
-        $INTNAME2 
+        $INTNAME1 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $INTNAME1 
+        $INTNAME 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -2113,7 +2113,7 @@ STAGE PLANS:
                 0 _col0 (type: string)
                 1 _col0 (type: string)
                 2 _col0 (type: string)
-        $INTNAME2 
+        $INTNAME1 
           TableScan
             HashTable Sink Operator
               condition expressions:
@@ -2192,12 +2192,6 @@ STAGE PLANS:
               key expressions: _col0 (type: string)
               sort order: +
               Map-reduce partition columns: _col0 (type: string)
-              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-          TableScan
-            Reduce Output Operator
-              key expressions: _col0 (type: string)
-              sort order: +
-              Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           TableScan
             Reduce Output Operator
@@ -2206,6 +2200,12 @@ STAGE PLANS:
               Map-reduce partition columns: _col0 (type: string)
               Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               value expressions: _col0 (type: string), _col1 (type: string)
+          TableScan
+            Reduce Output Operator
+              key expressions: _col0 (type: string)
+              sort order: +
+              Map-reduce partition columns: _col0 (type: string)
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
       Reduce Operator Tree:
         Join Operator
           condition map:
@@ -2238,19 +2238,19 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
-            Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: key (type: string)
-              outputColumnNames: _col0
-              Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+              expressions: key (type: string), value (type: string)
+              outputColumnNames: _col0, _col1
+              Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
-                key expressions: _col0 (type: string)
+                key expressions: _col1 (type: string)
                 sort order: +
-                Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string)
+                Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+                value expressions: _col0 (type: string), _col1 (type: string)
       Reduce Operator Tree:
         Extract
-          Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
             table:
@@ -2272,7 +2272,7 @@ STAGE PLANS:
                 key expressions: _col1 (type: string)
                 sort order: +
                 Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
-                value expressions: _col0 (type: string), _col1 (type: string)
+                value expressions: _col0 (type: string)
       Reduce Operator Tree:
         Extract
           Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE

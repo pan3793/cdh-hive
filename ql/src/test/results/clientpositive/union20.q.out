@@ -26,8 +26,8 @@ ON (unionsrc1.key = unionsrc2.key)
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
-  Stage-2 depends on stages: Stage-1, Stage-6
-  Stage-6 is a root stage
+  Stage-2 depends on stages: Stage-1, Stage-4
+  Stage-4 is a root stage
   Stage-0 is a root stage
 
 STAGE PLANS:
@@ -35,7 +35,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: s3
+            alias: s1
             Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
             Select Operator
               Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
@@ -78,7 +78,7 @@ STAGE PLANS:
                 Statistics: Num rows: 10 Data size: 2075 Basic stats: COMPLETE Column stats: PARTIAL
                 value expressions: _col0 (type: string), _col1 (type: string)
           TableScan
-            alias: s4
+            alias: s2
             Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: (key < 10) (type: boolean)
@@ -96,7 +96,7 @@ STAGE PLANS:
                     Statistics: Num rows: 10 Data size: 2075 Basic stats: COMPLETE Column stats: PARTIAL
                     value expressions: _col0 (type: string), _col1 (type: string)
           TableScan
-            alias: s2
+            alias: s4
             Statistics: Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: (key < 10) (type: boolean)
@@ -143,11 +143,11 @@ STAGE PLANS:
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
 
-  Stage: Stage-6
+  Stage: Stage-4
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: s1
+            alias: s3
             Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
             Select Operator
               Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
