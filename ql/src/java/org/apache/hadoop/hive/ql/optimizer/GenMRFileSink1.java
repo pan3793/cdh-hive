@@ -76,6 +76,12 @@ public class GenMRFileSink1 implements NodeProcessor {
     // Mark this task as a final map reduce task (ignoring the optional merge task)
     ((MapredWork)currTask.getWork()).setFinalMapRed(true);
 
+    UnionOperator currUnionOp = ctx.getCurrUnionOp();
+    if (currUnionOp != null) {
+      ctx.getOpTaskMap().put(null, currTask);
+      GenMapRedUtils.initUnionPlan(ctx, currUnionOp, currTask, false);
+    }
+
     // If this file sink desc has been processed due to a linked file sink desc,
     // use that task
     Map<FileSinkDesc, Task<? extends Serializable>> fileSinkDescs = ctx.getLinkedFileDescTasks();
@@ -214,14 +220,6 @@ public class GenMRFileSink1 implements NodeProcessor {
 
       return dest;
 
-    }
-
-    UnionOperator currUnionOp = ctx.getCurrUnionOp();
-
-    if (currUnionOp != null) {
-      opTaskMap.put(null, currTask);
-      GenMapRedUtils.initUnionPlan(ctx, currUnionOp, currTask, false);
-      return dest;
     }
 
     return dest;
