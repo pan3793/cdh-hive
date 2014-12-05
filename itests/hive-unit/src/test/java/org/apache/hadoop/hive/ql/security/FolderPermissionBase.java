@@ -210,6 +210,7 @@ public abstract class FolderPermissionBase {
     ret = driver.run("insert into table " + tableName + " select key,value from mysrc");
     Assert.assertEquals(0, ret.getResponseCode());
 
+    verifyPermission(warehouseDir + "/" + tableName);
     Assert.assertTrue(listStatus(tableLoc).size() > 0);
     for (String child : listStatus(tableLoc)) {
       verifyPermission(child);
@@ -220,6 +221,7 @@ public abstract class FolderPermissionBase {
     ret = driver.run("insert overwrite table " + tableName + " select key,value from mysrc");
     Assert.assertEquals(0, ret.getResponseCode());
 
+    verifyPermission(warehouseDir + "/" + tableName, 1);
     Assert.assertTrue(listStatus(tableLoc).size() > 0);
     for (String child : listStatus(tableLoc)) {
       verifyPermission(child, 1);
@@ -239,6 +241,7 @@ public abstract class FolderPermissionBase {
     ret = driver.run("insert into table " + tableName + " partition(part1='1') select key,value from mysrc where part1='1' and part2='1'");
     Assert.assertEquals(0, ret.getResponseCode());
 
+    verifyPermission(warehouseDir + "/" + tableName);
     verifyPermission(warehouseDir + "/" + tableName + "/part1=1");
 
     Assert.assertTrue(listStatus(warehouseDir + "/" + tableName + "/part1=1").size() > 0);
@@ -251,6 +254,7 @@ public abstract class FolderPermissionBase {
     ret = driver.run("insert overwrite table " + tableName + " partition(part1='1') select key,value from mysrc where part1='1' and part2='1'");
     Assert.assertEquals(0, ret.getResponseCode());
 
+    verifyPermission(warehouseDir + "/" + tableName, 1);
     verifyPermission(warehouseDir + "/" + tableName + "/part1=1", 1);
 
     Assert.assertTrue(listStatus(warehouseDir + "/" + tableName + "/part1=1").size() > 0);
@@ -272,6 +276,7 @@ public abstract class FolderPermissionBase {
     ret = driver.run("insert into table " + tableName + " partition(part1='1', part2='1') select key,value from mysrc where part1='1' and part2='1'");
     Assert.assertEquals(0, ret.getResponseCode());
 
+    verifyPermission(warehouseDir + "/" + tableName);
     verifyPermission(warehouseDir + "/" + tableName + "/part1=1");
     verifyPermission(warehouseDir + "/" + tableName + "/part1=1/part2=1");
 
@@ -285,6 +290,7 @@ public abstract class FolderPermissionBase {
     ret = driver.run("insert overwrite table " + tableName + " partition(part1='1', part2='1') select key,value from mysrc where part1='1' and part2='1'");
     Assert.assertEquals(0, ret.getResponseCode());
 
+    verifyPermission(warehouseDir + "/" + tableName, 1);
     verifyPermission(warehouseDir + "/" + tableName + "/part1=1", 1);
     verifyPermission(warehouseDir + "/" + tableName + "/part1=1/part2=1", 1);
 
@@ -337,6 +343,20 @@ public abstract class FolderPermissionBase {
     ret = driver.run("insert overwrite table " + tableName + " partition (part1) select key,value,part1 from mysrc");
     Assert.assertEquals(0,ret.getResponseCode());
     verifySinglePartition(tableLoc, 1);
+
+    //delete and re-insert using insert overwrite.  There's different code paths insert vs insert overwrite for new tables.
+    ret = driver.run("DROP TABLE " + tableName);
+    Assert.assertEquals(0, ret.getResponseCode());
+    ret = driver.run("CREATE TABLE " + tableName + " (key string, value string) partitioned by (part1 string)");
+    Assert.assertEquals(0, ret.getResponseCode());
+
+    assertExistence(warehouseDir + "/" + tableName);
+    setPermission(warehouseDir + "/" + tableName);
+
+    ret = driver.run("insert overwrite table " + tableName + " partition (part1) select key,value,part1 from mysrc");
+    Assert.assertEquals(0, ret.getResponseCode());
+
+    verifySinglePartition(tableLoc, 0);
   }
 
   @Test
@@ -631,6 +651,7 @@ public abstract class FolderPermissionBase {
   }
 
   private void verifyDualPartitionTable(String baseTablePath, int index) throws Exception {
+    verifyPermission(baseTablePath, index);
     verifyPermission(baseTablePath + "/part1=1", index);
     verifyPermission(baseTablePath + "/part1=1/part2=1", index);
 

@@ -2447,6 +2447,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
               if (!success) {
                 LOG.warn("Error creating directory " + destParent);
               }
+              if (inheritPerms && success) {
+                inheritFromTable(tablePath, destParent, conf, fs);
+              }
             }
             if (!moveFile(conf, sdpair[0], sdpair[1], fs, true)) {
               throw new IOException("Unable to move file/directory from " + sdpair[0] +
