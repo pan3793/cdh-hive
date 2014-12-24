@@ -2862,6 +2862,13 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
             inInfo, inRecordWriter, outInfo, outRecordReader, errRecordReader, errInfo),
         new RowSchema(out_rwsch.getColumnInfos()), input), out_rwsch);
 
+    // Add URI entity for transform script. script assumed t be local unless downloadable
+    if (conf.getBoolVar(ConfVars.HIVE_CAPTURE_TRANSFORM_ENTITY)) {
+      String scriptCmd = getScriptProgName(stripQuotes(trfm.getChild(execPos).getText()));
+      getInputs().add(new ReadEntity(new Path(scriptCmd),
+          !SessionState.canDownloadResource(scriptCmd)));
+    }
+
     return output;
   }
 
