@@ -497,9 +497,7 @@ public final class TypeCheckProcFactory {
             return null;
           }
           // It's a column.
-          return new ExprNodeColumnDesc(colInfo.getType(), colInfo
-              .getInternalName(), colInfo.getTabAlias(), colInfo
-              .getIsVirtualCol());
+          return toExprNodeDesc(colInfo);
         } else {
           // It's a table alias.
           // We will process that later in DOT.
@@ -531,16 +529,28 @@ public final class TypeCheckProcFactory {
           }
         } else {
           // It's a column.
-          ExprNodeColumnDesc exprNodColDesc = new ExprNodeColumnDesc(colInfo.getType(), colInfo
-              .getInternalName(), colInfo.getTabAlias(), colInfo
-              .getIsVirtualCol());
-          exprNodColDesc.setSkewedCol(colInfo.isSkewedCol());
-          return exprNodColDesc;
+          return toExprNodeDesc(colInfo);
         }
       }
 
     }
 
+  }
+
+  private static ExprNodeDesc toExprNodeDesc(ColumnInfo colInfo) {
+    ObjectInspector inspector = colInfo.getObjectInspector();
+    if (inspector instanceof ConstantObjectInspector && 
+        inspector instanceof PrimitiveObjectInspector) {
+      PrimitiveObjectInspector poi = (PrimitiveObjectInspector) inspector;
+      Object constant = ((ConstantObjectInspector) inspector).getWritableConstantValue();
+      return new ExprNodeConstantDesc(colInfo.getType(), poi.getPrimitiveJavaObject(constant));
+    }
+    // non-constant or non-primitive constants
+    ExprNodeColumnDesc column = new ExprNodeColumnDesc(colInfo.getType(), colInfo
+        .getInternalName(), colInfo.getTabAlias(), colInfo
+        .getIsVirtualCol());
+    column.setSkewedCol(colInfo.isSkewedCol());
+    return column;
   }
 
   /**
@@ -1078,16 +1088,14 @@ public final class TypeCheckProcFactory {
           for (Map.Entry<String, ColumnInfo> colMap : columns.entrySet()) {
             ColumnInfo colInfo = colMap.getValue();
             if (!colInfo.getIsVirtualCol()) {
-              columnList.addColumn(new ExprNodeColumnDesc(colInfo.getType(),
-                  colInfo.getInternalName(), colInfo.getTabAlias(), false));
+              columnList.addColumn(toExprNodeDesc(colInfo));
             }
           }
         } else {
           // all columns (select *, for example)
           for (ColumnInfo colInfo : input.getColumnInfos()) {
             if (!colInfo.getIsVirtualCol()) {
-              columnList.addColumn(new ExprNodeColumnDesc(colInfo.getType(),
-                  colInfo.getInternalName(), colInfo.getTabAlias(), false));
+              columnList.addColumn(toExprNodeDesc(colInfo));
             }
           }
         }
@@ -1121,7 +1129,7 @@ public final class TypeCheckProcFactory {
           - childrenBegin);
       for (int ci = childrenBegin; ci < expr.getChildCount(); ci++) {
         if (nodeOutputs[ci] instanceof ExprNodeColumnListDesc) {
-          children.addAll(((ExprNodeColumnListDesc)nodeOutputs[ci]).getChildren());
+          children.addAll(((ExprNodeColumnListDesc) nodeOutputs[ci]).getChildren());
         } else {
           children.add((ExprNodeDesc) nodeOutputs[ci]);
         }
@@ -1131,8 +1139,7 @@ public final class TypeCheckProcFactory {
         RowResolver input = ctx.getInputRR();
         for (ColumnInfo colInfo : input.getColumnInfos()) {
           if (!colInfo.getIsVirtualCol()) {
-            children.add(new ExprNodeColumnDesc(colInfo.getType(),
-                colInfo.getInternalName(), colInfo.getTabAlias(), false));
+            children.add(toExprNodeDesc(colInfo));
           }
         }
       }

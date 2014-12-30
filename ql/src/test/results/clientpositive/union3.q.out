@@ -66,8 +66,6 @@ STAGE PLANS:
             Number of rows: 1
             Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
             Select Operator
-              expressions: 1 (type: int)
-              outputColumnNames: _col0
               Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
               File Output Operator
                 compressed: false
@@ -81,9 +79,9 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             Reduce Output Operator
-              key expressions: _col0 (type: int)
+              key expressions: 1 (type: int)
               sort order: +
-              Map-reduce partition columns: _col0 (type: int)
+              Map-reduce partition columns: 1 (type: int)
               Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
       Reduce Operator Tree:
         Select Operator
@@ -178,8 +176,6 @@ STAGE PLANS:
             Number of rows: 1
             Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
             Select Operator
-              expressions: 2 (type: int)
-              outputColumnNames: _col0
               Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
               File Output Operator
                 compressed: false
@@ -193,9 +189,9 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             Reduce Output Operator
-              key expressions: _col0 (type: int)
+              key expressions: 2 (type: int)
               sort order: +
-              Map-reduce partition columns: _col0 (type: int)
+              Map-reduce partition columns: 2 (type: int)
               Statistics: Num rows: 0 Data size: 5812 Basic stats: PARTIAL Column stats: COMPLETE
       Reduce Operator Tree:
         Select Operator
