@@ -444,13 +444,27 @@ STAGE PLANS:
   Stage: Stage-7
     Map Reduce Local Work
       Alias -> Map Local Tables:
+        tmp:x 
+          Fetch Operator
+            limit: -1
         tmp:y 
           Fetch Operator
             limit: -1
-        tmp:z 
-          Fetch Operator
-            limit: -1
       Alias -> Map Local Operator Tree:
+        tmp:x 
+          TableScan
+            alias: x
+            HashTable Sink Operator
+              condition expressions:
+                0 
+                1 {key}
+                2 
+              handleSkewJoin: false
+              keys:
+                0 [Column[key]]
+                1 [Column[key]]
+                2 [Column[key]]
+              Position of Big Table: 2
         tmp:y 
           TableScan
             alias: y
@@ -464,33 +478,14 @@ STAGE PLANS:
                 0 [Column[key]]
                 1 [Column[key]]
                 2 [Column[key]]
-              Position of Big Table: 0
-        tmp:z 
-          TableScan
-            alias: z
-            HashTable Sink Operator
-              condition expressions:
-                0 
-                1 {key}
-                2 
-              handleSkewJoin: false
-              keys:
-                0 [Column[key]]
-                1 [Column[key]]
-                2 [Column[key]]
-              Position of Big Table: 0
+              Position of Big Table: 2
 
   Stage: Stage-2
     Map Reduce
       Alias -> Map Operator Tree:
-        tmp:x 
+        tmp:z 
           TableScan
-<<<<<<< HEAD
-            alias: x
-=======
             alias: z
-            Statistics: Num rows: 7 Data size: 30 Basic stats: COMPLETE Column stats: NONE
->>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
             Map Join Operator
               condition map:
                    Inner Join 0 to 1
@@ -505,7 +500,7 @@ STAGE PLANS:
                 1 [Column[key]]
                 2 [Column[key]]
               outputColumnNames: _col4
-              Position of Big Table: 0
+              Position of Big Table: 2
               Select Operator
                 expressions:
                       expr: _col4
@@ -534,25 +529,6 @@ STAGE PLANS:
                           type: bigint
       Local Work:
         Map Reduce Local Work
-<<<<<<< HEAD
-=======
-          Alias -> Map Local Tables:
-            tmp:x 
-              Fetch Operator
-                limit: -1
-            tmp:y 
-              Fetch Operator
-                limit: -1
-          Alias -> Map Local Operator Tree:
-            tmp:x 
-              TableScan
-                alias: x
-                Statistics: Num rows: 7 Data size: 30 Basic stats: COMPLETE Column stats: NONE
-            tmp:y 
-              TableScan
-                alias: y
-                Statistics: Num rows: 7 Data size: 30 Basic stats: COMPLETE Column stats: NONE
->>>>>>> 5e1a287... HIVE-6403 uncorrelated subquery is failing with auto.convert.join=true (Navis via Harish Butani)
       Reduce Operator Tree:
         Group By Operator
           aggregations:
