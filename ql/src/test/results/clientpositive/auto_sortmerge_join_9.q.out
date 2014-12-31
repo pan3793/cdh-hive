@@ -1511,12 +1511,12 @@ STAGE PLANS:
                 keys:
                   0 [Column[_col0]]
                   1 [Column[_col0]]
-                Position of Big Table: 0
+                Position of Big Table: 1
 
   Stage: Stage-2
     Map Reduce
       Alias -> Map Operator Tree:
-        subq1:a 
+        subq2:a 
           TableScan
             alias: a
             Select Operator
@@ -1534,7 +1534,7 @@ STAGE PLANS:
                 keys:
                   0 [Column[_col0]]
                   1 [Column[_col0]]
-                Position of Big Table: 0
+                Position of Big Table: 1
                 Select Operator
                   Group By Operator
                     aggregations:
