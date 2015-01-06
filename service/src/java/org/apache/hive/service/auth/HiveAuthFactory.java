@@ -20,6 +20,8 @@ package org.apache.hive.service.auth;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -218,21 +220,26 @@ public class HiveAuthFactory {
     return TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
   }
 
-  public static TServerSocket getServerSocket(String hiveHost, int portNum)
-      throws TTransportException {
-    InetSocketAddress serverAddress = null;
-    if (hiveHost != null && !hiveHost.isEmpty()) {
-      serverAddress = new InetSocketAddress(hiveHost, portNum);
+  public static TServerSocket getServerSocket(String hiveHost, int portNum, int socketTimeout,
+      boolean keepAlive) throws TTransportException {
+    InetSocketAddress serverAddress;
+    if (hiveHost == null || hiveHost.isEmpty()) {
+      // Wildcard bind
+      serverAddress = new InetSocketAddress(portNum);
     } else {
-      serverAddress = new  InetSocketAddress(portNum);
+      serverAddress = new InetSocketAddress(hiveHost, portNum);
     }
-    return new TServerSocket(serverAddress );
+    TServerSocket serverSocket = new TServerSocket(serverAddress, socketTimeout);
+    if (keepAlive) {
+      serverSocket = new TServerSocketKeepAlive(serverSocket.getServerSocket());
+    }
+    return serverSocket;
   }
 
   public static TServerSocket getServerSSLSocket(String hiveHost, int portNum, String keyStorePath,
-      String keyStorePassWord, List<String> sslVersionBlacklist) throws TTransportException, UnknownHostException {
-    TSSLTransportFactory.TSSLTransportParameters params =
-        new TSSLTransportFactory.TSSLTransportParameters();
+      String keyStorePassWord, List<String> sslVersionBlacklist, int socketTimeout,
+      boolean keepAlive) throws TTransportException, UnknownHostException {
+    TSSLTransportFactory.TSSLTransportParameters params = new TSSLTransportFactory.TSSLTransportParameters();
     params.setKeyStore(keyStorePath, keyStorePassWord);
 
     InetAddress serverAddress;
@@ -241,7 +248,8 @@ public class HiveAuthFactory {
     } else {
       serverAddress = InetAddress.getByName(hiveHost);
     }
-    TServerSocket thriftServerSocket = TSSLTransportFactory.getServerSocket(portNum, 0, serverAddress, params);
+    TServerSocket thriftServerSocket = TSSLTransportFactory.getServerSocket(portNum, socketTimeout,
+        serverAddress, params);
     if (thriftServerSocket.getServerSocket() instanceof SSLServerSocket) {
       List<String> sslVersionBlacklistLocal = new ArrayList<String>();
       for (String sslVersion : sslVersionBlacklist) {
@@ -258,6 +266,9 @@ public class HiveAuthFactory {
       }
       sslServerSocket.setEnabledProtocols(enabledProtocols.toArray(new String[0]));
       LOG.info("SSL Server Socket Enabled Protocols: " + Arrays.toString(sslServerSocket.getEnabledProtocols()));
+    }
+    if (keepAlive) {
+      thriftServerSocket = new TServerSocketKeepAlive(thriftServerSocket.getServerSocket());
     }
     return thriftServerSocket;
   }
@@ -339,4 +350,25 @@ public class HiveAuthFactory {
     }
   }
 
+  /**
+   * TServerSocketKeepAlive - like TServerSocket, but will enable keepalive for
+   * accepted sockets.
+   *
+   */
+  static class TServerSocketKeepAlive extends TServerSocket {
+    public TServerSocketKeepAlive(ServerSocket serverSocket) throws TTransportException {
+      super(serverSocket);
+    }
+
+    @Override
+    protected TSocket acceptImpl() throws TTransportException {
+      TSocket ts = super.acceptImpl();
+      try {
+        ts.getSocket().setKeepAlive(true);
+      } catch (SocketException e) {
+        throw new TTransportException(e);
+      }
+      return ts;
+    }
+  }
 }

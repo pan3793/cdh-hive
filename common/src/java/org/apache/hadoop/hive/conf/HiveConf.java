@@ -895,7 +895,10 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_THRIFT_HTTP_MAX_WORKER_THREADS("hive.server2.thrift.http.max.worker.threads", 500),
     HIVE_SERVER2_THRIFT_HTTP_MAX_IDLE_TIME("hive.server2.thrift.http.max.idle.time", "1800s", new TimeValidator(TimeUnit.MILLISECONDS)),
     HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME("hive.server2.thrift.http.worker.keepalive.time", "60s", new TimeValidator(TimeUnit.SECONDS)),
-
+    // Binary (TCP) transport settings
+    HIVE_SERVER2_TCP_SOCKET_BLOCKING_TIMEOUT("hive.server2.tcp.socket.blocking.timeout", "0s",
+        new TimeValidator(TimeUnit.SECONDS)),
+    HIVE_SERVER2_TCP_SOCKET_KEEPALIVE("hive.server2.tcp.socket.keepalive", true),
     // binary transport settings
     HIVE_SERVER2_THRIFT_PORT("hive.server2.thrift.port", 10000),
     HIVE_SERVER2_THRIFT_BIND_HOST("hive.server2.thrift.bind.host", ""),
