@@ -109,9 +109,6 @@ class DummyTxnManager extends HiveTxnManagerImpl {
     // If a lock needs to be acquired on any partition, a read lock needs to be acquired on all
     // its parents also
     for (ReadEntity input : plan.getInputs()) {
-      if (!input.needsLock()) {
-        continue;
-      }
       LOG.debug("Adding " + input.getName() + " to list of lock inputs");
       if (input.getType() == ReadEntity.Type.DATABASE) {
         lockObjects.addAll(getLockObjects(plan, input.getDatabase(), null,
