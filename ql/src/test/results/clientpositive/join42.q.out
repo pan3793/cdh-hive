@@ -118,6 +118,7 @@ STAGE PLANS:
               Reduce Output Operator
                 key expressions: 4436 (type: int)
                 sort order: +
+                Map-reduce partition columns: 4436 (type: int)
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           TableScan
             alias: la
@@ -128,6 +129,7 @@ STAGE PLANS:
               Reduce Output Operator
                 key expressions: 4436 (type: int)
                 sort order: +
+                Map-reduce partition columns: 4436 (type: int)
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
                 value expressions: aid (type: int), pi_id (type: int)
           TableScan
@@ -139,6 +141,7 @@ STAGE PLANS:
               Reduce Output Operator
                 key expressions: 4436 (type: int)
                 sort order: +
+                Map-reduce partition columns: 4436 (type: int)
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
       Reduce Operator Tree:
         Join Operator

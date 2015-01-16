@@ -23,6 +23,7 @@ STAGE PLANS:
               Reduce Output Operator
                 key expressions: '86' (type: string)
                 sort order: +
+                Map-reduce partition columns: '86' (type: string)
                 Statistics: Num rows: 1453 Data size: 2906 Basic stats: COMPLETE Column stats: NONE
           TableScan
             alias: src2
@@ -33,6 +34,7 @@ STAGE PLANS:
               Reduce Output Operator
                 key expressions: '86' (type: string)
                 sort order: +
+                Map-reduce partition columns: '86' (type: string)
                 Statistics: Num rows: 28 Data size: 2906 Basic stats: COMPLETE Column stats: NONE
                 value expressions: value (type: string)
       Reduce Operator Tree:
