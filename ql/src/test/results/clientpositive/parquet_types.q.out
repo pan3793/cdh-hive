@@ -188,7 +188,9 @@ tuvwx	5	abcded	6
 uvwzy	5	abcdede	7
 vwxyz	5	abcdede	7
 wxyza	5	abcde	5
-PREHOOK: query: SELECT ctinyint,
+PREHOOK: query: -- test types in group by
+
+SELECT ctinyint,
   MAX(cint),
   MIN(csmallint),
   COUNT(cstring1),
@@ -200,7 +202,9 @@ ORDER BY ctinyint
 PREHOOK: type: QUERY
 PREHOOK: Input: default@parquet_types
 #### A masked pattern was here ####
-POSTHOOK: query: SELECT ctinyint,
+POSTHOOK: query: -- test types in group by
+
+SELECT ctinyint,
   MAX(cint),
   MIN(csmallint),
   COUNT(cstring1),
@@ -227,3 +231,181 @@ POSTHOOK: Lineage: parquet_types.t SIMPLE [(parquet_types_staging)parquet_types_
 1	118	1	7	1.1857142789023263	1.8000000000000003
 2	119	1	7	1.2142857142857142	1.8
 3	120	1	7	1.171428578240531	1.7999999999999996
+PREHOOK: query: SELECT cfloat, count(*) FROM parquet_types GROUP BY cfloat ORDER BY cfloat
+PREHOOK: type: QUERY
+PREHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT cfloat, count(*) FROM parquet_types GROUP BY cfloat ORDER BY cfloat
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: Lineage: parquet_types.cchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cchar, type:char(5), comment:null), ]
+POSTHOOK: Lineage: parquet_types.cdouble SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cdouble, type:double, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cfloat SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cfloat, type:float, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cint, type:int, comment:null), ]
+POSTHOOK: Lineage: parquet_types.csmallint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:csmallint, type:smallint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cstring1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cstring1, type:string, comment:null), ]
+POSTHOOK: Lineage: parquet_types.ctinyint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:ctinyint, type:tinyint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cvarchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cvarchar, type:varchar(10), comment:null), ]
+POSTHOOK: Lineage: parquet_types.l1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:l1, type:array<int>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.m1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:m1, type:map<string,varchar(3)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.st1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:st1, type:struct<c1:int,c2:char(1)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.t SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:t, type:timestamp, comment:null), ]
+1.0	5
+1.1	4
+1.2	4
+1.3	4
+1.4	4
+PREHOOK: query: SELECT cchar, count(*) FROM parquet_types GROUP BY cchar ORDER BY cchar
+PREHOOK: type: QUERY
+PREHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT cchar, count(*) FROM parquet_types GROUP BY cchar ORDER BY cchar
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: Lineage: parquet_types.cchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cchar, type:char(5), comment:null), ]
+POSTHOOK: Lineage: parquet_types.cdouble SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cdouble, type:double, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cfloat SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cfloat, type:float, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cint, type:int, comment:null), ]
+POSTHOOK: Lineage: parquet_types.csmallint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:csmallint, type:smallint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cstring1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cstring1, type:string, comment:null), ]
+POSTHOOK: Lineage: parquet_types.ctinyint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:ctinyint, type:tinyint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cvarchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cvarchar, type:varchar(10), comment:null), ]
+POSTHOOK: Lineage: parquet_types.l1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:l1, type:array<int>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.m1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:m1, type:map<string,varchar(3)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.st1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:st1, type:struct<c1:int,c2:char(1)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.t SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:t, type:timestamp, comment:null), ]
+a    	1
+ab   	1
+abc  	1
+abcd 	1
+abcde	3
+bcdef	1
+cdefg	1
+klmno	1
+nopqr	1
+opqrs	1
+pqrst	2
+qrstu	1
+rstuv	1
+stuvw	1
+tuvwx	1
+uvwzy	1
+vwxyz	1
+wxyza	1
+PREHOOK: query: SELECT cvarchar, count(*) FROM parquet_types GROUP BY cvarchar ORDER BY cvarchar
+PREHOOK: type: QUERY
+PREHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT cvarchar, count(*) FROM parquet_types GROUP BY cvarchar ORDER BY cvarchar
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: Lineage: parquet_types.cchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cchar, type:char(5), comment:null), ]
+POSTHOOK: Lineage: parquet_types.cdouble SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cdouble, type:double, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cfloat SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cfloat, type:float, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cint, type:int, comment:null), ]
+POSTHOOK: Lineage: parquet_types.csmallint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:csmallint, type:smallint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cstring1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cstring1, type:string, comment:null), ]
+POSTHOOK: Lineage: parquet_types.ctinyint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:ctinyint, type:tinyint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cvarchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cvarchar, type:varchar(10), comment:null), ]
+POSTHOOK: Lineage: parquet_types.l1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:l1, type:array<int>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.m1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:m1, type:map<string,varchar(3)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.st1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:st1, type:struct<c1:int,c2:char(1)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.t SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:t, type:timestamp, comment:null), ]
+a  	1
+ab 	1
+abc	2
+abcd	1
+abcdd	1
+abcde	2
+abcded	4
+abcdede	3
+abcdedef	1
+abcdef	1
+abcdefg	1
+abcdefgh	1
+abcdefghij	1
+b	1
+PREHOOK: query: SELECT cstring1, count(*) FROM parquet_types GROUP BY cstring1 ORDER BY cstring1
+PREHOOK: type: QUERY
+PREHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT cstring1, count(*) FROM parquet_types GROUP BY cstring1 ORDER BY cstring1
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: Lineage: parquet_types.cchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cchar, type:char(5), comment:null), ]
+POSTHOOK: Lineage: parquet_types.cdouble SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cdouble, type:double, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cfloat SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cfloat, type:float, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cint, type:int, comment:null), ]
+POSTHOOK: Lineage: parquet_types.csmallint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:csmallint, type:smallint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cstring1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cstring1, type:string, comment:null), ]
+POSTHOOK: Lineage: parquet_types.ctinyint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:ctinyint, type:tinyint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cvarchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cvarchar, type:varchar(10), comment:null), ]
+POSTHOOK: Lineage: parquet_types.l1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:l1, type:array<int>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.m1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:m1, type:map<string,varchar(3)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.st1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:st1, type:struct<c1:int,c2:char(1)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.t SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:t, type:timestamp, comment:null), ]
+abc	1
+bcd	1
+cde	1
+def	1
+efg	1
+fgh	1
+ghi	1
+hij	1
+ijk	1
+jkl	1
+klm	1
+mno	1
+nop	1
+pqr	1
+qrs	2
+stu	1
+vwx	1
+wxy	1
+yza	1
+zab	1
+PREHOOK: query: SELECT t, count(*) FROM parquet_types GROUP BY t ORDER BY t
+PREHOOK: type: QUERY
+PREHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT t, count(*) FROM parquet_types GROUP BY t ORDER BY t
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@parquet_types
+#### A masked pattern was here ####
+POSTHOOK: Lineage: parquet_types.cchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cchar, type:char(5), comment:null), ]
+POSTHOOK: Lineage: parquet_types.cdouble SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cdouble, type:double, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cfloat SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cfloat, type:float, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cint, type:int, comment:null), ]
+POSTHOOK: Lineage: parquet_types.csmallint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:csmallint, type:smallint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cstring1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cstring1, type:string, comment:null), ]
+POSTHOOK: Lineage: parquet_types.ctinyint SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:ctinyint, type:tinyint, comment:null), ]
+POSTHOOK: Lineage: parquet_types.cvarchar SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:cvarchar, type:varchar(10), comment:null), ]
+POSTHOOK: Lineage: parquet_types.l1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:l1, type:array<int>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.m1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:m1, type:map<string,varchar(3)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.st1 SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:st1, type:struct<c1:int,c2:char(1)>, comment:null), ]
+POSTHOOK: Lineage: parquet_types.t SIMPLE [(parquet_types_staging)parquet_types_staging.FieldSchema(name:t, type:timestamp, comment:null), ]
+2011-01-01 01:01:01.111111111	1
+2012-02-02 02:02:02.222222222	1
+2013-03-03 03:03:03.333333333	1
+2014-04-04 04:04:04.444444444	1
+2015-05-05 05:05:05.555555555	1
+2016-06-06 06:06:06.666666666	1
+2017-07-07 07:07:07.777777777	1
+2018-08-08 08:08:08.888888888	1
+2019-09-09 09:09:09.999999999	1
+2020-10-10 10:10:10.101010101	1
+2021-11-11 11:11:11.111111111	1
+2022-12-12 12:12:12.121212121	1
+2023-01-02 13:13:13.131313131	1
+2024-02-02 14:14:14.141414141	1
+2025-03-03 15:15:15.151515151	1
+2026-04-04 16:16:16.161616161	1
+2027-05-05 17:17:17.171717171	1
+2028-06-06 18:18:18.181818181	1
+2029-07-07 19:19:19.191919191	1
+2030-08-08 20:20:20.202020202	1
+2031-09-09 21:21:21.212121212	1
