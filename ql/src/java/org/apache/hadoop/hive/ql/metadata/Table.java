@@ -243,6 +243,10 @@ public class Table implements Serializable {
     return;
   }
 
+  public StorageDescriptor getSd() {
+    return tTable.getSd();
+  }
+
   public void setInputFormatClass(Class<? extends InputFormat> inputFormatClass) {
     this.inputFormatClass = inputFormatClass;
     tTable.getSd().setInputFormat(inputFormatClass.getName());
