@@ -21,7 +21,6 @@ TBLPROPERTIES (
 }')
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
-PREHOOK: Output: default@avro_type_evolution
 POSTHOOK: query: CREATE TABLE avro_type_evolution (val bigint) STORED AS AVRO
 TBLPROPERTIES (
     'avro.schema.literal'='{
