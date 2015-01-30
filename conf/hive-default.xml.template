@@ -2443,6 +2443,15 @@
 </property>
 
 <property>
+  <name>hive.parquet.timestamp.skip.conversion</name>
+  <value>true</value>
+  <description>
+    Current Hive implementation of parquet stores timestamps to UTC, this flag allows skipping of the conversion
+    on reading parquet files from other tools.
+  </description>
+</property>
+
+<property>
   <name>hive.orc.splits.include.file.footer</name>
   <value>false</value>
   <description>

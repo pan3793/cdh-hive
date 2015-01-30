@@ -544,6 +544,7 @@ public class HiveConf extends Configuration {
     HIVEUSEEXPLICITRCFILEHEADER("hive.exec.rcfile.use.explicit.header", true),
     HIVEUSERCFILESYNCCACHE("hive.exec.rcfile.use.sync.cache", true),
 
+    HIVE_PARQUET_TIMESTAMP_SKIP_CONVERSION("hive.parquet.timestamp.skip.conversion", true),
     // Maximum fraction of heap that can be used by ORC file writers
     HIVE_ORC_FILE_MEMORY_POOL("hive.exec.orc.memory.pool", 0.5f), // 50%
     // Define the version of the file to write
