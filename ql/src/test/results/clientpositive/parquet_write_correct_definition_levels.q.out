@@ -2,7 +2,6 @@ PREHOOK: query: CREATE TABLE text_tbl (a STRUCT<b:STRUCT<c:INT>>)
 STORED AS TEXTFILE
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
-PREHOOK: Output: default@text_tbl
 POSTHOOK: query: CREATE TABLE text_tbl (a STRUCT<b:STRUCT<c:INT>>)
 STORED AS TEXTFILE
 POSTHOOK: type: CREATETABLE
@@ -29,16 +28,14 @@ STORED AS PARQUET
 AS SELECT * FROM text_tbl
 PREHOOK: type: CREATETABLE_AS_SELECT
 PREHOOK: Input: default@text_tbl
-PREHOOK: Output: database:default
-PREHOOK: Output: default@parq_tbl
 POSTHOOK: query: -- We test that parquet is written with a level 0 definition
 CREATE TABLE parq_tbl
 STORED AS PARQUET
 AS SELECT * FROM text_tbl
 POSTHOOK: type: CREATETABLE_AS_SELECT
 POSTHOOK: Input: default@text_tbl
-POSTHOOK: Output: database:default
 POSTHOOK: Output: default@parq_tbl
+POSTHOOK: Lineage: text_tbl.a EXPRESSION []
 PREHOOK: query: SELECT * FROM text_tbl
 PREHOOK: type: QUERY
 PREHOOK: Input: default@text_tbl
@@ -47,6 +44,7 @@ POSTHOOK: query: SELECT * FROM text_tbl
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@text_tbl
 #### A masked pattern was here ####
+POSTHOOK: Lineage: text_tbl.a EXPRESSION []
 NULL
 PREHOOK: query: SELECT * FROM parq_tbl
 PREHOOK: type: QUERY
@@ -56,6 +54,7 @@ POSTHOOK: query: SELECT * FROM parq_tbl
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@parq_tbl
 #### A masked pattern was here ####
+POSTHOOK: Lineage: text_tbl.a EXPRESSION []
 NULL
 PREHOOK: query: DROP TABLE text_tbl
 PREHOOK: type: DROPTABLE
@@ -65,6 +64,7 @@ POSTHOOK: query: DROP TABLE text_tbl
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@text_tbl
 POSTHOOK: Output: default@text_tbl
+POSTHOOK: Lineage: text_tbl.a EXPRESSION []
 PREHOOK: query: DROP TABLE parq_tbl
 PREHOOK: type: DROPTABLE
 PREHOOK: Input: default@parq_tbl
@@ -73,3 +73,4 @@ POSTHOOK: query: DROP TABLE parq_tbl
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@parq_tbl
 POSTHOOK: Output: default@parq_tbl
+POSTHOOK: Lineage: text_tbl.a EXPRESSION []
