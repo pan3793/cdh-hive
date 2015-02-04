@@ -120,14 +120,14 @@ public class TestOperators extends TestCase {
         op.processOp(oner.o, 0);
       }
 
-      Map<Enum<?>, Long> results = op.getStats();
+      Map<String, Long> results = op.getStats();
       System.out.println("filtered = "
-          + results.get(FilterOperator.Counter.FILTERED));
+          + results.get(FilterOperator.Counter.FILTERED.toString()));
       assertEquals(Long.valueOf(4), results
-          .get(FilterOperator.Counter.FILTERED));
+          .get(FilterOperator.Counter.FILTERED.toString()));
       System.out.println("passed = "
-          + results.get(FilterOperator.Counter.PASSED));
-      assertEquals(Long.valueOf(1), results.get(FilterOperator.Counter.PASSED));
+          + results.get(FilterOperator.Counter.PASSED.toString()));
+      assertEquals(Long.valueOf(1), results.get(FilterOperator.Counter.PASSED.toString()));
 
       /*
        * for(Enum e: results.keySet()) { System.out.println(e.toString() + ":" +

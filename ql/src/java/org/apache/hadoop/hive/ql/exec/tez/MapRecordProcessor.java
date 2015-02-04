@@ -222,7 +222,7 @@ public class MapRecordProcessor extends RecordProcessor {
       if (isLogInfoEnabled) {
         logCloseInfo();
       }
-      reportStats rps = new reportStats(reporter);
+      reportStats rps = new reportStats(reporter, jconf);
       mapOp.preorderMap(rps);
       return;
     } catch (Exception e) {

@@ -316,7 +316,7 @@ public class ExecReducer extends MapReduceBase implements Reducer {
       }
 
       reducer.close(abort);
-      reportStats rps = new reportStats(rp);
+      reportStats rps = new reportStats(rp,jc);
       reducer.preorderMap(rps);
 
     } catch (Exception e) {

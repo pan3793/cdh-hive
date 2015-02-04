@@ -409,7 +409,7 @@ public class MapOperator extends Operator<MapWork> implements Serializable, Clon
   public void initializeOp(Configuration hconf) throws HiveException {
     // set that parent initialization is done and call initialize on children
     state = State.INIT;
-    statsMap.put(Counter.DESERIALIZE_ERRORS, deserialize_error_count);
+    statsMap.put(Counter.DESERIALIZE_ERRORS.toString(), deserialize_error_count);
 
     List<Operator<? extends OperatorDesc>> children = getChildOperators();
 

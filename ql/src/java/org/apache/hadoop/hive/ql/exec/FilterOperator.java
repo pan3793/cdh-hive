@@ -73,8 +73,8 @@ public class FilterOperator extends Operator<FilterDesc> implements
         conditionEvaluator = ExprNodeEvaluatorFactory.toCachedEval(conditionEvaluator);
       }
 
-      statsMap.put(Counter.FILTERED, filtered_count);
-      statsMap.put(Counter.PASSED, passed_count);
+      statsMap.put(Counter.FILTERED.toString(), filtered_count);
+      statsMap.put(Counter.PASSED.toString(), passed_count);
       conditionInspector = null;
       ioContext = IOContext.get();
     } catch (Throwable e) {

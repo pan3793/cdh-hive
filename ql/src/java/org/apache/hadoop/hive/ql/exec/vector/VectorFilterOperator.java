@@ -60,8 +60,8 @@ public class VectorFilterOperator extends FilterOperator {
     try {
       heartbeatInterval = HiveConf.getIntVar(hconf,
           HiveConf.ConfVars.HIVESENDHEARTBEAT);
-      statsMap.put(Counter.FILTERED, filtered_count);
-      statsMap.put(Counter.PASSED, passed_count);
+      statsMap.put(Counter.FILTERED.toString(), filtered_count);
+      statsMap.put(Counter.PASSED.toString(), passed_count);
     } catch (Throwable e) {
       throw new HiveException(e);
     }

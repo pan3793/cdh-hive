@@ -100,6 +100,14 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   private transient List<Object> keyWritables;
   private transient List<String> keys;
   private transient int numKeyColToRead;
+  protected transient long numRows = 0;
+
+  /**
+   * Counters.
+   */
+  public static enum Counter {
+    RECORDS_OUT
+  }
 
   /**
    * RecordWriter.
@@ -213,7 +221,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   private static final long serialVersionUID = 1L;
   protected transient FileSystem fs;
   protected transient Serializer serializer;
-  protected transient LongWritable row_count;
+  protected final LongWritable row_count = new LongWritable();
   private transient boolean isNativeTable = true;
 
   /**
@@ -317,7 +325,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         prtner = (HivePartitioner<HiveKey, Object>) ReflectionUtils.newInstance(
             jc.getPartitionerClass(), null);
       }
-      row_count = new LongWritable();
       if (dpCtx != null) {
         dpSetup();
       }
@@ -350,6 +357,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           valToPaths.put("", fsp); // special entry for non-DP case
         }
       }
+      numRows = 0;
+      statsMap.put(Counter.RECORDS_OUT + "_" + conf.getDestTableId(), row_count);
+
       initializeChildren(hconf);
     } catch (HiveException e) {
       throw e;
@@ -599,10 +609,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
 
 
       RecordWriter rowOutWriter = null;
-
-      if (row_count != null) {
-        row_count.set(row_count.get() + 1);
-      }
+      ++numRows;
 
       if (!multiFileSpray) {
         rowOutWriter = rowOutWriters[0];
@@ -832,6 +839,10 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
 
   @Override
   public void closeOp(boolean abort) throws HiveException {
+
+    row_count.set(numRows);
+    LOG.info(toString() + ": records written - " + numRows);
+   
     if (!bDynParts && !filesCreated) {
       createBucketFiles(fsp);
     }

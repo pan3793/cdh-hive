@@ -375,7 +375,7 @@ public class ReduceRecordProcessor  extends RecordProcessor{
           dummyOp.close(abort);
         }
       }
-      reportStats rps = new reportStats(reporter);
+      reportStats rps = new reportStats(reporter, jconf);
       reducer.preorderMap(rps);
 
     } catch (Exception e) {

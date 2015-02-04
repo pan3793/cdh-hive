@@ -28,6 +28,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.exec.FetchOperator;
 import org.apache.hadoop.hive.ql.exec.MapOperator;
 import org.apache.hadoop.hive.ql.exec.MapredContext;
@@ -250,7 +253,7 @@ public class ExecMapper extends MapReduceBase implements Mapper {
             + used_memory);
       }
 
-      reportStats rps = new reportStats(rp);
+      reportStats rps = new reportStats(rp, jc);
       mo.preorderMap(rps);
       return;
     } catch (Exception e) {
@@ -287,16 +290,20 @@ public class ExecMapper extends MapReduceBase implements Mapper {
    */
   public static class reportStats implements Operator.OperatorFunc {
     Reporter rp;
+    Configuration conf;
+    String groupName;
 
-    public reportStats(Reporter rp) {
+    public reportStats(Reporter rp, Configuration conf) {
       this.rp = rp;
+      this.conf = conf;
+      this.groupName = HiveConf.getVar(conf, HiveConf.ConfVars.HIVECOUNTERGROUP);
     }
 
     public void func(Operator op) {
-      Map<Enum<?>, Long> opStats = op.getStats();
-      for (Map.Entry<Enum<?>, Long> e : opStats.entrySet()) {
+      Map<String, Long> opStats = op.getStats();
+      for (Map.Entry<String, Long> e : opStats.entrySet()) {
         if (rp != null) {
-          rp.incrCounter(e.getKey(), e.getValue());
+          rp.incrCounter(groupName, e.getKey(), e.getValue());
         }
       }
     }

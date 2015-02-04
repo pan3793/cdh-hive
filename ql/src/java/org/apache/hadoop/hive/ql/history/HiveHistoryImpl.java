@@ -67,7 +67,7 @@ public class HiveHistoryImpl implements HiveHistory{
 
   private static final String DELIMITER = " ";
 
-  private static final String ROW_COUNT_PATTERN = "TABLE_ID_(\\d+)_ROWCOUNT";
+  private static final String ROW_COUNT_PATTERN = "RECORDS_OUT_(\\d+)";
 
   private static final Pattern rowCountPattern = Pattern.compile(ROW_COUNT_PATTERN);
 
@@ -224,7 +224,6 @@ public class HiveHistoryImpl implements HiveHistory{
             sb1.append('~');
             sb1.append(counter.getCounter());
             ji.rowCountMap.put(tab, counter.getCounter());
-
           }
         }
       }
