@@ -6033,10 +6033,21 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
             .getTypeInfo(), "", false));
         colName.add(name);
       }
+      SelectDesc selDesc = new SelectDesc(expressions, colName);
+      List<ExprNodeDesc> conSELColList = selDesc.getColList();
       Operator output = putOpInsertMap(OperatorFactory.getAndMakeChild(
-          new SelectDesc(expressions, colName), new RowSchema(rowResolver
+          selDesc, new RowSchema(rowResolver
               .getColumnInfos()), input), rowResolver);
-
+      if( output != null ) {
+        Map<String, ExprNodeDesc> colExprMap = new HashMap<String, ExprNodeDesc>();
+        for (int i=0; i < colName.size(); i++) {
+          ExprNodeDesc curDesc = conSELColList.get(i);
+          if (curDesc instanceof ExprNodeGenericFuncDesc) {
+            colExprMap.put(colName.get(i), curDesc);
+          }
+        }
+        output.setColumnExprMap(colExprMap);
+      }
       return output;
     } else {
       // not converted
