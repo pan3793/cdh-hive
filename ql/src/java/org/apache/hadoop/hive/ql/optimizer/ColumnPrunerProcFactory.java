@@ -181,13 +181,16 @@ public final class ColumnPrunerProcFactory {
         return null;
       }
 
-      WindowTableFunctionDef def = (WindowTableFunctionDef) conf.getFuncDef();
       ArrayList<ColumnInfo> sig = new ArrayList<ColumnInfo>();
-
       List<String> prunedCols = cppCtx.getPrunedColList(op.getChildOperators().get(0));
-      //we create a copy of prunedCols to create a list of pruned columns for PTFOperator
-      prunedCols = new ArrayList<String>(prunedCols);
-      prunedColumnsList(prunedCols, def);
+
+      WindowTableFunctionDef def = null;
+      if (conf.forWindowing()) {
+        def = (WindowTableFunctionDef) conf.getFuncDef();
+        prunedCols = Utilities.mergeUniqElems(getWindowFunctionColumns(def), prunedCols);
+        prunedCols = prunedColumnsList(prunedCols, def);
+      }
+
       RowResolver oldRR = cppCtx.getOpToParseCtxMap().get(op).getRowResolver();
       RowResolver newRR = buildPrunedRR(prunedCols, oldRR, sig);
       cppCtx.getPrunedColLists().put(op, prunedInputList(prunedCols, def));
@@ -210,10 +213,24 @@ public final class ColumnPrunerProcFactory {
       return newRR;
     }
 
+    // always should be in this order (see PTFDeserializer#initializeWindowing)
+    private List<String> getWindowFunctionColumns(WindowTableFunctionDef tDef) {
+      List<String> columns = new ArrayList<String>();
+      if (tDef.getWindowFunctions() != null) {
+        for (WindowFunctionDef wDef : tDef.getWindowFunctions()) {
+          columns.add(wDef.getAlias());
+        }
+      }
+      return columns;
+    }
+    
     /*
      * add any input columns referenced in WindowFn args or expressions.
      */
-    private void prunedColumnsList(List<String> prunedCols, WindowTableFunctionDef tDef) {
+    private ArrayList<String> prunedColumnsList(List<String> prunedCols, 
+        WindowTableFunctionDef tDef) {
+      //we create a copy of prunedCols to create a list of pruned columns for PTFOperator
+      ArrayList<String> mergedColList = new ArrayList<String>(prunedCols);
       if ( tDef.getWindowFunctions() != null ) {
         for(WindowFunctionDef wDef : tDef.getWindowFunctions() ) {
           if ( wDef.getArgs() == null) {
@@ -221,22 +238,23 @@ public final class ColumnPrunerProcFactory {
           }
           for(PTFExpressionDef arg : wDef.getArgs()) {
             ExprNodeDesc exprNode = arg.getExprNode();
-            Utilities.mergeUniqElems(prunedCols, exprNode.getCols());
+            Utilities.mergeUniqElems(mergedColList, exprNode.getCols());
           }
         }
       }
      if(tDef.getPartition() != null){
          for(PTFExpressionDef col : tDef.getPartition().getExpressions()){
            ExprNodeDesc exprNode = col.getExprNode();
-           Utilities.mergeUniqElems(prunedCols, exprNode.getCols());
+           Utilities.mergeUniqElems(mergedColList, exprNode.getCols());
          }
        }
        if(tDef.getOrder() != null){
          for(PTFExpressionDef col : tDef.getOrder().getExpressions()){
            ExprNodeDesc exprNode = col.getExprNode();
-           Utilities.mergeUniqElems(prunedCols, exprNode.getCols());
+           Utilities.mergeUniqElems(mergedColList, exprNode.getCols());
          }
        }
+      return mergedColList;
     }
 
     /*

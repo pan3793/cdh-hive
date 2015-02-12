@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.Tree;
 import org.antlr.runtime.tree.TreeWizard;
 import org.antlr.runtime.tree.TreeWizard.ContextVisitor;
@@ -4651,7 +4652,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
     // insert a select operator here used by the ColumnPruner to reduce
     // the data to shuffle
-    Operator select = insertSelectAllPlanForGroupBy(selectInput);
+    Operator select = genSelectAllDesc(selectInput);
 
     // Generate ReduceSinkOperator
     ReduceSinkOperator reduceSinkOperatorInfo =
@@ -7647,8 +7648,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     return type;
   }
 
-  private Operator insertSelectAllPlanForGroupBy(Operator input)
-      throws SemanticException {
+  private Operator genSelectAllDesc(Operator input) throws SemanticException {
     OpParseContext inputCtx = opParseCtx.get(input);
     RowResolver inputRR = inputCtx.getRowResolver();
     ArrayList<ColumnInfo> columns = inputRR.getColumnInfos();
@@ -8104,16 +8104,16 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
               }
 
               if (qbp.getAggregationExprsForClause(dest).size() != 0
-                  || getGroupByForClause(qbp, dest).size() > 0) {
-                // multiple distincts is not supported with skew in data
-                if (conf.getBoolVar(HiveConf.ConfVars.HIVEGROUPBYSKEW) &&
-                    qbp.getDistinctFuncExprsForClause(dest).size() > 1) {
-                  throw new SemanticException(ErrorMsg.UNSUPPORTED_MULTIPLE_DISTINCTS.
-                      getMsg());
-                }
-                // insert a select operator here used by the ColumnPruner to reduce
-                // the data to shuffle
-                curr = insertSelectAllPlanForGroupBy(curr);
+                      || getGroupByForClause(qbp, dest).size() > 0) {
+                    // multiple distincts is not supported with skew in data
+                    if (conf.getBoolVar(HiveConf.ConfVars.HIVEGROUPBYSKEW) &&
+                        qbp.getDistinctFuncExprsForClause(dest).size() > 1) {
+                      throw new SemanticException(ErrorMsg.UNSUPPORTED_MULTIPLE_DISTINCTS.
+                          getMsg());
+                    }
+                    // insert a select operator here used by the ColumnPruner to reduce
+                    // the data to shuffle
+                    curr = genSelectAllDesc(curr);
                 if (conf.getBoolVar(HiveConf.ConfVars.HIVEMAPSIDEAGGREGATE)) {
                   if (!conf.getBoolVar(HiveConf.ConfVars.HIVEGROUPBYSKEW)) {
                     curr = genGroupByPlanMapAggrNoSkew(dest, qb, curr);
@@ -11140,6 +11140,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       input = putOpInsertMap(OperatorFactory.getAndMakeChild(ptfDesc,
           new RowSchema(ptfOpRR.getColumnInfos()),
           input), ptfOpRR);
+      input = genSelectAllDesc(input);
       rr = ptfOpRR;
     }
 
@@ -11315,6 +11316,29 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     return selSpec;
+  }
+
+  public static ASTNode genSelectDIAST(RowResolver rr) {
+    HashMap<String, LinkedHashMap<String, ColumnInfo>> map = rr.getRslvMap();
+    ASTNode selectDI = new ASTNode(new CommonToken(HiveParser.TOK_SELECTDI, "TOK_SELECTDI"));
+    for (String tabAlias : map.keySet()) {
+      for (Entry<String, ColumnInfo> entry : map.get(tabAlias).entrySet()) {
+        selectDI.addChild(buildSelExprSubTree(tabAlias, entry.getKey()));
+      }
+    }
+    return selectDI;
+  }
+
+  private static ASTNode buildSelExprSubTree(String tableAlias, String col) {
+    ASTNode selexpr = new ASTNode(new CommonToken(HiveParser.TOK_SELEXPR, "TOK_SELEXPR"));
+    ASTNode tableOrCol = new ASTNode(new CommonToken(HiveParser.TOK_TABLE_OR_COL,
+        "TOK_TABLE_OR_COL"));
+    ASTNode dot = new ASTNode(new CommonToken(HiveParser.DOT, "."));
+    tableOrCol.addChild(new ASTNode(new CommonToken(HiveParser.Identifier, tableAlias)));
+    dot.addChild(tableOrCol);
+    dot.addChild(new ASTNode(new CommonToken(HiveParser.Identifier, col)));
+    selexpr.addChild(dot);
+    return selexpr;
   }
 
   private void addAlternateGByKeyMappings(ASTNode gByExpr, ColumnInfo colInfo,
