@@ -20,7 +20,11 @@ package org.apache.hive.service.cli.session;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.shims.ShimLoader;
@@ -36,9 +40,10 @@ import org.apache.hive.service.cli.thrift.TProtocolVersion;
  */
 public class HiveSessionImplwithUGI extends HiveSessionImpl {
   public static final String HS2TOKEN = "HiveServer2ImpersonationToken";
-
+  private static final Log LOG = LogFactory.getLog(HiveSessionImplwithUGI.class);
   private UserGroupInformation sessionUgi = null;
-  private String delegationTokenStr = null;
+  private String hmsDelegationTokenStr = null;
+  private Hive sessionHive = null;
   private HiveSession proxySession = null;
 
   public HiveSessionImplwithUGI(TProtocolVersion protocol, String username, String password,
@@ -77,7 +82,7 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
   }
 
   public String getDelegationToken () {
-    return this.delegationTokenStr;
+    return this.hmsDelegationTokenStr;
   }
 
   /**
@@ -105,25 +110,25 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
    * @throws HiveException
    * @throws IOException
    */
-  private void setDelegationToken(String delegationTokenStr) throws HiveSQLException {
-    this.delegationTokenStr = delegationTokenStr;
-    if (delegationTokenStr != null) {
+  private void setDelegationToken(String hmsDelegationTokenStr) throws HiveSQLException {
+    this.hmsDelegationTokenStr = hmsDelegationTokenStr;
+    if (hmsDelegationTokenStr != null) {
       getHiveConf().set("hive.metastore.token.signature", HS2TOKEN);
       try {
-        ShimLoader.getHadoopShims().setTokenStr(sessionUgi, delegationTokenStr, HS2TOKEN);
+        ShimLoader.getHadoopShims().setTokenStr(sessionUgi, hmsDelegationTokenStr, HS2TOKEN);
       } catch (IOException e) {
-        throw new HiveSQLException("Couldn't setup delegation token in the ugi", e);
+        throw new HiveSQLException("Couldn't setup delegation token in the ugi:" + e, e);
       }
     }
   }
 
   // If the session has a delegation token obtained from the metastore, then cancel it
   private void cancelDelegationToken() throws HiveSQLException {
-    if (delegationTokenStr != null) {
+    if (hmsDelegationTokenStr != null) {
       try {
-        Hive.get(getHiveConf()).cancelDelegationToken(delegationTokenStr);
+        Hive.get(getHiveConf()).cancelDelegationToken(hmsDelegationTokenStr);
       } catch (HiveException e) {
-        throw new HiveSQLException("Couldn't cancel delegation token", e);
+        throw new HiveSQLException("Couldn't cancel delegation token: " + e, e);
       }
     }
   }
@@ -151,6 +156,31 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
     authFactory.cancelDelegationToken(tokenStr);
   }
 
+  @Override
+  public IMetaStoreClient getMetaStoreClient() throws HiveSQLException {
+    return getMetaStoreClient(true);
+  }
+
+  private IMetaStoreClient getMetaStoreClient(boolean retryInCaseOfTokenExpiration) throws HiveSQLException {
+    try {
+      return Hive.get(getHiveConf()).getMSC();
+    } catch (HiveException e) {
+      throw new HiveSQLException("Failed to get metastore connection: " + e, e);
+    } catch(MetaException e1) {
+      if (hmsDelegationTokenStr != null && retryInCaseOfTokenExpiration) {
+        LOG.info("Retrying failed metastore connection: " + e1, e1);
+        Hive.closeCurrent();
+        try {
+          setDelegationToken(Hive.get(getHiveConf()).getDelegationToken(getUsername(), getUsername()));
+        } catch (HiveException e2) {
+          throw new HiveSQLException("Error connect metastore to setup impersonation: " + e2, e2);
+        }
+        return getMetaStoreClient(false);
+      } else {
+        throw new HiveSQLException("Failed to get metastore connection: " + e1, e1);
+      }
+    }
+  }
   @Override
   public void renewDelegationToken(HiveAuthFactory authFactory, String tokenStr)
       throws HiveSQLException {
