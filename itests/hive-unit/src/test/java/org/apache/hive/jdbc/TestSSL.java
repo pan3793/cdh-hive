@@ -464,4 +464,41 @@ public class TestSSL {
     confOverlay.put(ConfVars.HIVE_SERVER2_AUTHENTICATION.varname,  HS2_BINARY_AUTH_MODE);
     confOverlay.put(ConfVars.HIVE_SERVER2_ENABLE_DOAS.varname, "true");
   }
+
+  /***
+   * Test SSL client connection to SSL server
+   * @throws Exception
+   */
+  @Test
+  public void testSSLDeprecatConfig() throws Exception {
+    setSslConfOverlay(confOverlay);
+    // Test in binary mode
+    setBinaryConfOverlay(confOverlay);
+    clearSslConfOverlay(confOverlay);
+    confOverlay.put("hive.server2.enable.SSL", "true");
+    // Start HS2 with SSL
+    miniHS2.start(confOverlay);
+
+    String tableName = "sslTab";
+    Path dataFilePath = new Path(dataFileDir, "kv1.txt");
+
+    // make SSL connection
+    hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL("default", SSL_CONN_PARAMS),
+        System.getProperty("user.name"), "bar");
+
+    // Set up test data
+    setupTestTableWithData(tableName, dataFilePath, hs2Conn);
+
+    Statement stmt = hs2Conn.createStatement();
+    ResultSet res = stmt.executeQuery("SELECT * FROM " + tableName);
+    int rowCount = 0;
+    while (res.next()) {
+      ++rowCount;
+      assertEquals("val_" + res.getInt(1), res.getString(2));
+    }
+    // read result over SSL
+    assertEquals(500, rowCount);
+
+    hs2Conn.close();
+  }
 }
