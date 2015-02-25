@@ -336,10 +336,13 @@ public class MapOperator extends Operator<MapWork> implements Serializable, Clon
       for (Map.Entry<String, ArrayList<String>> entry : conf.getPathToAliases().entrySet()) {
         String onefile = entry.getKey();
         List<String> aliases = entry.getValue();
-
         Path onepath = new Path(onefile);
-        if (schemeless) {
+        boolean isOnePathSchemeless = onepath.toUri().getScheme() == null;
+        Path curPath = fpath;
+        if (schemeless && !isOnePathSchemeless) {
           onepath = new Path(onepath.toUri().getPath());
+        } else if (!schemeless && isOnePathSchemeless ) {
+          curPath = new Path(fpath.toUri().getPath());
         }
 
         PartitionDesc partDesc = conf.getPathToPartitionInfo().get(onefile);
@@ -359,7 +362,7 @@ public class MapOperator extends Operator<MapWork> implements Serializable, Clon
           op.getParentOperators().add(this);
           // check for the operators who will process rows coming to this Map
           // Operator
-          if (!onepath.toUri().relativize(fpath.toUri()).equals(fpath.toUri())) {
+          if (!onepath.toUri().relativize(curPath.toUri()).equals(curPath.toUri())) {
             children.add(op);
             childrenOpToOpCtxMap.put(op, opCtx);
             LOG.info("dump " + op.getName() + " "
@@ -439,12 +442,19 @@ public class MapOperator extends Operator<MapWork> implements Serializable, Clon
   @Override
   public void cleanUpInputFileChangedOp() throws HiveException {
     Path fpath = normalizePath(getExecContext().getCurrentInputFile());
-
+    boolean schemeless = fpath.toUri().getScheme() == null;
     for (String onefile : conf.getPathToAliases().keySet()) {
       Path onepath = normalizePath(onefile);
+      boolean isOnePathSchemeless = onepath.toUri().getScheme() == null;
+      Path curPath = fpath;
+      if (schemeless && !isOnePathSchemeless) {
+        onepath = new Path(onepath.toUri().getPath());
+      } else if (!schemeless && isOnePathSchemeless ) {
+        curPath = new Path(fpath.toUri().getPath());
+      }
       // check for the operators who will process rows coming to this Map
       // Operator
-      if (onepath.toUri().relativize(fpath.toUri()).equals(fpath.toUri())) {
+      if (onepath.toUri().relativize(curPath.toUri()).equals(curPath.toUri())) {
         // not from this
         continue;
       }
