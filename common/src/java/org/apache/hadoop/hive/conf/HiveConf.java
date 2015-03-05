@@ -335,6 +335,7 @@ public class HiveConf extends Configuration {
     METASTORE_AUTO_CREATE_SCHEMA("datanucleus.autoCreateSchema", true),
     METASTORE_FIXED_DATASTORE("datanucleus.fixedDatastore", false),
     METASTORE_SCHEMA_VERIFICATION("hive.metastore.schema.verification", false),
+    METASTORE_SCHEMA_VERIFICATION_RECORD_VERSION("hive.metastore.schema.verification.record.version", true),
     METASTORE_AUTO_START_MECHANISM_MODE("datanucleus.autoStartMechanismMode", "checked"),
     METASTORE_TRANSACTION_ISOLATION("datanucleus.transactionIsolation", "read-committed"),
     METASTORE_CACHE_LEVEL2("datanucleus.cache.level2", false),
