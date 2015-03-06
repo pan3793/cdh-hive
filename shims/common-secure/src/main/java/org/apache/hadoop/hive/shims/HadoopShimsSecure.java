@@ -503,7 +503,13 @@ public abstract class HadoopShimsSecure implements HadoopShims {
   }
 
   @Override
-  public Path createDelegationTokenFile(Configuration conf) throws IOException {
+  public File createTempFileForToken() throws IOException {
+    File tokenFile = File.createTempFile("hive_hadoop_delegation_token", null);
+    return tokenFile;
+  }
+
+  @Override
+  public Path createDelegationTokenFile(Configuration conf, File tokenFile) throws IOException {
 
     // Get delegation token for user from filesystem and write the token along with
     // metastore tokens into a file
@@ -512,7 +518,6 @@ public abstract class HadoopShimsSecure implements HadoopShims {
     Credentials cred = new Credentials();
     fs.addDelegationTokens(uname, cred);
 
-    File tokenFile = File.createTempFile("hive_hadoop_delegation_token", null);
     Path tokenPath = new Path(tokenFile.toURI());
 
     //write credential with token to file

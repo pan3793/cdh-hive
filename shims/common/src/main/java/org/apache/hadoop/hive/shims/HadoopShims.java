@@ -19,6 +19,7 @@ package org.apache.hadoop.hive.shims;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -177,15 +178,21 @@ public interface HadoopShims {
    */
   public String getTokenFileLocEnvName();
 
+  /**
+   * Create a temp file which will be used for delegation token.
+   * @return tokenFile
+   */
+  public File createTempFileForToken() throws IOException;
 
   /**
    * Get delegation token from filesystem and write the token along with
    * metastore tokens into a file
    * @param conf
+   * @param tokenFile
    * @return Path of the file with token credential
    * @throws IOException
    */
-  public Path createDelegationTokenFile(final Configuration conf) throws IOException;
+  public Path createDelegationTokenFile(final Configuration conf, File tokenFile) throws IOException;
 
 
   /**

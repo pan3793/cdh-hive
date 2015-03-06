@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.exec;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -33,9 +34,11 @@ import org.apache.hadoop.hive.shims.ShimLoader;
  */
 public class SecureCmdDoAs {
   private final Path tokenPath;
+  private final File tokenFile;
 
   public SecureCmdDoAs(HiveConf conf) throws HiveException, IOException{
-    tokenPath = ShimLoader.getHadoopShims().createDelegationTokenFile(conf);
+    tokenFile = ShimLoader.getHadoopShims().createTempFileForToken();
+    tokenPath = ShimLoader.getHadoopShims().createDelegationTokenFile(conf,tokenFile);
   }
 
   public void addEnv(Map<String, String> env){
@@ -43,4 +46,7 @@ public class SecureCmdDoAs {
         tokenPath.toUri().getPath());
   }
 
+  public void close() {
+    tokenFile.delete();
+  }
 }

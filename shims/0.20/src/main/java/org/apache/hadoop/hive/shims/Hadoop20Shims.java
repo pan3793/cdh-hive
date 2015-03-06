@@ -19,6 +19,7 @@ package org.apache.hadoop.hive.shims;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
@@ -566,7 +567,12 @@ public class Hadoop20Shims implements HadoopShims {
   }
 
   @Override
-  public Path createDelegationTokenFile(Configuration conf) throws IOException {
+  public File createTempFileForToken() throws IOException {
+    throw new UnsupportedOperationException("Tokens are not supported in current hadoop version");
+  }
+
+  @Override
+  public Path createDelegationTokenFile(Configuration conf, File tokenFile) throws IOException {
     throw new UnsupportedOperationException("Tokens are not supported in current hadoop version");
   }
 
