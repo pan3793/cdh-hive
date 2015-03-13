@@ -1111,7 +1111,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
       }
     }
 
-    storageFormat.fillDefaultStorageFormat();
+    storageFormat.fillDefaultStorageFormat(false);
     if (indexTableName == null) {
       indexTableName = MetaStoreUtils.getIndexTableName(qTabName[0], qTabName[1], indexName);
       indexTableName = qTabName[0] + "." + indexTableName; // on same database with base table

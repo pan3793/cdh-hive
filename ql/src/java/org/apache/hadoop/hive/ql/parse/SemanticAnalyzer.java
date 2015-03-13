@@ -11010,7 +11010,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
     }
 
-    storageFormat.fillDefaultStorageFormat();
+    storageFormat.fillDefaultStorageFormat(isExt);
 
     if ((command_type == CTAS) && (storageFormat.getStorageHandler() != null)) {
       throw new SemanticException(ErrorMsg.CREATE_NON_NATIVE_AS.getMsg());
@@ -11195,7 +11195,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     StorageFormat defaultFmt = new StorageFormat(conf);
-    defaultFmt.fillDefaultStorageFormat();
+    defaultFmt.fillDefaultStorageFormat(false);
     createVwDesc = new CreateViewDesc(
       dbDotTable, cols, comment, defaultFmt.getInputFormat(),
       defaultFmt.getOutputFormat(), tblProps, partColNames,
