@@ -1077,8 +1077,8 @@ public class HiveConf extends Configuration {
     HIVE_CHECK_CROSS_PRODUCT("hive.exec.check.crossproducts", true),
     HIVE_LOCALIZE_RESOURCE_WAIT_INTERVAL("hive.localize.resource.wait.interval", "5000ms", new TimeValidator(TimeUnit.MILLISECONDS)),
     HIVE_LOCALIZE_RESOURCE_NUM_WAIT_ATTEMPTS("hive.localize.resource.num.wait.attempts", 5),
+    NWAYJOINREORDER("hive.reorder.nway.joins", true),
     ;
-
     public final String varname;
     public final String defaultVal;
     public final int defaultIntVal;
