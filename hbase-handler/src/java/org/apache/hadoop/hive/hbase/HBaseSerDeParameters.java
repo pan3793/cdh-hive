@@ -40,6 +40,7 @@ import org.apache.hadoop.util.ReflectionUtils;
 
 import java.util.List;
 import java.util.Properties;
+import javax.annotation.Nullable;
 
 /**
  * HBaseSerDeParameters encapsulates SerDeParameters and additional configurations that are specific for
@@ -187,15 +188,23 @@ public class HBaseSerDeParameters {
       throws Exception {
     String factoryClassName = tbl.getProperty(HBaseSerDe.HBASE_COMPOSITE_KEY_FACTORY);
     if (factoryClassName != null) {
-      Class<?> factoryClazz = job.getClassByName(factoryClassName);
+      Class<?> factoryClazz = loadClass(factoryClassName, job);
       return (HBaseKeyFactory) ReflectionUtils.newInstance(factoryClazz, job);
     }
     String keyClassName = tbl.getProperty(HBaseSerDe.HBASE_COMPOSITE_KEY_CLASS);
     if (keyClassName != null) {
-      Class<?> keyClass = job.getClassByName(keyClassName);
+      Class<?> keyClass = loadClass(keyClassName, job);
       return new CompositeHBaseKeyFactory(keyClass);
     }
     return new DefaultHBaseKeyFactory();
+  }
+
+  private static Class<?> loadClass(String className, @Nullable Configuration configuration)
+      throws Exception {
+    if (configuration != null) {
+      return configuration.getClassByName(className);
+    }
+    return Class.forName(className);
   }
 
   private List<HBaseValueFactory> initValueFactories(Configuration conf, Properties tbl)
@@ -228,7 +237,7 @@ public class HBaseSerDeParameters {
                 + " must be set for hbase columns of type [" + STRUCT_SERIALIZATION_TYPE + "]");
           }
 
-          Class<?> structValueClass = job.getClassByName(structValueClassName);
+          Class<?> structValueClass = loadClass(structValueClassName, job);
           valueFactories.add(new StructHBaseValueFactory(i, structValueClass));
         } else {
           valueFactories.add(new DefaultHBaseValueFactory(i));
@@ -349,7 +358,7 @@ public class HBaseSerDeParameters {
     Class<?> deserializerClass = null;
 
     if (serClassName != null) {
-      deserializerClass = conf.getClassByName(serClassName);
+      deserializerClass = loadClass(serClassName, conf);
     }
 
     Schema schema = null;
