@@ -757,6 +757,8 @@ public class CliDriver {
 
     setupConsoleReader();
 
+    System.out.println("WARNING: Hive CLI is deprecated and migration to Beeline is recommended.");
+
     String line;
     int ret = 0;
     String prefix = "";
