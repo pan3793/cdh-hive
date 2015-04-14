@@ -678,14 +678,25 @@ public class Commands {
       while (beeLine.getConsoleReader() != null && !(line.trim().endsWith(";"))
         && beeLine.getOpts().isAllowMultiLineCommand()) {
 
-        StringBuilder prompt = new StringBuilder(beeLine.getPrompt());
-        for (int i = 0; i < prompt.length() - 1; i++) {
-          if (prompt.charAt(i) != '>') {
-            prompt.setCharAt(i, i % 2 == 0 ? '.' : ' ');
+        if (!beeLine.getOpts().isSilent()) {
+          StringBuilder prompt = new StringBuilder(beeLine.getPrompt());
+          for (int i = 0; i < prompt.length() - 1; i++) {
+            if (prompt.charAt(i) != '>') {
+              prompt.setCharAt(i, i % 2 == 0 ? '.' : ' ');
+            }
           }
         }
 
-        String extra = beeLine.getConsoleReader().readLine(prompt.toString());
+        String extra = null;
+        if (beeLine.getOpts().isSilent() && beeLine.getOpts().getScriptFile() != null) {
+          extra = beeLine.getConsoleReader().readLine(null, (char)0);
+        } else {
+          extra = beeLine.getConsoleReader().readLine(beeLine.getPrompt());
+        }
+
+        if (extra == null) { //it happens when using -f and the line of cmds does not end with ;
+          break;
+        }
         if (!beeLine.isComment(extra)) {
           line += " " + extra;
         }
