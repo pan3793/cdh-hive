@@ -769,10 +769,14 @@ public class BeeLine implements Closeable {
   }
 
   private int execute(ConsoleReader reader, boolean exitOnError) {
+    String line;
     while (!exit) {
       try {
         // Execute one instruction; terminate on executing a script if there is an error
-        if (!dispatch(reader.readLine(getPrompt())) && exitOnError) {
+        // in silent mode, prevent the query and prompt being echoed back to terminal
+        line = getOpts().isSilent() ? reader.readLine(null, (char)0) : reader.readLine(getPrompt());
+
+        if (!dispatch(line) && exitOnError) {
           return ERRNO_OTHER;
         }
       } catch (Throwable t) {
