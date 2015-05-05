@@ -379,6 +379,9 @@ public final class ColumnPrunerProcFactory {
       for (ExprNodeDesc key : keys) {
         colLists = Utilities.mergeUniqElems(colLists, key.getCols());
       }
+      for (ExprNodeDesc key : conf.getPartitionCols()) {
+        colLists = Utilities.mergeUniqElems(colLists, key.getCols());
+      }
 
       assert op.getNumChild() == 1;
 
@@ -621,8 +624,10 @@ public final class ColumnPrunerProcFactory {
           newColList.add(originalColList.get(index));
           rs_newsignature.add(rs_oldsignature.get(index));
           String[] tabcol = old_rr.reverseLookup(col);
-          ColumnInfo columnInfo = old_rr.get(tabcol[0], tabcol[1]);
-          new_rr.put(tabcol[0], tabcol[1], columnInfo);
+          if (tabcol != null ) {
+            ColumnInfo columnInfo = old_rr.get(tabcol[0], tabcol[1]);
+            new_rr.put(tabcol[0], tabcol[1], columnInfo);
+          }
         }
         cppCtx.getOpToParseCtxMap().get(op).setRowResolver(new_rr);
         op.getSchema().setSignature(rs_newsignature);
