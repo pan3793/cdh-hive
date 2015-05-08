@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -179,6 +180,7 @@ public class SessionState {
   private PerfLogger perfLogger;
 
   private final String userName;
+  private final Set<ClassLoader> mSessionUDFLoaders = new LinkedHashSet<ClassLoader>();
 
   /**
    * Get the lineage state stored in this session.
@@ -959,6 +961,7 @@ public class SessionState {
 
   public void close() throws IOException {
     JavaUtils.closeClassLoadersTo(conf.getClassLoader(), parentLoader);
+    closeCUDFLoaders();
     File resourceDir =
         new File(getConf().getVar(HiveConf.ConfVars.DOWNLOADED_RESOURCES_DIR));
     LOG.debug("Removing resource dir " + resourceDir);
@@ -1072,5 +1075,23 @@ public class SessionState {
     } else {
       return false;
     }
+  }
+
+  public synchronized void closeCUDFLoaders() {
+    try {
+      for(ClassLoader loader: mSessionUDFLoaders) {
+        JavaUtils.closeClassLoader(loader);
+      }
+    } catch (IOException ie) {
+        LOG.error("Error in close loader: " + ie);
+    }
+    mSessionUDFLoaders.clear();
+  }
+
+  public synchronized void addToUDFLoaders(ClassLoader loader) {
+    mSessionUDFLoaders.add(loader);
+  }
+  public synchronized void removeFromUDFLoaders(ClassLoader loader) {
+    mSessionUDFLoaders.remove(loader);
   }
 }

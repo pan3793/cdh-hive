@@ -599,7 +599,11 @@ public final class FunctionRegistry {
     // Even if we have a reference to the class (which will be the case for GenericUDFs),
     // the classloader may not be able to resolve the class, which would mean reflection-based
     // methods would fail such as for plan deserialization. Make sure this works too.
-    Class.forName(udfClass.getName(), true, JavaUtils.getClassLoader());
+    ClassLoader loader = JavaUtils.getClassLoader();
+    Class.forName(udfClass.getName(), true, loader);
+    if (SessionState.get().isHiveServerQuery()) {
+      SessionState.get().addToUDFLoaders(loader);
+    }
   }
 
   private static void loadFunctionResourcesIfNecessary(String functionName, CommonFunctionInfo cfi) {
