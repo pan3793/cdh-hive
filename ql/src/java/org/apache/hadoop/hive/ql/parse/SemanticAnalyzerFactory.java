@@ -143,6 +143,15 @@ public final class SemanticAnalyzerFactory {
     tablePartitionCommandType.put(HiveParser.TOK_ALTERTABLE_CLUSTER_SORT,
         new HiveOperation[] {HiveOperation.ALTERTABLE_CLUSTER_SORT,
             HiveOperation.ALTERTABLE_CLUSTER_SORT});
+    tablePartitionCommandType.put(HiveParser.TOK_ALTERTABLE_ADDCOLS,
+        new HiveOperation[] {HiveOperation.ALTERTABLE_ADDCOLS,
+            HiveOperation.ALTERTABLE_ADDCOLS});
+    tablePartitionCommandType.put(HiveParser.TOK_ALTERTABLE_REPLACECOLS,
+        new HiveOperation[] {HiveOperation.ALTERTABLE_REPLACECOLS,
+            HiveOperation.ALTERTABLE_REPLACECOLS});
+    tablePartitionCommandType.put(HiveParser.TOK_ALTERTABLE_RENAMECOL,
+        new HiveOperation[] {HiveOperation.ALTERTABLE_RENAMECOL,
+            HiveOperation.ALTERTABLE_RENAMECOL});
   }
 
   public static BaseSemanticAnalyzer get(HiveConf conf, ASTNode tree)
