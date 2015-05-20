@@ -55,6 +55,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.LogUtils;
@@ -194,6 +195,7 @@ import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.hadoop.hive.metastore.txn.TxnHandler;
 import org.apache.hadoop.hive.serde2.Deserializer;
 import org.apache.hadoop.hive.serde2.SerDeException;
+import org.apache.hadoop.hive.shims.HadoopShims;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge;
@@ -1458,6 +1460,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       Path tblPath = null;
       List<Path> partPaths = null;
       Table tbl = null;
+      boolean ifPurge = false;
       try {
         ms.openTransaction();
         // drop any partitions
@@ -1468,6 +1471,17 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         if (tbl.getSd() == null) {
           throw new MetaException("Table metadata is corrupted");
         }
+
+        /**
+         * Trash may be skipped iff:
+         * 1. deleteData == true, obviously.
+         * 2. tbl is external.
+         * 3. Either
+         *  3.1. User has specified PURGE from the commandline, and if not,
+         *  3.2. User has set the table to auto-purge.
+         */
+        ifPurge = ((envContext != null) && Boolean.parseBoolean(envContext.getProperties().get("ifPurge")))
+          || (tbl.isSetParameters() && "true".equalsIgnoreCase(tbl.getParameters().get("auto.purge")));
 
         firePreEvent(new PreDropTableEvent(tbl, deleteData, this));
 
@@ -1501,6 +1515,19 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           }
         }
 
+        if(!ifPurge) {
+          String trashInterval = hiveConf.get("fs.trash.interval");
+          boolean trashEnabled = trashInterval != null && trashInterval.length() > 0
+            && Float.parseFloat(trashInterval) > 0;
+          if (trashEnabled) {
+            HadoopShims.HdfsEncryptionShim shim =
+              ShimLoader.getHadoopShims().createHdfsEncryptionShim(FileSystem.get(hiveConf), hiveConf);
+            if (shim.isPathEncrypted(tblPath)) {
+              throw new MetaException("Unable to drop table because it is in an encryption zone" +
+                " and trash is enabled.  Use PURGE option to skip trash.");
+            }
+          }
+        }
         // Drop the partitions and get a list of locations which need to be deleted
         partPaths = dropPartitionsAndGetLocations(ms, dbname, name, tblPath,
             tbl.getPartitionKeys(), deleteData && !isExternal);
@@ -1515,8 +1542,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         if (!success) {
           ms.rollbackTransaction();
         } else if (deleteData && !isExternal) {
-          boolean ifPurge = envContext != null &&
-              Boolean.parseBoolean(envContext.getProperties().get("ifPurge"));
+          // Data needs deletion. Check if trash may be skipped.
           // Delete the data in the partitions which have other locations
           deletePartitionData(partPaths, ifPurge);
           // Delete the data in the table
