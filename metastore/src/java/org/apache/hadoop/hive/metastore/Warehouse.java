@@ -545,7 +545,7 @@ public class Warehouse {
    */
   public FileStatus[] getFileStatusesForUnpartitionedTable(Database db, Table table)
       throws MetaException {
-    Path tablePath = getTablePath(db, table.getTableName());
+    Path tablePath = getDnsPath(new Path(table.getSd().getLocation()));
     try {
       FileSystem fileSys = tablePath.getFileSystem(conf);
       return HiveStatsUtils.getFileStatusRecurse(tablePath, -1, fileSys);
