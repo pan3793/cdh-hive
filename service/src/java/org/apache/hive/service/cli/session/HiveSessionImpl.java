@@ -22,21 +22,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.common.cli.HiveFileProcessor;
 import org.apache.hadoop.hive.common.cli.IHiveFileProcessor;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
-import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.exec.FetchFormatter;
@@ -81,7 +78,6 @@ public class HiveSessionImpl implements HiveSession {
 
   private String username;
   private final String password;
-  private final Map<String, String> sessionConf = new HashMap<String, String>();
   private final HiveConf hiveConf;
   private final SessionState sessionState;
   private String ipAddress;
@@ -96,6 +92,8 @@ public class HiveSessionImpl implements HiveSession {
   private LogManager logManager;
   private IMetaStoreClient metastoreClient = null;
   private final Set<OperationHandle> opHandleSet = new HashSet<OperationHandle>();
+
+  protected Hive sessionHive;
 
   private volatile long lastAccessTime;
 
@@ -139,7 +137,7 @@ public class HiveSessionImpl implements HiveSession {
 
   @Override
   public void initialize(Map<String, String> sessionConfMap) {
-    //process global init file: .hiverc
+    // Process global init file: .hiverc
     processGlobalInitFile();
     SessionState.setCurrentSessionState(sessionState);
 
@@ -239,8 +237,13 @@ public class HiveSessionImpl implements HiveSession {
   }
 
   @Override
-  public void open() {
+  public void open() throws HiveSQLException {
     SessionState.start(sessionState);
+    try {
+      sessionHive = Hive.get(getHiveConf());
+    } catch (HiveException e) {
+      throw new HiveSQLException("Failed to get metastore connection", e);
+    }
   }
 
   protected synchronized void acquire(boolean userAccess) {
@@ -250,6 +253,7 @@ public class HiveSessionImpl implements HiveSession {
     if (userAccess) {
       lastAccessTime = System.currentTimeMillis();
     }
+    Hive.set(sessionHive);
   }
 
   /**
@@ -301,19 +305,15 @@ public class HiveSessionImpl implements HiveSession {
   }
 
   @Override
+  public Hive getSessionHive() {
+    return sessionHive;
+  }
+
+  @Override
   public IMetaStoreClient getMetaStoreClient() throws HiveSQLException {
     try {
-      IMetaStoreClient metastoreClient = Hive.get().getMSC();
-      if (!(StringUtils.isEmpty(hiveConf
-          .getVar(HiveConf.ConfVars.METASTOREURIS)))) {
-        // get a synchronized wrapper if the metastore is remote.
-        metastoreClient = HiveMetaStoreClient
-            .newSynchronizedClient(metastoreClient);
-      }
-      return metastoreClient;
+      return getSessionHive().getMSC();
     } catch (MetaException e) {
-      throw new HiveSQLException("Error acquiring metastore connection", e);
-    } catch (HiveException e) {
       throw new HiveSQLException("Error acquiring metastore connection", e);
     }
   }
@@ -561,6 +561,14 @@ public class HiveSessionImpl implements HiveSession {
     } catch (IOException ioe) {
       throw new HiveSQLException("Failure to close", ioe);
     } finally {
+      if (sessionHive != null) {
+        try {
+          Hive.closeCurrent();
+        } catch (Throwable t) {
+          LOG.warn("Error closing sessionHive", t);
+        }
+        sessionHive = null;
+      }
       release(true);
     }
   }

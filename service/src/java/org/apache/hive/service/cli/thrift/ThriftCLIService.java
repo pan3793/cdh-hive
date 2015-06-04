@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.security.auth.login.LoginException;
 
@@ -58,7 +59,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
 
   protected CLIService cliService;
   private static final TStatus OK_STATUS = new TStatus(TStatusCode.SUCCESS_STATUS);
-  private static final TStatus ERROR_STATUS = new TStatus(TStatusCode.ERROR_STATUS);
+  private static final AtomicInteger sessionCount = new AtomicInteger();
 
   protected int portNum;
   protected InetSocketAddress serverAddress;
@@ -210,6 +211,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       // TODO: set real configuration map
       resp.setConfiguration(new HashMap<String, String>());
       resp.setStatus(OK_STATUS);
+      LOG.info("Opened a session, current sessions: " + sessionCount.incrementAndGet());
     } catch (Exception e) {
       LOG.warn("Error opening session: ", e);
       resp.setStatus(HiveSQLException.toTStatus(e));
@@ -357,6 +359,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     try {
       SessionHandle sessionHandle = new SessionHandle(req.getSessionHandle());
       cliService.closeSession(sessionHandle);
+      LOG.info("Closed a session, current sessions: " + sessionCount.decrementAndGet());
       resp.setStatus(OK_STATUS);
     } catch (Exception e) {
       LOG.warn("Error closing session: ", e);

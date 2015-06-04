@@ -19,7 +19,6 @@
 package org.apache.hive.service.cli.session;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.metadata.Hive;
@@ -40,7 +39,6 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
 
   private UserGroupInformation sessionUgi = null;
   private String delegationTokenStr = null;
-  private Hive sessionHive = null;
   private HiveSession proxySession = null;
 
   public HiveSessionImplwithUGI(TProtocolVersion protocol, String username, String password,
@@ -80,15 +78,6 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
 
   public String getDelegationToken () {
     return this.delegationTokenStr;
-  }
-
-  @Override
-  protected synchronized void acquire(boolean userAccess) {
-    super.acquire(userAccess);
-    // if we have a metastore connection with impersonation, then set it first
-    if (sessionHive != null) {
-      Hive.set(sessionHive);
-    }
   }
 
   /**
@@ -136,8 +125,6 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
       } catch (HiveException e) {
         throw new HiveSQLException("Couldn't cancel delegation token", e);
       }
-      // close the metastore connection created with this delegation token
-      Hive.closeCurrent();
     }
   }
 

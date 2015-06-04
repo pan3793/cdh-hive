@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.security.auth.login.LoginException;
 
@@ -143,6 +144,8 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
   private final HiveConf conf;
   private String tokenStrForm;
   private final boolean localMetaStore;
+
+  private static final AtomicInteger connCount = new AtomicInteger(0);
 
   // for thrift connects
   private int retries = 5;
@@ -345,6 +348,7 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
           client = new ThriftHiveMetastore.Client(new TBinaryProtocol(transport));
           try {
             transport.open();
+            LOG.info("Opened a connection to metastore, current connections: " + connCount.incrementAndGet());
             isConnected = true;
           } catch (TTransportException e) {
             tte = e;
@@ -414,6 +418,7 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
     // just in case, we make this call.
     if ((transport != null) && transport.isOpen()) {
       transport.close();
+      LOG.info("Closed a connection to metastore, current connections: " + connCount.decrementAndGet());
     }
   }
 
@@ -1667,19 +1672,16 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
 
   private static class SynchronizedHandler implements InvocationHandler {
     private final IMetaStoreClient client;
-    private static final Object lock = SynchronizedHandler.class;
 
     SynchronizedHandler(IMetaStoreClient client) {
       this.client = client;
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object [] args)
+    public synchronized Object invoke(Object proxy, Method method, Object [] args)
         throws Throwable {
       try {
-        synchronized (lock) {
-          return method.invoke(client, args);
-        }
+        return method.invoke(client, args);
       } catch (InvocationTargetException e) {
         throw e.getTargetException();
       }

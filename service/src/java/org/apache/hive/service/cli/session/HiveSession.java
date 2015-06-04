@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.GetInfoType;
@@ -34,9 +35,11 @@ import org.apache.hive.service.cli.log.LogManager;
 
 public interface HiveSession extends HiveSessionBase {
 
-  void open();
+  void open() throws HiveSQLException;
 
   IMetaStoreClient getMetaStoreClient() throws HiveSQLException;
+
+  Hive getSessionHive()  throws HiveSQLException;
 
   /**
    * getInfo operation handler
