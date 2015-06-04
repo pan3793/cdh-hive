@@ -88,6 +88,9 @@ public class HiveSessionImpl implements HiveSession {
   private final Set<OperationHandle> opHandleSet = new HashSet<OperationHandle>();
   private boolean isOperationLogEnabled;
   private File sessionLogDir;
+
+  private Hive sessionHive;
+
   private volatile long lastAccessTime;
   private volatile long lastIdleTime;
 
@@ -139,6 +142,11 @@ public class HiveSessionImpl implements HiveSession {
       String msg = "Failed to load reloadable jar file path: " + e;
       LOG.error(msg, e);
       throw new HiveSQLException(msg, e);
+    }
+    try {
+      sessionHive = Hive.get(getHiveConf());
+    } catch (HiveException e) {
+      throw new HiveSQLException("Failed to get metastore connection", e);
     }
     // Process global init file: .hiverc
     processGlobalInitFile();
@@ -276,6 +284,7 @@ public class HiveSessionImpl implements HiveSession {
     if (userAccess) {
       lastAccessTime = System.currentTimeMillis();
     }
+    Hive.set(sessionHive);
   }
 
   /**
@@ -324,13 +333,16 @@ public class HiveSessionImpl implements HiveSession {
   }
 
   @Override
+  public Hive getSessionHive() {
+    return sessionHive;
+  }
+
+  @Override
   public IMetaStoreClient getMetaStoreClient() throws HiveSQLException {
     try {
-      return Hive.get(getHiveConf()).getMSC();
-    } catch (HiveException e) {
-      throw new HiveSQLException("Failed to get metastore connection: " + e, e);
+      return getSessionHive().getMSC();
     } catch (MetaException e) {
-      throw new HiveSQLException("Failed to get metastore connection: " + e, e);
+      throw new HiveSQLException("Error acquiring metastore connection", e);
     }
   }
 
@@ -572,6 +584,14 @@ public class HiveSessionImpl implements HiveSession {
           LOG.warn("Error closing session", t);
         }
         sessionState = null;
+      }
+      if (sessionHive != null) {
+        try {
+          Hive.closeCurrent();
+        } catch (Throwable t) {
+          LOG.warn("Error closing sessionHive", t);
+        }
+        sessionHive = null;
       }
       release(true);
     }
