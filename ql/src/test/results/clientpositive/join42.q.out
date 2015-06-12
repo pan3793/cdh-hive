@@ -1,0 +1,301 @@
+PREHOOK: query: create table L as select 4436 id
+PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: query: create table L as select 4436 id
+POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@L
+PREHOOK: query: create table LA as select 4436 loan_id, 4748 aid, 4415 pi_id
+PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: query: create table LA as select 4436 loan_id, 4748 aid, 4415 pi_id
+POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@LA
+PREHOOK: query: create table FR as select 4436 loan_id
+PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: query: create table FR as select 4436 loan_id
+POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@FR
+PREHOOK: query: create table A as select 4748 id
+PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: query: create table A as select 4748 id
+POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@A
+PREHOOK: query: create table PI as select 4415 id
+PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: query: create table PI as select 4415 id
+POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@PI
+PREHOOK: query: create table acct as select 4748 aid, 10 acc_n, 122 brn
+PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: query: create table acct as select 4748 aid, 10 acc_n, 122 brn
+POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@acct
+PREHOOK: query: insert into table acct select 4748, null, null from acct limit 1
+PREHOOK: type: QUERY
+PREHOOK: Input: default@acct
+PREHOOK: Output: default@acct
+POSTHOOK: query: insert into table acct select 4748, null, null from acct limit 1
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acct
+POSTHOOK: Output: default@acct
+POSTHOOK: Lineage: acct.acc_n EXPRESSION []
+POSTHOOK: Lineage: acct.aid SIMPLE []
+POSTHOOK: Lineage: acct.brn EXPRESSION []
+PREHOOK: query: insert into table acct select 4748, null, null from acct limit 1
+PREHOOK: type: QUERY
+PREHOOK: Input: default@acct
+PREHOOK: Output: default@acct
+POSTHOOK: query: insert into table acct select 4748, null, null from acct limit 1
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acct
+POSTHOOK: Output: default@acct
+POSTHOOK: Lineage: acct.acc_n EXPRESSION []
+POSTHOOK: Lineage: acct.acc_n EXPRESSION []
+POSTHOOK: Lineage: acct.aid SIMPLE []
+POSTHOOK: Lineage: acct.aid SIMPLE []
+POSTHOOK: Lineage: acct.brn EXPRESSION []
+POSTHOOK: Lineage: acct.brn EXPRESSION []
+PREHOOK: query: --[HIVE-10841] (WHERE col is not null) does not work sometimes for queries with many JOIN statements
+explain select
+  acct.ACC_N,
+  acct.brn
+FROM L
+JOIN LA ON L.id = LA.loan_id
+JOIN FR ON L.id = FR.loan_id
+JOIN A ON LA.aid = A.id
+JOIN PI ON PI.id = LA.pi_id
+JOIN acct ON A.id = acct.aid
+WHERE
+  L.id = 4436
+  and acct.brn is not null
+PREHOOK: type: QUERY
+POSTHOOK: query: --[HIVE-10841] (WHERE col is not null) does not work sometimes for queries with many JOIN statements
+explain select
+  acct.ACC_N,
+  acct.brn
+FROM L
+JOIN LA ON L.id = LA.loan_id
+JOIN FR ON L.id = FR.loan_id
+JOIN A ON LA.aid = A.id
+JOIN PI ON PI.id = LA.pi_id
+JOIN acct ON A.id = acct.aid
+WHERE
+  L.id = 4436
+  and acct.brn is not null
+POSTHOOK: type: QUERY
+POSTHOOK: Lineage: acct.acc_n EXPRESSION []
+POSTHOOK: Lineage: acct.acc_n EXPRESSION []
+POSTHOOK: Lineage: acct.aid SIMPLE []
+POSTHOOK: Lineage: acct.aid SIMPLE []
+POSTHOOK: Lineage: acct.brn EXPRESSION []
+POSTHOOK: Lineage: acct.brn EXPRESSION []
+STAGE DEPENDENCIES:
+  Stage-4 is a root stage
+  Stage-1 depends on stages: Stage-4
+  Stage-2 depends on stages: Stage-1
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-4
+    Map Reduce
+      Map Operator Tree:
+          TableScan
+            alias: la
+            Statistics: Num rows: 1 Data size: 14 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: (loan_id = 4436) (type: boolean)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              Reduce Output Operator
+                key expressions: loan_id (type: int)
+                sort order: +
+                Map-reduce partition columns: loan_id (type: int)
+                Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+                value expressions: aid (type: int), pi_id (type: int)
+          TableScan
+            alias: fr
+            Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: (loan_id = 4436) (type: boolean)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              Reduce Output Operator
+                key expressions: loan_id (type: int)
+                sort order: +
+                Map-reduce partition columns: loan_id (type: int)
+                Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+          TableScan
+            alias: l
+            Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: (id = 4436) (type: boolean)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              Reduce Output Operator
+                key expressions: id (type: int)
+                sort order: +
+                Map-reduce partition columns: id (type: int)
+                Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+      Reduce Operator Tree:
+        Join Operator
+          condition map:
+               Inner Join 0 to 1
+               Inner Join 0 to 2
+          condition expressions:
+            0 
+            1 {VALUE._col1} {VALUE._col2}
+            2 
+          outputColumnNames: _col4, _col5
+          Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+          File Output Operator
+            compressed: false
+            table:
+                input format: org.apache.hadoop.mapred.SequenceFileInputFormat
+                output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
+                serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
+
+  Stage: Stage-1
+    Map Reduce
+      Map Operator Tree:
+          TableScan
+            alias: acct
+            Statistics: Num rows: 1 Data size: 10 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: brn is not null (type: boolean)
+              Statistics: Num rows: 1 Data size: 10 Basic stats: COMPLETE Column stats: NONE
+              Reduce Output Operator
+                key expressions: aid (type: int)
+                sort order: +
+                Map-reduce partition columns: aid (type: int)
+                Statistics: Num rows: 1 Data size: 10 Basic stats: COMPLETE Column stats: NONE
+                value expressions: acc_n (type: int), brn (type: int)
+          TableScan
+            alias: a
+            Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+            Reduce Output Operator
+              key expressions: id (type: int)
+              sort order: +
+              Map-reduce partition columns: id (type: int)
+              Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+          TableScan
+            Reduce Output Operator
+              key expressions: _col4 (type: int)
+              sort order: +
+              Map-reduce partition columns: _col4 (type: int)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              value expressions: _col5 (type: int)
+      Reduce Operator Tree:
+        Join Operator
+          condition map:
+               Inner Join 0 to 1
+               Inner Join 1 to 2
+          condition expressions:
+            0 {VALUE._col2}
+            1 
+            2 {VALUE._col1} {VALUE._col2}
+          outputColumnNames: _col2, _col15, _col16
+          Statistics: Num rows: 2 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+          File Output Operator
+            compressed: false
+            table:
+                input format: org.apache.hadoop.mapred.SequenceFileInputFormat
+                output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
+                serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
+
+  Stage: Stage-2
+    Map Reduce
+      Map Operator Tree:
+          TableScan
+            Reduce Output Operator
+              key expressions: _col2 (type: int)
+              sort order: +
+              Map-reduce partition columns: _col2 (type: int)
+              Statistics: Num rows: 2 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+              value expressions: _col15 (type: int), _col16 (type: int)
+          TableScan
+            alias: pi
+            Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+            Reduce Output Operator
+              key expressions: id (type: int)
+              sort order: +
+              Map-reduce partition columns: id (type: int)
+              Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+      Reduce Operator Tree:
+        Join Operator
+          condition map:
+               Inner Join 0 to 1
+          condition expressions:
+            0 {VALUE._col1} {VALUE._col2}
+            1 
+          outputColumnNames: _col1, _col2
+          Statistics: Num rows: 2 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+          Select Operator
+            expressions: _col1 (type: int), _col2 (type: int)
+            outputColumnNames: _col0, _col1
+            Statistics: Num rows: 2 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+            File Output Operator
+              compressed: false
+              Statistics: Num rows: 2 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+              table:
+                  input format: org.apache.hadoop.mapred.TextInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                  serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+
+PREHOOK: query: select
+  acct.ACC_N,
+  acct.brn
+FROM L
+JOIN LA ON L.id = LA.loan_id
+JOIN FR ON L.id = FR.loan_id
+JOIN A ON LA.aid = A.id
+JOIN PI ON PI.id = LA.pi_id
+JOIN acct ON A.id = acct.aid
+WHERE
+  L.id = 4436
+  and acct.brn is not null
+PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+PREHOOK: Input: default@acct
+PREHOOK: Input: default@fr
+PREHOOK: Input: default@l
+PREHOOK: Input: default@la
+PREHOOK: Input: default@pi
+#### A masked pattern was here ####
+POSTHOOK: query: select
+  acct.ACC_N,
+  acct.brn
+FROM L
+JOIN LA ON L.id = LA.loan_id
+JOIN FR ON L.id = FR.loan_id
+JOIN A ON LA.aid = A.id
+JOIN PI ON PI.id = LA.pi_id
+JOIN acct ON A.id = acct.aid
+WHERE
+  L.id = 4436
+  and acct.brn is not null
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+POSTHOOK: Input: default@acct
+POSTHOOK: Input: default@fr
+POSTHOOK: Input: default@l
+POSTHOOK: Input: default@la
+POSTHOOK: Input: default@pi
+#### A masked pattern was here ####
+POSTHOOK: Lineage: acct.acc_n EXPRESSION []
+POSTHOOK: Lineage: acct.acc_n EXPRESSION []
+POSTHOOK: Lineage: acct.aid SIMPLE []
+POSTHOOK: Lineage: acct.aid SIMPLE []
+POSTHOOK: Lineage: acct.brn EXPRESSION []
+POSTHOOK: Lineage: acct.brn EXPRESSION []
+10	122
