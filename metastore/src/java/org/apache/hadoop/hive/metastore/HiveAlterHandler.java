@@ -41,6 +41,9 @@ import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
+import org.apache.hadoop.ipc.RemoteException;
+import org.apache.hive.common.util.HiveStringUtils;
+import com.google.common.collect.Lists;
 
 /**
  * Hive specific implementation of alter
@@ -226,15 +229,15 @@ public class HiveAlterHandler implements AlterHandler {
         // change the file name in hdfs
         // check that src exists otherwise there is no need to copy the data
         try {
-          if (srcFs.exists(srcPath)) {
-            // rename the src to destination
-            srcFs.rename(srcPath, destPath);
+          if (srcFs.exists(srcPath) && !srcFs.rename(srcPath, destPath)) {
+            throw new IOException("Renaming " + srcPath + " to " + destPath + " failed");
           }
         } catch (IOException e) {
+          LOG.error("Alter Table operation for " + dbname + "." + name + " failed.", e);
           boolean revertMetaDataTransaction = false;
           try {
             msdb.openTransaction();
-            msdb.alterTable(dbname, newt.getTableName(), oldt);
+            msdb.alterTable(newt.getDbName(), newt.getTableName(), oldt);
             revertMetaDataTransaction = msdb.commitTransaction();
           } catch (Exception e1) {
             LOG.error("Reverting metadata opeation failed During HDFS operation failed", e1);
@@ -242,8 +245,8 @@ public class HiveAlterHandler implements AlterHandler {
               msdb.rollbackTransaction();
             }
           }
-          throw new InvalidOperationException("Unable to access old location "
-              + srcPath + " for table " + dbname + "." + name);
+          throw new InvalidOperationException("Alter Table operation for " + dbname + "." + name +
+            " failed to move data due to: '" + getSimpleMessage(e) + "' See hive log file for details.");
         }
       }
     }
@@ -252,6 +255,22 @@ public class HiveAlterHandler implements AlterHandler {
     }
   }
 
+  /**
+   * RemoteExceptionS from hadoop RPC wrap the stack trace into e.getMessage() which makes
+   * logs/stack traces confusing.
+   * @param ex
+   * @return
+   */
+  String getSimpleMessage(IOException ex) {
+    if(ex instanceof RemoteException) {
+      String msg = ex.getMessage();
+      if(msg == null || !msg.contains("\n")) {
+        return msg;
+      }
+      return msg.substring(0, msg.indexOf('\n'));
+    }
+    return ex.getMessage();
+  }
   public Partition alterPartition(final RawStore msdb, Warehouse wh, final String dbname,
       final String name, final List<String> part_vals, final Partition new_part)
       throws InvalidOperationException, InvalidObjectException, AlreadyExistsException,
