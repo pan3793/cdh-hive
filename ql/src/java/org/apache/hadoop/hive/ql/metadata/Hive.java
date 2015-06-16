@@ -29,6 +29,7 @@ import static org.apache.hadoop.hive.serde.serdeConstants.STRING_TYPE_NAME;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -2242,6 +2243,49 @@ private void constructOneLBLocationMap(FileStatus fSta,
     return false;
   }
 
+  private static boolean isSubDir(Path srcf, Path destf, FileSystem fs, boolean isSrcLocal){
+    if (srcf == null) {
+      LOG.debug("The source path is null for isSubDir method.");
+      return false;
+    }
+
+    String fullF1 = getQualifiedPathWithoutSchemeAndAuthority(srcf, fs);
+    String fullF2 = getQualifiedPathWithoutSchemeAndAuthority(destf, fs);
+
+    boolean isInTest = Boolean.valueOf(HiveConf.getBoolVar(fs.getConf(), ConfVars.HIVE_IN_TEST));
+    // In the automation, the data warehouse is the local file system based.
+    LOG.debug("The source path is " + fullF1 + " and the destination path is " + fullF2);
+    if (isInTest) {
+      return fullF1.startsWith(fullF2);
+    }
+
+    // schema is diff, return false
+    String schemaSrcf = srcf.toUri().getScheme();
+    String schemaDestf = destf.toUri().getScheme();
+
+    // if the schemaDestf is null, it means the destination is not in the local file system
+    if (schemaDestf == null && isSrcLocal) {
+      LOG.debug("The source file is in the local while the dest not.");
+      return false;
+    }
+
+    // If both schema information are provided, they should be the same.
+    if (schemaSrcf != null && schemaDestf != null && !schemaSrcf.equals(schemaDestf)) {
+      LOG.debug("The source path's schema is " + schemaSrcf +
+        " and the destination path's schema is " + schemaDestf + ".");
+      return false;
+    }
+
+    LOG.debug("The source path is " + fullF1 + " and the destination path is " + fullF2);
+    return fullF1.startsWith(fullF2);
+  }
+
+  private static String getQualifiedPathWithoutSchemeAndAuthority(Path srcf, FileSystem fs) {
+    Path currentWorkingDir = fs.getWorkingDirectory();
+    Path path = srcf.makeQualified(srcf.toUri(), currentWorkingDir);
+    return Path.getPathWithoutSchemeAndAuthority(path).toString();
+  }
+
   //it is assumed that parent directory of the destf should already exist when this
   //method is called. when the replace value is true, this method works a little different
   //from mv command if the destf is a directory, it replaces the destf instead of moving under
@@ -2263,7 +2307,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     // (1) Do not delete the dest dir before doing the move operation.
     // (2) It is assumed that subdir and dir are in same encryption zone.
     // (3) Move individual files from scr dir to dest dir.
-    boolean destIsSubDir = FileUtils.isSubDir(srcf, destf, fs);
+    boolean destIsSubDir = isSubDir(srcf, destf, fs, isSrcLocal);
     try {
       if (inheritPerms || replace) {
         try{
@@ -2274,6 +2318,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
           //if destf is an existing file, rename is actually a replace, and do not need
           // to delete the file first
           if (replace && !destIsSubDir) {
+            LOG.debug("The path " + destf.toString() + " is deleted"); 
             fs.delete(destf, true);
           }
         } catch (FileNotFoundException ignore) {
