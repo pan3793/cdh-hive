@@ -23,6 +23,7 @@ import java.io.Serializable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.io.IOContext;
+import org.apache.hadoop.hive.ql.io.IOContextMap;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.plan.FilterDesc;
 import org.apache.hadoop.hive.ql.plan.api.OperatorType;
@@ -59,7 +60,7 @@ public class FilterOperator extends Operator<FilterDesc> implements
       }
 
       conditionInspector = null;
-      ioContext = IOContext.get(hconf);
+      ioContext = IOContextMap.get(hconf);
     } catch (Throwable e) {
       throw new HiveException(e);
     }
