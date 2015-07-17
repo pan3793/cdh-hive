@@ -2199,6 +2199,13 @@ public class HiveConf extends Configuration {
     SPARK_RPC_SERVER_PORT("hive.spark.client.rpc.server.port", "", "A list of port ranges which can be used by RPC server " +
         "with the format of 49152-49222,49228 and a random one is selected from the list. Default is empty, which randomly " +
         "selects one port from all available ones."),
+    SPARK_DYNAMIC_PARTITION_PRUNING(
+        "hive.spark.dynamic.partition.pruning", false,
+        "When dynamic pruning is enabled, joins on partition keys will be processed by writing\n" +
+            "to a temporary HDFS file, and read later for removing unnecessary partitions."),
+    SPARK_DYNAMIC_PARTITION_PRUNING_MAX_DATA_SIZE(
+        "hive.spark.dynamic.partition.pruning.max.data.size", 100*1024*1024L,
+        "Maximum total data size in dynamic pruning."),
     NWAYJOINREORDER("hive.reorder.nway.joins", true,
       "Runs reordering of tables within single n-way join (i.e.: picks streamtable)"),
     HIVE_MSCK_PATH_VALIDATION("hive.msck.path.validation", "throw",

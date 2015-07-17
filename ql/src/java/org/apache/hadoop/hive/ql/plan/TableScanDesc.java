@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.hadoop.hive.ql.exec.PTFUtils;
 import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.metadata.VirtualColumn;
+import org.apache.hadoop.hive.ql.parse.TableSample;
 import org.apache.hadoop.hive.serde.serdeConstants;
 
 /**
@@ -96,8 +97,9 @@ public class TableScanDesc extends AbstractOperatorDesc {
   
   private boolean isMetadataOnly = false;
 
-  private transient final Table tableMetadata;
+  private transient TableSample tableSample;
 
+  private transient Table tableMetadata;
 
   public TableScanDesc() {
     this(null, null);
@@ -285,12 +287,24 @@ public class TableScanDesc extends AbstractOperatorDesc {
       Map<String, String> params = tableMetadata.getTTable().getParameters();
       if (params != null) {
         String skipHVal = params.get(serdeConstants.HEADER_COUNT);
-        int hcount = skipHVal == null? 0 : Integer.parseInt(skipHVal);
+        int hcount = skipHVal == null ? 0 : Integer.parseInt(skipHVal);
         String skipFVal = params.get(serdeConstants.FOOTER_COUNT);
-        int fcount = skipFVal == null? 0 : Integer.parseInt(skipFVal);
-        rtn = (hcount != 0 || fcount !=0 );
+        int fcount = skipFVal == null ? 0 : Integer.parseInt(skipFVal);
+        rtn = (hcount != 0 || fcount != 0);
       }
     }
     return rtn;
+  }
+
+  public void setTableMetadata(Table tableMetadata) {
+    this.tableMetadata = tableMetadata;
+  }
+
+  public TableSample getTableSample() {
+    return tableSample;
+  }
+
+  public void setTableSample(TableSample tableSample) {
+    this.tableSample = tableSample;
   }
 }

@@ -38,6 +38,7 @@ import org.apache.hadoop.hive.conf.HiveConfUtil;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.io.HiveKey;
 import org.apache.hadoop.io.BytesWritable;
+import org.apache.hadoop.io.Writable;
 import org.apache.hive.spark.client.rpc.RpcConfiguration;
 import org.apache.spark.SparkConf;
 
@@ -179,11 +180,11 @@ public class HiveSparkClientFactory {
     Set<String> classes = Sets.newHashSet(
       Splitter.on(",").trimResults().omitEmptyStrings().split(
         Strings.nullToEmpty(sparkConf.get("spark.kryo.classesToRegister"))));
+    classes.add(Writable.class.getName());
     classes.add(VectorizedRowBatch.class.getName());
     classes.add(BytesWritable.class.getName());
     classes.add(HiveKey.class.getName());
-    sparkConf.put(
-      "spark.kryo.classesToRegister", Joiner.on(",").join(classes));
+    sparkConf.put("spark.kryo.classesToRegister", Joiner.on(",").join(classes));
 
     // set yarn queue name
     final String sparkQueueNameKey = "spark.yarn.queue";

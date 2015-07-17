@@ -60,7 +60,8 @@ struct OperatorType {
     EVENT = 21,
     ORCFILEMERGE = 22,
     RCFILEMERGE = 23,
-    MERGEJOIN = 24
+    MERGEJOIN = 24,
+    SPARKPRUNINGSINK = 25
   };
 };
 

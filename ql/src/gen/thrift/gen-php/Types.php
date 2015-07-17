@@ -60,6 +60,7 @@ final class OperatorType {
   const ORCFILEMERGE = 22;
   const RCFILEMERGE = 23;
   const MERGEJOIN = 24;
+  const SPARKPRUNINGSINK = 25;
   static public $__names = array(
     0 => 'JOIN',
     1 => 'MAPJOIN',
@@ -86,6 +87,7 @@ final class OperatorType {
     22 => 'ORCFILEMERGE',
     23 => 'RCFILEMERGE',
     24 => 'MERGEJOIN',
+    25 => 'SPARKPRUNINGSINK',
   );
 }
 

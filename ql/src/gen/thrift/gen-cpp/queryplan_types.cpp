@@ -55,7 +55,8 @@ int _kOperatorTypeValues[] = {
   OperatorType::EVENT,
   OperatorType::ORCFILEMERGE,
   OperatorType::RCFILEMERGE,
-  OperatorType::MERGEJOIN
+  OperatorType::MERGEJOIN,
+  OperatorType::SPARKPRUNINGSINK
 };
 const char* _kOperatorTypeNames[] = {
   "JOIN",
@@ -82,9 +83,10 @@ const char* _kOperatorTypeNames[] = {
   "EVENT",
   "ORCFILEMERGE",
   "RCFILEMERGE",
-  "MERGEJOIN"
+  "MERGEJOIN",
+  "SPARKPRUNINGSINK"
 };
-const std::map<int, const char*> _OperatorType_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(25, _kOperatorTypeValues, _kOperatorTypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+const std::map<int, const char*> _OperatorType_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(26, _kOperatorTypeValues, _kOperatorTypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
 
 int _kTaskTypeValues[] = {
   TaskType::MAP,
