@@ -52,7 +52,6 @@ public class GroupByDesc extends AbstractOperatorDesc {
   };
 
   private Mode mode;
-  private boolean groupKeyNotReductionKey;
 
   // no hash aggregations for group by
   private boolean bucketGroup;
@@ -76,14 +75,13 @@ public class GroupByDesc extends AbstractOperatorDesc {
       final ArrayList<java.lang.String> outputColumnNames,
       final ArrayList<ExprNodeDesc> keys,
       final ArrayList<org.apache.hadoop.hive.ql.plan.AggregationDesc> aggregators,
-      final boolean groupKeyNotReductionKey,
       final float groupByMemoryUsage,
       final float memoryThreshold,
       final List<Integer> listGroupingSets,
       final boolean groupingSetsPresent,
       final int groupingSetsPosition,
       final boolean isDistinct) {
-    this(mode, outputColumnNames, keys, aggregators, groupKeyNotReductionKey,
+    this(mode, outputColumnNames, keys, aggregators,
         false, groupByMemoryUsage, memoryThreshold, listGroupingSets,
         groupingSetsPresent, groupingSetsPosition, isDistinct);
   }
@@ -93,7 +91,6 @@ public class GroupByDesc extends AbstractOperatorDesc {
       final ArrayList<java.lang.String> outputColumnNames,
       final ArrayList<ExprNodeDesc> keys,
       final ArrayList<org.apache.hadoop.hive.ql.plan.AggregationDesc> aggregators,
-      final boolean groupKeyNotReductionKey,
       final boolean bucketGroup,
       final float groupByMemoryUsage,
       final float memoryThreshold,
@@ -105,7 +102,6 @@ public class GroupByDesc extends AbstractOperatorDesc {
     this.outputColumnNames = outputColumnNames;
     this.keys = keys;
     this.aggregators = aggregators;
-    this.groupKeyNotReductionKey = groupKeyNotReductionKey;
     this.bucketGroup = bucketGroup;
     this.groupByMemoryUsage = groupByMemoryUsage;
     this.memoryThreshold = memoryThreshold;
@@ -200,14 +196,6 @@ public class GroupByDesc extends AbstractOperatorDesc {
   public void setAggregators(
       final ArrayList<org.apache.hadoop.hive.ql.plan.AggregationDesc> aggregators) {
     this.aggregators = aggregators;
-  }
-
-  public boolean getGroupKeyNotReductionKey() {
-    return groupKeyNotReductionKey;
-  }
-
-  public void setGroupKeyNotReductionKey(final boolean groupKeyNotReductionKey) {
-    this.groupKeyNotReductionKey = groupKeyNotReductionKey;
   }
 
   @Explain(displayName = "bucketGroup", displayOnlyOnTrue = true)

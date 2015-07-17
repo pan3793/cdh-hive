@@ -443,8 +443,6 @@ public class HiveConf extends Configuration {
     HIVEALIAS("hive.alias", ""),
     HIVEMAPSIDEAGGREGATE("hive.map.aggr", true),
     HIVEGROUPBYSKEW("hive.groupby.skewindata", false),
-    HIVE_OPTIMIZE_MULTI_GROUPBY_COMMON_DISTINCTS("hive.optimize.multigroupby.common.distincts",
-        true),
     HIVEJOINEMITINTERVAL("hive.join.emit.interval", 1000),
     HIVEJOINCACHESIZE("hive.join.cache.size", 25000),
 
