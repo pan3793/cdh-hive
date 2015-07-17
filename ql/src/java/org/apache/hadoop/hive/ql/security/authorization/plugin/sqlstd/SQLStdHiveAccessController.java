@@ -541,7 +541,6 @@ public class SQLStdHiveAccessController implements HiveAccessController {
       ConfVars.HIVEMAPAGGRMEMORYTHRESHOLD.varname,
       ConfVars.HIVEMAPAGGRHASHMINREDUCTION.varname,
       ConfVars.HIVEGROUPBYSKEW.varname,
-      ConfVars.HIVE_OPTIMIZE_MULTI_GROUPBY_COMMON_DISTINCTS.varname,
       ConfVars.HIVEOPTGBYUSINGINDEX.varname,
       ConfVars.HIVEOPTPPD.varname,
       ConfVars.HIVEOPTPPD_STORAGE.varname,
