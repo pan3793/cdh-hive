@@ -23,17 +23,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Properties;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
-import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.io.HiveCharWritable;
 import org.apache.hadoop.hive.serde2.io.HiveVarcharWritable;
-import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe.SerDeParameters;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.BinaryObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.BooleanObjectInspector;
@@ -49,7 +46,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.LongObjectInspect
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.ShortObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.TimestampObjectInspector;
-import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.Text;
 
@@ -141,10 +137,10 @@ public final class LazyUtils {
    * @param escaped
    *          Whether the data should be written out in an escaped way.
    * @param escapeChar
-   *          if escaped, the char for prefixing special characters.
+   *          If escaped, the char for prefixing special characters.
    * @param needsEscape
-   *          if escaped, whether a specific character needs escaping. This
-   *          array should have size of 128.
+   *          If escaped, whether a specific character needs escaping. This
+   *          array should have size of 256.
    */
   public static void writeEscaped(OutputStream out, byte[] bytes, int start,
       int len, boolean escaped, byte escapeChar, boolean[] needsEscape)
@@ -152,7 +148,7 @@ public final class LazyUtils {
     if (escaped) {
       int end = start + len;
       for (int i = start; i <= end; i++) {
-        if (i == end || (bytes[i] >= 0 && needsEscape[bytes[i]])) {
+        if (i == end || needsEscape[bytes[i] & 0xFF]) {  // Converts negative byte to positive index
           if (i > start) {
             out.write(bytes, start, i - start);
           }
@@ -177,8 +173,7 @@ public final class LazyUtils {
    * @param o
    *          The primitive Object
    * @param needsEscape
-   *          Whether a character needs escaping. This array should have size of
-   *          128.
+   *          Whether a character needs escaping. 
    */
   public static void writePrimitiveUTF8(OutputStream out, Object o,
       PrimitiveObjectInspector oi, boolean escaped, byte escapeChar,
@@ -349,43 +344,6 @@ public final class LazyUtils {
     return hash;
   }
 
-  public static void extractColumnInfo(Properties tbl, SerDeParameters serdeParams,
-      String serdeName) throws SerDeException {
-    // Read the configuration parameters
-    String columnNameProperty = tbl.getProperty(serdeConstants.LIST_COLUMNS);
-    // NOTE: if "columns.types" is missing, all columns will be of String type
-    String columnTypeProperty = tbl.getProperty(serdeConstants.LIST_COLUMN_TYPES);
-
-    // Parse the configuration parameters
-
-    if (columnNameProperty != null && columnNameProperty.length() > 0) {
-      serdeParams.columnNames = Arrays.asList(columnNameProperty.split(","));
-    } else {
-      serdeParams.columnNames = new ArrayList<String>();
-    }
-    if (columnTypeProperty == null) {
-      // Default type: all string
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < serdeParams.columnNames.size(); i++) {
-        if (i > 0) {
-          sb.append(":");
-        }
-        sb.append(serdeConstants.STRING_TYPE_NAME);
-      }
-      columnTypeProperty = sb.toString();
-    }
-
-    serdeParams.columnTypes = TypeInfoUtils
-        .getTypeInfosFromTypeString(columnTypeProperty);
-
-    if (serdeParams.columnNames.size() != serdeParams.columnTypes.size()) {
-      throw new SerDeException(serdeName + ": columns has "
-          + serdeParams.columnNames.size()
-          + " elements while columns.types has "
-          + serdeParams.columnTypes.size() + " elements!");
-    }
-  }
-
   /**
    * gets a byte[] with copy of data from source BytesWritable
    * @param sourceBw - source BytesWritable
@@ -412,12 +370,37 @@ public final class LazyUtils {
       String msg = "Number of levels of nesting supported for " +
           "LazySimpleSerde is " + (separators.length - 1) +
           " Unable to work with level " + level;
+      
+      String txt = ". Use %s serde property for tables using LazySimpleSerde.";
+      
       if(separators.length < 9){
-        msg += ". Use " + LazySimpleSerDe.SERIALIZATION_EXTEND_NESTING_LEVELS +
-            " serde property for tables using LazySimpleSerde.";
+        msg += String.format(txt, LazySerDeParameters.SERIALIZATION_EXTEND_NESTING_LEVELS);
+      } else if (separators.length < 25) {
+      	msg += String.format(txt, LazySerDeParameters.SERIALIZATION_EXTEND_ADDITIONAL_NESTING_LEVELS);
       }
+      
       throw new SerDeException(msg, e);
     }
+  }
+
+  /**
+   * Return the byte value of the number string.
+   *
+   * @param altValue
+   *          The string containing a number.
+   * @param defaultVal
+   *          If the altValue does not represent a number, return the
+   *          defaultVal.
+   */
+  public static byte getByte(String altValue, byte defaultVal) {
+    if (altValue != null && altValue.length() > 0) {
+      try {
+        return Byte.valueOf(altValue).byteValue();
+      } catch (NumberFormatException e) {
+        return (byte) altValue.charAt(0);
+      }
+    }
+    return defaultVal;
   }
 
   private LazyUtils() {

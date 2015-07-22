@@ -24,8 +24,7 @@ import java.util.Properties;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.serde2.ColumnProjectionUtils;
 import org.apache.hadoop.hive.serde2.SerDeException;
-import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe.SerDeParameters;
-import org.apache.hadoop.hive.serde2.lazy.LazyUtils;
+import org.apache.hadoop.hive.serde2.lazy.LazySerDeParameters;
 import org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryFactory;
 import org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
@@ -60,8 +59,8 @@ public class LazyBinaryColumnarSerDe extends ColumnarSerDeBase {
 
   @Override
   public void initialize(Configuration conf, Properties tbl) throws SerDeException {
-    SerDeParameters serdeParams = new SerDeParameters();
-    LazyUtils.extractColumnInfo(tbl, serdeParams, getClass().getName());
+    LazySerDeParameters serdeParams = new LazySerDeParameters(conf, tbl, getClass().getName());
+    
     columnNames = serdeParams.getColumnNames();
     columnTypes = serdeParams.getColumnTypes();
 

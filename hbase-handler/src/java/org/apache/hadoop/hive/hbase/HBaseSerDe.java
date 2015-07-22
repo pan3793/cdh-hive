@@ -32,7 +32,7 @@ import org.apache.hadoop.hive.serde2.AbstractSerDe;
 import org.apache.hadoop.hive.serde2.SerDe;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.SerDeStats;
-import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
+import org.apache.hadoop.hive.serde2.lazy.LazySerDeParameters;
 import org.apache.hadoop.hive.serde2.lazy.objectinspector.LazySimpleStructObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.io.Writable;
@@ -217,7 +217,7 @@ public class HBaseSerDe extends AbstractSerDe {
     return new ColumnMappings(columnsMapping, rowKeyIndex, timestampIndex);
   }
 
-  public LazySimpleSerDe.SerDeParameters getSerdeParams() {
+  public LazySerDeParameters getSerdeParams() {
     return serdeParams.getSerdeParams();
   }
 

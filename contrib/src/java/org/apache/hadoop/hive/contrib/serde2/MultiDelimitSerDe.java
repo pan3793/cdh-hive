@@ -35,6 +35,7 @@ import org.apache.hadoop.hive.serde2.lazy.LazyFactory;
 import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
 import org.apache.hadoop.hive.serde2.lazy.LazyStruct;
 import org.apache.hadoop.hive.serde2.lazy.LazyUtils;
+import org.apache.hadoop.hive.serde2.lazy.LazySerDeParameters;
 import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
@@ -77,7 +78,7 @@ public class MultiDelimitSerDe extends AbstractSerDe {
   // The wrapper for byte array
   private ByteArrayRef byteArrayRef;
 
-  private LazySimpleSerDe.SerDeParameters serdeParams = null;
+  private LazySerDeParameters serdeParams = null;
   // The output stream of serialized objects
   private final ByteStream.Output serializeStream = new ByteStream.Output();
   // The Writable to return in serialize
@@ -86,7 +87,7 @@ public class MultiDelimitSerDe extends AbstractSerDe {
   @Override
   public void initialize(Configuration conf, Properties tbl) throws SerDeException {
     // get the SerDe parameters
-    serdeParams = LazySimpleSerDe.initSerdeParams(conf, tbl, getClass().getName());
+    serdeParams = new LazySerDeParameters(conf, tbl, getClass().getName());
 
     fieldDelimited = tbl.getProperty(serdeConstants.FIELD_DELIM);
     if (fieldDelimited == null || fieldDelimited.isEmpty()) {
@@ -95,12 +96,12 @@ public class MultiDelimitSerDe extends AbstractSerDe {
 
     // get the collection separator and map key separator
     // TODO: use serdeConstants.COLLECTION_DELIM when the typo is fixed
-    collSep = LazySimpleSerDe.getByte(tbl.getProperty(COLLECTION_DELIM),
+    collSep = LazyUtils.getByte(tbl.getProperty(COLLECTION_DELIM),
         DEFAULT_SEPARATORS[1]);
-    keySep = LazySimpleSerDe.getByte(tbl.getProperty(serdeConstants.MAPKEY_DELIM),
+    keySep = LazyUtils.getByte(tbl.getProperty(serdeConstants.MAPKEY_DELIM),
         DEFAULT_SEPARATORS[2]);
-    serdeParams.getSeparators()[1] = collSep;
-    serdeParams.getSeparators()[2] = keySep;
+    serdeParams.setSeparator(1, collSep);
+    serdeParams.setSeparator(2, keySep);
 
     // Create the ObjectInspectors for the fields
     cachedObjectInspector = LazyFactory.createLazyStructInspector(serdeParams
