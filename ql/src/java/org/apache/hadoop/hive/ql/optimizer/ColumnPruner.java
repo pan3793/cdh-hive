@@ -36,6 +36,7 @@ import org.apache.hadoop.hive.ql.exec.ReduceSinkOperator;
 import org.apache.hadoop.hive.ql.exec.ScriptOperator;
 import org.apache.hadoop.hive.ql.exec.SelectOperator;
 import org.apache.hadoop.hive.ql.exec.TableScanOperator;
+import org.apache.hadoop.hive.ql.exec.UnionOperator;
 import org.apache.hadoop.hive.ql.lib.DefaultGraphWalker;
 import org.apache.hadoop.hive.ql.lib.DefaultRuleDispatcher;
 import org.apache.hadoop.hive.ql.lib.Dispatcher;
@@ -117,6 +118,9 @@ public class ColumnPruner implements Transform {
     opRules.put(new RuleRegExp("R10",
         PTFOperator.getOperatorName() + "%"),
         ColumnPrunerProcFactory.getPTFProc());
+    opRules.put(new RuleRegExp("R13",
+        UnionOperator.getOperatorName() + "%"),
+        ColumnPrunerProcFactory.getUnionProc());
     // The dispatcher fires the processor corresponding to the closest matching
     // rule and passes the context along
     Dispatcher disp = new DefaultRuleDispatcher(ColumnPrunerProcFactory

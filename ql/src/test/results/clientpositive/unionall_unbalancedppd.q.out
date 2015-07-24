@@ -34,6 +34,46 @@ f1 int
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@union_all_bug_test_2
+PREHOOK: query: SELECT f1 
+FROM ( 
+
+SELECT 
+f1 
+, if('helloworld' like '%hello%' ,0,0) as filter 
+FROM union_all_bug_test_1 
+
+union all 
+
+select 
+f1 
+, 0 as filter 
+from union_all_bug_test_2 
+) A 
+WHERE (filter = 1)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@union_all_bug_test_1
+PREHOOK: Input: default@union_all_bug_test_2
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT f1 
+FROM ( 
+
+SELECT 
+f1 
+, if('helloworld' like '%hello%' ,0,0) as filter 
+FROM union_all_bug_test_1 
+
+union all 
+
+select 
+f1 
+, 0 as filter 
+from union_all_bug_test_2 
+) A 
+WHERE (filter = 1)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@union_all_bug_test_1
+POSTHOOK: Input: default@union_all_bug_test_2
+#### A masked pattern was here ####
 PREHOOK: query: explain SELECT f1
 FROM (
 
@@ -411,4 +451,204 @@ POSTHOOK: Lineage: union_all_bug_test_1.f2 SIMPLE []
 POSTHOOK: Lineage: union_all_bug_test_2.f1 EXPRESSION [(union_all_bug_test_2)union_all_bug_test_2.null, ]
 POSTHOOK: Lineage: union_all_bug_test_2.f1 EXPRESSION [(union_all_bug_test_2)union_all_bug_test_2.null, ]
 1
+1
+PREHOOK: query: explain
+
+SELECT f1
+FROM (
+
+SELECT
+f1
+, if('helloworld' like '%hello%' ,f1,f2) as filter
+FROM union_all_bug_test_1
+
+union all
+
+select
+f1
+, 0 as filter
+from union_all_bug_test_2
+) A
+WHERE (filter = 1 and f1 = 1)
+PREHOOK: type: QUERY
+POSTHOOK: query: explain
+
+SELECT f1
+FROM (
+
+SELECT
+f1
+, if('helloworld' like '%hello%' ,f1,f2) as filter
+FROM union_all_bug_test_1
+
+union all
+
+select
+f1
+, 0 as filter
+from union_all_bug_test_2
+) A
+WHERE (filter = 1 and f1 = 1)
+POSTHOOK: type: QUERY
+POSTHOOK: Lineage: union_all_bug_test_1.f1 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f1 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f2 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f2 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_2.f1 EXPRESSION [(union_all_bug_test_2)union_all_bug_test_2.null, ]
+POSTHOOK: Lineage: union_all_bug_test_2.f1 EXPRESSION [(union_all_bug_test_2)union_all_bug_test_2.null, ]
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Map Operator Tree:
+          TableScan
+            alias: union_all_bug_test_1
+            Statistics: Num rows: 1 Data size: 3 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: (f1 = 1) (type: boolean)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+              Select Operator
+                expressions: if(true, 1, f2) (type: int)
+                outputColumnNames: _col1
+                Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+                Filter Operator
+                  predicate: (_col1 = 1) (type: boolean)
+                  Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
+                  Union
+                    Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: COMPLETE
+                    Select Operator
+                      expressions: 1 (type: int)
+                      outputColumnNames: _col0
+                      Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: COMPLETE
+                      File Output Operator
+                        compressed: false
+                        Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: COMPLETE
+                        table:
+                            input format: org.apache.hadoop.mapred.TextInputFormat
+                            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+          TableScan
+            alias: union_all_bug_test_2
+            Statistics: Num rows: 1 Data size: 1 Basic stats: COMPLETE Column stats: COMPLETE
+            Filter Operator
+              predicate: false (type: boolean)
+              Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: COMPLETE
+              Select Operator
+                expressions: 1 (type: int), 0 (type: int)
+                outputColumnNames: _col0, _col1
+                Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: COMPLETE
+                Union
+                  Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: COMPLETE
+                  Select Operator
+                    expressions: 1 (type: int)
+                    outputColumnNames: _col0
+                    Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: COMPLETE
+                    File Output Operator
+                      compressed: false
+                      Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: COMPLETE
+                      table:
+                          input format: org.apache.hadoop.mapred.TextInputFormat
+                          output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                          serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+
+PREHOOK: query: SELECT f1
+FROM (
+
+SELECT
+f1
+, if('helloworld' like '%hello%' ,f1,f2) as filter
+FROM union_all_bug_test_1
+
+union all
+
+select
+f1
+, 0 as filter
+from union_all_bug_test_2
+) A
+WHERE (filter = 1 and f1 = 1)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@union_all_bug_test_1
+PREHOOK: Input: default@union_all_bug_test_2
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT f1
+FROM (
+
+SELECT
+f1
+, if('helloworld' like '%hello%' ,f1,f2) as filter
+FROM union_all_bug_test_1
+
+union all
+
+select
+f1
+, 0 as filter
+from union_all_bug_test_2
+) A
+WHERE (filter = 1 and f1 = 1)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@union_all_bug_test_1
+POSTHOOK: Input: default@union_all_bug_test_2
+#### A masked pattern was here ####
+POSTHOOK: Lineage: union_all_bug_test_1.f1 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f1 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f2 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f2 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_2.f1 EXPRESSION [(union_all_bug_test_2)union_all_bug_test_2.null, ]
+POSTHOOK: Lineage: union_all_bug_test_2.f1 EXPRESSION [(union_all_bug_test_2)union_all_bug_test_2.null, ]
+1
+PREHOOK: query: SELECT f1
+FROM (
+
+SELECT
+f1
+, if('helloworld' like '%hello%' ,f1,f2) as filter
+FROM union_all_bug_test_1
+
+union all
+
+select
+f1
+, 0 as filter
+from union_all_bug_test_2
+) A
+WHERE (f1 = 1 and filter = 1)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@union_all_bug_test_1
+PREHOOK: Input: default@union_all_bug_test_2
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT f1
+FROM (
+
+SELECT
+f1
+, if('helloworld' like '%hello%' ,f1,f2) as filter
+FROM union_all_bug_test_1
+
+union all
+
+select
+f1
+, 0 as filter
+from union_all_bug_test_2
+) A
+WHERE (f1 = 1 and filter = 1)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@union_all_bug_test_1
+POSTHOOK: Input: default@union_all_bug_test_2
+#### A masked pattern was here ####
+POSTHOOK: Lineage: union_all_bug_test_1.f1 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f1 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f2 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_1.f2 SIMPLE []
+POSTHOOK: Lineage: union_all_bug_test_2.f1 EXPRESSION [(union_all_bug_test_2)union_all_bug_test_2.null, ]
+POSTHOOK: Lineage: union_all_bug_test_2.f1 EXPRESSION [(union_all_bug_test_2)union_all_bug_test_2.null, ]
 1
