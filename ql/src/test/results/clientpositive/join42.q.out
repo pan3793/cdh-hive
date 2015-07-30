@@ -116,9 +116,8 @@ STAGE PLANS:
               predicate: (id = 4436) (type: boolean)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               Reduce Output Operator
-                key expressions: id (type: int)
+                key expressions: 4436 (type: int)
                 sort order: +
-                Map-reduce partition columns: id (type: int)
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
           TableScan
             alias: la
@@ -127,9 +126,8 @@ STAGE PLANS:
               predicate: (loan_id = 4436) (type: boolean)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               Reduce Output Operator
-                key expressions: loan_id (type: int)
+                key expressions: 4436 (type: int)
                 sort order: +
-                Map-reduce partition columns: loan_id (type: int)
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
                 value expressions: aid (type: int), pi_id (type: int)
           TableScan
@@ -139,9 +137,8 @@ STAGE PLANS:
               predicate: (loan_id = 4436) (type: boolean)
               Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
               Reduce Output Operator
-                key expressions: loan_id (type: int)
+                key expressions: 4436 (type: int)
                 sort order: +
-                Map-reduce partition columns: loan_id (type: int)
                 Statistics: Num rows: 0 Data size: 0 Basic stats: NONE Column stats: NONE
       Reduce Operator Tree:
         Join Operator

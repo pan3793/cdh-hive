@@ -120,4 +120,6 @@ POSTHOOK: query: SELECT * FROM dest1
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@dest1
 #### A masked pattern was here ####
+POSTHOOK: Lineage: dest1.d EXPRESSION []
+POSTHOOK: Lineage: dest1.t EXPRESSION []
 2013-11-17	2011-04-29 20:46:56.4485

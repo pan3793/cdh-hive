@@ -70,7 +70,7 @@ POSTHOOK: Lineage: newtypesorc.c EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.d EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.da EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.v EXPRESSION []
--252951929000
+NULL
 PREHOOK: query: select sum(hash(*)) from newtypesorc where da=cast('1970-02-20' as varchar(20))
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypesorc
@@ -278,7 +278,7 @@ POSTHOOK: Lineage: newtypesorc.c EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.d EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.da EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.v EXPRESSION []
-334427804500
+NULL
 PREHOOK: query: select sum(hash(*)) from newtypesorc where da in (cast('1970-02-20' as date), cast('1970-02-27' as date))
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypesorc
@@ -304,7 +304,7 @@ POSTHOOK: Lineage: newtypesorc.c EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.d EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.da EXPRESSION []
 POSTHOOK: Lineage: newtypesorc.v EXPRESSION []
-81475875500
+NULL
 PREHOOK: query: select sum(hash(*)) from newtypesorc where da in (cast('1970-02-21' as date), cast('1970-02-22' as date))
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypesorc
