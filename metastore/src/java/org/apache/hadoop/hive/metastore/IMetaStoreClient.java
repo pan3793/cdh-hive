@@ -46,6 +46,7 @@ import org.apache.hadoop.hive.metastore.api.ConfigValSecurityException;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Function;
+import org.apache.hadoop.hive.metastore.api.GetAllFunctionsResponse;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsInfoResponse;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsResponse;
 import org.apache.hadoop.hive.metastore.api.GetPrincipalsInRoleRequest;
@@ -1052,6 +1053,9 @@ public interface IMetaStoreClient {
 
   public List<String> getFunctions(String dbName, String pattern)
       throws MetaException, TException;
+
+  GetAllFunctionsResponse getAllFunctions()
+          throws MetaException, TException;
 
   /**
    * Get a structure that details valid transactions.

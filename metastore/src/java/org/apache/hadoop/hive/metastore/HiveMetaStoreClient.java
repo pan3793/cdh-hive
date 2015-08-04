@@ -69,6 +69,7 @@ import org.apache.hadoop.hive.metastore.api.DropPartitionsRequest;
 import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Function;
+import org.apache.hadoop.hive.metastore.api.GetAllFunctionsResponse;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsInfoResponse;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsResponse;
 import org.apache.hadoop.hive.metastore.api.GetPrincipalsInRoleRequest;
@@ -1741,4 +1742,9 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
     return client.get_functions(dbName, pattern);
   }
 
+  @Override
+  public GetAllFunctionsResponse getAllFunctions()
+          throws MetaException, TException {
+    return client.get_all_functions();
+  }
 }

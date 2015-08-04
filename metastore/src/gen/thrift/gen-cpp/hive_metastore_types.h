@@ -4441,6 +4441,52 @@ class ShowCompactResponse {
 
 void swap(ShowCompactResponse &a, ShowCompactResponse &b);
 
+typedef struct _GetAllFunctionsResponse__isset {
+  _GetAllFunctionsResponse__isset() : functions(false) {}
+  bool functions;
+} _GetAllFunctionsResponse__isset;
+
+class GetAllFunctionsResponse {
+ public:
+
+  static const char* ascii_fingerprint; // = "CEE0CA1D7402D4135EF7F42C0F0E0A68";
+  static const uint8_t binary_fingerprint[16]; // = {0xCE,0xE0,0xCA,0x1D,0x74,0x02,0xD4,0x13,0x5E,0xF7,0xF4,0x2C,0x0F,0x0E,0x0A,0x68};
+
+  GetAllFunctionsResponse() {
+  }
+
+  virtual ~GetAllFunctionsResponse() throw() {}
+
+  std::vector<Function>  functions;
+
+  _GetAllFunctionsResponse__isset __isset;
+
+  void __set_functions(const std::vector<Function> & val) {
+    functions = val;
+    __isset.functions = true;
+  }
+
+  bool operator == (const GetAllFunctionsResponse & rhs) const
+  {
+    if (__isset.functions != rhs.__isset.functions)
+      return false;
+    else if (__isset.functions && !(functions == rhs.functions))
+      return false;
+    return true;
+  }
+  bool operator != (const GetAllFunctionsResponse &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const GetAllFunctionsResponse & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(GetAllFunctionsResponse &a, GetAllFunctionsResponse &b);
+
 typedef struct _MetaException__isset {
   _MetaException__isset() : message(false) {}
   bool message;

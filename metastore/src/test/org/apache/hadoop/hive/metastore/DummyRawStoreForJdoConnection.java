@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.metastore;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -718,6 +719,12 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   public Function getFunction(String dbName, String funcName)
       throws MetaException {
     return null;
+  }
+
+  @Override
+  public List<Function> getAllFunctions()
+          throws MetaException {
+    return Collections.emptyList();
   }
 
   @Override

@@ -7232,6 +7232,75 @@ class ShowCompactResponse:
   def __ne__(self, other):
     return not (self == other)
 
+class GetAllFunctionsResponse:
+  """
+  Attributes:
+   - functions
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'functions', (TType.STRUCT,(Function, Function.thrift_spec)), None, ), # 1
+  )
+
+  def __init__(self, functions=None,):
+    self.functions = functions
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.functions = []
+          (_etype393, _size390) = iprot.readListBegin()
+          for _i394 in xrange(_size390):
+            _elem395 = Function()
+            _elem395.read(iprot)
+            self.functions.append(_elem395)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('GetAllFunctionsResponse')
+    if self.functions is not None:
+      oprot.writeFieldBegin('functions', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.functions))
+      for iter396 in self.functions:
+        iter396.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class MetaException(TException):
   """
   Attributes:

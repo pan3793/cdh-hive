@@ -2841,6 +2841,15 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
   }
 
+  public List<Function> getAllFunctions() throws HiveException {
+    try {
+      List<Function> functions = getMSC().getAllFunctions().getFunctions();
+      return functions == null ? new ArrayList<Function>() : functions;
+    } catch (TException te) {
+      throw new HiveException(te);
+    }
+  }
+  
   public Function getFunction(String dbName, String funcName) throws HiveException {
     try {
       return getMSC().getFunction(dbName, funcName);

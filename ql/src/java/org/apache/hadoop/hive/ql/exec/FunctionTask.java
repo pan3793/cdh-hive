@@ -282,7 +282,6 @@ public class FunctionTask extends Task<FunctionWork> {
     }
   }
 
-
   private static SessionState.ResourceType getResourceType(ResourceType rt) throws HiveException {
     switch (rt) {
       case JAR:

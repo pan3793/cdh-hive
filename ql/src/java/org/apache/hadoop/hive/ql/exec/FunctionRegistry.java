@@ -672,14 +672,9 @@ public final class FunctionRegistry {
       functionNames = new HashSet<String>(functionNames);
       try {
         Hive db = getHive();
-        List<String> dbNames = db.getAllDatabases();
-
-        for (String dbName : dbNames) {
-          List<String> funcNames = db.getFunctions(dbName, "*");
-          for (String funcName : funcNames) {
-            functionNames.add(FunctionUtils.qualifyFunctionName(funcName, dbName));
+        for(Function function : db.getAllFunctions()) {
+            functionNames.add(FunctionUtils.qualifyFunctionName(function.getFunctionName(), function.getDbName()));
           }
-        }
       } catch (Exception e) {
         LOG.error(e);
         // Continue on, we can still return the functions we've gotten to this point.

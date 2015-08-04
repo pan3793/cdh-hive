@@ -8250,6 +8250,89 @@ void swap(ShowCompactResponse &a, ShowCompactResponse &b) {
   swap(a.compacts, b.compacts);
 }
 
+const char* GetAllFunctionsResponse::ascii_fingerprint = "CEE0CA1D7402D4135EF7F42C0F0E0A68";
+const uint8_t GetAllFunctionsResponse::binary_fingerprint[16] = {0xCE,0xE0,0xCA,0x1D,0x74,0x02,0xD4,0x13,0x5E,0xF7,0xF4,0x2C,0x0F,0x0E,0x0A,0x68};
+
+uint32_t GetAllFunctionsResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->functions.clear();
+            uint32_t _size359;
+            ::apache::thrift::protocol::TType _etype362;
+            xfer += iprot->readListBegin(_etype362, _size359);
+            this->functions.resize(_size359);
+            uint32_t _i363;
+            for (_i363 = 0; _i363 < _size359; ++_i363)
+            {
+              xfer += this->functions[_i363].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.functions = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t GetAllFunctionsResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("GetAllFunctionsResponse");
+
+  if (this->__isset.functions) {
+    xfer += oprot->writeFieldBegin("functions", ::apache::thrift::protocol::T_LIST, 1);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->functions.size()));
+      std::vector<Function> ::const_iterator _iter364;
+      for (_iter364 = this->functions.begin(); _iter364 != this->functions.end(); ++_iter364)
+      {
+        xfer += (*_iter364).write(oprot);
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(GetAllFunctionsResponse &a, GetAllFunctionsResponse &b) {
+  using ::std::swap;
+  swap(a.functions, b.functions);
+  swap(a.__isset, b.__isset);
+}
+
 const char* MetaException::ascii_fingerprint = "EFB929595D312AC8F305D5A794CFEDA1";
 const uint8_t MetaException::binary_fingerprint[16] = {0xEF,0xB9,0x29,0x59,0x5D,0x31,0x2A,0xC8,0xF3,0x05,0xD5,0xA7,0x94,0xCF,0xED,0xA1};
 
