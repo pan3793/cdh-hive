@@ -19,13 +19,16 @@
 package org.apache.hadoop.hive.ql.plan;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils;
 import org.apache.hadoop.hive.serde2.typeinfo.BaseCharTypeInfo;
+import org.apache.hadoop.hive.serde2.typeinfo.StructTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
@@ -96,8 +99,7 @@ public class ExprNodeConstantDesc extends ExprNodeDesc implements Serializable {
     return "Const " + typeInfo.toString() + " " + value;
   }
 
-  @Override
-  public String getExprString() {
+  private static String getFormatted(TypeInfo typeInfo, Object value) {
     if (value == null) {
       return "null";
     }
@@ -113,8 +115,28 @@ public class ExprNodeConstantDesc extends ExprNodeDesc implements Serializable {
         hexChars[j * 2 + 1] = hexArray[v & 0x0F];
       }
       return new String(hexChars);
+    }
+    return value.toString();
+  }
+
+  @Override
+  public String getExprString() {
+    if (typeInfo.getCategory() == Category.PRIMITIVE) {
+      return getFormatted(typeInfo, value);
+    } else if (typeInfo.getCategory() == Category.STRUCT) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("const struct(");
+      List<?> items = (List<?>) getWritableObjectInspector().getWritableConstantValue();
+      List<TypeInfo> structTypes = ((StructTypeInfo) typeInfo).getAllStructFieldTypeInfos();
+      for (int i = 0; i < structTypes.size(); i++) {
+        final Object o = (i < items.size()) ? items.get(i) : null;
+        sb.append(getFormatted(structTypes.get(i), o)).append(",");
+      }
+      sb.setCharAt(sb.length() - 1, ')');
+      return sb.toString();
     } else {
-      return value.toString();
+      // unknown type
+      return toString();
     }
   }
 
