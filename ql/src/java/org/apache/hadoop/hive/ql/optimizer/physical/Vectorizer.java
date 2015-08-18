@@ -54,6 +54,7 @@ import org.apache.hadoop.hive.ql.lib.GraphWalker;
 import org.apache.hadoop.hive.ql.lib.Node;
 import org.apache.hadoop.hive.ql.lib.NodeProcessor;
 import org.apache.hadoop.hive.ql.lib.NodeProcessorCtx;
+import org.apache.hadoop.hive.ql.lib.PreOrderOnceWalker;
 import org.apache.hadoop.hive.ql.lib.PreOrderWalker;
 import org.apache.hadoop.hive.ql.lib.Rule;
 import org.apache.hadoop.hive.ql.lib.RuleRegExp;
@@ -382,7 +383,7 @@ public class Vectorizer implements PhysicalPlanResolver {
       MapWorkVectorizationNodeProcessor vnp = new MapWorkVectorizationNodeProcessor(mapWork);
       addMapWorkRules(opRules, vnp);
       Dispatcher disp = new DefaultRuleDispatcher(vnp, opRules, null);
-      GraphWalker ogw = new PreOrderWalker(disp);
+      GraphWalker ogw = new PreOrderOnceWalker(disp);
       // iterator the mapper operator tree
       ArrayList<Node> topNodes = new ArrayList<Node>();
       topNodes.addAll(mapWork.getAliasToWork().values());
