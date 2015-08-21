@@ -130,7 +130,7 @@ public class AvroLazyObjectInspector extends LazySimpleStructObjectInspector {
 
       if (rowField instanceof LazyStruct) {
 
-        if (LOG.isDebugEnabled()) {
+        if (LOG.isDebugEnabled() && rowField != null) {
           LOG.debug("Deserializing struct [" + rowField.getClass() + "]");
         }
 
@@ -158,7 +158,7 @@ public class AvroLazyObjectInspector extends LazySimpleStructObjectInspector {
 
       } else {
         if (LOG.isDebugEnabled()) {
-          LOG.debug("Returning [" + rowField.toString() + "] for field [" + f.getFieldName() + "]");
+          LOG.debug("Returning [" + rowField + "] for field [" + f.getFieldName() + "]");
         }
 
         // Just return the object. We need no further operation on it
@@ -215,7 +215,7 @@ public class AvroLazyObjectInspector extends LazySimpleStructObjectInspector {
     byte[] data = ((LazyStruct) struct).getBytes();
     AvroDeserializer deserializer = new AvroDeserializer();
 
-    if (data == null) {
+    if (data == null || data.length == 0) {
       return null;
     }
 
@@ -231,6 +231,12 @@ public class AvroLazyObjectInspector extends LazySimpleStructObjectInspector {
     AvroGenericRecordWritable avroWritable = new AvroGenericRecordWritable();
 
     if (readerSchema == null) {
+      offset = schemaRetriever.getOffset();
+
+      if (data.length < offset) {
+          throw new IllegalArgumentException("Data size cannot be less than [" + offset
+              + "]. Found [" + data.length + "]");
+      }
 
       rs = schemaRetriever.retrieveReaderSchema(data);
 
@@ -249,13 +255,6 @@ public class AvroLazyObjectInspector extends LazySimpleStructObjectInspector {
       }
 
       // adjust the data bytes according to any possible offset that was provided
-      offset = schemaRetriever.getOffset();
-
-      if (data.length < offset) {
-        throw new IllegalArgumentException("Data size cannot be less than [" + offset
-            + "]. Found [" + data.length + "]");
-      }
-
       if (LOG.isDebugEnabled()) {
         LOG.debug("Retrieved writer Schema: " + ws.toString());
         LOG.debug("Retrieved reader Schema: " + rs.toString());
