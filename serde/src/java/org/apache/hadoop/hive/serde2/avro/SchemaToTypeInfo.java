@@ -131,7 +131,7 @@ class SchemaToTypeInfo {
       Set<Schema> seenSchemas) throws AvroSerdeException {
     // For bytes type, it can be mapped to decimal.
     Schema.Type type = schema.getType();
-    if (type == BYTES && AvroSerDe.DECIMAL_TYPE_NAME
+    if (type == Schema.Type.BYTES && AvroSerDe.DECIMAL_TYPE_NAME
       .equalsIgnoreCase(schema.getProp(AvroSerDe.AVRO_PROP_LOGICAL_TYPE))) {
       int precision = 0;
       int scale = 0;
@@ -151,7 +151,7 @@ class SchemaToTypeInfo {
       return TypeInfoFactory.getDecimalTypeInfo(precision, scale);
     }
 
-    if (type == STRING &&
+    if (type == Schema.Type.STRING &&
       AvroSerDe.CHAR_TYPE_NAME.equalsIgnoreCase(schema.getProp(AvroSerDe.AVRO_PROP_LOGICAL_TYPE))) {
       int maxLength = 0;
       try {
@@ -162,7 +162,7 @@ class SchemaToTypeInfo {
       return TypeInfoFactory.getCharTypeInfo(maxLength);
     }
 
-    if (type == STRING && AvroSerDe.VARCHAR_TYPE_NAME
+    if (type == Schema.Type.STRING && AvroSerDe.VARCHAR_TYPE_NAME
       .equalsIgnoreCase(schema.getProp(AvroSerDe.AVRO_PROP_LOGICAL_TYPE))) {
       int maxLength = 0;
       try {
@@ -173,14 +173,9 @@ class SchemaToTypeInfo {
       return TypeInfoFactory.getVarcharTypeInfo(maxLength);
     }
 
-    if (type == INT &&
+    if (type == Schema.Type.INT &&
       AvroSerDe.DATE_TYPE_NAME.equals(schema.getProp(AvroSerDe.AVRO_PROP_LOGICAL_TYPE))) {
       return TypeInfoFactory.dateTypeInfo;
-    }
-
-    if (type == LONG &&
-      AvroSerDe.TIMESTAMP_TYPE_NAME.equals(schema.getProp(AvroSerDe.AVRO_PROP_LOGICAL_TYPE))) {
-      return TypeInfoFactory.timestampTypeInfo;
     }
 
     return typeInfoCache.retrieve(schema, seenSchemas);
