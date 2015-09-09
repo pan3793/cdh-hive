@@ -73,7 +73,7 @@ public class AvroSerDe extends AbstractSerDe {
   public void initialize(Configuration configuration, Properties properties) throws SerDeException {
     // Reset member variables so we don't get in a half-constructed state
     if (schema != null) {
-      LOG.info("Resetting already initialized AvroSerDe");
+      LOG.debug("Resetting already initialized AvroSerDe");
     }
 
     schema = null;
@@ -119,10 +119,12 @@ public class AvroSerDe extends AbstractSerDe {
       properties.setProperty(AvroSerdeUtils.SCHEMA_LITERAL, schema.toString());
     }
 
-    LOG.info("Avro schema is " + schema);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Avro schema is " + schema);
+    }
 
     if (configuration == null) {
-      LOG.info("Configuration null, not inserting schema");
+      LOG.debug("Configuration null, not inserting schema");
     } else {
       configuration.set(AvroSerdeUtils.AVRO_SERDE_SCHEMA, schema.toString(false));
     }
