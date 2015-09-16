@@ -123,6 +123,7 @@ public enum HiveOperationType {
   DFS,
   ADD,
   DELETE,
-  COMPILE
+  COMPILE,
+  ALTERTABLE_EXCHANGEPARTITION
 
 }
