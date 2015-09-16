@@ -486,7 +486,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     case HiveParser.TOK_ALTERTABLE_SKEWED:
       analyzeAltertableSkewedby(ast);
       break;
-   case HiveParser.TOK_EXCHANGEPARTITION:
+   case HiveParser.TOK_ALTERTABLE_EXCHANGEPARTITION:
       analyzeExchangePartition(ast);
       break;
    case HiveParser.TOK_SHOW_SET_ROLE:

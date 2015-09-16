@@ -298,6 +298,7 @@ TOK_TABCOLVALUE;
 TOK_TABCOLVALUE_PAIR;
 TOK_TABCOLVALUES;
 TOK_ALTERTABLE_SKEWED;
+TOK_ALTERTABLE_EXCHANGEPARTITION;
 TOK_ALTERTBLPART_SKEWED_LOCATION;
 TOK_SKEWED_LOCATIONS;
 TOK_SKEWED_LOCATION_LIST;
@@ -310,7 +311,6 @@ TOK_WINDOWSPEC;
 TOK_WINDOWVALUES;
 TOK_WINDOWRANGE;
 TOK_IGNOREPROTECTION;
-TOK_EXCHANGEPARTITION;
 TOK_SUBQUERY_EXPR;
 TOK_SUBQUERY_OP;
 TOK_SUBQUERY_OP_NOTIN;
@@ -1194,7 +1194,7 @@ alterStatementSuffixExchangePartition
 @init {pushMsg("alter exchange partition", state);}
 @after{popMsg(state);}
     : name=tableName KW_EXCHANGE partitionSpec KW_WITH KW_TABLE exchangename=tableName
-    -> ^(TOK_EXCHANGEPARTITION $name partitionSpec $exchangename)
+    -> ^(TOK_ALTERTABLE_EXCHANGEPARTITION $name partitionSpec $exchangename)
     ;
 
 alterStatementSuffixProtectMode

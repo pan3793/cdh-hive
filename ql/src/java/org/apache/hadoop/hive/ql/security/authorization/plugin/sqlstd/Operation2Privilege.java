@@ -204,7 +204,7 @@ public class Operation2Privilege {
         null));
     op2Priv.put(HiveOperationType.SHOW_ROLE_PRINCIPALS, new InOutPrivs(null,
         null));
-
+    op2Priv.put(HiveOperationType.ALTERTABLE_EXCHANGEPARTITION, new InOutPrivs(null, null));
 
   }
 
