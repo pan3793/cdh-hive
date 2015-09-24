@@ -61,8 +61,10 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFBaseCompare;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPEqual;
 import org.apache.hadoop.hive.serde.serdeConstants;
+import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
+import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.serde2.typeinfo.CharTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.DecimalTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.ListTypeInfo;
@@ -963,6 +965,45 @@ public final class TypeCheckProcFactory {
       return false;
     }
 
+    protected ExprNodeDesc processQualifiedColRef(TypeCheckCtx ctx, ASTNode expr,
+        Object... nodeOutputs) throws SemanticException {
+      RowResolver input = ctx.getInputRR();
+      String tableAlias = BaseSemanticAnalyzer.unescapeIdentifier(expr.getChild(0).getChild(0)
+          .getText());
+      // NOTE: tableAlias must be a valid non-ambiguous table alias,
+      // because we've checked that in TOK_TABLE_OR_COL's process method.
+      String colName;
+      if (nodeOutputs[1] instanceof ExprNodeConstantDesc) {
+        colName = ((ExprNodeConstantDesc) nodeOutputs[1]).getValue().toString();
+      }  else if (nodeOutputs[1] instanceof ExprNodeColumnDesc) {
+        colName = ((ExprNodeColumnDesc)nodeOutputs[1]).getColumn();
+      } else {
+        throw new SemanticException("Unexpected ExprNode : " + nodeOutputs[1]);
+      }
+      ColumnInfo colInfo = input.get(tableAlias, colName);
+
+      if (colInfo == null) {
+        ctx.setError(ErrorMsg.INVALID_COLUMN.getMsg(expr.getChild(1)), expr);
+        return null;
+      }
+      return toExprNodeDesc(colInfo);
+    }
+
+    private static ExprNodeDesc toExprNodeDesc(ColumnInfo colInfo) {
+      ObjectInspector inspector = colInfo.getObjectInspector();
+      if (inspector instanceof ConstantObjectInspector &&
+          inspector instanceof PrimitiveObjectInspector) {
+        PrimitiveObjectInspector poi = (PrimitiveObjectInspector) inspector;
+        Object constant = ((ConstantObjectInspector) inspector).getWritableConstantValue();
+        return new ExprNodeConstantDesc(colInfo.getType(), poi.getPrimitiveJavaObject(constant));
+      }
+      // non-constant or non-primitive constants
+      ExprNodeColumnDesc column = new ExprNodeColumnDesc(colInfo.getType(),
+          colInfo.getInternalName(), colInfo.getTabAlias(), colInfo.getIsVirtualCol());
+      column.setSkewedCol(colInfo.isSkewedCol());
+      return column;
+    }
+
     @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx procCtx,
         Object... nodeOutputs) throws SemanticException {
@@ -1058,22 +1099,7 @@ public final class TypeCheckProcFactory {
       if (expr.getType() == HiveParser.DOT
           && expr.getChild(0).getType() == HiveParser.TOK_TABLE_OR_COL
           && nodeOutputs[0] == null) {
-
-        RowResolver input = ctx.getInputRR();
-        String tableAlias = BaseSemanticAnalyzer.unescapeIdentifier(expr
-            .getChild(0).getChild(0).getText());
-        // NOTE: tableAlias must be a valid non-ambiguous table alias,
-        // because we've checked that in TOK_TABLE_OR_COL's process method.
-        ColumnInfo colInfo = input.get(tableAlias,
-            ((ExprNodeConstantDesc) nodeOutputs[1]).getValue().toString());
-
-        if (colInfo == null) {
-          ctx.setError(ErrorMsg.INVALID_COLUMN.getMsg(expr.getChild(1)), expr);
-          return null;
-        }
-        return new ExprNodeColumnDesc(colInfo.getType(), colInfo
-            .getInternalName(), colInfo.getTabAlias(), colInfo
-            .getIsVirtualCol());
+        return processQualifiedColRef(ctx, expr, nodeOutputs);
       }
 
       // Return nulls for conversion operators
