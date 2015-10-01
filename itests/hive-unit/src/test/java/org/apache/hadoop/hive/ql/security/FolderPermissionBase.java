@@ -257,6 +257,7 @@ public abstract class FolderPermissionBase {
 
     //insert overwrite test
     setPermission(warehouseDir + "/" + tableName, 1);
+    setPermission(warehouseDir + "/" + tableName + "/part1=1", 1);
     ret = driver.run("insert overwrite table " + tableName + " partition(part1='1') select key,value from mysrc where part1='1' and part2='1'");
     Assert.assertEquals(0, ret.getResponseCode());
 
@@ -293,6 +294,9 @@ public abstract class FolderPermissionBase {
 
     //insert overwrite test
     setPermission(warehouseDir + "/" + tableName, 1);
+    setPermission(warehouseDir + "/" + tableName + "/part1=1", 1);
+    setPermission(warehouseDir + "/" + tableName + "/part1=1/part2=1", 1);
+
     ret = driver.run("insert overwrite table " + tableName + " partition(part1='1', part2='1') select key,value from mysrc where part1='1' and part2='1'");
     Assert.assertEquals(0, ret.getResponseCode());
 
@@ -321,8 +325,9 @@ public abstract class FolderPermissionBase {
 
     verifyDualPartitionTable(warehouseDir + "/" + tableName, 0);
 
-    //Insert overwrite test, with permission set 1.
-    setPermission(warehouseDir + "/" + tableName, 1);
+    //Insert overwrite test, with permission set 1.  We need reset existing partitions to 1 since the permissions
+    //should be inherited from existing partition
+    setDualPartitionTable(warehouseDir + "/" + tableName, 1);
     ret = driver.run("insert overwrite table " + tableName + " partition (part1,part2) select key,value,part1,part2 from mysrc");
     Assert.assertEquals(0, ret.getResponseCode());
 
@@ -344,8 +349,9 @@ public abstract class FolderPermissionBase {
     Assert.assertEquals(0,ret.getResponseCode());
     verifySinglePartition(tableLoc, 0);
 
-    //Insert overwrite test, with permission set 1.
-    setPermission(tableLoc, 1);
+    //Insert overwrite test, with permission set 1. We need reset existing partitions to 1 since the permissions
+    //should be inherited from existing partition
+    setSinglePartition(tableLoc, 1);
     ret = driver.run("insert overwrite table " + tableName + " partition (part1) select key,value,part1 from mysrc");
     Assert.assertEquals(0,ret.getResponseCode());
     verifySinglePartition(tableLoc, 1);
@@ -439,6 +445,9 @@ public abstract class FolderPermissionBase {
 
     //case1B: load data local into overwrite non-partitioned-table
     setPermission(warehouseDir + "/" + tableName, 1);
+    for (String child : listStatus(tableLoc)) {
+      setPermission(child, 1);
+    }
     ret = driver.run("load data local inpath '" + dataFilePath + "' overwrite into table " + tableName);
     Assert.assertEquals(0,ret.getResponseCode());
 
@@ -466,8 +475,13 @@ public abstract class FolderPermissionBase {
       verifyPermission(child);
     }
 
-    //case 2B: insert data overwrite into non-partitioned table.
+    //case 2B: insert data overwrite into partitioned table. set testing table/partition folder hierarchy 1
+    //local load overwrite just overwrite the existing partition content but not the permission
     setPermission(tableLoc, 1);
+    setPermission(partLoc, 1);
+    for (String child : listStatus(partLoc)) {
+      setPermission(child, 1);
+    }
     ret = driver.run("LOAD DATA LOCAL INPATH '" + dataFilePath + "' OVERWRITE INTO TABLE " + tableName + " PARTITION (part1='1',part2='1')");
     Assert.assertEquals(0,ret.getResponseCode());
 
@@ -502,6 +516,10 @@ public abstract class FolderPermissionBase {
 
     //case1B: load data into overwrite non-partitioned-table
     setPermission(warehouseDir + "/" + tableName, 1);
+    for (String child : listStatus(tableLoc)) {
+      setPermission(child, 1);
+    }
+
     fs.copyFromLocalFile(dataFilePath, new Path(location));
     ret = driver.run("load data inpath '" + location + "' overwrite into table " + tableName);
     Assert.assertEquals(0,ret.getResponseCode());
@@ -531,8 +549,15 @@ public abstract class FolderPermissionBase {
       verifyPermission(child);
     }
 
-    //case 2B: insert data overwrite into non-partitioned table.
+    //case 2B: insert data overwrite into partitioned table. set testing table/partition folder hierarchy 1
+    //load overwrite just overwrite the existing partition content but not the permission
     setPermission(tableLoc, 1);
+    setPermission(partLoc, 1);
+    Assert.assertTrue(listStatus(partLoc).size() > 0);
+    for (String child : listStatus(partLoc)) {
+      setPermission(child, 1);
+    }
+
     fs.copyFromLocalFile(dataFilePath, new Path(location));
     ret = driver.run("LOAD DATA INPATH '" + location + "' OVERWRITE INTO TABLE " + tableName + " PARTITION (part1='1',part2='1')");
     Assert.assertEquals(0,ret.getResponseCode());
@@ -674,7 +699,19 @@ public abstract class FolderPermissionBase {
     assertExistence(partition);
     verifyPermission(partition);    
   }
-  
+
+  private void setSinglePartition(String tableLoc, int index) throws Exception {
+    setPermission(tableLoc + "/part1=1", index);
+    setPermission(tableLoc + "/part1=2", index);
+    for (String child : listStatus(tableLoc + "/part1=1")) {
+      setPermission(child, index);
+    }
+
+    for (String child : listStatus(tableLoc + "/part1=2")) {
+      setPermission(child, index);
+    }    
+  }
+
   private void verifySinglePartition(String tableLoc, int index) throws Exception {
     verifyPermission(tableLoc + "/part1=1", index);
     verifyPermission(tableLoc + "/part1=2", index);
@@ -687,6 +724,23 @@ public abstract class FolderPermissionBase {
     Assert.assertTrue(listStatus(tableLoc + "/part1=2").size() > 0);
     for (String child : listStatus(tableLoc + "/part1=2")) {
       verifyPermission(child, index);
+    }
+  }
+
+  private void setDualPartitionTable(String baseTablePath, int index) throws Exception {
+    setPermission(baseTablePath, index);
+    setPermission(baseTablePath + "/part1=1", index);
+    setPermission(baseTablePath + "/part1=1/part2=1", index);
+
+    setPermission(baseTablePath + "/part1=2", index);
+    setPermission(baseTablePath + "/part1=2/part2=2", index);
+
+    for (String child : listStatus(baseTablePath + "/part1=1/part2=1")) {
+      setPermission(child, index);
+    }
+
+    for (String child : listStatus(baseTablePath + "/part1=2/part2=2")) {
+      setPermission(child, index);
     }
   }
 
