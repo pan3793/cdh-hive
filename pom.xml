@@ -17,12 +17,12 @@
   <parent>
     <groupId>com.cloudera.cdh</groupId>
     <artifactId>cdh-root</artifactId>
-    <version>5.3.7-SNAPSHOT</version>
+    <version>5.3.9-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.hive</groupId>
   <artifactId>hive</artifactId>
-  <version>0.13.1-cdh5.3.7-SNAPSHOT</version>
+  <version>0.13.1-cdh5.3.9-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Hive</name>
@@ -52,7 +52,7 @@
   </modules>
 
   <properties>
-    <cdh.hive.version>0.13.1-cdh5.3.7-SNAPSHOT</cdh.hive.version>
+    <cdh.hive.version>0.13.1-cdh5.3.9-SNAPSHOT</cdh.hive.version>
 
     <hive.version.shortname>0.13.1</hive.version.shortname>
 
