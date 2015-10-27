@@ -1785,8 +1785,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
             qb.getMetaData().setDestForAlias(name, ts.partHandle);
           }
           if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
-            // Set that variable to automatically collect stats during the MapReduce job
-            qb.getParseInfo().setIsInsertToTable(true);
             // Add the table spec for the destination table.
             qb.getParseInfo().addTableSpec(ts.tableName.toLowerCase(), ts);
           }
@@ -1833,8 +1831,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
               }
               if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
                 tableSpec ts = new tableSpec(db, conf, this.ast);
-                // Set that variable to automatically collect stats during the MapReduce job
-                qb.getParseInfo().setIsInsertToTable(true);
                 // Add the table spec for the destination table.
                 qb.getParseInfo().addTableSpec(ts.tableName.toLowerCase(), ts);
               }
@@ -6389,7 +6385,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       // verify that our destination is empty before proceeding
       if (dest_tab.isImmutable() &&
           qb.getParseInfo().isInsertIntoTable(dest_tab.getDbName(),dest_tab.getTableName())){
-        qb.getParseInfo().isInsertToTable();
         try {
           FileSystem fs = partPath.getFileSystem(conf);
           if (! MetaStoreUtils.isDirEmpty(fs,partPath)){

@@ -141,8 +141,6 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.table2
                     numFiles 1
-                    numRows 0
-                    rawDataSize 0
                     serialization.ddl struct table2 { string key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -163,8 +161,6 @@ STAGE PLANS:
 #### A masked pattern was here ####
                       name default.table2
                       numFiles 1
-                      numRows 0
-                      rawDataSize 0
                       serialization.ddl struct table2 { string key, string value}
                       serialization.format 1
                       serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -234,8 +230,6 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.table1
                     numFiles 1
-                    numRows 0
-                    rawDataSize 0
                     serialization.ddl struct table1 { string key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -256,8 +250,6 @@ STAGE PLANS:
 #### A masked pattern was here ####
                       name default.table1
                       numFiles 1
-                      numRows 0
-                      rawDataSize 0
                       serialization.ddl struct table1 { string key, string value}
                       serialization.format 1
                       serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe

@@ -615,6 +615,9 @@ public class StatsOptimizer implements Transform {
       if (tbl.isPartitioned()) {
         for (Partition part : pctx.getPrunedPartitions(
             tsOp.getConf().getAlias(), tsOp).getPartitions()) {
+          if (!StatsSetupConst.areStatsUptoDate(part.getParameters())) {
+            return null;
+          }
           long partRowCnt = Long.parseLong(part.getParameters().get(StatsSetupConst.ROW_COUNT));
           if (partRowCnt < 1) {
             Log.debug("Partition doesn't have upto date stats " + part.getSpec());
@@ -623,6 +626,9 @@ public class StatsOptimizer implements Transform {
           rowCnt += partRowCnt;
         }
       } else { // unpartitioned table
+        if (!StatsSetupConst.areStatsUptoDate(tbl.getParameters())) {
+          return null;
+        }
         rowCnt = Long.parseLong(tbl.getProperty(StatsSetupConst.ROW_COUNT));
         if (rowCnt < 1) {
           // if rowCnt < 1 than its either empty table or table on which stats are not
