@@ -350,7 +350,7 @@ POSTHOOK: query: select count(*), sum(1), sum(0.2), count(1), count(s), count(bo
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@stats_tbl
 #### A masked pattern was here ####
-9999	9999	1999.8	9999	9999	9999	9999	9999
+9999	9999.000000000000000000	1999.800000000000000000	9999	9999	9999	9999	9999
 PREHOOK: query: explain
 select min(i), max(i), min(b), max(b), min(f), max(f), min(d), max(d) from stats_tbl
 PREHOOK: type: QUERY
@@ -400,7 +400,7 @@ POSTHOOK: query: select count(*), sum(1), sum(0.2), count(1), count(s), count(bo
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@stats_tbl_part
 #### A masked pattern was here ####
-9489	9489	1897.8	9489	9489	9489	9489	9489
+9489	9489.000000000000000000	1897.800000000000000000	9489	9489	9489	9489	9489
 PREHOOK: query: explain
 select min(i), max(i), min(b), max(b), min(f), max(f), min(d), max(d) from stats_tbl_part
 PREHOOK: type: QUERY
