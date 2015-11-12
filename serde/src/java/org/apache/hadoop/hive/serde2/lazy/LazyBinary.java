@@ -31,7 +31,7 @@ public class LazyBinary extends LazyPrimitive<LazyBinaryObjectInspector, BytesWr
 
   private static final Log LOG = LogFactory.getLog(LazyBinary.class);
 
-  LazyBinary(LazyBinaryObjectInspector oi) {
+  public LazyBinary(LazyBinaryObjectInspector oi) {
     super(oi);
     data = new BytesWritable();
   }
