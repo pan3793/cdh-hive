@@ -66,4 +66,5 @@ function get_regex_excluded_tests() {
 regex_tests=`get_regex_excluded_tests`
 mvn clean install -Phadoop-2 -Dmaven.repo.local="$MVN_REPO_LOCAL" -Dtest.excludes.additional="$regex_tests"
 cd itests/
+rm -f thirdparty/spark*bin-hadoop2-without-hive.tgz
 mvn clean install -Phadoop-2 -Dmaven.repo.local="$MVN_REPO_LOCAL" -DskipTests
