@@ -69,7 +69,6 @@ import org.apache.hadoop.hive.metastore.api.SetPartitionsStatsRequest;
 import org.apache.hadoop.hive.metastore.api.ShowCompactResponse;
 import org.apache.hadoop.hive.metastore.api.ShowLocksResponse;
 import org.apache.hadoop.hive.metastore.api.Table;
-import org.apache.hadoop.hive.metastore.api.TableMeta;
 import org.apache.hadoop.hive.metastore.api.TxnAbortedException;
 import org.apache.hadoop.hive.metastore.api.TxnOpenException;
 import org.apache.hadoop.hive.metastore.api.UnknownDBException;
@@ -139,12 +138,6 @@ public interface IMetaStoreClient {
    * @throws UnknownDBException
    */
   List<String> getTables(String dbName, String tablePattern)
-      throws MetaException, TException, UnknownDBException;
-
-  /**
-   * For quick GetTablesOperation
-   */
-  List<TableMeta> getTableMeta(String dbPatterns, String tablePatterns, List<String> tableTypes)
       throws MetaException, TException, UnknownDBException;
 
   /**

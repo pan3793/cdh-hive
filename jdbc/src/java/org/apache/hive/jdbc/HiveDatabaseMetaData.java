@@ -646,7 +646,9 @@ public class HiveDatabaseMetaData implements DatabaseMetaData {
     if (types != null) {
       getTableReq.setTableTypes(Arrays.asList(types));
     }
-    getTableReq.setSchemaName(schemaPattern);
+    if (schemaPattern != null) {
+      getTableReq.setSchemaName(schemaPattern);
+    }
 
     try {
       getTableResp = client.GetTables(getTableReq);
