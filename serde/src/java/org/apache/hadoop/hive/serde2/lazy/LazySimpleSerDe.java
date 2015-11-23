@@ -27,7 +27,8 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.common.classification.InterfaceAudience.Public;
+import org.apache.hadoop.hive.common.classification.InterfaceStability.Stable;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.AbstractSerDe;
 import org.apache.hadoop.hive.serde2.ByteStream;
@@ -43,13 +44,10 @@ import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.UnionObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.StructTypeInfo;
-import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
-import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
-
 
 /**
  * LazySimpleSerDe can be used to read the same data format as
@@ -61,6 +59,8 @@ import org.apache.hadoop.io.Writable;
  * Also LazySimpleSerDe outputs typed columns instead of treating all columns as
  * String like MetadataTypedColumnsetSerDe.
  */
+@Public
+@Stable
 public class LazySimpleSerDe extends AbstractSerDe {
 
   public static final Log LOG = LogFactory.getLog(LazySimpleSerDe.class
@@ -401,5 +401,30 @@ public class LazySimpleSerDe extends AbstractSerDe {
     }
     return stats;
 
+  }
+
+  /**
+   * This method is deprecated and is only used for backward compatibility.
+   * Replaced by @see org.apache.hadoop.hive.serde2.lazy.LazySerDeParameters#LazySerDeParameters(Configuration, Properties, String)
+   */
+  @Deprecated
+  public static SerDeParameters initSerdeParams(Configuration job,
+      Properties tbl,
+      String serdeName) throws SerDeException {
+    return new SerDeParameters(job, tbl, serdeName);
+  }
+
+  /**
+   * This class is deprecated and is only used for backward compatibility. Replace by
+   * @see org.apache.hadoop.hive.serde2.lazy.LazySerDeParameters.
+   */
+  @Deprecated
+  public static class SerDeParameters extends org.apache.hadoop.hive.serde2.lazy.LazySerDeParameters {
+
+    public SerDeParameters(Configuration job,
+        Properties tbl,
+        String serdeName) throws SerDeException {
+      super(job, tbl, serdeName);
+    }
   }
 }
