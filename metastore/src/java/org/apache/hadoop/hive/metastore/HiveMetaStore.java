@@ -143,6 +143,7 @@ import org.apache.hadoop.hive.metastore.api.ShowLocksResponse;
 import org.apache.hadoop.hive.metastore.api.SkewedInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.api.TableMeta;
 import org.apache.hadoop.hive.metastore.api.TableStatsRequest;
 import org.apache.hadoop.hive.metastore.api.TableStatsResult;
 import org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore;
@@ -1750,6 +1751,23 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         throw e;
       } finally {
         endFunction("get_table", t != null, ex, name);
+      }
+      return t;
+    }
+
+    @Override
+    public List<TableMeta> get_table_meta(String dbnames, String tblNames, List<String> tblTypes)
+        throws MetaException, NoSuchObjectException {
+      List<TableMeta> t = null;
+      startTableFunction("get_table_metas", dbnames, tblNames);
+      Exception ex = null;
+      try {
+        t = getMS().getTableMeta(dbnames, tblNames, tblTypes);
+      } catch (Exception e) {
+        ex = e;
+        throw newMetaException(e);
+      } finally {
+        endFunction("get_table_metas", t != null, ex);
       }
       return t;
     }
@@ -5309,6 +5327,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     }
 
     private static MetaException newMetaException(Exception e) {
+      if (e instanceof MetaException) {
+        return (MetaException)e;
+      }
       MetaException me = new MetaException(e.toString());
       me.initCause(e);
       return me;
