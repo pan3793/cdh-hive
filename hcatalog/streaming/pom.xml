@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.hive.hcatalog</groupId>
     <artifactId>hive-hcatalog</artifactId>
-    <version>0.13.1-cdh5.3.9-SNAPSHOT</version>
+    <version>0.13.1-cdh5.3.10-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
