@@ -30,25 +30,25 @@ STAGE PLANS:
             alias: src
             Statistics: Num rows: 58 Data size: 5812 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
-              predicate: ((key > 100) and key is not null) (type: boolean)
-              Statistics: Num rows: 19 Data size: 3807 Basic stats: COMPLETE Column stats: NONE
-              Reduce Output Operator
-                key expressions: key (type: string)
-                sort order: +
-                Map-reduce partition columns: key (type: string)
-                Statistics: Num rows: 19 Data size: 1903 Basic stats: COMPLETE Column stats: NONE
-                value expressions: key (type: string)
-          TableScan
-            alias: srcpart
-            Statistics: Num rows: 58 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
-            Filter Operator
-              predicate: ((key > 100) and key is not null) (type: boolean)
+              predicate: (key > 100) (type: boolean)
               Statistics: Num rows: 19 Data size: 1903 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: key (type: string)
                 sort order: +
                 Map-reduce partition columns: key (type: string)
                 Statistics: Num rows: 19 Data size: 1903 Basic stats: COMPLETE Column stats: NONE
+          TableScan
+            alias: srcpart
+            Statistics: Num rows: 58 Data size: 11624 Basic stats: COMPLETE Column stats: NONE
+            Filter Operator
+              predicate: (key > 100) (type: boolean)
+              Statistics: Num rows: 19 Data size: 3807 Basic stats: COMPLETE Column stats: NONE
+              Reduce Output Operator
+                key expressions: key (type: string)
+                sort order: +
+                Map-reduce partition columns: key (type: string)
+                Statistics: Num rows: 19 Data size: 3807 Basic stats: COMPLETE Column stats: NONE
+                value expressions: value (type: string)
       Reduce Operator Tree:
         Join Operator
           condition map:
