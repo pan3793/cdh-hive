@@ -30,6 +30,9 @@ public class DynamicPruningEventDesc extends AppMasterEventDesc {
   // column in the target table that will be pruned against
   private String targetColumnName;
 
+  // type of target column
+  private String targetColumnType;
+
   // tableScan is only available during compile
   private transient TableScanOperator tableScan;
 
@@ -45,12 +48,24 @@ public class DynamicPruningEventDesc extends AppMasterEventDesc {
   }
 
   @Explain(displayName = "Target column")
+  public String displayTargetColumn() {
+    return targetColumnName + " (" + targetColumnType + ")";
+  }
+
   public String getTargetColumnName() {
     return targetColumnName;
   }
 
   public void setTargetColumnName(String columnName) {
     this.targetColumnName = columnName;
+  }
+
+  public String getTargetColumnType() {
+    return targetColumnType;
+  }
+
+  public void setTargetColumnType(String columnType) {
+    this.targetColumnType = columnType;
   }
 
   @Override

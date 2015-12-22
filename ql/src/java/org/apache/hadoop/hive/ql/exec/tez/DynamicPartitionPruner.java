@@ -139,15 +139,20 @@ public class DynamicPartitionPruner {
     for (String s : sources) {
       List<TableDesc> tables = work.getEventSourceTableDescMap().get(s);
       List<String> columnNames = work.getEventSourceColumnNameMap().get(s);
+
+      // Column type
+      List<String> columnTypes = work.getEventSourceColumnTypeMap().get(s);
       List<ExprNodeDesc> partKeyExprs = work.getEventSourcePartKeyExprMap().get(s);
 
       Iterator<String> cit = columnNames.iterator();
+      Iterator<String> typit = columnTypes.iterator();
       Iterator<ExprNodeDesc> pit = partKeyExprs.iterator();
       for (TableDesc t : tables) {
         ++sourceInfoCount;
         String columnName = cit.next();
+        String columnType = typit.next();
         ExprNodeDesc partKeyExpr = pit.next();
-        SourceInfo si = new SourceInfo(t, partKeyExpr, columnName, jobConf);
+        SourceInfo si = new SourceInfo(t, partKeyExpr, columnName, columnType, jobConf);
         if (!sourceInfoMap.containsKey(s)) {
           sourceInfoMap.put(s, new ArrayList<SourceInfo>());
         }
@@ -209,7 +214,7 @@ public class DynamicPartitionPruner {
 
     ObjectInspector oi =
         PrimitiveObjectInspectorFactory.getPrimitiveWritableObjectInspector(TypeInfoFactory
-            .getPrimitiveTypeInfo(si.fieldInspector.getTypeName()));
+            .getPrimitiveTypeInfo(si.columnType));
 
     Converter converter =
         ObjectInspectorConverters.getConverter(
@@ -277,8 +282,9 @@ public class DynamicPartitionPruner {
     public Set<Object> values = new HashSet<Object>();
     public AtomicBoolean skipPruning = new AtomicBoolean();
     public final String columnName;
+    public final String columnType;
 
-    public SourceInfo(TableDesc table, ExprNodeDesc partKey, String columnName, JobConf jobConf)
+    public SourceInfo(TableDesc table, ExprNodeDesc partKey, String columnName, String columnType, JobConf jobConf)
         throws SerDeException {
 
       this.skipPruning.set(false);
@@ -286,6 +292,7 @@ public class DynamicPartitionPruner {
       this.partKey = partKey;
 
       this.columnName = columnName;
+      this.columnType = columnType;
 
       deserializer = ReflectionUtils.newInstance(table.getDeserializerClass(), null);
       deserializer.initialize(jobConf, table.getProperties());
