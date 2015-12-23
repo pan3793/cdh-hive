@@ -4,6 +4,8 @@ set hive.exec.dynamic.partition.mode=nonstrict;
 set hive.merge.mapfiles=false;
 set hive.merge.mapredfiles=false;
 
+-- INCLUDE_HADOOP_MAJOR_VERSIONS(0.23)
+
 -- This tests inferring how data is bucketed/sorted from the operators in the reducer
 -- and populating that information in partitions' metadata.  In particular, those cases
 -- where dynamic partitioning is used.

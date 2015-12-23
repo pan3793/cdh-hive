@@ -1,6 +1,8 @@
 SET hive.exec.dynamic.partition = true;
 SET hive.exec.dynamic.partition.mode = nonstrict;
 
+-- INCLUDE_HADOOP_MAJOR_VERSIONS(0.23)
+
 create table alter_partition_change_col0 (c1 string, c2 string);
 load data local inpath '../../data/files/dec.txt' overwrite into table alter_partition_change_col0;
 
