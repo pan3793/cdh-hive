@@ -49,11 +49,11 @@ public class TestOperationLoggingAPI {
   private SessionHandle sessionHandle;
   private final String sql = "select * from " + tableName;
   private final String[] expectedLogs = {
-    "Parsing command",
-    "Parse Completed",
+    "Compiling command",
+    "Completed compiling command",
     "Starting Semantic Analysis",
     "Semantic Analysis Completed",
-    "Starting command"
+    "Executing command"
   };
 
   @BeforeClass
