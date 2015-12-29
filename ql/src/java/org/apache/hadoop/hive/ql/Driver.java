@@ -363,6 +363,16 @@ public class Driver implements CommandProcessor {
     PerfLogger perfLogger = SessionState.getPerfLogger();
     perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.COMPILE);
 
+    command = new VariableSubstitution().substitute(conf,command);
+    String queryStr = command;
+
+    try {
+      // command should be redacted to avoid to logging sensitive data
+      queryStr = HookUtils.redactLogString(conf, command);
+    } catch (Exception e) {
+      LOG.warn("WARNING! Query command could not be redacted." + e);
+    }
+
     //holder for parent command type/string when executing reentrant queries
     QueryState queryState = new QueryState();
 
@@ -380,10 +390,11 @@ public class Driver implements CommandProcessor {
     String queryId = QueryPlan.makeQueryId();
     conf.setVar(HiveConf.ConfVars.HIVEQUERYID, queryId);
 
+    LOG.info("Compiling command(queryId=" + queryId + "): " + queryStr);
+
     SessionState.get().setupQueryCurrentTimestamp();
 
     try {
-      command = new VariableSubstitution().substitute(conf,command);
       ctx = new Context(conf);
       ctx.setTryCount(getTryCount());
       ctx.setCmd(command);
@@ -436,10 +447,6 @@ public class Driver implements CommandProcessor {
       // validate the plan
       sem.validate();
       perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.ANALYZE);
-
-      // Command should be redacted before passing it to the QueryPlan in order
-      // to avoid returning sensitive data
-      String queryStr = HookUtils.redactLogString(conf, command);
 
       plan = new QueryPlan(queryStr, sem, perfLogger.getStartTime(PerfLogger.DRIVER_RUN), queryId,
           SessionState.get().getCommandType());
@@ -504,8 +511,9 @@ public class Driver implements CommandProcessor {
           + org.apache.hadoop.util.StringUtils.stringifyException(e));
       return error.getErrorCode();
     } finally {
-      perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.COMPILE);
+      double duration = perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.COMPILE)/1000.00;
       restoreSession(queryState);
+      LOG.info("Completed compiling command(queryId=" + queryId + "); Time taken: " + duration + " seconds");
     }
   }
 
@@ -1107,6 +1115,7 @@ public class Driver implements CommandProcessor {
 
   private int compileInternal(String command) {
     int ret;
+    LOG.debug("Acquire a monitor for compiling query");
     synchronized (compileMonitor) {
       ret = compile(command);
     }
@@ -1314,8 +1323,7 @@ public class Driver implements CommandProcessor {
     maxthreads = HiveConf.getIntVar(conf, HiveConf.ConfVars.EXECPARALLETHREADNUMBER);
 
     try {
-      LOG.info("Starting command(queryId=" + queryId + "): " + queryStr);
-
+      LOG.info("Executing command(queryId=" + queryId + "): " + queryStr);
       plan.setStarted();
 
       if (SessionState.get() != null) {
@@ -1544,7 +1552,7 @@ public class Driver implements CommandProcessor {
       if (noName) {
         conf.setVar(HiveConf.ConfVars.HADOOPJOBNAME, "");
       }
-      perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.DRIVER_EXECUTE);
+      double duration = perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.DRIVER_EXECUTE)/1000.00;
 
       Map<String, MapRedStats> stats = SessionState.get().getMapRedStats();
       if (stats != null && !stats.isEmpty()) {
@@ -1556,6 +1564,7 @@ public class Driver implements CommandProcessor {
         }
         console.printInfo("Total MapReduce CPU Time Spent: " + Utilities.formatMsecToStr(totalCpu));
       }
+      LOG.info("Completed executing command(queryId=" + queryId + "); Time taken: " + duration + " seconds");
     }
     plan.setDone();
 
