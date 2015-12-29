@@ -111,6 +111,11 @@ public class QueryPlan implements Serializable {
   }
 
   public QueryPlan(String queryString, BaseSemanticAnalyzer sem, Long startTime,
+      String operationName) {
+    this(queryString, sem, startTime, null, operationName);
+  }
+
+  public QueryPlan(String queryString, BaseSemanticAnalyzer sem, Long startTime, String queryId,
      String operationName) {
     this.queryString = queryString;
 
@@ -126,7 +131,7 @@ public class QueryPlan implements Serializable {
     columnAccessInfo = sem.getColumnAccessInfo();
     idToTableNameMap = new HashMap<String, String>(sem.getIdToTableNameMap());
 
-    queryId = makeQueryId();
+    this.queryId = queryId == null ? makeQueryId() : queryId;
     query = new org.apache.hadoop.hive.ql.plan.api.Query();
     query.setQueryId(queryId);
     query.putToQueryAttributes("queryString", this.queryString);
@@ -143,7 +148,7 @@ public class QueryPlan implements Serializable {
     return queryId;
   }
 
-  private String makeQueryId() {
+  public static String makeQueryId() {
     GregorianCalendar gc = new GregorianCalendar();
     String userid = System.getProperty("user.name");
 
