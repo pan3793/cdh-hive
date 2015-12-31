@@ -3069,12 +3069,11 @@ public final class Utilities {
     return builder.toString();
   }
 
-  public static void setColumnNameList(JobConf jobConf, Operator op) {
-    setColumnNameList(jobConf, op, false);
+  public static void setColumnNameList(JobConf jobConf, RowSchema rowSchema) {
+    setColumnNameList(jobConf, rowSchema, false);
   }
 
-  public static void setColumnNameList(JobConf jobConf, Operator op, boolean excludeVCs) {
-    RowSchema rowSchema = op.getSchema();
+  public static void setColumnNameList(JobConf jobConf, RowSchema rowSchema, boolean excludeVCs) {
     if (rowSchema == null) {
       return;
     }
@@ -3092,12 +3091,20 @@ public final class Utilities {
     jobConf.set(serdeConstants.LIST_COLUMNS, columnNamesString);
   }
 
-  public static void setColumnTypeList(JobConf jobConf, Operator op) {
-    setColumnTypeList(jobConf, op, false);
+  public static void setColumnNameList(JobConf jobConf, Operator op) {
+    setColumnNameList(jobConf, op, false);
   }
 
-  public static void setColumnTypeList(JobConf jobConf, Operator op, boolean excludeVCs) {
+  public static void setColumnNameList(JobConf jobConf, Operator op, boolean excludeVCs) {
     RowSchema rowSchema = op.getSchema();
+    setColumnNameList(jobConf, rowSchema, excludeVCs);
+  }
+
+  public static void setColumnTypeList(JobConf jobConf, RowSchema rowSchema) {
+    setColumnTypeList(jobConf, rowSchema, false);
+  }
+
+  public static void setColumnTypeList(JobConf jobConf, RowSchema rowSchema, boolean excludeVCs) {
     if (rowSchema == null) {
       return;
     }
@@ -3116,6 +3123,14 @@ public final class Utilities {
   }
 
   public static final String suffix = ".hashtable";
+  public static void setColumnTypeList(JobConf jobConf, Operator op) {
+    setColumnTypeList(jobConf, op, false);
+  }
+
+  public static void setColumnTypeList(JobConf jobConf, Operator op, boolean excludeVCs) {
+    RowSchema rowSchema = op.getSchema();
+    setColumnTypeList(jobConf, rowSchema, excludeVCs);
+  }
 
   public static Path generatePath(Path basePath, String dumpFilePrefix,
       Byte tag, String bigBucketFileName) {
