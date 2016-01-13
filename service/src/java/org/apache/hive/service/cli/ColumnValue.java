@@ -136,15 +136,18 @@ public class ColumnValue {
     return TColumnValue.stringVal(tStringValue);
   }
 
-  private static TColumnValue stringValue(HiveDecimal value) {
+  private static TColumnValue stringValue(HiveDecimal value, TypeDescriptor typeDescriptor) {
     TStringValue tStrValue = new TStringValue();
     if (value != null) {
-      tStrValue.setValue(value.toString());
+      int scale = typeDescriptor.getDecimalDigits();
+      tStrValue.setValue(value.toFormatString(scale));
     }
     return TColumnValue.stringVal(tStrValue);
   }
 
-  public static TColumnValue toTColumnValue(Type type, Object value) {
+  public static TColumnValue toTColumnValue(TypeDescriptor typeDescriptor, Object value) {
+    Type type = typeDescriptor.getType();
+
     switch (type) {
     case BOOLEAN_TYPE:
       return booleanValue((Boolean)value);
@@ -171,7 +174,7 @@ public class ColumnValue {
     case TIMESTAMP_TYPE:
       return timestampValue((Timestamp)value);
     case DECIMAL_TYPE:
-      return stringValue(((HiveDecimal)value));
+      return stringValue((HiveDecimal)value, typeDescriptor);
     case BINARY_TYPE:
       return stringValue((String)value);
     case ARRAY_TYPE:
