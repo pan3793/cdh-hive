@@ -237,7 +237,7 @@
 
 <property>
   <name>spark.yarn.executor.memoryOverhead</name>
-  <value>256</value>
+  <value>0</value>
 </property>
 
 <property>
@@ -247,7 +247,7 @@
 
 <property>
   <name>spark.yarn.driver.memoryOverhead</name>
-  <value>256</value>
+  <value>0</value>
 </property>
 
 <property>
