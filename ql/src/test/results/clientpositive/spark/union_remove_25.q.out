@@ -201,6 +201,8 @@ Table:              	outputtbl1
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	numFiles            	4                   
+	totalSize           	40                  
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -407,6 +409,8 @@ Table:              	outputtbl2
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	numFiles            	2                   
+	totalSize           	6826                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -597,6 +601,8 @@ Table:              	outputtbl3
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	numFiles            	2                   
+	totalSize           	6812                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 

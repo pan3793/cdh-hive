@@ -88,11 +88,13 @@ STAGE PLANS:
                     columns.types string:string
 #### A masked pattern was here ####
                     name default.analyze_srcpart
+                    numFiles 1
                     partition_columns ds/hr
                     partition_columns.types string:string
                     serialization.ddl struct analyze_srcpart { string key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+                    totalSize 5812
 #### A masked pattern was here ####
                   serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                 
@@ -196,7 +198,7 @@ Table:              	analyze_srcpart
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	true                
+	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
 	numFiles            	1                   
 	numRows             	500                 
 	rawDataSize         	5312                
@@ -238,6 +240,8 @@ Table:              	analyze_srcpart
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	numFiles            	1                   
+	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -275,6 +279,8 @@ Table:              	analyze_srcpart
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	numFiles            	1                   
+	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -312,6 +318,8 @@ Table:              	analyze_srcpart
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	numFiles            	1                   
+	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 

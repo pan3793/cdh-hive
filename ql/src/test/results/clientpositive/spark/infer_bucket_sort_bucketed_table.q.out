@@ -44,7 +44,7 @@ Table:              	test_table_bucketed
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	true                
+	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
 	numFiles            	3                   
 	numRows             	309                 
 	rawDataSize         	1482                

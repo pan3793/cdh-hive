@@ -189,7 +189,9 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
         updateQuickStats(wh, parameters, tTable.getSd());
 
         // write table stats to metastore
-        parameters.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
+        if (!getWork().getNoStatsAggregator()) {
+          parameters.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
+        }
 
         db.alterTable(tableFullName, new Table(tTable));
 
@@ -274,7 +276,9 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
 
           updateQuickStats(parameters, fileStatusMap.get(partn.getName()));
 
-          parameters.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
+          if (!getWork().getNoStatsAggregator()) {
+            parameters.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
+          }
           updates.add(new Partition(table, tPart));
 
           console.printInfo("Partition " + tableFullName + partn.getSpec() +
@@ -378,7 +382,7 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
         if (work.getLoadTableDesc() != null &&
             !work.getLoadTableDesc().getReplace()) {
           String originalValue = parameters.get(statType);
-          if (originalValue != null && !originalValue.equals("-1")) {
+          if (originalValue != null) {
             longValue += Long.parseLong(originalValue); // todo: invalid + valid = invalid
           }
         }
@@ -409,7 +413,7 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
   private void clearStats(Map<String, String> parameters) {
     for (String statType : StatsSetupConst.supportedStats) {
       if (parameters.containsKey(statType)) {
-        parameters.put(statType, "0");
+        parameters.remove(statType);
       }
     }
   }

@@ -3186,7 +3186,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
             LOG.warn("Unable to get number of partitions for table " + tbl.getTableName(), e);
           }
           tblProps.put(StatsSetupConst.NUM_PARTITIONS, Integer.toString(numParts));
-          tbl.setParamters(tblProps);
+          tbl.setParameters(tblProps);
         }
       } else {
         cols = Hive.getFieldsFromDeserializer(colPath, deserializer);
@@ -4490,10 +4490,15 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       String statVal = props.get(stat);
       if (statVal != null && Long.parseLong(statVal) > 0) {
         statsPresent = true;
+        //In the case of truncate table, we set the stats to be 0.
         props.put(stat, "0");
-        props.put(StatsSetupConst.COLUMN_STATS_ACCURATE, "false");
       }
     }
+    //first set basic stats to true
+    StatsSetupConst.setBasicStatsState(props, StatsSetupConst.TRUE);
+    props.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
+    //then invalidate column stats
+    StatsSetupConst.clearColumnStatsState(props);
     return statsPresent;
   }
 
