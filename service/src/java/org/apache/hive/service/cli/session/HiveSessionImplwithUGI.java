@@ -43,7 +43,6 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
   private static final Log LOG = LogFactory.getLog(HiveSessionImplwithUGI.class);
   private UserGroupInformation sessionUgi = null;
   private String hmsDelegationTokenStr = null;
-  private Hive sessionHive = null;
   private HiveSession proxySession = null;
 
   public HiveSessionImplwithUGI(TProtocolVersion protocol, String username, String password,
@@ -51,14 +50,6 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
     super(protocol, username, password, hiveConf, ipAddress);
     setSessionUGI(username);
     setDelegationToken(delegationToken);
-
-    // create a new metastore connection for this particular user session
-    Hive.set(null);
-    try {
-      sessionHive = Hive.get(getHiveConf());
-    } catch (HiveException e) {
-      throw new HiveSQLException("Failed to setup metastore connection", e);
-    }
   }
 
   // setup appropriate UGI for the session
