@@ -196,8 +196,8 @@ public class SessionManager extends CompositeService {
     session.setSessionManager(this);
     session.setOperationManager(operationManager);
     session.setLogManager(logManager);
-    session.initialize(sessionConf);
     session.open();
+    session.initialize(sessionConf);
     handleToSession.put(session.getSessionHandle(), session);
 
     try {

@@ -79,7 +79,7 @@ public class HiveSessionImpl implements HiveSession {
   private String username;
   private final String password;
   private final HiveConf hiveConf;
-  private final SessionState sessionState;
+  private SessionState sessionState;
   private String ipAddress;
 
   private static final String FETCH_WORK_SERDE_CLASS =
@@ -122,17 +122,6 @@ public class HiveSessionImpl implements HiveSession {
     hiveConf.set(ListSinkOperator.OUTPUT_FORMATTER,
         FetchFormatter.ThriftFormatter.class.getName());
     hiveConf.setInt(ListSinkOperator.OUTPUT_PROTOCOL, protocol.getValue());
-
-    /**
-     * Create a new SessionState object that will be associated with this HiveServer2 session.
-     * When the server executes multiple queries in the same session,
-     * this SessionState object is reused across multiple queries.
-     */
-    sessionState = new SessionState(hiveConf, username);
-    sessionState.setIsHiveServerQuery(true);
-
-    lastAccessTime = System.currentTimeMillis();
-    SessionState.start(sessionState);
   }
 
   @Override
@@ -238,12 +227,18 @@ public class HiveSessionImpl implements HiveSession {
 
   @Override
   public void open() throws HiveSQLException {
+    sessionState = new SessionState(hiveConf, username);
+    sessionState.setIsHiveServerQuery(true);
+
     SessionState.start(sessionState);
+
     try {
       sessionHive = Hive.get(getHiveConf());
     } catch (HiveException e) {
       throw new HiveSQLException("Failed to get metastore connection", e);
     }
+
+    lastAccessTime = System.currentTimeMillis();
   }
 
   protected synchronized void acquire(boolean userAccess) {
