@@ -983,6 +983,8 @@ public class SessionState {
       LOG.info("Error closing tez session", e);
     } finally {
       tezSessionState = null;
+      // removes the threadlocal variables, closes underlying HMS connection
+      Hive.closeCurrent();
     }
   }
 
