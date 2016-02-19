@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.plan;
 
+import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,6 +117,7 @@ public class AlterTableDesc extends DDLDesc implements Serializable {
   boolean isDropIfExists = false;
   boolean isTurnOffSorting = false;
   boolean isCascade = false;
+  EnvironmentContext environmentContext;
 
   public AlterTableDesc() {
   }
@@ -178,15 +181,16 @@ public class AlterTableDesc extends DDLDesc implements Serializable {
    *          type of alter op
    */
   public AlterTableDesc(AlterTableTypes alterType) {
-    this(alterType, false);
+    this(alterType, null, false);
   }
 
   /**
    * @param alterType
    *          type of alter op
    */
-  public AlterTableDesc(AlterTableTypes alterType, boolean expectView) {
+  public AlterTableDesc(AlterTableTypes alterType, HashMap<String, String> partSpec, boolean expectView) {
     op = alterType;
+    this.partSpec = partSpec;
     this.expectView = expectView;
   }
 
@@ -734,6 +738,14 @@ public class AlterTableDesc extends DDLDesc implements Serializable {
 
   public static boolean doesAlterTableTypeSupportPartialPartitionSpec(AlterTableTypes type) {
     return alterTableTypesWithPartialSpec.contains(type);
+  }
+
+  public EnvironmentContext getEnvironmentContext() {
+    return environmentContext;
+  }
+
+  public void setEnvironmentContext(EnvironmentContext environmentContext) {
+    this.environmentContext = environmentContext;
   }
 
 }

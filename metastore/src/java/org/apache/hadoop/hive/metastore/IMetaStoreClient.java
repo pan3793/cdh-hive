@@ -57,6 +57,7 @@ import org.apache.hadoop.hive.metastore.api.ConfigValSecurityException;
 import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
 import org.apache.hadoop.hive.metastore.api.FireEventRequest;
 import org.apache.hadoop.hive.metastore.api.Database;
+import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.FireEventResponse;
 import org.apache.hadoop.hive.metastore.api.Function;
@@ -689,9 +690,10 @@ public interface IMetaStoreClient {
   void alter_table(String defaultDatabaseName, String tblName,
       Table table) throws InvalidOperationException, MetaException, TException;
 
-  //alter_table_with_cascade
-  void alter_table(String defaultDatabaseName, String tblName, Table table,
-      boolean cascade) throws InvalidOperationException, MetaException, TException;
+  //wrapper of alter_table_with_cascade
+  void alter_table_with_environmentContext(String defaultDatabaseName, String tblName, Table table,
+      EnvironmentContext environmentContext) throws InvalidOperationException, MetaException,
+      TException;
 
   void createDatabase(Database db)
       throws InvalidObjectException, AlreadyExistsException, MetaException, TException;
@@ -777,7 +779,7 @@ public interface IMetaStoreClient {
    * @throws TException
    *           if error in communicating with metastore server
    */
-  void alter_partition(String dbName, String tblName, Partition newPart)
+  void alter_partition(String dbName, String tblName, Partition newPart, EnvironmentContext environmentContext)
       throws InvalidOperationException, MetaException, TException;
 
   /**
@@ -796,7 +798,7 @@ public interface IMetaStoreClient {
    * @throws TException
    *           if error in communicating with metastore server
    */
-  void alter_partitions(String dbName, String tblName, List<Partition> newParts)
+  void alter_partitions(String dbName, String tblName, List<Partition> newParts, EnvironmentContext environmentContext)
       throws InvalidOperationException, MetaException, TException;
 
   /**

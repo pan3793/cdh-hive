@@ -69,7 +69,7 @@ public final class SynchronizedMetaStoreClient {
 
   public synchronized void alter_partition(String dbName, String tblName,
       Partition newPart, EnvironmentContext environmentContext) throws TException {
-    client.alter_partition(dbName, tblName, newPart);
+    client.alter_partition(dbName, tblName, newPart, environmentContext);
   }
 
   public synchronized LockResponse checkLock(long lockid) throws TException {

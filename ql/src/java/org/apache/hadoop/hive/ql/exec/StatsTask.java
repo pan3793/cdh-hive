@@ -37,6 +37,7 @@ import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hadoop.hive.metastore.Warehouse;
+import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.ql.DriverContext;
@@ -143,6 +144,7 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
     StatsAggregator statsAggregator = null;
     int ret = 0;
     StatsCollectionContext scc = null;
+    EnvironmentContext environmentContext = null;
     try {
       // Stats setup:
       final Warehouse wh = new Warehouse(conf);
@@ -190,10 +192,11 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
 
         // write table stats to metastore
         if (!getWork().getNoStatsAggregator()) {
-          parameters.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
+          environmentContext = new EnvironmentContext();
+          environmentContext.putToProperties(StatsSetupConst.STATS_GENERATED, StatsSetupConst.TASK);
         }
 
-        db.alterTable(tableFullName, new Table(tTable));
+        db.alterTable(tableFullName, new Table(tTable), environmentContext);
 
         console.printInfo("Table " + tableFullName + " stats: [" + toString(parameters) + ']');
       } else {
@@ -277,7 +280,9 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
           updateQuickStats(parameters, fileStatusMap.get(partn.getName()));
 
           if (!getWork().getNoStatsAggregator()) {
-            parameters.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
+            environmentContext = new EnvironmentContext();
+            environmentContext.putToProperties(StatsSetupConst.STATS_GENERATED,
+                StatsSetupConst.TASK);
           }
           updates.add(new Partition(table, tPart));
 
@@ -285,7 +290,7 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
               " stats: [" + toString(parameters) + ']');
         }
         if (!updates.isEmpty()) {
-          db.alterPartitions(tableFullName, updates);
+          db.alterPartitions(tableFullName, updates, environmentContext);
         }
       }
 
