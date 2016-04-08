@@ -137,6 +137,8 @@ public class JdbcColumn {
       return Types.ARRAY;
     } else if ("struct".equalsIgnoreCase(type)) {
       return Types.STRUCT;
+    } else if ("void".equalsIgnoreCase(type) || "null".equalsIgnoreCase(type)) {
+      return Types.NULL;
     }
     throw new SQLException("Unrecognized column type: " + type);
   }
@@ -172,7 +174,7 @@ public class JdbcColumn {
       return serdeConstants.DECIMAL_TYPE_NAME;
     } else if ("binary".equalsIgnoreCase(type)) {
       return serdeConstants.BINARY_TYPE_NAME;
-    } else if ("void".equalsIgnoreCase(type)) {
+    } else if ("void".equalsIgnoreCase(type) || "null".equalsIgnoreCase(type)) {
       return serdeConstants.VOID_TYPE_NAME;
     } else if (type.equalsIgnoreCase("map")) {
       return serdeConstants.MAP_TYPE_NAME;
@@ -189,6 +191,8 @@ public class JdbcColumn {
       throws SQLException {
     // according to hiveTypeToSqlType possible options are:
     switch(columnType) {
+    case Types.NULL:
+      return 4; // "NULL"
     case Types.BOOLEAN:
       return columnPrecision(columnType, columnAttributes);
     case Types.CHAR:
@@ -227,6 +231,8 @@ public class JdbcColumn {
       throws SQLException {
     // according to hiveTypeToSqlType possible options are:
     switch(columnType) {
+    case Types.NULL:
+      return 0;
     case Types.BOOLEAN:
       return 1;
     case Types.CHAR:
@@ -268,6 +274,7 @@ public class JdbcColumn {
       throws SQLException {
     // according to hiveTypeToSqlType possible options are:
     switch(columnType) {
+    case Types.NULL:
     case Types.BOOLEAN:
     case Types.CHAR:
     case Types.VARCHAR:
