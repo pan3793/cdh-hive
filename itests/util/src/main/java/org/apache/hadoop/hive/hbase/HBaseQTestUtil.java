@@ -57,6 +57,12 @@ public class HBaseQTestUtil extends QTestUtil {
   }
 
   @Override
+  protected void initConfFromSetup() throws Exception {
+    super.initConfFromSetup();
+    hbaseSetup.preTest(conf);
+  }
+
+  @Override
   public void createSources(String tname) throws Exception {
     super.createSources(tname);
 
