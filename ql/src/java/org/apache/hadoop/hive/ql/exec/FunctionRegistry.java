@@ -909,7 +909,7 @@ public final class FunctionRegistry {
 
     GenericUDAFParameterInfo paramInfo =
         new SimpleGenericUDAFParameterInfo(
-            args, isDistinct, isAllColumns);
+            args, false, isDistinct, isAllColumns);
 
     GenericUDAFEvaluator udafEvaluator;
     if (udafResolver instanceof GenericUDAFResolver2) {
