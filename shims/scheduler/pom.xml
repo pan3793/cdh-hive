@@ -78,6 +78,17 @@
      <optional>true</optional>
    </dependency>
    <dependency>
+     <groupId>junit</groupId>
+     <artifactId>junit</artifactId>
+     <version>${junit.version}</version>
+     <scope>test</scope>
+   </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito-all.version}</version>
+    </dependency>
+    <dependency>
      <groupId>org.apache.hadoop</groupId>
      <artifactId>hadoop-yarn-server-tests</artifactId>
      <version>${hadoop.version}</version>
