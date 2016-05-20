@@ -31,11 +31,6 @@ OUTPUTFORMAT
 LOCATION
 #### A masked pattern was here ####
 TBLPROPERTIES (
-  'COLUMN_STATS_ACCURATE'='{\"BASIC_STATS\":\"true\"}', 
-  'numFiles'='0', 
-  'numRows'='0', 
-  'rawDataSize'='0', 
-  'totalSize'='0', 
 #### A masked pattern was here ####
 PREHOOK: query: ALTER TABLE tmp_showcrt1 SET TBLPROPERTIES ('comment'='temporary table', 'EXTERNAL'='FALSE')
 PREHOOK: type: ALTERTABLE_PROPERTIES
@@ -71,11 +66,6 @@ LOCATION
 TBLPROPERTIES (
   'EXTERNAL'='FALSE', 
 #### A masked pattern was here ####
-  'numFiles'='0', 
-  'numRows'='0', 
-  'rawDataSize'='0', 
-  'totalSize'='0', 
-#### A masked pattern was here ####
 PREHOOK: query: ALTER TABLE tmp_showcrt1 SET TBLPROPERTIES ('comment'='changed comment', 'EXTERNAL'='TRUE')
 PREHOOK: type: ALTERTABLE_PROPERTIES
 PREHOOK: Input: default@tmp_showcrt1
@@ -108,11 +98,6 @@ OUTPUTFORMAT
 LOCATION
 #### A masked pattern was here ####
 TBLPROPERTIES (
-#### A masked pattern was here ####
-  'numFiles'='0', 
-  'numRows'='0', 
-  'rawDataSize'='0', 
-  'totalSize'='0', 
 #### A masked pattern was here ####
 PREHOOK: query: ALTER TABLE tmp_showcrt1 SET TBLPROPERTIES ('SORTBUCKETCOLSPREFIX'='FALSE')
 PREHOOK: type: ALTERTABLE_PROPERTIES
@@ -147,11 +132,6 @@ LOCATION
 #### A masked pattern was here ####
 TBLPROPERTIES (
 #### A masked pattern was here ####
-  'numFiles'='0', 
-  'numRows'='0', 
-  'rawDataSize'='0', 
-  'totalSize'='0', 
-#### A masked pattern was here ####
 PREHOOK: query: ALTER TABLE tmp_showcrt1 SET TBLPROPERTIES ('storage_handler'='org.apache.hadoop.hive.ql.metadata.DefaultStorageHandler')
 PREHOOK: type: ALTERTABLE_PROPERTIES
 PREHOOK: Input: default@tmp_showcrt1
@@ -184,11 +164,6 @@ WITH SERDEPROPERTIES (
 LOCATION
 #### A masked pattern was here ####
 TBLPROPERTIES (
-#### A masked pattern was here ####
-  'numFiles'='0', 
-  'numRows'='0', 
-  'rawDataSize'='0', 
-  'totalSize'='0', 
 #### A masked pattern was here ####
 PREHOOK: query: DROP TABLE tmp_showcrt1
 PREHOOK: type: DROPTABLE

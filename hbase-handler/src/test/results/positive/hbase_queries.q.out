@@ -937,11 +937,6 @@ WITH SERDEPROPERTIES (
 TBLPROPERTIES (
   'hbase.table.name'='hbase_table_0', 
 #### A masked pattern was here ####
-  'numFiles'='0', 
-  'numRows'='0', 
-  'rawDataSize'='0', 
-  'totalSize'='0', 
-#### A masked pattern was here ####
 PREHOOK: query: DROP TABLE IF EXISTS hbase_table_9
 PREHOOK: type: DROPTABLE
 POSTHOOK: query: DROP TABLE IF EXISTS hbase_table_9
