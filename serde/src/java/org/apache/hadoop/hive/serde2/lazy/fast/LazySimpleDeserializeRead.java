@@ -421,7 +421,7 @@ public final class LazySimpleDeserializeRead extends DeserializeRead {
       break;
     case DATE:
       {
-        if (fieldLength == 0) {
+        if (!LazyUtils.isDateMaybe(bytes, fieldStart, fieldLength)) {
           return true;
         }
         String s = null;
@@ -436,7 +436,7 @@ public final class LazySimpleDeserializeRead extends DeserializeRead {
       break;
     case TIMESTAMP:
       {
-        if (fieldLength == 0) {
+        if (!LazyUtils.isDateMaybe(bytes, fieldStart, fieldLength)) {
           return true;
         }
         String s = null;
@@ -465,6 +465,9 @@ public final class LazySimpleDeserializeRead extends DeserializeRead {
       break;
     case INTERVAL_YEAR_MONTH:
       {
+        if (fieldLength == 0) {
+          return true;
+        }
         String s = null;
         try {
           s = Text.decode(bytes, fieldStart, fieldLength);
@@ -477,6 +480,9 @@ public final class LazySimpleDeserializeRead extends DeserializeRead {
       break;
     case INTERVAL_DAY_TIME:
       {
+        if (fieldLength == 0) {
+          return true;
+        }
         String s = null;
         try {
           s = Text.decode(bytes, fieldStart, fieldLength);
