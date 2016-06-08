@@ -2646,7 +2646,33 @@ public class TestJdbcDriver2 {
   @Test
   public void testSelectExecAsync() throws Exception {
     HiveStatement stmt = (HiveStatement) con.createStatement();
-    ResultSet rs;
+    testSelect(stmt);
+    stmt.close();
+  }
+
+  @Test
+  public void testSelectExecAsync2() throws Exception {
+    HiveStatement stmt = (HiveStatement) con.createStatement();
+
+    stmt.execute("SET hive.driver.parallel.compilation=true");
+    stmt.execute("SET hive.server2.async.exec.async.compile=true");
+
+    testSelect(stmt);
+    stmt.close();
+  }
+
+  @Test
+  public void testSelectExecAsync3() throws Exception {
+    HiveStatement stmt = (HiveStatement) con.createStatement();
+
+    stmt.execute("SET hive.driver.parallel.compilation=true");
+    stmt.execute("SET hive.server2.async.exec.async.compile=false");
+
+    testSelect(stmt);
+    stmt.close();
+  }
+
+  private void testSelect(HiveStatement stmt) throws SQLException {
     // Expected row count of the join query we'll run
     int expectedCount = 1028;
     int rowCount = 0;
@@ -2654,7 +2680,7 @@ public class TestJdbcDriver2 {
         stmt.executeAsync("select t1.value as v11, " + "t2.value as v12 from " + tableName
             + " t1 join " + tableName + " t2 on t1.under_col = t2.under_col");
     assertTrue(isResulSet);
-    rs = stmt.getResultSet();
+    ResultSet rs = stmt.getResultSet();
     assertNotNull(rs);
     // ResultSet#next blocks until the async query is complete
     while (rs.next()) {
@@ -2663,7 +2689,6 @@ public class TestJdbcDriver2 {
       assertNotNull(value);
     }
     assertEquals(rowCount, expectedCount);
-    stmt.close();
   }
 
   /**
@@ -2701,6 +2726,33 @@ public class TestJdbcDriver2 {
   @Test
   public void testInsertOverwriteExecAsync() throws Exception {
     HiveStatement stmt = (HiveStatement) con.createStatement();
+    testInsertOverwrite(stmt);
+    stmt.close();
+  }
+
+  @Test
+  public void testInsertOverwriteExecAsync2() throws Exception {
+    HiveStatement stmt = (HiveStatement) con.createStatement();
+
+    stmt.execute("SET hive.driver.parallel.compilation=true");
+    stmt.execute("SET hive.server2.async.exec.async.compile=true");
+
+    testInsertOverwrite(stmt);
+    stmt.close();
+  }
+
+  @Test
+  public void testInsertOverwriteExecAsync3() throws Exception {
+    HiveStatement stmt = (HiveStatement) con.createStatement();
+
+    stmt.execute("SET hive.driver.parallel.compilation=true");
+    stmt.execute("SET hive.server2.async.exec.async.compile=false");
+
+    testInsertOverwrite(stmt);
+    stmt.close();
+  }
+
+  private void testInsertOverwrite(HiveStatement stmt) throws SQLException {
     String tblName = "testInsertOverwriteExecAsync";
     try {
       int rowCount = 0;
