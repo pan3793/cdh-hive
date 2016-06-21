@@ -245,7 +245,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       throws TException {
     TGetDelegationTokenResp resp = new TGetDelegationTokenResp();
 
-    if (hiveAuthFactory == null) {
+    if (hiveAuthFactory == null || !hiveAuthFactory.isSASLKerberosUser()) {
       resp.setStatus(unsecureTokenErrorStatus());
     } else {
       try {
@@ -269,7 +269,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       throws TException {
     TCancelDelegationTokenResp resp = new TCancelDelegationTokenResp();
 
-    if (hiveAuthFactory == null) {
+    if (hiveAuthFactory == null || !hiveAuthFactory.isSASLKerberosUser()) {
       resp.setStatus(unsecureTokenErrorStatus());
     } else {
       try {
@@ -288,7 +288,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
   public TRenewDelegationTokenResp RenewDelegationToken(TRenewDelegationTokenReq req)
       throws TException {
     TRenewDelegationTokenResp resp = new TRenewDelegationTokenResp();
-    if (hiveAuthFactory == null) {
+    if (hiveAuthFactory == null || !hiveAuthFactory.isSASLKerberosUser()) {
       resp.setStatus(unsecureTokenErrorStatus());
     } else {
       try {
