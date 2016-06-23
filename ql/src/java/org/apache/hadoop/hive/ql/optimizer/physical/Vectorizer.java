@@ -34,6 +34,7 @@ import java.util.Stack;
 import java.util.regex.Pattern;
 
 import org.apache.calcite.util.Pair;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,6 +163,7 @@ import org.apache.hadoop.hive.ql.udf.UDFWeekOfYear;
 import org.apache.hadoop.hive.ql.udf.UDFYear;
 import org.apache.hadoop.hive.ql.udf.generic.*;
 import org.apache.hadoop.hive.serde.serdeConstants;
+import org.apache.hadoop.hive.serde2.ColumnProjectionUtils;
 import org.apache.hadoop.hive.serde2.Deserializer;
 import org.apache.hadoop.hive.serde2.NullStructSerDe;
 import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
@@ -356,8 +358,10 @@ public class Vectorizer implements PhysicalPlanResolver {
   }
 
   private class VectorTaskColumnInfo {
-    List<String> columnNames;
-    List<TypeInfo> typeInfos;
+    List<String> allColumnNames;
+    List<TypeInfo> allTypeInfos;
+    List<Integer> dataColumnNums;
+
     int partitionColumnCount;
     boolean useVectorizedInputFileFormat;
 
@@ -365,16 +369,24 @@ public class Vectorizer implements PhysicalPlanResolver {
 
     Set<Operator<? extends OperatorDesc>> nonVectorizedOps;
 
+    TableScanOperator tableScanOperator;
+
     VectorTaskColumnInfo() {
       partitionColumnCount = 0;
     }
 
-    public void setColumnNames(List<String> columnNames) {
-      this.columnNames = columnNames;
+    public void setAllColumnNames(List<String> allColumnNames) {
+      this.allColumnNames = allColumnNames;
     }
-    public void setTypeInfos(List<TypeInfo> typeInfos) {
-      this.typeInfos = typeInfos;
+
+    public void setAllTypeInfos(List<TypeInfo> allTypeInfos) {
+      this.allTypeInfos = allTypeInfos;
     }
+
+    public void setDataColumnNums(List<Integer> dataColumnNums) {
+      this.dataColumnNums = dataColumnNums;
+    }
+
     public void setPartitionColumnCount(int partitionColumnCount) {
       this.partitionColumnCount = partitionColumnCount;
     }
@@ -387,6 +399,9 @@ public class Vectorizer implements PhysicalPlanResolver {
     public void setNonVectorizedOps(Set<Operator<? extends OperatorDesc>> nonVectorizedOps) {
       this.nonVectorizedOps = nonVectorizedOps;
     }
+    public void setTableScanOperator(TableScanOperator tableScanOperator) {
+      this.tableScanOperator = tableScanOperator;
+    }
 
     public Set<Operator<? extends OperatorDesc>> getNonVectorizedOps() {
       return nonVectorizedOps;
@@ -394,13 +409,20 @@ public class Vectorizer implements PhysicalPlanResolver {
 
     public void transferToBaseWork(BaseWork baseWork) {
 
-      String[] columnNameArray = columnNames.toArray(new String[0]);
-      TypeInfo[] typeInfoArray = typeInfos.toArray(new TypeInfo[0]);
+      String[] allColumnNameArray = allColumnNames.toArray(new String[0]);
+      TypeInfo[] allTypeInfoArray = allTypeInfos.toArray(new TypeInfo[0]);
+      int[] dataColumnNumsArray;
+      if (dataColumnNums != null) {
+        dataColumnNumsArray = ArrayUtils.toPrimitive(dataColumnNums.toArray(new Integer[0]));
+      } else {
+        dataColumnNumsArray = null;
+      }
 
       VectorizedRowBatchCtx vectorizedRowBatchCtx =
           new VectorizedRowBatchCtx(
-            columnNameArray,
-            typeInfoArray,
+            allColumnNameArray,
+            allTypeInfoArray,
+            dataColumnNumsArray,
             partitionColumnCount,
             scratchTypeNameArray);
       baseWork.setVectorizedRowBatchCtx(vectorizedRowBatchCtx);
@@ -534,6 +556,22 @@ public class Vectorizer implements PhysicalPlanResolver {
       return sb.toString();
     }
 
+    private void determineDataColumnNums(TableScanOperator tableScanOperator,
+        List<String> allColumnNameList, int dataColumnCount, List<Integer> dataColumnNums) {
+
+      /*
+       * The TableScanOperator's needed columns are just the data columns.
+       */
+      Set<String> neededColumns = new HashSet<String>(tableScanOperator.getNeededColumns());
+
+      for (int dataColumnNum = 0; dataColumnNum < dataColumnCount; dataColumnNum++) {
+        String columnName = allColumnNameList.get(dataColumnNum);
+        if (neededColumns.contains(columnName)) {
+          dataColumnNums.add(dataColumnNum);
+        }
+      }
+    }
+
     /*
      * There are 3 modes of reading for vectorization:
      *
@@ -659,6 +697,9 @@ public class Vectorizer implements PhysicalPlanResolver {
       final List<TypeInfo> allTypeInfoList = new ArrayList<TypeInfo>();
 
       getTableScanOperatorSchemaInfo(tableScanOperator, allColumnNameList, allTypeInfoList);
+
+      final List<Integer> dataColumnNums = new ArrayList<Integer>();
+
       final int allColumnCount = allColumnNameList.size();
 
       /*
@@ -707,6 +748,9 @@ public class Vectorizer implements PhysicalPlanResolver {
             partitionColumnCount = 0;
             dataColumnCount = allColumnCount;
           }
+
+          determineDataColumnNums(tableScanOperator, allColumnNameList, dataColumnCount,
+              dataColumnNums);
 
           tableDataColumnList = allColumnNameList.subList(0, dataColumnCount);
           tableDataTypeInfoList = allTypeInfoList.subList(0, dataColumnCount);
@@ -781,12 +825,16 @@ public class Vectorizer implements PhysicalPlanResolver {
         vectorPartDesc.setDataTypeInfos(nextDataTypeInfoList);
       }
 
-      vectorTaskColumnInfo.setColumnNames(allColumnNameList);
-      vectorTaskColumnInfo.setTypeInfos(allTypeInfoList);
+      vectorTaskColumnInfo.setAllColumnNames(allColumnNameList);
+      vectorTaskColumnInfo.setAllTypeInfos(allTypeInfoList);
+      vectorTaskColumnInfo.setDataColumnNums(dataColumnNums);
       vectorTaskColumnInfo.setPartitionColumnCount(partitionColumnCount);
       vectorTaskColumnInfo.setUseVectorizedInputFileFormat(useVectorizedInputFileFormat);
 
+      // Helps to keep this for debugging.
+      vectorTaskColumnInfo.setTableScanOperator(tableScanOperator);
       return true;
+      
     }
 
     private boolean validateMapWork(MapWork mapWork, VectorTaskColumnInfo vectorTaskColumnInfo, boolean isTez)
@@ -906,8 +954,8 @@ public class Vectorizer implements PhysicalPlanResolver {
         throw new SemanticException(e);
       }
 
-      vectorTaskColumnInfo.setColumnNames(reduceColumnNames);
-      vectorTaskColumnInfo.setTypeInfos(reduceTypeInfos);
+      vectorTaskColumnInfo.setAllColumnNames(reduceColumnNames);
+      vectorTaskColumnInfo.setAllTypeInfos(reduceTypeInfos);
 
       return true;
     }
@@ -1244,9 +1292,9 @@ public class Vectorizer implements PhysicalPlanResolver {
       boolean saveRootVectorOp = false;
 
       if (op.getParentOperators().size() == 0) {
-        LOG.info("ReduceWorkVectorizationNodeProcessor process reduceColumnNames " + vectorTaskColumnInfo.columnNames.toString());
+        LOG.info("ReduceWorkVectorizationNodeProcessor process reduceColumnNames " + vectorTaskColumnInfo.allColumnNames.toString());
 
-        vContext = new VectorizationContext("__Reduce_Shuffle__", vectorTaskColumnInfo.columnNames, hiveConf);
+        vContext = new VectorizationContext("__Reduce_Shuffle__", vectorTaskColumnInfo.allColumnNames, hiveConf);
         taskVectorizationContext = vContext;
 
         saveRootVectorOp = true;
@@ -1898,7 +1946,7 @@ public class Vectorizer implements PhysicalPlanResolver {
       VectorTaskColumnInfo vectorTaskColumnInfo) {
 
     VectorizationContext vContext =
-        new VectorizationContext(contextName, vectorTaskColumnInfo.columnNames, hiveConf);
+        new VectorizationContext(contextName, vectorTaskColumnInfo.allColumnNames, hiveConf);
 
     return vContext;
   }
@@ -2463,12 +2511,12 @@ public class Vectorizer implements PhysicalPlanResolver {
 
     VectorizedRowBatchCtx vectorizedRowBatchCtx = work.getVectorizedRowBatchCtx();
 
-    String[] columnNames = vectorizedRowBatchCtx.getRowColumnNames();
+    String[] allColumnNames = vectorizedRowBatchCtx.getRowColumnNames();
     Object columnTypeInfos = vectorizedRowBatchCtx.getRowColumnTypeInfos();
     int partitionColumnCount = vectorizedRowBatchCtx.getPartitionColumnCount();
     String[] scratchColumnTypeNames =vectorizedRowBatchCtx.getScratchColumnTypeNames();
 
-    LOG.debug("debugDisplayAllMaps columnNames " + Arrays.toString(columnNames));
+    LOG.debug("debugDisplayAllMaps allColumnNames " + Arrays.toString(allColumnNames));
     LOG.debug("debugDisplayAllMaps columnTypeInfos " + Arrays.deepToString((Object[]) columnTypeInfos));
     LOG.debug("debugDisplayAllMaps partitionColumnCount " + partitionColumnCount);
     LOG.debug("debugDisplayAllMaps scratchColumnTypeNames " + Arrays.toString(scratchColumnTypeNames));

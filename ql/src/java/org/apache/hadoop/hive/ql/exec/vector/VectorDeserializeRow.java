@@ -353,6 +353,18 @@ public final class VectorDeserializeRow<T extends DeserializeRead> {
    */
   private void deserializeRowColumn(VectorizedRowBatch batch, int batchIndex,
       int logicalColumnIndex, boolean canRetainByteRef) throws IOException {
+
+    Category sourceCategory = sourceCategories[logicalColumnIndex];
+    if (sourceCategory == null) {
+      /*
+       * This is a column that we don't want (i.e. not included).
+       * The deserializeRead.readCheckNull() will read the field.
+       */
+      boolean isNull = deserializeRead.readCheckNull();
+      Preconditions.checkState(isNull);
+      return;
+    }
+
     final int projectionColumnNum = projectionColumnNums[logicalColumnIndex];
     if (deserializeRead.readCheckNull()) {
       VectorizedBatchUtil.setNullColIsNullValue(batch.cols[projectionColumnNum], batchIndex);
@@ -360,14 +372,6 @@ public final class VectorDeserializeRow<T extends DeserializeRead> {
     }
 
     // We have a value for the row column.
-    Category sourceCategory = sourceCategories[logicalColumnIndex];
-    if (sourceCategory == null) {
-      /*
-       * This is a column that we don't want (i.e. not included).
-       * The deserializeRead.readCheckNull() has read the field, so we are done.
-       */
-      return;
-    }
     switch (sourceCategory) {
     case PRIMITIVE:
       {
@@ -563,6 +567,17 @@ public final class VectorDeserializeRow<T extends DeserializeRead> {
    */
   private void deserializeConvertRowColumn(VectorizedRowBatch batch, int batchIndex,
       int logicalColumnIndex) throws IOException {
+    Category sourceCategory = sourceCategories[logicalColumnIndex];
+    if (sourceCategory == null) {
+      /*
+       * This is a column that we don't want (i.e. not included).
+       * The deserializeRead.readCheckNull() will read the field.
+       */
+      boolean isNull = deserializeRead.readCheckNull();
+      Preconditions.checkState(isNull);
+      return;
+    }
+
     final int projectionColumnNum = projectionColumnNums[logicalColumnIndex];
     if (deserializeRead.readCheckNull()) {
       VectorizedBatchUtil.setNullColIsNullValue(batch.cols[projectionColumnNum], batchIndex);
@@ -570,14 +585,6 @@ public final class VectorDeserializeRow<T extends DeserializeRead> {
     }
 
     // We have a value for the row column.
-    Category sourceCategory = sourceCategories[logicalColumnIndex];
-    if (sourceCategory == null) {
-      /*
-       * This is a column that we don't want (i.e. not included).
-       * The deserializeRead.readCheckNull() has read the field, so we are done.
-       */
-      return;
-    }
     Writable convertSourceWritable = convertSourceWritables[logicalColumnIndex];
     switch (sourceCategory) {
     case PRIMITIVE:

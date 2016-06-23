@@ -151,7 +151,6 @@ public class LlapInputFormat implements InputFormat<NullWritable, VectorizedRowB
     private final SearchArgument sarg;
     private final String[] columnNames;
     private final VectorizedRowBatchCtx rbCtx;
-    private final boolean[] columnsToIncludeTruncated;
     private final Object[] partitionValues;
 
     private final LinkedList<ColumnVectorBatch> pendingData = new LinkedList<ColumnVectorBatch>();
@@ -197,8 +196,6 @@ public class LlapInputFormat implements InputFormat<NullWritable, VectorizedRowB
 
       MapWork mapWork = Utilities.getMapWork(job);
       rbCtx = mapWork.getVectorizedRowBatchCtx();
-
-      columnsToIncludeTruncated = rbCtx.getColumnsToIncludeTruncated(job);
 
       int partitionColumnCount = rbCtx.getPartitionColumnCount();
       if (partitionColumnCount > 0) {
@@ -335,7 +332,7 @@ public class LlapInputFormat implements InputFormat<NullWritable, VectorizedRowB
 
     @Override
     public VectorizedRowBatch createValue() {
-      return rbCtx.createVectorizedRowBatch(columnsToIncludeTruncated);
+      return rbCtx.createVectorizedRowBatch();
     }
 
     @Override
