@@ -1151,7 +1151,7 @@ public class SessionState {
       return;
     }
 
-    Set<String> jarPaths = Utilities.getJarFilesByPath(renewableJarPath);
+    Set<String> jarPaths = Utilities.getJarFilesByPath(renewableJarPath, sessionConf);
 
     // load jars under the hive.reloadable.aux.jars.path
     if(!jarPaths.isEmpty()){
@@ -1709,6 +1709,14 @@ public class SessionState {
 
   public List<String> getForwardedAddresses() {
     return forwardedAddresses;
+  }
+
+  /**
+   * Gets the comma-separated reloadable aux jars
+   * @return the list of reloadable aux jars
+   */
+  public String getReloadableAuxJars() {
+    return StringUtils.join(preReloadableAuxJars, ',');
   }
 }
 
