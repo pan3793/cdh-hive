@@ -41,6 +41,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience.LimitedPrivate;
 import org.apache.hadoop.hive.conf.Validator.PatternSet;
 import org.apache.hadoop.hive.conf.Validator.RangeValidator;
@@ -658,7 +659,8 @@ public class HiveConf extends Configuration {
 
     // reloadable jars
     HIVERELOADABLEJARS("hive.reloadable.aux.jars.path", "",
-        "Jars can be renewed by executing reload command. And these jars can be "
+        "The locations of the plugin jars, which can be a comma-separated folders or jars. Jars can be renewed\n"
+        + "by executing reload command. And these jars can be "
             + "used as the auxiliary classes like creating a UDF or SerDe."),
 
     // hive added files and jars
@@ -2710,7 +2712,7 @@ public class HiveConf extends Configuration {
     }
 
     if (auxJars == null) {
-      auxJars = this.get(ConfVars.HIVEAUXJARS.varname);
+      auxJars = StringUtils.join(FileUtils.getJarFilesByPath(this.get(ConfVars.HIVEAUXJARS.varname), this), ',');
     }
 
     if (getBoolVar(ConfVars.METASTORE_SCHEMA_VERIFICATION)) {
@@ -2953,7 +2955,8 @@ public class HiveConf extends Configuration {
   }
 
   /**
-   * @param auxJars the auxJars to set
+   * Set the auxiliary jars. Used for unit tests only.
+   * @param auxJars the auxJars to set.
    */
   public void setAuxJars(String auxJars) {
     this.auxJars = auxJars;

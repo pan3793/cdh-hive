@@ -41,11 +41,11 @@ import java.util.StringTokenizer;
 
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.util.StringUtils;
 
 /**
  * HiveStringUtils
@@ -878,6 +878,24 @@ public class HiveStringUtils {
   }
 
   /**
+   * Concatenates strings, using a separator. Empty/blank string or null will be
+   * ignored.
+   *
+   * @param strings Strings to join.
+   * @param separator Separator to join with.
+   */
+  public static String joinIgnoringEmpty(String[] strings, char separator) {
+    ArrayList<String> list = new ArrayList<String>();
+    for(String str : strings) {
+      if (StringUtils.isNotBlank(str)) {
+        list.add(str);
+      }
+    }
+
+    return StringUtils.join(list, separator);
+  }
+
+  /**
    * Convert SOME_STUFF to SomeStuff
    *
    * @param s input string
@@ -888,7 +906,7 @@ public class HiveStringUtils {
     String[] words = split(s.toLowerCase(Locale.US), ESCAPE_CHAR, '_');
 
     for (String word : words) {
-      sb.append(org.apache.commons.lang.StringUtils.capitalize(word));
+      sb.append(StringUtils.capitalize(word));
     }
 
     return sb.toString();
