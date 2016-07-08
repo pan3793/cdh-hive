@@ -1163,7 +1163,7 @@ public class SessionState {
       return;
     }
 
-    Set<String> jarPaths = Utilities.getJarFilesByPath(renewableJarPath, sessionConf);
+    Set<String> jarPaths = FileUtils.getJarFilesByPath(renewableJarPath, sessionConf);
 
     // load jars under the hive.reloadable.aux.jars.path
     if(!jarPaths.isEmpty()){

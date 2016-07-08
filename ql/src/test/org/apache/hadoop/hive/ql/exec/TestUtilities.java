@@ -35,8 +35,6 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -59,19 +57,15 @@ import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFFromUtcTimestamp;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.mapred.JobConf;
-
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 
 public class TestUtilities {
   @Rule
@@ -147,34 +141,6 @@ public class TestUtilities {
       fail("exception was expected for invalid table name");
     } catch(HiveException ex){
       assertEquals("Invalid table name " + tablename, ex.getMessage());
-    }
-  }
-
-  @Test
-  public void testGetJarFilesByPath() {
-    HiveConf conf = new HiveConf(this.getClass());
-    File f = Files.createTempDir();
-    String jarFileName1 = f.getAbsolutePath() + File.separator + "a.jar";
-    String jarFileName2 = f.getAbsolutePath() + File.separator + "b.jar";
-    File jarFile = new File(jarFileName1);
-    try {
-      FileUtils.touch(jarFile);
-      Set<String> jars = Utilities.getJarFilesByPath(f.getAbsolutePath(), conf);
-      Assert.assertEquals(Sets.newHashSet("file://" + jarFileName1),jars);
-
-      jars = Utilities.getJarFilesByPath("/folder/not/exist", conf);
-      Assert.assertTrue(jars.isEmpty());
-
-      File jarFile2 = new File(jarFileName2);
-      FileUtils.touch(jarFile2);
-      String newPath = "file://" + jarFileName1 + "," + "file://" + jarFileName2 + ",/file/not/exist";
-      jars = Utilities.getJarFilesByPath(newPath, conf);
-      Assert.assertEquals(Sets.newHashSet("file://" + jarFileName1, "file://" + jarFileName2), jars);
-    } catch (IOException e) {
-      LOG.error("failed to copy file to reloading folder", e);
-      Assert.fail(e.getMessage());
-    } finally {
-      FileUtils.deleteQuietly(f);
     }
   }
 

@@ -22,6 +22,7 @@ import com.google.common.base.Joiner;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience.LimitedPrivate;
 import org.apache.hadoop.hive.conf.Validator.PatternSet;
@@ -3800,7 +3801,7 @@ public class HiveConf extends Configuration {
     }
 
     if (auxJars == null) {
-      auxJars = this.get(ConfVars.HIVEAUXJARS.varname);
+      auxJars = StringUtils.join(FileUtils.getJarFilesByPath(this.get(ConfVars.HIVEAUXJARS.varname), this), ',');
     }
 
     if (getBoolVar(ConfVars.METASTORE_SCHEMA_VERIFICATION)) {
@@ -4080,7 +4081,8 @@ public class HiveConf extends Configuration {
   }
 
   /**
-   * @param auxJars the auxJars to set
+   * Set the auxiliary jars. Used for unit tests only.
+   * @param auxJars the auxJars to set.
    */
   public void setAuxJars(String auxJars) {
     this.auxJars = auxJars;
