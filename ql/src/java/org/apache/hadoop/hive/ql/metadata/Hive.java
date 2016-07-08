@@ -2754,7 +2754,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    */
   static protected boolean needToCopy(Path srcf, Path destf, FileSystem srcFs, FileSystem destFs) throws HiveException, IOException {
     //Check if different FileSystems
-    if (!srcFs.getClass().equals(destFs.getClass())) {
+    if (!FileUtils.equalsFileSystem(srcFs, destFs)) {
       return true;
     }
 
