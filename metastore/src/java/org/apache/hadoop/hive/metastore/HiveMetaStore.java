@@ -873,6 +873,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         try {
           ms.shutdown();
         } finally {
+          threadLocalConf.remove();
           threadLocalMS.remove();
         }
       }
