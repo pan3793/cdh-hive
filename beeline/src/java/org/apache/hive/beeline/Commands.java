@@ -1454,7 +1454,7 @@ public class Commands {
     Properties props = new Properties();
     if (url != null) {
       String saveUrl = getUrlToUse(url);
-      props.setProperty(JdbcConnectionParams.PROPERTY_URL, url);
+      props.setProperty(JdbcConnectionParams.PROPERTY_URL, saveUrl);
     }
 
     String value = null;
