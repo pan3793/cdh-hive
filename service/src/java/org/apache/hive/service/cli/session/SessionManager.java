@@ -375,7 +375,7 @@ public class SessionManager extends CompositeService {
   public synchronized void closeSession(SessionHandle sessionHandle) throws HiveSQLException {
     HiveSession session = handleToSession.remove(sessionHandle);
     if (session == null) {
-      throw new HiveSQLException("Session does not exist!");
+      throw new HiveSQLException("Session does not exist: " + sessionHandle);
     }
     LOG.info("Session closed, " + sessionHandle + ", current sessions:" + getOpenSessionCount());
     try {
