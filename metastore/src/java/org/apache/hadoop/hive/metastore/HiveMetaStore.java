@@ -362,7 +362,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           }
         };
 
-    private final void logAuditEvent(String cmd) {
+    private static final void logAuditEvent(String cmd) {
       if (cmd == null) {
         return;
       }
@@ -794,7 +794,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       }
     }
 
-    private void logInfo(String m) {
+    private static void logInfo(String m) {
       LOG.info(threadLocalId.get().toString() + ": " + m);
       logAuditEvent(m);
     }
@@ -867,17 +867,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
     @Override
     public void shutdown() {
-      logInfo("Shutting down the object store...");
-      RawStore ms = threadLocalMS.get();
-      if (ms != null) {
-        try {
-          ms.shutdown();
-        } finally {
-          threadLocalConf.remove();
-          threadLocalMS.remove();
-        }
-      }
-      logInfo("Metastore shutdown complete.");
+      cleanupRawStore();
     }
 
     @Override
@@ -6285,6 +6275,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           } catch (Exception e) {
             LOG.warn("Error Reporting Metastore close connection to Metrics system", e);
           }
+          // If the IMetaStoreClient#close was called, HMSHandler#shutdown would have already
+          // cleaned up thread local RawStore. Otherwise, do it now.
+          cleanupRawStore();
         }
 
         @Override
@@ -6309,6 +6302,20 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       x.printStackTrace();
       HMSHandler.LOG.error(StringUtils.stringifyException(x));
       throw x;
+    }
+  }
+
+  private static void cleanupRawStore() {
+    RawStore rs = HMSHandler.getRawStore();
+    if (rs != null) {
+      HMSHandler.logInfo("Cleaning up thread local RawStore...");
+      try {
+        rs.shutdown();
+      } finally {
+        HMSHandler.threadLocalConf.remove();
+        HMSHandler.removeRawStore();
+      }
+      HMSHandler.logInfo("Done cleaning up thread local RawStore");
     }
   }
 
