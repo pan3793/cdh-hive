@@ -30,6 +30,7 @@ import org.apache.hadoop.hive.serde2.typeinfo.CharTypeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.common.type.HiveIntervalDayTime;
 import org.apache.hadoop.hive.common.type.HiveIntervalYearMonth;
@@ -133,7 +134,7 @@ public class VectorizedRowBatchCtx {
   public static void getPartitionValues(VectorizedRowBatchCtx vrbCtx, Configuration hiveConf,
       FileSplit split, Object[] partitionValues) throws IOException {
 
-    Map<String, PartitionDesc> pathToPartitionInfo = Utilities
+    Map<Path, PartitionDesc> pathToPartitionInfo = Utilities
         .getMapWork(hiveConf).getPathToPartitionInfo();
 
     PartitionDesc partDesc = HiveFileFormatUtils

@@ -526,8 +526,8 @@ public class VectorMapOperator extends AbstractMapOperator {
     HashMap<PartitionDesc, VectorPartitionContext> partitionContextMap =
         new HashMap<PartitionDesc, VectorPartitionContext>();
 
-    for (Map.Entry<String, ArrayList<String>> entry : conf.getPathToAliases().entrySet()) {
-      String path = entry.getKey();
+    for (Map.Entry<Path, ArrayList<String>> entry : conf.getPathToAliases().entrySet()) {
+      Path path = entry.getKey();
       PartitionDesc partDesc = conf.getPathToPartitionInfo().get(path);
 
       VectorPartitionContext vectorPartitionContext;
@@ -538,7 +538,7 @@ public class VectorMapOperator extends AbstractMapOperator {
         vectorPartitionContext = partitionContextMap.get(partDesc);
       }
 
-      fileToPartitionContextMap.put(path, vectorPartitionContext);
+      fileToPartitionContextMap.put(path.toString(), vectorPartitionContext);
     }
 
     // Create list of one.

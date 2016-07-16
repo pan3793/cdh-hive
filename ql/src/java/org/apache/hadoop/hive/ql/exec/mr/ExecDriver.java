@@ -493,13 +493,9 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
     Operator<?> topOp = mWork.getAliasToWork().get(alias);
     PartitionDesc partDesc = mWork.getAliasToPartnInfo().get(alias);
 
-    ArrayList<String> paths = mWork.getPaths();
     ArrayList<PartitionDesc> parts = mWork.getPartitionDescs();
 
-    List<Path> inputPaths = new ArrayList<Path>(paths.size());
-    for (String path : paths) {
-      inputPaths.add(new Path(path));
-    }
+    List<Path> inputPaths = mWork.getPaths();
 
     Path tmpPath = context.getExternalTmpPath(inputPaths.get(0));
     Path partitionFile = new Path(tmpPath, ".partitions");
@@ -522,7 +518,7 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
 
       FetchWork fetchWork;
       if (!partDesc.isPartitioned()) {
-        assert paths.size() == 1;
+        assert inputPaths.size() == 1;
         fetchWork = new FetchWork(inputPaths.get(0), partDesc.getTableDesc());
       } else {
         fetchWork = new FetchWork(inputPaths, parts, partDesc.getTableDesc());
