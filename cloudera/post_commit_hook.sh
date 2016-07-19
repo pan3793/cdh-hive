@@ -26,7 +26,7 @@ fi
 
 [ -z "$HIVE_BRANCH" ] && echo "Fatal: Cannot find GIT branch name." && exit 1
 
-export PTEST_PROPERTIES_FILE="cdh5-1.1.x.properties"
+export PTEST_PROPERTIES_FILE="cdh6-2.1.x-java8.properties"
 export JAVA7_BUILD="1"
 
 mkdir -p $HIVE_PTEST_DIR
