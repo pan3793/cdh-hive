@@ -278,7 +278,7 @@ public class TestBeeLineWithArgs {
     List<String> argList = getBaseArgs(miniHS2.getBaseJdbcURL());
     testScriptFile( SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
   }
-  
+
   /**
    * Test Beeline -hivevar option. User can specify --hivevar name=value on Beeline command line.
    * In the script, user should be able to use it in the form of ${name}, which will be substituted with
@@ -892,5 +892,23 @@ public class TestBeeLineWithArgs {
     final String SCRIPT_TEXT = "!sh echo hello world";
     final String EXPECTED_PATTERN = "hello world";
     testScriptFile(SCRIPT_TEXT, EXPECTED_PATTERN, true, argList, true, false);
+  }
+
+  /**
+   * Attempt to execute a simple script file with the usage of user & password variables in URL.
+   * Test for presence of an expected pattern
+   * in the output (stdout or stderr), fail if not found
+   * Print PASSED or FAILED
+   */
+  @Test
+  public void testShowDbInPrompt() throws Throwable {
+    final String EXPECTED_PATTERN = " (default)>";
+    List<String> argList = new ArrayList<String>();
+    argList.add("--showDbInPrompt");
+    argList.add("-u");
+    argList.add(miniHS2.getBaseJdbcURL() + ";user=hivetest;password=hive");
+    String SCRIPT_TEXT = "select current_user();";
+
+    testScriptFile( SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
   }
 }
