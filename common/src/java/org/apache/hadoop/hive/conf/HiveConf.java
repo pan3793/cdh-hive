@@ -2117,7 +2117,12 @@ public class HiveConf extends Configuration {
       "This is only necessary if the host has mutiple network addresses and if a different network address other than " +
       "hive.server2.thrift.bind.host is to be used."),
     NWAYJOINREORDER("hive.reorder.nway.joins", true,
-      "Runs reordering of tables within single n-way join (i.e.: picks streamtable)");
+      "Runs reordering of tables within single n-way join (i.e.: picks streamtable)"),
+    HIVE_MSCK_REPAIR_BATCH_SIZE(
+        "hive.msck.repair.batch.size", 0,
+        "Batch size for the msck repair command. If the value is greater than zero, "
+            + "it will execute batch wise with the configured batch size. "
+            + "The default value is zero. Zero means it will execute directly (Not batch wise)");
 
     public final String varname;
     private final String defaultExpr;
