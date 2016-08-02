@@ -545,11 +545,15 @@ public final class FileUtils {
       if (!success) {
         return false;
       } else {
-        //set on the entire subtree
-        if (inheritPerms) {
-          HdfsUtils.setFullFileStatus(conf,
-                  new HdfsUtils.HadoopFileStatus(conf, fs, lastExistingParent), fs,
-                  firstNonExistentParent, true);
+        try {
+          //set on the entire subtree
+          if (inheritPerms) {
+            HdfsUtils.setFullFileStatus(conf,
+                new HdfsUtils.HadoopFileStatus(conf, fs, lastExistingParent), fs,
+                firstNonExistentParent, true);
+          }
+        } catch (Exception e) {
+          LOG.warn("Error setting permissions of " + firstNonExistentParent, e);
         }
         return true;
       }
