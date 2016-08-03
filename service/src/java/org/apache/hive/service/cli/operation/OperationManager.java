@@ -365,7 +365,7 @@ public class OperationManager extends AbstractService {
 
   /**
    * @return displays representing a number of historical SQLOperations, at max number of
-   * hive.server2.webui.max.historic.queries
+   * hive.server2.webui.max.historic.queries. Newest items will be first.
    */
   public List<QueryInfo> getHistoricalQueryInfos() {
     List<QueryInfo> result = new LinkedList<>();
