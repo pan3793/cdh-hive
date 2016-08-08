@@ -476,11 +476,14 @@ public class TestSSL {
     setBinaryConfOverlay(confOverlay);
     clearSslConfOverlay(confOverlay);
     confOverlay.put("hive.server2.enable.SSL", "true");
+    confOverlay.put("hive.server2.uset.SSL", "true");
     // Start HS2 with SSL
     miniHS2.start(confOverlay);
 
     String tableName = "sslTab";
     Path dataFilePath = new Path(dataFileDir, "kv1.txt");
+
+    Thread.sleep(10000);
 
     // make SSL connection
     hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL("default", SSL_CONN_PARAMS),
