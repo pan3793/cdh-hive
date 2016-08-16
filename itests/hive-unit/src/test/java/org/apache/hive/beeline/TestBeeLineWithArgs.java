@@ -760,4 +760,12 @@ public class TestBeeLineWithArgs {
     final String EXPECTED_PATTERN = "Stage-1 map =";
     testScriptFile(SCRIPT_TEXT, EXPECTED_PATTERN, true, argList);
   }
+
+  @Test
+  public void testBeelineShellCommandWithoutConn() throws Throwable {
+    List<String> argList = new ArrayList<String>();
+    final String SCRIPT_TEXT = "!sh echo hello world";
+    final String EXPECTED_PATTERN = "hello world";
+    testScriptFile(SCRIPT_TEXT, EXPECTED_PATTERN, true, argList,true,false);
+  }
 }
