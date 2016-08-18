@@ -1,7 +1,5 @@
 Warning: Shuffle Join JOIN[21][tables = [$hdt$_0, $hdt$_1]] in Stage 'Stage-2:MAPRED' is a cross product
-PREHOOK: query: -- non agg, non corr
-
-explain
+PREHOOK: query: explain
 select key, count(*) 
 from src 
 group by key
@@ -185,8 +183,7 @@ STAGE PLANS:
         ListSink
 
 Warning: Shuffle Join JOIN[29][tables = [$hdt$_0, $hdt$_1]] in Stage 'Stage-2:MAPRED' is a cross product
-PREHOOK: query: -- non agg, corr
-explain
+PREHOOK: query: explain
 select b.p_mfgr, min(p_retailprice) 
 from part b 
 group by b.p_mfgr
@@ -466,8 +463,7 @@ POSTHOOK: Input: default@part
 Manufacturer#1	1173.15
 Manufacturer#2	1690.68
 Warning: Shuffle Join JOIN[31][tables = [$hdt$_0, $hdt$_1]] in Stage 'Stage-2:MAPRED' is a cross product
-PREHOOK: query: -- agg, non corr
-explain
+PREHOOK: query: explain
 select b.p_mfgr, min(p_retailprice) 
 from part b 
 group by b.p_mfgr

@@ -561,8 +561,8 @@ STAGE PLANS:
             alias: store_sales
             Statistics: Num rows: 1000 Data size: 88276 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: ss_ticket_number (type: int), ss_item_sk (type: int), ss_quantity (type: int)
-              outputColumnNames: ss_ticket_number, ss_item_sk, ss_quantity
+              expressions: ss_item_sk (type: int), ss_ticket_number (type: int), ss_quantity (type: int)
+              outputColumnNames: ss_item_sk, ss_ticket_number, ss_quantity
               Statistics: Num rows: 1000 Data size: 88276 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: min(ss_quantity)
@@ -774,8 +774,8 @@ STAGE PLANS:
             alias: store_sales
             Statistics: Num rows: 1000 Data size: 88276 Basic stats: COMPLETE Column stats: NONE
             Select Operator
-              expressions: ss_ticket_number (type: int), ss_item_sk (type: int), ss_quantity (type: int)
-              outputColumnNames: ss_ticket_number, ss_item_sk, ss_quantity
+              expressions: ss_item_sk (type: int), ss_ticket_number (type: int), ss_quantity (type: int)
+              outputColumnNames: ss_item_sk, ss_ticket_number, ss_quantity
               Statistics: Num rows: 1000 Data size: 88276 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: min(ss_quantity)
