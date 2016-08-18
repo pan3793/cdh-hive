@@ -531,7 +531,7 @@
                 <if>
                   <equals arg1="${active.hadoop.version}" arg2="${hadoop-23.version}"/>
                   <then>
-                    <qtestgen hiveRootDirectory="${basedir}/${hive.path.to.root}/"
+                    <!--qtestgen hiveRootDirectory="${basedir}/${hive.path.to.root}/"
                               outputDirectory="${project.build.directory}/generated-test-sources/java/org/apache/hadoop/hive/cli/"
                               templatePath="${basedir}/${hive.path.to.root}/ql/src/test/templates/" template="TestCliDriver.vm"
                               queryDirectory="${basedir}/${hive.path.to.root}/ql/src/test/queries/clientpositive/"
@@ -547,7 +547,7 @@
                               logDirectory="${project.build.directory}/qfile-results/clientpositive/"
                               hadoopVersion="${active.hadoop.version}"
                               initScript="q_test_init.sql"
-                              cleanupScript="q_test_cleanup.sql"/>
+                              cleanupScript="q_test_cleanup.sql"/-->
 
                     <qtestgen hiveRootDirectory="${basedir}/${hive.path.to.root}/"
                               outputDirectory="${project.build.directory}/generated-test-sources/java/org/apache/hadoop/hive/cli/"
