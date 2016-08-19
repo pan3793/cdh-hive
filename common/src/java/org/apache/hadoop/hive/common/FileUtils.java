@@ -629,32 +629,45 @@ public final class FileUtils {
     return false;
   }
 
-  public static boolean renameWithPerms(FileSystem fs, Path sourcePath,
+  public static boolean renameWithPerms(FileSystem srcFs, FileSystem destFs, Path srcPath,
                                Path destPath, boolean inheritPerms,
                                Configuration conf) throws IOException {
-    LOG.info("Renaming " + sourcePath + " to " + destPath);
+    LOG.info("Renaming " + srcPath + " to " + destPath);
 
-    // If destPath directory exists, rename call will move the sourcePath
+    // If destPath directory exists, rename call will move the srcPath
     // into destPath without failing. So check it before renaming.
-    if (fs.exists(destPath)) {
+    if (destFs.exists(destPath)) {
       throw new IOException("Cannot rename the source path. The destination "
           + "path already exists.");
     }
 
-    if (!inheritPerms) {
-      //just rename the directory
-      return fs.rename(sourcePath, destPath);
-    } else {
-      //rename the directory
-      if (fs.rename(sourcePath, destPath)) {
-        HadoopShims shims = ShimLoader.getHadoopShims();
-        HdfsFileStatus fullFileStatus = shims.getFullFileStatus(conf, fs, destPath.getParent());
-        shims.setFullFileStatus(conf, fullFileStatus, null, fs, destPath, true);
+    if (equalsFileSystem(srcFs, destFs)) {
+      if (!inheritPerms) {
+        //just rename the directory
+        return srcFs.rename(srcPath, destPath);
+      } else {
+        //rename the directory
+        if (srcFs.rename(srcPath, destPath)) {
+          HadoopShims shims = ShimLoader.getHadoopShims();
+          HdfsFileStatus fullFileStatus = shims.getFullFileStatus(conf, destFs, destPath.getParent());
+          try {
+            shims.setFullFileStatus(conf, fullFileStatus, null, destFs, destPath, true);
+          } catch (Exception e) {
+            LOG.warn("Error setting permissions or group of " + destPath, e);
+          }
 
-        return true;
+          return true;
+        }
+
+        return false;
       }
-
-      return false;
+    } else {
+      HiveConf hc = new HiveConf(conf, conf.getClass());
+      hc.setBoolVar(HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS, inheritPerms);
+      return copy(srcFs, srcPath, destFs, destPath,
+          true,    // delete source
+          false, // overwrite destination
+          hc);
     }
   }
 
