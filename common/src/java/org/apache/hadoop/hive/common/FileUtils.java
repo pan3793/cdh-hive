@@ -655,30 +655,40 @@ public final class FileUtils {
     return result;
   }
 
-  public static boolean renameWithPerms(FileSystem fs, Path sourcePath,
+  public static boolean renameWithPerms(FileSystem srcFs, FileSystem destFs, Path srcPath,
                                Path destPath, boolean inheritPerms,
                                Configuration conf) throws IOException {
-    LOG.info("Renaming " + sourcePath + " to " + destPath);
+    LOG.info("Renaming " + srcPath + " to " + destPath);
 
-    // If destPath directory exists, rename call will move the sourcePath
+    // If destPath directory exists, rename call will move the srcPath
     // into destPath without failing. So check it before renaming.
-    if (fs.exists(destPath)) {
+    if (destFs.exists(destPath)) {
       throw new IOException("Cannot rename the source path. The destination "
           + "path already exists.");
     }
 
-    if (!inheritPerms) {
-      //just rename the directory
-      return fs.rename(sourcePath, destPath);
-    } else {
-      //rename the directory
-      if (fs.rename(sourcePath, destPath)) {
-        HdfsUtils.setFullFileStatus(conf, new HdfsUtils.HadoopFileStatus(conf, fs, destPath.getParent()), fs, destPath,
-                true);
-        return true;
-      }
+    if (equalsFileSystem(srcFs, destFs)) {
+      if (!inheritPerms) {
+        //just rename the directory
+        return srcFs.rename(srcPath, destPath);
+      } else {
+        //rename the directory
+        if (srcFs.rename(srcPath, destPath)) {
+          HdfsUtils.setFullFileStatus(conf, new HdfsUtils.HadoopFileStatus(conf, destFs, destPath.getParent()), destFs, destPath,
+              true);
 
-      return false;
+          return true;
+        }
+
+        return false;
+      }
+    } else {
+      HiveConf hc = new HiveConf(conf, conf.getClass());
+      hc.setBoolVar(HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS, inheritPerms);
+      return copy(srcFs, srcPath, destFs, destPath,
+          true,    // delete source
+          false, // overwrite destination
+          hc);
     }
   }
 

@@ -205,14 +205,15 @@ public class Warehouse {
     return false;
   }
 
-  public boolean renameDir(Path sourcePath, Path destPath) throws MetaException {
-    return renameDir(sourcePath, destPath, false);
+  public boolean renameDir(Path srcPath, Path destPath) throws MetaException {
+    return renameDir(srcPath, destPath, false);
   }
 
-  public boolean renameDir(Path sourcePath, Path destPath, boolean inheritPerms) throws MetaException {
+  public boolean renameDir(Path srcPath, Path destPath, boolean inheritPerms) throws MetaException {
     try {
-      FileSystem fs = getFs(sourcePath);
-      return FileUtils.renameWithPerms(fs, sourcePath, destPath, inheritPerms, conf);
+      FileSystem srcFs = getFs(srcPath);
+      FileSystem destFs = getFs(destPath);
+      return FileUtils.renameWithPerms(srcFs, destFs, srcPath, destPath, inheritPerms, conf);
     } catch (Exception ex) {
       MetaStoreUtils.logAndThrowMetaException(ex);
     }
