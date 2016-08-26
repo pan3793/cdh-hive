@@ -605,6 +605,7 @@ class BeeLineOpts implements Completer {
     this.delimiterForDSV = delimiterForDSV;
   }
 
+  @Ignore
   public HiveConf getConf() {
     return conf;
   }
