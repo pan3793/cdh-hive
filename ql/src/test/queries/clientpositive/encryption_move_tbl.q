@@ -14,7 +14,7 @@ SHOW TABLES;
 ALTER TABLE default.encrypted_table RENAME TO default.plain_table;
 SHOW TABLES;
 
-DROP TABLE encrypted_table PURGE;
+DROP TABLE plain_table PURGE;
 
 CRYPTO DELETE_KEY --keyName key_128;
 

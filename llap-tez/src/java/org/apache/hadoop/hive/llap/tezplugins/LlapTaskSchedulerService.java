@@ -270,7 +270,8 @@ public class LlapTaskSchedulerService extends TaskScheduler {
     if (initMetrics) {
       // Initialize the metrics system
       LlapMetricsSystem.initialize("LlapTaskScheduler");
-      this.pauseMonitor = new JvmPauseMonitor(conf);
+      this.pauseMonitor = new JvmPauseMonitor();
+      pauseMonitor.init(conf);
       pauseMonitor.start();
       String displayName = "LlapTaskSchedulerMetrics-" + MetricsUtils.getHostName();
       String sessionId = conf.get("llap.daemon.metrics.sessionid");

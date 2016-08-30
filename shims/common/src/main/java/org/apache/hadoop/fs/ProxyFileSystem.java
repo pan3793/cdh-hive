@@ -264,6 +264,11 @@ public class ProxyFileSystem extends FilterFileSystem {
   }
 
   @Override
+  public FileStatus getFileLinkStatus(Path f) throws IOException {
+    return swizzleFileStatus(super.getFileLinkStatus(swizzleParamPath(f)), false);
+  }
+
+  @Override
   public FileStatus getFileStatus(Path f) throws IOException {
     return swizzleFileStatus(super.getFileStatus(swizzleParamPath(f)), false);
   }

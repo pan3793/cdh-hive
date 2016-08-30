@@ -1126,11 +1126,17 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       if(!"hdfs".equalsIgnoreCase(path.toUri().getScheme())) {
         return false;
       }
-      try {
-        return (hdfsAdmin.getEncryptionZoneForPath(fullPath) != null);
-      } catch (FileNotFoundException fnfe) {
-        LOG.debug("Failed to get EZ for non-existent path: "+ fullPath, fnfe);
-        return false;
+
+      return (getEncryptionZoneForPath(fullPath) != null);
+    }
+
+    private EncryptionZone getEncryptionZoneForPath(Path path) throws IOException {
+      if (FileSystem.get(conf).exists(path)) {
+        return hdfsAdmin.getEncryptionZoneForPath(path);
+      } else if (!path.getParent().equals(path)) {
+        return getEncryptionZoneForPath(path.getParent());
+      } else {
+        return null;
       }
     }
 
@@ -1138,8 +1144,8 @@ public class Hadoop23Shims extends HadoopShimsSecure {
     public boolean arePathsOnSameEncryptionZone(Path path1, Path path2) throws IOException {
       EncryptionZone zone1, zone2;
 
-      zone1 = hdfsAdmin.getEncryptionZoneForPath(path1);
-      zone2 = hdfsAdmin.getEncryptionZoneForPath(path2);
+      zone1 = getEncryptionZoneForPath(path1);
+      zone2 = getEncryptionZoneForPath(path2);
 
       if (zone1 == null && zone2 == null) {
         return true;
@@ -1154,8 +1160,8 @@ public class Hadoop23Shims extends HadoopShimsSecure {
     public int comparePathKeyStrength(Path path1, Path path2) throws IOException {
       EncryptionZone zone1, zone2;
 
-      zone1 = hdfsAdmin.getEncryptionZoneForPath(path1);
-      zone2 = hdfsAdmin.getEncryptionZoneForPath(path2);
+      zone1 = getEncryptionZoneForPath(path1);
+      zone2 = getEncryptionZoneForPath(path2);
 
       if (zone1 == null && zone2 == null) {
         return 0;

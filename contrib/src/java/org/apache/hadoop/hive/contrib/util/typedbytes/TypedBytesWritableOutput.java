@@ -212,9 +212,9 @@ public class TypedBytesWritableOutput {
 
   public void writeSortedMap(SortedMapWritable smw) throws IOException {
     out.writeMapHeader(smw.size());
-    for (Map.Entry<WritableComparable, Writable> entry : smw.entrySet()) {
-      write(entry.getKey());
-      write(entry.getValue());
+    for (Object entry : smw.entrySet()) {
+      write(((Map.Entry<WritableComparable, Writable>)entry).getKey());
+      write(((Map.Entry<WritableComparable, Writable>)entry).getValue());
     }
   }
 

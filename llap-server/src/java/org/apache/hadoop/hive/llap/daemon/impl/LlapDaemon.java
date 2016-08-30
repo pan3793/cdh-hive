@@ -212,7 +212,8 @@ public class LlapDaemon extends CompositeService implements ContainerRunner, Lla
 
     // Initialize the metrics system
     LlapMetricsSystem.initialize("LlapDaemon");
-    this.pauseMonitor = new JvmPauseMonitor(daemonConf);
+    this.pauseMonitor = new JvmPauseMonitor();
+    pauseMonitor.init(daemonConf);
     pauseMonitor.start();
     String displayName = "LlapDaemonExecutorMetrics-" + hostName;
     String sessionId = MetricsUtils.getUUID();
