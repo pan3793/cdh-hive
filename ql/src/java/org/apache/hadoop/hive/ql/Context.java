@@ -43,7 +43,6 @@ import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.BlobStorageUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.TaskRunner;
-import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.hooks.WriteEntity;
 import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.hadoop.hive.ql.lockmgr.HiveLock;
@@ -346,9 +345,7 @@ public class Context {
    * @return A path to the new temporary directory
      */
   public Path getTempDirForPath(Path path) {
-    boolean isLocal = isPathLocal(path);
-    if ((BlobStorageUtils.isBlobStoragePath(conf, path) && !BlobStorageUtils.isBlobStorageAsScratchDir(conf))
-        || isLocal) {
+    if (BlobStorageUtils.isBlobStoragePath(conf, path) && !BlobStorageUtils.isBlobStorageAsScratchDir(conf)) {
       // For better write performance, we use HDFS for temporary data when object store is used.
       // Note that the scratch directory configuration variable must use HDFS or any other non-blobstorage system
       // to take advantage of this performance.
@@ -356,20 +353,6 @@ public class Context {
     } else {
       return getExtTmpPathRelTo(path);
     }
-  }
-
-  /*
-   * Checks if the path is for the local filesystem or not
-   */
-  private boolean isPathLocal(Path path) {
-    boolean isLocal = false;
-    if (path != null) {
-      String scheme = path.toUri().getScheme();
-      if (scheme != null) {
-        isLocal = scheme.equals(Utilities.HADOOP_LOCAL_FS_SCHEME);
-      }
-    }
-    return isLocal;
   }
 
   private Path getExternalScratchDir(URI extURI) {
