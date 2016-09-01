@@ -22,7 +22,7 @@ metastore() {
   if $cygwin; then
     HIVE_LIB=`cygpath -w "$HIVE_LIB"`
   fi
-  JAR=${HIVE_LIB}/hive-service-*.jar
+  JAR=${HIVE_LIB}/hive-service-[^rpc]*.jar
 
   # Set SENTRY_HOME if possible and add Sentry jars to classpath
   if [[ -z "$SENTRY_HOME" ]]
