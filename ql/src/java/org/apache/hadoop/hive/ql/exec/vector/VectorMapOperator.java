@@ -257,7 +257,10 @@ public class VectorMapOperator extends AbstractMapOperator {
                   LazySimpleSerDe.class.getName());
 
           LazySimpleDeserializeRead lazySimpleDeserializeRead =
-              new LazySimpleDeserializeRead(dataTypeInfos, simpleSerdeParams);
+              new LazySimpleDeserializeRead(
+                  dataTypeInfos,
+                  /* useExternalBuffer */ true,
+                  simpleSerdeParams);
 
           vectorDeserializeRow =
               new VectorDeserializeRow<LazySimpleDeserializeRead>(lazySimpleDeserializeRead);
@@ -273,7 +276,9 @@ public class VectorMapOperator extends AbstractMapOperator {
       case LAZY_BINARY:
         {
           LazyBinaryDeserializeRead lazyBinaryDeserializeRead =
-              new LazyBinaryDeserializeRead(dataTypeInfos);
+              new LazyBinaryDeserializeRead(
+                  dataTypeInfos,
+                  /* useExternalBuffer */ true);
 
           vectorDeserializeRow =
               new VectorDeserializeRow<LazyBinaryDeserializeRead>(lazyBinaryDeserializeRead);
