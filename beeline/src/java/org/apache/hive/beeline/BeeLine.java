@@ -101,13 +101,13 @@ import org.apache.hive.beeline.hs2connection.HS2ConnectionFileUtils;
 import org.apache.hive.beeline.hs2connection.UserHS2ConnectionFileParser;
 import org.apache.hive.beeline.hs2connection.HS2ConnectionFileParser;
 import org.apache.hive.beeline.hs2connection.HiveSiteHS2ConnectionFileParser;
+import org.apache.hive.common.util.ShutdownHookManager;
 import org.apache.thrift.transport.TTransportException;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.hive.jdbc.Utils;
 import org.apache.hive.jdbc.Utils.JdbcConnectionParams;
-import org.apache.thrift.transport.TTransportException;
 
 /**
  * A console SQL shell with command completion.
@@ -1249,7 +1249,7 @@ public class BeeLine implements Closeable {
     }
 
     // add shutdown hook to flush the history to history file
-    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+    ShutdownHookManager.addShutdownHook(new Runnable() {
         @Override
         public void run() {
             History h = consoleReader.getHistory();
@@ -1261,7 +1261,7 @@ public class BeeLine implements Closeable {
                 }
             }
         }
-    }));
+    });
 
     consoleReader.addCompleter(new BeeLineCompleter(this));
     return consoleReader;

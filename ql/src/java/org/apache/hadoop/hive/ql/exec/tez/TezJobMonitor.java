@@ -47,6 +47,7 @@ import org.apache.hadoop.hive.ql.log.PerfLogger;
 import org.apache.hadoop.hive.ql.plan.BaseWork;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.session.SessionState.LogHelper;
+import org.apache.hive.common.util.ShutdownHookManager;
 import org.apache.tez.common.counters.TaskCounter;
 import org.apache.tez.common.counters.TezCounter;
 import org.apache.tez.common.counters.TezCounters;
@@ -134,7 +135,7 @@ public class TezJobMonitor {
 
   static {
     shutdownList = new LinkedList<DAGClient>();
-    Runtime.getRuntime().addShutdownHook(new Thread() {
+    ShutdownHookManager.addShutdownHook(new Runnable() {
       @Override
       public void run() {
         TezJobMonitor.killRunningJobs();
