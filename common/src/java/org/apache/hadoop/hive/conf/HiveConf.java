@@ -2156,7 +2156,7 @@ public class HiveConf extends Configuration {
     HIVE_BLOBSTORE_SUPPORTED_SCHEMES("hive.blobstore.supported.schemes", "s3,s3a,s3n",
             "Comma-separated list of supported blobstore schemes."),
 
-    HIVE_BLOBSTORE_USE_BLOBSTORE_AS_SCRATCHDIR("hive.blobstore.use.blobstore.as.scratchdir", false,
+    HIVE_BLOBSTORE_USE_BLOBSTORE_AS_SCRATCHDIR("hive.blobstore.use.blobstore.as.scratchdir", true,
             "Enable the use of scratch directories directly on blob storage systems (it may cause performance penalties).");
 
     public final String varname;

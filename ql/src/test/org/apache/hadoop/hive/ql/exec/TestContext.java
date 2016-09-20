@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_BLOBSTORE_USE_BLOBSTORE_AS_SCRATCHDIR;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -46,17 +47,36 @@ public class TestContext {
 
     @Test
     public void testGetScratchDirectoriesForPaths() throws IOException {
+        Path mrTmpPath, tmpPathRelTo;
         Context spyContext = spy(context);
+
+        // Disable scratchdir on blobstore
+        conf.setBoolVar(HIVE_BLOBSTORE_USE_BLOBSTORE_AS_SCRATCHDIR, false);
 
         // When Object store paths are used, then getMRTmpPatch() is called to get a temporary
         // directory on the default scratch diretory location (usually /temp)
-        Path mrTmpPath = new Path("hdfs://hostname/tmp/scratch");
+        mrTmpPath = new Path("hdfs://hostname/tmp/scratch");
         doReturn(mrTmpPath).when(spyContext).getMRTmpPath();
         assertEquals(mrTmpPath, spyContext.getTempDirForPath(new Path("s3a://bucket/dir")));
 
         // When Non-Object store paths are used, then getExtTmpPathRelTo is called to get a temporary
         // directory on the same path passed as a parameter
-        Path tmpPathRelTo = new Path("hdfs://hostname/user");
+        tmpPathRelTo = new Path("hdfs://hostname/user");
+        doReturn(tmpPathRelTo).when(spyContext).getExtTmpPathRelTo(any(Path.class));
+        assertEquals(tmpPathRelTo, spyContext.getTempDirForPath(new Path("/user")));
+
+        // Enable scratchdir on blobstore
+        conf.setBoolVar(HIVE_BLOBSTORE_USE_BLOBSTORE_AS_SCRATCHDIR, true);
+
+        // When Object store paths are used, then getExtTmpPathRelTo() is called to get a temporary
+        // directory on the same path passed as a parameter
+        tmpPathRelTo = new Path("s3a://bucket/dir/staging");
+        doReturn(tmpPathRelTo).when(spyContext).getExtTmpPathRelTo(any(Path.class));
+        assertEquals(tmpPathRelTo, spyContext.getTempDirForPath(new Path("s3a://bucket/dir")));
+
+        // When Non-Object store paths are used, then getExtTmpPathRelTo is called to get a temporary
+        // directory on the same path passed as a parameter
+        tmpPathRelTo = new Path("hdfs://hostname/user");
         doReturn(tmpPathRelTo).when(spyContext).getExtTmpPathRelTo(any(Path.class));
         assertEquals(tmpPathRelTo, spyContext.getTempDirForPath(new Path("/user")));
     }
