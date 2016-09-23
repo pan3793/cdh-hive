@@ -264,6 +264,28 @@ whenExpression
     KW_END -> ^(TOK_FUNCTION KW_WHEN expression*)
     ;
 
+extractExpression
+    :
+    KW_EXTRACT
+    LPAREN
+          (timeUnit=timeQualifiers)
+          KW_FROM
+          expression
+    RPAREN -> ^(TOK_FUNCTION $timeUnit expression)
+    ;
+
+timeQualifiers
+    :
+    KW_YEAR -> Identifier["year"]
+    | KW_QUARTER -> Identifier["quarter"]
+    | KW_MONTH -> Identifier["month"]
+    | KW_WEEK -> Identifier["weekofyear"]
+    | KW_DAY -> Identifier["day"]
+    | KW_HOUR -> Identifier["hour"]
+    | KW_MINUTE -> Identifier["minute"]
+    | KW_SECOND -> Identifier["second"]
+    ;
+
 constant
 @init { gParent.pushMsg("constant", state); }
 @after { gParent.popMsg(state); }
@@ -348,6 +370,7 @@ atomExpression
     | (intervalExpression)=>intervalExpression
     | (constant) => constant
     | castExpression
+    | extractExpression
     | caseExpression
     | whenExpression
     | (functionName LPAREN) => function
@@ -692,13 +715,13 @@ nonReserved
     | KW_KEYS | KW_KEY_TYPE | KW_LAST | KW_LIMIT | KW_OFFSET | KW_LINES | KW_LOAD | KW_LOCATION | KW_LOCK | KW_LOCKS | KW_LOGICAL | KW_LONG
     | KW_MAPJOIN | KW_MATERIALIZED | KW_METADATA | KW_MINUS | KW_MINUTE | KW_MONTH | KW_MSCK | KW_NOSCAN | KW_NO_DROP | KW_NULLS | KW_OFFLINE
     | KW_OPTION | KW_OUTPUTDRIVER | KW_OUTPUTFORMAT | KW_OVERWRITE | KW_OWNER | KW_PARTITIONED | KW_PARTITIONS | KW_PLUS | KW_PRETTY
-    | KW_PRINCIPALS | KW_PROTECTION | KW_PURGE | KW_READ | KW_READONLY | KW_REBUILD | KW_RECORDREADER | KW_RECORDWRITER
+    | KW_PRINCIPALS | KW_PROTECTION | KW_PURGE | KW_QUARTER | KW_READ | KW_READONLY | KW_REBUILD | KW_RECORDREADER | KW_RECORDWRITER
     | KW_RELOAD | KW_RENAME | KW_REPAIR | KW_REPLACE | KW_REPLICATION | KW_RESTRICT | KW_REWRITE
     | KW_ROLE | KW_ROLES | KW_SCHEMA | KW_SCHEMAS | KW_SECOND | KW_SEMI | KW_SERDE | KW_SERDEPROPERTIES | KW_SERVER | KW_SETS | KW_SHARED
     | KW_SHOW | KW_SHOW_DATABASE | KW_SKEWED | KW_SORT | KW_SORTED | KW_SSL | KW_STATISTICS | KW_STORED
     | KW_STREAMTABLE | KW_STRING | KW_STRUCT | KW_TABLES | KW_TBLPROPERTIES | KW_TEMPORARY | KW_TERMINATED
     | KW_TINYINT | KW_TOUCH | KW_TRANSACTIONS | KW_UNARCHIVE | KW_UNDO | KW_UNIONTYPE | KW_UNLOCK | KW_UNSET
-    | KW_UNSIGNED | KW_URI | KW_USE | KW_UTC | KW_UTCTIMESTAMP | KW_VALUE_TYPE | KW_VIEW | KW_WHILE | KW_YEAR
+    | KW_UNSIGNED | KW_URI | KW_USE | KW_UTC | KW_UTCTIMESTAMP | KW_VALUE_TYPE | KW_VIEW | KW_WEEK | KW_WHILE | KW_YEAR
     | KW_WORK
     | KW_TRANSACTION
     | KW_WRITE
