@@ -264,6 +264,30 @@ whenExpression
     KW_END -> ^(TOK_FUNCTION KW_WHEN expression*)
     ;
 
+floorExpression
+    :
+    KW_FLOOR
+    LPAREN
+          expression
+          (KW_TO
+          (floorUnit=floorDateQualifiers))?
+    RPAREN
+    -> {floorUnit != null}? ^(TOK_FUNCTION $floorUnit expression)
+    -> ^(TOK_FUNCTION Identifier["floor"] expression)
+    ;
+
+floorDateQualifiers
+    :
+    KW_YEAR -> Identifier["floor_year"]
+    | KW_QUARTER -> Identifier["floor_quarter"]
+    | KW_MONTH -> Identifier["floor_month"]
+    | KW_WEEK -> Identifier["floor_week"]
+    | KW_DAY -> Identifier["floor_day"]
+    | KW_HOUR -> Identifier["floor_hour"]
+    | KW_MINUTE -> Identifier["floor_minute"]
+    | KW_SECOND -> Identifier["floor_second"]
+    ;
+
 extractExpression
     :
     KW_EXTRACT
@@ -371,6 +395,7 @@ atomExpression
     | (constant) => constant
     | castExpression
     | extractExpression
+    | floorExpression
     | caseExpression
     | whenExpression
     | (functionName LPAREN) => function
@@ -628,6 +653,7 @@ sysFuncNames
     | KW_IF
     | KW_CASE
     | KW_WHEN
+    | KW_FLOOR
     | KW_TINYINT
     | KW_SMALLINT
     | KW_INT

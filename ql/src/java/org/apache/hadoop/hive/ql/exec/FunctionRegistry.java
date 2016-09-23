@@ -51,6 +51,14 @@ import org.apache.hadoop.hive.ql.udf.UDFChr;
 import org.apache.hadoop.hive.ql.udf.UDFConv;
 import org.apache.hadoop.hive.ql.udf.UDFCos;
 import org.apache.hadoop.hive.ql.udf.UDFCrc32;
+import org.apache.hadoop.hive.ql.udf.UDFDateFloorDay;
+import org.apache.hadoop.hive.ql.udf.UDFDateFloorHour;
+import org.apache.hadoop.hive.ql.udf.UDFDateFloorMinute;
+import org.apache.hadoop.hive.ql.udf.UDFDateFloorMonth;
+import org.apache.hadoop.hive.ql.udf.UDFDateFloorQuarter;
+import org.apache.hadoop.hive.ql.udf.UDFDateFloorSecond;
+import org.apache.hadoop.hive.ql.udf.UDFDateFloorWeek;
+import org.apache.hadoop.hive.ql.udf.UDFDateFloorYear;
 import org.apache.hadoop.hive.ql.udf.UDFDayOfMonth;
 import org.apache.hadoop.hive.ql.udf.UDFDayOfWeek;
 import org.apache.hadoop.hive.ql.udf.UDFDegrees;
@@ -290,6 +298,16 @@ public final class FunctionRegistry {
     system.registerGenericUDF("next_day", GenericUDFNextDay.class);
     system.registerGenericUDF("trunc", GenericUDFTrunc.class);
     system.registerGenericUDF("date_format", GenericUDFDateFormat.class);
+
+    // Special date formatting functions
+    system.registerUDF("floor_year", UDFDateFloorYear.class, false);
+    system.registerUDF("floor_quarter", UDFDateFloorQuarter.class, false);
+    system.registerUDF("floor_month", UDFDateFloorMonth.class, false);
+    system.registerUDF("floor_day", UDFDateFloorDay.class, false);
+    system.registerUDF("floor_week", UDFDateFloorWeek.class, false);
+    system.registerUDF("floor_hour", UDFDateFloorHour.class, false);
+    system.registerUDF("floor_minute", UDFDateFloorMinute.class, false);
+    system.registerUDF("floor_second", UDFDateFloorSecond.class, false);
 
     system.registerGenericUDF("date_add", GenericUDFDateAdd.class);
     system.registerGenericUDF("date_sub", GenericUDFDateSub.class);
