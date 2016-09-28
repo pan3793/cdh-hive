@@ -595,14 +595,30 @@ public class ASTConverter {
         astNodeLst.add(astBldr.node());
       }
 
-      for (RexNode operand : call.operands) {
-        astNodeLst.add(operand.accept(this));
+      if (op.kind == SqlKind.EXTRACT) {
+        // Extract on date: special handling since function in Hive does
+        // include <time_unit>. Observe that <time_unit> information
+        // is implicit in the function name, thus translation will
+        // proceed correctly if we just ignore the <time_unit>
+        astNodeLst.add(call.operands.get(1).accept(this));
+      } else if (op.kind == SqlKind.FLOOR &&
+              call.operands.size() == 2) {
+        // Floor on date: special handling since function in Hive does
+        // include <time_unit>. Observe that <time_unit> information
+        // is implicit in the function name, thus translation will
+        // proceed correctly if we just ignore the <time_unit>
+        astNodeLst.add(call.operands.get(0).accept(this));
+      } else {
+        for (RexNode operand : call.operands) {
+          astNodeLst.add(operand.accept(this));
+        }
       }
 
-      if (isFlat(call))
+      if (isFlat(call)) {
         return SqlFunctionConverter.buildAST(op, astNodeLst, 0);
-      else
+      } else {
         return SqlFunctionConverter.buildAST(op, astNodeLst);
+      }
     }
   }
 

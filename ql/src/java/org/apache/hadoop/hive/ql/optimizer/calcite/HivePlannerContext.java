@@ -23,17 +23,18 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveRulesRegistry;
 
 
 public class HivePlannerContext implements Context {
-  private HiveAlgorithmsConf config;
+  private HiveAlgorithmsConf algoConfig;
   private HiveRulesRegistry registry;
 
-  public HivePlannerContext(HiveAlgorithmsConf config, HiveRulesRegistry registry) {
-    this.config = config;
+  public HivePlannerContext(HiveAlgorithmsConf algoConfig,
+          HiveRulesRegistry registry) {
+    this.algoConfig = algoConfig;
     this.registry = registry;
   }
 
   public <T> T unwrap(Class<T> clazz) {
-    if (clazz.isInstance(config)) {
-      return clazz.cast(config);
+    if (clazz.isInstance(algoConfig)) {
+      return clazz.cast(algoConfig);
     }
     if (clazz.isInstance(registry)) {
       return clazz.cast(registry);

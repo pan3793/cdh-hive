@@ -63,7 +63,9 @@ import org.apache.calcite.rel.core.Filter;
 import org.apache.calcite.rel.core.JoinRelType;
 import org.apache.calcite.rel.metadata.CachingRelMetadataProvider;
 import org.apache.calcite.rel.metadata.ChainedRelMetadataProvider;
+import org.apache.calcite.rel.metadata.JaninoRelMetadataProvider;
 import org.apache.calcite.rel.metadata.RelMetadataProvider;
+import org.apache.calcite.rel.metadata.RelMetadataQuery;
 import org.apache.calcite.rel.rules.FilterMergeRule;
 import org.apache.calcite.rel.rules.JoinToMultiJoinRule;
 import org.apache.calcite.rel.rules.LoptOptimizeJoinRule;
@@ -960,8 +962,10 @@ public class CalcitePlanner extends SemanticAnalyzer {
           this.viewProjectToTableSchema);
       fieldTrimmer.trim(calciteGenPlan);
 
-      // Create MD provider
+      // Create and set MD provider
       HiveDefaultRelMetadataProvider mdProvider = new HiveDefaultRelMetadataProvider(conf);
+      RelMetadataQuery.THREAD_PROVIDERS.set(
+              JaninoRelMetadataProvider.of(mdProvider.getMetadataProvider()));
 
       // Create executor
       Executor executorProvider = new HiveRexExecutorImpl(cluster);
@@ -983,8 +987,7 @@ public class CalcitePlanner extends SemanticAnalyzer {
 
           HepProgramBuilder hepPgmBldr = new HepProgramBuilder().addMatchOrder(HepMatchOrder.BOTTOM_UP);
           hepPgmBldr.addRuleInstance(new JoinToMultiJoinRule(HiveJoin.class));
-          hepPgmBldr.addRuleInstance(new LoptOptimizeJoinRule(HiveRelFactories.HIVE_JOIN_FACTORY,
-              HiveRelFactories.HIVE_PROJECT_FACTORY, HiveRelFactories.HIVE_FILTER_FACTORY));
+          hepPgmBldr.addRuleInstance(new LoptOptimizeJoinRule(HiveRelFactories.HIVE_BUILDER));
 
           HepProgram hepPgm = hepPgmBldr.build();
           HepPlanner hepPlanner = new HepPlanner(hepPgm);
@@ -1084,10 +1087,10 @@ public class CalcitePlanner extends SemanticAnalyzer {
         calciteOptimizedPlan = fieldTrimmer.trim(calciteOptimizedPlan);
         calciteOptimizedPlan = hepPlan(calciteOptimizedPlan, false, mdProvider.getMetadataProvider(), null,
                 HepMatchOrder.BOTTOM_UP, ProjectRemoveRule.INSTANCE,
-                new ProjectMergeRule(false, HiveRelFactories.HIVE_PROJECT_FACTORY));
+                new ProjectMergeRule(false, HiveRelFactories.HIVE_BUILDER));
         calciteOptimizedPlan = hepPlan(calciteOptimizedPlan, true, mdProvider.getMetadataProvider(), null,
-            new HiveFilterProjectTSTransposeRule(Filter.class, HiveRelFactories.HIVE_FILTER_FACTORY,
-                    HiveProject.class, HiveRelFactories.HIVE_PROJECT_FACTORY, HiveTableScan.class));
+                HiveFilterProjectTSTransposeRule.INSTANCE, HiveFilterProjectTSTransposeRule.INSTANCE_DRUID,
+                HiveProjectFilterPullUpConstantsRule.INSTANCE);
 
         // 8.2.  Introduce exchange operators below join/multijoin operators
         calciteOptimizedPlan = hepPlan(calciteOptimizedPlan, false, mdProvider.getMetadataProvider(), null,
@@ -1166,7 +1169,7 @@ public class CalcitePlanner extends SemanticAnalyzer {
       rules.add(HiveFilterJoinRule.JOIN);
       rules.add(HiveFilterJoinRule.FILTER_ON_JOIN);
       rules.add(new HiveFilterAggregateTransposeRule(Filter.class, HiveRelFactories.HIVE_FILTER_FACTORY, Aggregate.class));
-      rules.add(new FilterMergeRule(HiveRelFactories.HIVE_FILTER_FACTORY));
+      rules.add(new FilterMergeRule(HiveRelFactories.HIVE_BUILDER));
       if (conf.getBoolVar(HiveConf.ConfVars.HIVE_OPTIMIZE_REDUCE_WITH_STATS)) {
         rules.add(HiveReduceExpressionsWithStatsRule.INSTANCE);
       }
@@ -1247,9 +1250,7 @@ public class CalcitePlanner extends SemanticAnalyzer {
       // matches FIL-PROJ-TS
       perfLogger.PerfLogBegin(this.getClass().getName(), PerfLogger.OPTIMIZER);
       basePlan = hepPlan(basePlan, true, mdProvider, null,
-          new HiveFilterProjectTSTransposeRule(
-              Filter.class, HiveRelFactories.HIVE_FILTER_FACTORY, HiveProject.class,
-              HiveRelFactories.HIVE_PROJECT_FACTORY, HiveTableScan.class),
+          HiveFilterProjectTSTransposeRule.INSTANCE, 
           HiveProjectFilterPullUpConstantsRule.INSTANCE);
       perfLogger.PerfLogEnd(this.getClass().getName(), PerfLogger.OPTIMIZER,
         "Calcite: Prejoin ordering transformation, Rerun PPD");
