@@ -73,8 +73,6 @@ import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
 import org.apache.hadoop.hive.serde2.thrift.ThriftFormatter;
 import org.apache.hadoop.hive.serde2.thrift.ThriftJDBCBinarySerDe;
 
-import akka.util.Collections;
-
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 

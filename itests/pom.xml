@@ -90,11 +90,11 @@
                       fi
                       fi
                       tar -zxf $DOWNLOAD_DIR/$tarName -C $BASE_DIR
-                      mv $BASE_DIR/spark-${spark.version} $BASE_DIR/$finalName
+                      mv $BASE_DIR/spark-2.0.0-cdh6.x-SNAPSHOT-bin-3.0.0-alpha1-cdh6.x-SNAPSHOT $BASE_DIR/$finalName
                       }
                       mkdir -p $DOWNLOAD_DIR
                       CDH_VERSION=$(echo ${spark.version}|cut -d- -f2)
-                      REPO_URL="http://repos.jenkins.cloudera.com/${CDH_VERSION}-static/cdh/5/spark-latest.tar.gz"
+                      REPO_URL="https://s3-us-west-1.amazonaws.com/hive-spark/spark-tarball/spark-2.0.0-cdh6.x-SNAPSHOT-bin-3.0.0-alpha1-cdh6.x-SNAPSHOT.tgz"
                       if ! download "$REPO_URL" "spark"; then
                       echo "ERROR: Cannot download spark-latest.tar.gz from $REPO_URL"
                       exit 1
