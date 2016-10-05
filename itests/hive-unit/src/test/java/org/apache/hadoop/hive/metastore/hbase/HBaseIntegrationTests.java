@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hive.cli.CliSessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.Driver;
@@ -43,7 +42,6 @@ public class HBaseIntegrationTests {
   private static final Logger LOG = LoggerFactory.getLogger(HBaseIntegrationTests.class.getName());
 
   protected static HBaseTestingUtility utility;
-  protected static HBaseAdmin admin;
   protected static Map<String, String> emptyParameters = new HashMap<>();
   protected static HiveConf conf;
 
@@ -63,8 +61,7 @@ public class HBaseIntegrationTests {
     utility = new HBaseTestingUtility(hbaseConf);
     utility.startMiniCluster();
     conf = new HiveConf(utility.getConfiguration(), HBaseIntegrationTests.class);
-    admin = utility.getHBaseAdmin();
-    HBaseStoreTestUtil.initHBaseMetastore(admin, null);
+    HBaseStoreTestUtil.initHBaseMetastore(utility.getConnection().getAdmin(), null);
   }
 
   protected static void shutdownMiniCluster() throws Exception {

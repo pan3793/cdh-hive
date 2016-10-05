@@ -18,18 +18,17 @@
  */
 package org.apache.hadoop.hive.metastore.hbase;
 
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HConnection;
-import org.apache.hadoop.hbase.client.HConnectionManager;
-import org.apache.hadoop.hbase.client.HTableInterface;
-import org.apache.hadoop.hbase.client.Result;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,23 +41,26 @@ import java.util.Map;
 public class VanillaHBaseConnection implements HBaseConnection {
   static final private Logger LOG = LoggerFactory.getLogger(VanillaHBaseConnection.class.getName());
 
-  protected HConnection conn;
-  protected Map<String, HTableInterface> tables;
+  protected Connection conn;
+  protected Map<String, Table> tables;
   protected Configuration conf;
 
   VanillaHBaseConnection() {
-    tables = new HashMap<String, HTableInterface>();
+    tables = new HashMap<String, Table>();
   }
 
   @Override
   public void connect() throws IOException {
     if (conf == null) throw new RuntimeException("Must call getConf before connect");
-    conn = HConnectionManager.createConnection(conf);
+    conn = ConnectionFactory.createConnection(conf);
   }
 
   @Override
   public void close() throws IOException {
-    for (HTableInterface htab : tables.values()) htab.close();
+    for (Table htab : tables.values()) htab.close();
+    if (conn != null) {
+      conn.close();
+    }
   }
 
   @Override
@@ -77,17 +79,22 @@ public class VanillaHBaseConnection implements HBaseConnection {
   }
 
   @Override
-  public void flush(HTableInterface htab) throws IOException {
-    htab.flushCommits();
+  public void flush(Table htab) throws IOException {
+    // FIXME: Originally it was AutoFlush false
+    // htab.flush();
   }
 
   @Override
   public void createHBaseTable(String tableName, List<byte[]> columnFamilies)
       throws IOException {
-    HBaseAdmin admin = new HBaseAdmin(conn);
-    LOG.info("Creating HBase table " + tableName);
-    admin.createTable(buildDescriptor(tableName, columnFamilies));
-    admin.close();
+    Admin admin = null;
+    try {
+      conn.getAdmin();
+      LOG.info("Creating HBase table " + tableName);
+      admin.createTable(buildDescriptor(tableName, columnFamilies));
+    } finally {
+      admin.close();
+    }
   }
 
   protected HTableDescriptor buildDescriptor(String tableName, List<byte[]> columnFamilies)
@@ -100,17 +107,17 @@ public class VanillaHBaseConnection implements HBaseConnection {
   }
 
   @Override
-  public HTableInterface getHBaseTable(String tableName) throws IOException {
+  public Table getHBaseTable(String tableName) throws IOException {
     return getHBaseTable(tableName, false);
   }
 
   @Override
-  public HTableInterface getHBaseTable(String tableName, boolean force) throws IOException {
-    HTableInterface htab = tables.get(tableName);
+  public Table getHBaseTable(String tableName, boolean force) throws IOException {
+    Table htab = tables.get(tableName);
     if (htab == null) {
       LOG.debug("Trying to connect to table " + tableName);
       try {
-        htab = conn.getTable(tableName);
+        htab = conn.getTable(TableName.valueOf(tableName));
         // Calling gettable doesn't actually connect to the region server, it's very light
         // weight, so call something else so we actually reach out and touch the region server
         // and see if the table is there.
@@ -119,7 +126,8 @@ public class VanillaHBaseConnection implements HBaseConnection {
         LOG.info("Caught exception when table was missing");
         return null;
       }
-      htab.setAutoFlushTo(false);
+      // FIXME: Originally it was AutoFlush false
+      // htab.setAutoFlush(false);
       tables.put(tableName, htab);
     }
     return htab;

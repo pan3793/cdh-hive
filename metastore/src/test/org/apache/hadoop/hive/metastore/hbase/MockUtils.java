@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.FileFormatProxy;
@@ -87,7 +88,7 @@ public class MockUtils {
     }
   }
 
-  static HBaseStore init(Configuration conf, HTableInterface htable,
+  static HBaseStore init(Configuration conf, Table htable,
                          final SortedMap<String, Cell> rows) throws IOException {
     ((HiveConf)conf).setVar(ConfVars.METASTORE_EXPRESSION_PROXY_CLASS, NOOPProxy.class.getName());
     Mockito.when(htable.get(Mockito.any(Get.class))).thenAnswer(new Answer<Result>() {
@@ -157,6 +158,8 @@ public class MockUtils {
           public Iterator<Result> iterator() {
             return iter;
           }
+
+          public boolean renewLease() { return true; }
         };
       }
     });

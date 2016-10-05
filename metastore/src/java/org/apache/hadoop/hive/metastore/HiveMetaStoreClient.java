@@ -146,6 +146,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
@@ -737,21 +738,32 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
 
   public void createTable(Table tbl, EnvironmentContext envContext) throws AlreadyExistsException,
       InvalidObjectException, MetaException, NoSuchObjectException, TException {
-    HiveMetaHook hook = getHook(tbl);
-    if (hook != null) {
-      hook.preCreateTable(tbl);
-    }
-    boolean success = false;
+    HiveMetaHook hook = null;
     try {
-      // Subclasses can override this step (for example, for temporary tables)
-      create_table_with_environment_context(tbl, envContext);
+      hook = getHook(tbl);
       if (hook != null) {
-        hook.commitCreateTable(tbl);
+        hook.preCreateTable(tbl);
       }
-      success = true;
+      boolean success = false;
+      try {
+        // Subclasses can override this step (for example, for temporary tables)
+        create_table_with_environment_context(tbl, envContext);
+        if (hook != null) {
+          hook.commitCreateTable(tbl);
+        }
+        success = true;
+      } finally {
+        if (!success && (hook != null)) {
+          hook.rollbackCreateTable(tbl);
+        }
+      }
     } finally {
-      if (!success && (hook != null)) {
-        hook.rollbackCreateTable(tbl);
+      if (hook != null && hook instanceof Closeable) {
+        try {
+          ((Closeable) hook).close();
+        } catch (Exception e) {
+          MetaStoreUtils.logAndThrowMetaException(e);
+        }
       }
     }
   }
@@ -761,21 +773,32 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
     List<SQLPrimaryKey> primaryKeys, List<SQLForeignKey> foreignKeys)
     throws AlreadyExistsException, InvalidObjectException,
     MetaException, NoSuchObjectException, TException {
-    HiveMetaHook hook = getHook(tbl);
-    if (hook != null) {
-      hook.preCreateTable(tbl);
-    }
-    boolean success = false;
+    HiveMetaHook hook = null;
     try {
-      // Subclasses can override this step (for example, for temporary tables)
-      client.create_table_with_constraints(tbl, primaryKeys, foreignKeys);
+      hook = getHook(tbl);
       if (hook != null) {
-        hook.commitCreateTable(tbl);
+        hook.preCreateTable(tbl);
       }
-      success = true;
+      boolean success = false;
+      try {
+        // Subclasses can override this step (for example, for temporary tables)
+        client.create_table_with_constraints(tbl, primaryKeys, foreignKeys);
+        if (hook != null) {
+          hook.commitCreateTable(tbl);
+        }
+        success = true;
+      } finally {
+        if (!success && (hook != null)) {
+          hook.rollbackCreateTable(tbl);
+        }
+      }
     } finally {
-      if (!success && (hook != null)) {
-        hook.rollbackCreateTable(tbl);
+      if (hook != null && hook instanceof Closeable) {
+        try {
+          ((Closeable) hook).close();
+        } catch (Exception e) {
+          MetaStoreUtils.logAndThrowMetaException(e);
+        }
       }
     }
   }
@@ -1076,24 +1099,35 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
     if (isIndexTable(tbl)) {
       throw new UnsupportedOperationException("Cannot drop index tables");
     }
-    HiveMetaHook hook = getHook(tbl);
-    if (hook != null) {
-      hook.preDropTable(tbl);
-    }
-    boolean success = false;
+    HiveMetaHook hook = null;
     try {
-      drop_table_with_environment_context(dbname, name, deleteData, envContext);
+      hook = getHook(tbl);
       if (hook != null) {
-        hook.commitDropTable(tbl, deleteData);
+        hook.preDropTable(tbl);
       }
-      success=true;
-    } catch (NoSuchObjectException e) {
-      if (!ignoreUnknownTab) {
-        throw e;
+      boolean success = false;
+      try {
+        drop_table_with_environment_context(dbname, name, deleteData, envContext);
+        if (hook != null) {
+          hook.commitDropTable(tbl, deleteData);
+        }
+        success = true;
+      } catch (NoSuchObjectException e) {
+        if (!ignoreUnknownTab) {
+          throw e;
+        }
+      } finally {
+        if (!success && (hook != null)) {
+          hook.rollbackDropTable(tbl);
+        }
       }
     } finally {
-      if (!success && (hook != null)) {
-        hook.rollbackDropTable(tbl);
+      if (hook != null && hook instanceof Closeable) {
+        try {
+          ((Closeable) hook).close();
+        } catch (Exception e) {
+          MetaStoreUtils.logAndThrowMetaException(e);
+        }
       }
     }
   }

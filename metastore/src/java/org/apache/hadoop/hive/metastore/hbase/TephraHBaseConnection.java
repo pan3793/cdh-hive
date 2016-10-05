@@ -28,10 +28,11 @@ import co.cask.tephra.distributed.TransactionServiceClient;
 import co.cask.tephra.hbase10.TransactionAwareHTable;
 import co.cask.tephra.hbase10.coprocessor.TransactionProcessor;
 import co.cask.tephra.inmemory.InMemoryTxSystemClient;
+import org.apache.hadoop.hbase.client.BufferedMutator;
+import org.apache.hadoop.hbase.client.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.twill.discovery.InMemoryDiscoveryService;
 
@@ -70,7 +71,8 @@ public class TephraHBaseConnection extends VanillaHBaseConnection {
           new ThreadLocalClientProvider(conf, new InMemoryDiscoveryService()));
     }
     for (String tableName : HBaseReadWrite.tableNames) {
-      txnTables.put(tableName, new TransactionAwareHTable(super.getHBaseTable(tableName, true)));
+      // FIXME: Tephra does not support HBase 2.0 yet
+      // txnTables.put(tableName, new TransactionAwareHTable(super.getHBaseTable(tableName, true)));
     }
     txn = new TransactionContext(txnClient, txnTables.values());
   }
@@ -106,7 +108,7 @@ public class TephraHBaseConnection extends VanillaHBaseConnection {
   }
 
   @Override
-  public void flush(HTableInterface htab) throws IOException {
+  public void flush(Table htab) throws IOException {
     // NO-OP as we want to flush at commit time
   }
 
@@ -119,9 +121,11 @@ public class TephraHBaseConnection extends VanillaHBaseConnection {
   }
 
   @Override
-  public HTableInterface getHBaseTable(String tableName, boolean force) throws IOException {
+  public Table getHBaseTable(String tableName, boolean force) throws IOException {
     // Ignore force, it will mess up our previous creation of the tables.
-    return (TransactionAwareHTable)txnTables.get(tableName);
+    // FIXME: Tephra does not support HBase 2.0 yet
+    // return (TransactionAwareHTable)txnTables.get(tableName);
+    return super.getHBaseTable(tableName, force);
   }
 
 }

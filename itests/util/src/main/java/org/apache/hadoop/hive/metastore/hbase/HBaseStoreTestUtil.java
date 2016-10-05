@@ -21,13 +21,13 @@ package org.apache.hadoop.hive.metastore.hbase;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hive.conf.HiveConf;
 
 import java.util.List;
 
 public class HBaseStoreTestUtil {
-  public static void initHBaseMetastore(HBaseAdmin admin, HiveConf conf) throws Exception {
+  public static void initHBaseMetastore(Admin admin, HiveConf conf) throws Exception {
     for (String tableName : HBaseReadWrite.tableNames) {
       List<byte[]> families = HBaseReadWrite.columnFamilies.get(tableName);
       HTableDescriptor desc = new HTableDescriptor(TableName.valueOf(tableName));

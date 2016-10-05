@@ -24,7 +24,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -80,7 +79,8 @@ public class TestHBaseStoreCached {
   static Map<String, String> emptyParameters = new HashMap<String, String>();
 
   @Rule public ExpectedException thrown = ExpectedException.none();
-  @Mock HTableInterface htable;
+  @Mock
+  org.apache.hadoop.hbase.client.Table htable;
   SortedMap<String, Cell> rows = new TreeMap<String, Cell>();
   HBaseStore store;
 

@@ -53,7 +53,7 @@ import java.util.TreeMap;
 public class TestHBaseAggregateStatsCache {
   private static final Logger LOG = LoggerFactory.getLogger(TestHBaseAggregateStatsCache.class.getName());
 
-  @Mock HTableInterface htable;
+  @Mock org.apache.hadoop.hbase.client.Table htable;
   private HBaseStore store;
   SortedMap<String, Cell> rows = new TreeMap<>();
 
