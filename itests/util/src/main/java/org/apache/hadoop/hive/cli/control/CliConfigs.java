@@ -121,8 +121,8 @@ public class CliConfigs {
         setResultsDir("ql/src/test/results/clientpositive/tez");
         setLogDir("itests/qtest/target/qfile-results/clientpositive");
 
-        setInitScript("q_test_init.sql");
-        setCleanupScript("q_test_cleanup.sql");
+        setInitScript("q_test_init_tez.sql");
+        setCleanupScript("q_test_cleanup_tez.sql");
 
         setHiveConfDir("data/conf/tez");
         setClusterType(MiniClusterType.tez);
@@ -167,8 +167,8 @@ public class CliConfigs {
         setResultsDir("ql/src/test/results/clientpositive/encrypted");
         setLogDir("itests/qtest/target/qfile-results/clientpositive");
 
-        setInitScript("q_test_init_for_encryption.sql");
-        setCleanupScript("q_test_cleanup_for_encryption.sql");
+        setInitScript("q_test_init_src.sql");
+        setCleanupScript("q_test_cleanup_src.sql");
 
 
         setClusterType(MiniClusterType.mr);
@@ -194,8 +194,8 @@ public class CliConfigs {
         setResultsDir("contrib/src/test/results/clientpositive");
         setLogDir("itests/qtest/target/qfile-results/contribclientpositive");
 
-        setInitScript("q_test_init.sql");
-        setCleanupScript("q_test_cleanup.sql");
+        setInitScript("q_test_init_contrib.sql");
+        setCleanupScript("q_test_cleanup_contrib.sql");
 
         setHiveConfDir("");
       } catch (Exception e) {
@@ -237,8 +237,8 @@ public class CliConfigs {
         setResultsDir("ql/src/test/results/clientcompare");
         setLogDir("itests/qtest/target/qfile-results/clientcompare");
 
-        setInitScript("q_test_init.sql");
-        setCleanupScript("q_test_cleanup.sql");
+        setInitScript("q_test_init_compare.sql");
+        setCleanupScript("q_test_cleanup_compare.sql");
 
         setHiveConfDir("");
         setClusterType(MiniClusterType.none);
@@ -302,8 +302,8 @@ public class CliConfigs {
         setResultsDir("hbase-handler/src/test/results/positive");
         setLogDir("itests/qtest/target/qfile-results/hbase-handler/positive");
 
-        setInitScript("q_test_init.sql");
-        setCleanupScript("q_test_cleanup.sql");
+        setInitScript("q_test_init_src_with_stats.sql");
+        setCleanupScript("q_test_cleanup_src.sql");
 
         setHiveConfDir("");
         setClusterType(MiniClusterType.none);
@@ -322,8 +322,8 @@ public class CliConfigs {
         setResultsDir("ql/src/test/results/clientcompare");
         setLogDir("itests/qtest/target/qfile-results/clientcompare");
 
-        setInitScript("q_test_init.sql");
-        setCleanupScript("q_test_cleanup.sql");
+        setInitScript("q_test_init_compare.sql");
+        setCleanupScript("q_test_cleanup_compare.sql");
 
         setHiveConfDir("");
         setClusterType(MiniClusterType.none);
@@ -342,8 +342,8 @@ public class CliConfigs {
         setResultsDir("hbase-handler/src/test/results/negative");
         setLogDir("itests/qtest/target/qfile-results/hbase-handler/negative");
 
-        setInitScript("q_test_init.sql");
-        setCleanupScript("q_test_cleanup.sql");
+        setInitScript("q_test_init_src.sql");
+        setCleanupScript("q_test_cleanup_src.sql");
 
         setHiveConfDir("");
         setClusterType(MiniClusterType.none);
@@ -406,8 +406,8 @@ public class CliConfigs {
         setResultsDir("accumulo-handler/src/test/results/positive");
         setLogDir("itests/qtest/target/qfile-results/accumulo-handler/positive");
 
-        setInitScript("q_test_init.sql");
-        setCleanupScript("q_test_cleanup.sql");
+        setInitScript("q_test_init_src_with_stats.sql");
+        setCleanupScript("q_test_cleanup_src.sql");
 
         setHiveConfDir("");
         setClusterType(MiniClusterType.none);
