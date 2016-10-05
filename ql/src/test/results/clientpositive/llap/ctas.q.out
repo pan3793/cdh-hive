@@ -686,9 +686,9 @@ Sort Columns:       	[]
 Storage Desc Params:	 	 
 	field.delim         	,                   
 	serialization.format	,                   
-PREHOOK: query: explain extended create table nzhang_ctas5 row format delimited fields terminated by ',' lines terminated by '\012' stored as textfile as select key, value from src sort by key, value limit 10
+PREHOOK: query: explain create table nzhang_ctas5 row format delimited fields terminated by ',' lines terminated by '\012' stored as textfile as select key, value from src sort by key, value limit 10
 PREHOOK: type: CREATETABLE_AS_SELECT
-POSTHOOK: query: explain extended create table nzhang_ctas5 row format delimited fields terminated by ',' lines terminated by '\012' stored as textfile as select key, value from src sort by key, value limit 10
+POSTHOOK: query: explain create table nzhang_ctas5 row format delimited fields terminated by ',' lines terminated by '\012' stored as textfile as select key, value from src sort by key, value limit 10
 POSTHOOK: type: CREATETABLE_AS_SELECT
 ABSTRACT SYNTAX TREE:
   
@@ -750,7 +750,7 @@ STAGE PLANS:
             Map Operator Tree:
                 TableScan
                   alias: src
-                  Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 500 Data size: 89000 Basic stats: COMPLETE Column stats: COMPLETE
                   GatherStats: false
                   Select Operator
                     expressions: key (type: string), value (type: string)
@@ -759,10 +759,13 @@ STAGE PLANS:
                     Reduce Output Operator
                       key expressions: _col0 (type: string), _col1 (type: string)
                       sort order: ++
-                      Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 500 Data size: 89000 Basic stats: COMPLETE Column stats: COMPLETE
                       tag: -1
+                      TopN: 10
+                      TopN Hash Memory Usage: 0.1
                       auto parallelism: true
             Execution mode: llap
+            LLAP IO: no inputs
             Path -> Alias:
 #### A masked pattern was here ####
             Path -> Partition:
@@ -772,7 +775,7 @@ STAGE PLANS:
                   input format: org.apache.hadoop.mapred.TextInputFormat
                   output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                   properties:
-                    COLUMN_STATS_ACCURATE true
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"key":"true","value":"true"}}
                     bucket_count -1
                     columns key,value
                     columns.comments 'default','default'
@@ -792,7 +795,7 @@ STAGE PLANS:
                     input format: org.apache.hadoop.mapred.TextInputFormat
                     output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
                     properties:
-                      COLUMN_STATS_ACCURATE true
+                      COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"key":"true","value":"true"}}
                       bucket_count -1
                       columns key,value
                       columns.comments 'default','default'
@@ -814,7 +817,6 @@ STAGE PLANS:
               /src [src]
         Reducer 2 
             Execution mode: llap
-            Needs Tagging: false
             Reduce Operator Tree:
               Select Operator
                 expressions: KEY.reducesinkkey0 (type: string), KEY.reducesinkkey1 (type: string)
@@ -826,11 +828,13 @@ STAGE PLANS:
                   Reduce Output Operator
                     key expressions: _col0 (type: string), _col1 (type: string)
                     sort order: ++
-                    Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 10 Data size: 1780 Basic stats: COMPLETE Column stats: COMPLETE
                     tag: -1
+                    TopN: 10
+                    TopN Hash Memory Usage: 0.1
                     auto parallelism: false
         Reducer 3 
-            Execution mode: uber
+            Execution mode: llap
             Needs Tagging: false
             Reduce Operator Tree:
               Select Operator
@@ -845,25 +849,13 @@ STAGE PLANS:
                     GlobalTableId: 1
 #### A masked pattern was here ####
                     NumFilesPerFileSink: 1
-                    Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 10 Data size: 1780 Basic stats: COMPLETE Column stats: COMPLETE
 #### A masked pattern was here ####
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
                         output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                        properties:
-                          columns key,value
-                          columns.types string:string
-                          field.delim ,
-                          line.delim 
-
-                          name default.nzhang_ctas5
-                          serialization.format ,
-                          serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
                         name: default.nzhang_ctas5
-                    TotalFiles: 1
-                    GatherStats: true
-                    MultiFileSpray: false
 
   Stage: Stage-2
     Dependency Collection
@@ -882,7 +874,6 @@ STAGE PLANS:
 
   Stage: Stage-3
     Stats-Aggr Operator
-#### A masked pattern was here ####
 
   Stage: Stage-0
     Move Operator
