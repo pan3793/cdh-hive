@@ -50,7 +50,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -229,6 +228,7 @@ import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.tools.HadoopArchives;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.hive.common.util.AnnotationUtils;
+import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.hive.common.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2057,7 +2057,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     createDb_str.append("CREATE DATABASE `").append(database.getName()).append("`\n");
     if (database.getDescription() != null) {
       createDb_str.append("COMMENT\n  '");
-      createDb_str.append(escapeHiveCommand(database.getDescription())).append("'\n");
+      createDb_str.append(
+          HiveStringUtils.escapeHiveCommand(database.getDescription())).append("'\n");
     }
     createDb_str.append("LOCATION\n  '");
     createDb_str.append(database.getLocationUri()).append("'\n");
@@ -2155,7 +2156,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       for (FieldSchema col : cols) {
         String columnDesc = "  `" + col.getName() + "` " + col.getType();
         if (col.getComment() != null) {
-          columnDesc = columnDesc + " COMMENT '" + escapeHiveCommand(col.getComment()) + "'";
+          columnDesc = columnDesc + " COMMENT '"
+              + HiveStringUtils.escapeHiveCommand(col.getComment()) + "'";
         }
         columns.add(columnDesc);
       }
@@ -2166,7 +2168,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       String tabComment = tbl.getProperty("comment");
       if (tabComment != null) {
         duplicateProps.add("comment");
-        tbl_comment = "COMMENT '" + escapeHiveCommand(tabComment) + "'";
+        tbl_comment = "COMMENT '"
+            + HiveStringUtils.escapeHiveCommand(tabComment) + "'";
       }
 
       // Partitions
@@ -2178,8 +2181,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         for (FieldSchema partKey : partKeys) {
           String partColDesc = "  `" + partKey.getName() + "` " + partKey.getType();
           if (partKey.getComment() != null) {
-            partColDesc = partColDesc + " COMMENT '" +
-                escapeHiveCommand(partKey.getComment()) + "'";
+            partColDesc = partColDesc + " COMMENT '"
+                + HiveStringUtils.escapeHiveCommand(partKey.getComment()) + "'";
           }
           partCols.add(partColDesc);
         }
@@ -2222,7 +2225,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       SerDeInfo serdeInfo = sd.getSerdeInfo();
       Map<String, String> serdeParams = serdeInfo.getParameters();
       tbl_row_format.append("ROW FORMAT SERDE \n");
-      tbl_row_format.append("  '" + escapeHiveCommand(serdeInfo.getSerializationLib()) + "' \n");
+      tbl_row_format.append("  '"
+          + HiveStringUtils.escapeHiveCommand(serdeInfo.getSerializationLib()) + "' \n");
       if (tbl.getStorageHandler() == null) {
         // If serialization.format property has the default value, it will not to be included in
         // SERDE properties
@@ -2233,20 +2237,21 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         if (!serdeParams.isEmpty()) {
           appendSerdeParams(tbl_row_format, serdeParams).append(" \n");
         }
-        tbl_row_format.append("STORED AS INPUTFORMAT \n  '" +
-            escapeHiveCommand(sd.getInputFormat()) + "' \n");
-        tbl_row_format.append("OUTPUTFORMAT \n  '" +
-            escapeHiveCommand(sd.getOutputFormat()) + "'");
+        tbl_row_format.append("STORED AS INPUTFORMAT \n  '"
+            + HiveStringUtils.escapeHiveCommand(sd.getInputFormat()) + "' \n");
+        tbl_row_format.append("OUTPUTFORMAT \n  '"
+            + HiveStringUtils.escapeHiveCommand(sd.getOutputFormat()) + "'");
       } else {
         duplicateProps.add(META_TABLE_STORAGE);
-        tbl_row_format.append("STORED BY \n  '" + escapeHiveCommand(tbl.getParameters().get(
+        tbl_row_format.append("STORED BY \n  '"
+            + HiveStringUtils.escapeHiveCommand(tbl.getParameters().get(
             META_TABLE_STORAGE)) + "' \n");
         // SerDe Properties
         if (!serdeParams.isEmpty()) {
           appendSerdeParams(tbl_row_format, serdeInfo.getParameters());
         }
       }
-      String tbl_location = "  '" + escapeHiveCommand(sd.getLocation()) + "'";
+      String tbl_location = "  '" + HiveStringUtils.escapeHiveCommand(sd.getLocation()) + "'";
 
       // Table properties
       String tbl_properties = propertiesToString(tbl.getParameters(), duplicateProps);
@@ -2281,7 +2286,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       for (String key : properties.keySet()) {
         if (properties.get(key) != null && (exclude == null || !exclude.contains(key))) {
           realProps.add("  '" + key + "'='" +
-              escapeHiveCommand(StringEscapeUtils.escapeJava(properties.get(key))) + "'");
+              HiveStringUtils.escapeHiveCommand(properties.get(key)) + "'");
         }
       }
       prop_string += StringUtils.join(realProps, ", \n");
@@ -2295,7 +2300,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     List<String> serdeCols = new ArrayList<String>();
     for (Entry<String, String> entry : serdeParam.entrySet()) {
       serdeCols.add("  '" + entry.getKey() + "'='"
-          + escapeHiveCommand(StringEscapeUtils.escapeJava(entry.getValue())) + "'");
+          + HiveStringUtils.escapeHiveCommand(entry.getValue()) + "'");
     }
     builder.append(StringUtils.join(serdeCols, ", \n")).append(')');
     return builder;
@@ -2322,6 +2327,10 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
     indexes = db.getIndexes(tbl.getDbName(), tbl.getTableName(), (short) -1);
 
+    // In case the query is served by HiveServer2, don't pad it with spaces,
+    // as HiveServer2 output is consumed by JDBC/ODBC clients.
+    boolean isOutputPadded = !SessionState.get().isHiveServerQuery();
+
     // write the results in the file
     DataOutputStream outStream = getOutputStream(showIndexes.getResFile());
     try {
@@ -2334,7 +2343,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
       for (Index index : indexes)
       {
-        outStream.write(MetaDataFormatUtils.getAllColumnsInformation(index).getBytes(StandardCharsets.UTF_8));
+        outStream.write(MetaDataFormatUtils.getIndexInformation(index, isOutputPadded).getBytes(StandardCharsets.UTF_8));
       }
     } catch (FileNotFoundException e) {
       LOG.info("show indexes: " + stringifyException(e));
