@@ -691,12 +691,6 @@ import org.apache.hadoop.hive.conf.HiveConf;
   public void setHiveConf(Configuration hiveConf) {
     this.hiveConf = hiveConf;
   }
-  protected boolean useSQL11ReservedKeywordsForIdentifier() {
-    if(hiveConf==null){
-      return false;
-    }
-    return !HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.HIVE_SUPPORT_SQL11_RESERVED_KEYWORDS);
-  }
 }
 
 @rulecatch {
@@ -2502,11 +2496,11 @@ body
    whereClause?
    groupByClause?
    havingClause?
+   window_clause?
    orderByClause?
    clusterByClause?
    distributeByClause?
    sortByClause?
-   window_clause?
    limitClause? -> ^(TOK_INSERT insertClause
                      selectClause lateralView? whereClause? groupByClause? havingClause? orderByClause? clusterByClause?
                      distributeByClause? sortByClause? window_clause? limitClause?)
@@ -2516,11 +2510,11 @@ body
    whereClause?
    groupByClause?
    havingClause?
+   window_clause?
    orderByClause?
    clusterByClause?
    distributeByClause?
    sortByClause?
-   window_clause?
    limitClause? -> ^(TOK_INSERT ^(TOK_DESTINATION ^(TOK_DIR TOK_TMP_FILE))
                      selectClause lateralView? whereClause? groupByClause? havingClause? orderByClause? clusterByClause?
                      distributeByClause? sortByClause? window_clause? limitClause?)
