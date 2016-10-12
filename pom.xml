@@ -207,7 +207,7 @@
     </repository>
     <repository>
       <id>cdh.snapshots.repo</id>
-      <url>http://maven.jenkins.cloudera.com:8081/artifactory/list/philip-test-repository/</url>
+      <url>https://repository.cloudera.com/content/repositories/snapshots</url>
       <name>CDH Snapshots Repository</name>
       <snapshots>
         <enabled>true</enabled>
