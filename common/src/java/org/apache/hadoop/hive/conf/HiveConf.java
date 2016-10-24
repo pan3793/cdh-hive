@@ -4227,8 +4227,7 @@ public class HiveConf extends Configuration {
   }
 
   public static String generateMrDeprecationWarning() {
-    return "Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. "
-        + "Consider using a different execution engine (i.e. " + HiveConf.getNonMrEngines()
-        + ") or using Hive 1.X releases.";
+    // Remove MR2 deprecation message.
+    return "";
   }
 }
