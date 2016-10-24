@@ -1,5 +1,4 @@
 create table t (
-	dp double precision,
 	d double,
 	f float,
 	i int,

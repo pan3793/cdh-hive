@@ -1,5 +1,4 @@
 PREHOOK: query: create table t (
-	dp double precision,
 	d double,
 	f float,
 	i int,
@@ -13,7 +12,6 @@ PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@t
 POSTHOOK: query: create table t (
-	dp double precision,
 	d double,
 	f float,
 	i int,
@@ -32,7 +30,6 @@ PREHOOK: Input: default@t
 POSTHOOK: query: describe t
 POSTHOOK: type: DESCTABLE
 POSTHOOK: Input: default@t
-dp                  	double              	                    
 d                   	double              	                    
 f                   	float               	                    
 i                   	int                 	                    
