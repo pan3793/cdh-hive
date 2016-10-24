@@ -56,7 +56,7 @@ public class PrimitiveComparisonFilter extends WholeRowIterator {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(PrimitiveComparisonFilter.class);
 
-  public static final String FILTER_PREFIX = "accumulo.filter.compare.iterator.";
+  public static final String FILTER_PREFIX = "accumulo_filter_compare_iterator_";
   public static final String P_COMPARE_CLASS = "accumulo.filter.iterator.p.compare.class";
   public static final String COMPARE_OPT_CLASS = "accumulo.filter.iterator.compare.opt.class";
   public static final String CONST_VAL = "accumulo.filter.iterator.const.val";
