@@ -55,6 +55,15 @@
       </includes>
     </dependencySet>
     <dependencySet>
+      <outputDirectory>auxlib/</outputDirectory>
+      <unpack>false</unpack>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useStrictFiltering>true</useStrictFiltering>
+      <includes>
+        <include>org.apache.hive:hive-exec:*:core</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
       <outputDirectory>hcatalog/share/hcatalog</outputDirectory>
       <unpack>false</unpack>
       <useProjectArtifact>false</useProjectArtifact>
