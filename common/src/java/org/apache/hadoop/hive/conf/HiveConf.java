@@ -3169,7 +3169,14 @@ public class HiveConf extends Configuration {
             "This parameter enables a number of optimizations when running on blobstores:\n" +
             "(1) If hive.blobstore.use.blobstore.as.scratchdir is false, force the last Hive job to write to the blobstore.\n" +
             "This is a performance optimization that forces the final FileSinkOperator to write to the blobstore.\n" +
-            "See HIVE-15121 for details.");
+            "See HIVE-15121 for details.\n" +
+            "(2) When true, if renaming directories within a blobstore, rename files one at a time rather than at a\n"+
+            "directory level. This will improve the performance of directory renames when running on blobstores.\n" +
+            "When false rely on the connector implementation of directory renames. Since renames may require copying\n" +
+            "the entire file, each rename can take a long amount of time. Renaming at a directory level may not be\n" +
+            "ideal if the blobstore connector cannot efficiently rename a directory (e.g. HADOOP-13600). By default,\n" +
+            "renames are done using a thread pool which allows each individual file to be renamed in parallel. The\n" +
+            "size of the threadpool is controlled by the hive.mv.files.thread parameter.");
 
     public final String varname;
     private final String altName;

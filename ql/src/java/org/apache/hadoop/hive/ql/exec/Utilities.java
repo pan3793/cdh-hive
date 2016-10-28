@@ -38,6 +38,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.fs.permission.FsPermission;
+import org.apache.hadoop.hive.common.BlobStorageUtils;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.HiveInterruptCallback;
 import org.apache.hadoop.hive.common.HiveInterruptUtils;
@@ -113,6 +114,7 @@ import org.apache.hadoop.hive.ql.plan.api.Graph;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.stats.StatsFactory;
 import org.apache.hadoop.hive.ql.stats.StatsPublisher;
+import org.apache.hadoop.hive.ql.util.ParallelDirectoryRenamer;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.ColumnProjectionUtils;
 import org.apache.hadoop.hive.serde2.SerDeException;
@@ -1131,10 +1133,17 @@ public final class Utilities {
    *          the target directory
    * @throws IOException
    */
-  public static void renameOrMoveFiles(FileSystem fs, Path src, Path dst) throws IOException,
+  public static void renameOrMoveFiles(Configuration conf, FileSystem fs, Path src, Path dst) throws IOException,
       HiveException {
     if (!fs.exists(dst)) {
-      if (!fs.rename(src, dst)) {
+      final boolean shouldRenameDirectoryInParallel = BlobStorageUtils.shouldRenameDirectoryInParallel(conf, fs, fs);
+      if (shouldRenameDirectoryInParallel && conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25) > 0) {
+        final ExecutorService pool = Executors.newFixedThreadPool(
+                conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25),
+                new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Move-Thread-%d").build());
+        ParallelDirectoryRenamer.renameDirectoryInParallel(conf, fs, fs, src, dst, true, SessionState.get(), pool);
+        pool.shutdown();
+      } else if (!fs.rename(src, dst)) {
         throw new HiveException("Unable to move: " + src + " to: " + dst);
       }
     } else {
@@ -1146,7 +1155,7 @@ public final class Utilities {
         String fileName = srcFilePath.getName();
         Path dstFilePath = new Path(dst, fileName);
         if (file.isDir()) {
-          renameOrMoveFiles(fs, srcFilePath, dstFilePath);
+          renameOrMoveFiles(conf, fs, srcFilePath, dstFilePath);
         }
         else {
           if (fs.exists(dstFilePath)) {
@@ -1399,7 +1408,7 @@ public final class Utilities {
 
         // move to the file destination
         log.info("Moving tmp dir: " + tmpPath + " to: " + specPath);
-        Utilities.renameOrMoveFiles(fs, tmpPath, specPath);
+        Utilities.renameOrMoveFiles(hconf, fs, tmpPath, specPath);
       }
     } else {
       fs.delete(tmpPath, true);
