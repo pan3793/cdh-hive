@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.session;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -48,7 +51,13 @@ import org.apache.hadoop.ipc.RemoteException;
  *    again after 10 min. Once it become writable, cleardanglingscratchDir will be able to
  *    remove it
  */
-public class ClearDanglingScratchDir {
+public class ClearDanglingScratchDir implements Runnable {
+  private static final Log LOG = LogFactory.getLog(ClearDanglingScratchDir.class.getName());
+  boolean dryRun = false;
+  boolean verbose = false;
+  boolean useConsole = false;
+  String rootHDFSDir;
+  HiveConf conf;
 
   public static void main(String[] args) throws Exception {
     Options opts = createOptions();
@@ -74,73 +83,97 @@ public class ClearDanglingScratchDir {
 
     HiveConf conf = new HiveConf();
 
-    Path rootHDFSDirPath;
+    String rootHDFSDir;
     if (cli.hasOption("s")) {
-      rootHDFSDirPath = new Path(cli.getOptionValue("s"));
+      rootHDFSDir = cli.getOptionValue("s");
     } else {
-      rootHDFSDirPath = new Path(HiveConf.getVar(conf, HiveConf.ConfVars.SCRATCHDIR));
+      rootHDFSDir = HiveConf.getVar(conf, HiveConf.ConfVars.SCRATCHDIR);
     }
+    ClearDanglingScratchDir clearDanglingScratchDirMain = new ClearDanglingScratchDir(dryRun,
+        verbose, true, rootHDFSDir, conf);
+    clearDanglingScratchDirMain.run();
+  }
 
-    FileSystem fs = FileSystem.get(rootHDFSDirPath.toUri(), conf);
-    FileStatus[] userHDFSDirList = fs.listStatus(rootHDFSDirPath);
+  public ClearDanglingScratchDir(boolean dryRun, boolean verbose, boolean useConsole,
+      String rootHDFSDir, HiveConf conf) {
+    this.dryRun = dryRun;
+    this.verbose = verbose;
+    this.useConsole = useConsole;
+    this.rootHDFSDir = rootHDFSDir;
+    this.conf = conf;
+  }
 
-    List<Path> scratchDirToRemove = new ArrayList<Path>();
-    for (FileStatus userHDFSDir : userHDFSDirList) {
-      FileStatus[] scratchDirList = fs.listStatus(userHDFSDir.getPath());
-      for (FileStatus scratchDir : scratchDirList) {
-        Path lockFilePath = new Path(scratchDir.getPath(), SessionState.LOCK_FILE_NAME);
-        if (!fs.exists(lockFilePath)) {
-          String message = "Skipping " + scratchDir.getPath() + " since it does not contain " +
-              SessionState.LOCK_FILE_NAME;
-          if (verbose) {
-            SessionState.getConsole().printInfo(message);
-          } else {
-            SessionState.getConsole().logInfo(message);
-          }
-          continue;
-        }
-        try {
-          IOUtils.closeStream(fs.append(lockFilePath));
-          scratchDirToRemove.add(scratchDir.getPath());
-        } catch (RemoteException e) {
-          // RemoteException with AlreadyBeingCreatedException will be thrown
-          // if the file is currently held by a writer
-          if(AlreadyBeingCreatedException.class.getName().equals(e.getClassName())){
-            // Cannot open the lock file for writing, must be held by a live process
-            String message = scratchDir.getPath() + " is being used by live process";
+  @Override
+  public void run() {
+    try {
+      Path rootHDFSDirPath = new Path(rootHDFSDir);
+      FileSystem fs = FileSystem.get(rootHDFSDirPath.toUri(), conf);
+      FileStatus[] userHDFSDirList = fs.listStatus(rootHDFSDirPath);
+
+      List<Path> scratchDirToRemove = new ArrayList<Path>();
+      for (FileStatus userHDFSDir : userHDFSDirList) {
+        FileStatus[] scratchDirList = fs.listStatus(userHDFSDir.getPath());
+        for (FileStatus scratchDir : scratchDirList) {
+          Path lockFilePath = new Path(scratchDir.getPath(), SessionState.LOCK_FILE_NAME);
+          if (!fs.exists(lockFilePath)) {
+            String message = "Skipping " + scratchDir.getPath() + " since it does not contain " +
+                SessionState.LOCK_FILE_NAME;
             if (verbose) {
-              SessionState.getConsole().printInfo(message);
-            } else {
-              SessionState.getConsole().logInfo(message);
+              consoleMessage(message);
             }
-          } else {
-            throw e;
+            continue;
+          }
+          try {
+            IOUtils.closeStream(fs.append(lockFilePath));
+            scratchDirToRemove.add(scratchDir.getPath());
+          } catch (RemoteException e) {
+            // RemoteException with AlreadyBeingCreatedException will be thrown
+            // if the file is currently held by a writer
+            if (AlreadyBeingCreatedException.class.getName().equals(e.getClassName())) {
+              // Cannot open the lock file for writing, must be held by a live process
+              String message = scratchDir.getPath() + " is being used by live process";
+              if (verbose) {
+                consoleMessage(message);
+              } else {
+                consoleMessage(message);
+              }
+            } else {
+              consoleMessage("Unexpected error:" + e.getMessage());
+            }
           }
         }
       }
-    }
 
-    if (scratchDirToRemove.size()==0) {
-      SessionState.getConsole().printInfo("Cannot find any scratch directory to clear");
-      return;
-    }
-    SessionState.getConsole().printInfo("Removing " + scratchDirToRemove.size() + " scratch directories");
-    for (Path scratchDir : scratchDirToRemove) {
-      if (dryRun) {
-        System.out.println(scratchDir);
-      } else {
-        boolean succ = fs.delete(scratchDir, true);
-        if (!succ) {
-          SessionState.getConsole().printInfo("Cannot remove " + scratchDir);
+      if (scratchDirToRemove.size()==0) {
+        consoleMessage("Cannot find any scratch directory to clear");
+        return;
+      }
+      consoleMessage("Removing " + scratchDirToRemove.size() + " scratch directories");
+      for (Path scratchDir : scratchDirToRemove) {
+        if (dryRun) {
+          System.out.println(scratchDir);
         } else {
-          String message = scratchDir + " removed";
-          if (verbose) {
-            SessionState.getConsole().printInfo(message);
+          boolean succ = fs.delete(scratchDir, true);
+          if (!succ) {
+            consoleMessage("Cannot remove " + scratchDir);
           } else {
-            SessionState.getConsole().logInfo(message);
+            String message = scratchDir + " removed";
+            if (verbose) {
+              consoleMessage(message);
+            }
           }
         }
       }
+    } catch (IOException e) {
+      consoleMessage("Unexpected exception " + e.getMessage());
+    }
+  }
+
+  private void consoleMessage(String message) {
+    if (useConsole) {
+      SessionState.getConsole().printInfo(message);
+    } else {
+      LOG.info(message);
     }
   }
 
