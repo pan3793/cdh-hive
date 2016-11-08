@@ -2412,7 +2412,7 @@ selectStatement[boolean topLevel]
 setOpSelectStatement[CommonTree t, boolean topLevel]
    :
    (u=setOperator b=simpleSelectStatement
-   -> {$setOpSelectStatement.tree != null && u.tree.getType()==HiveParser.TOK_UNIONDISTINCT}?
+   -> {$setOpSelectStatement.tree != null && ((CommonTree)u.getTree()).getType()==HiveParser.TOK_UNIONDISTINCT}?
       ^(TOK_QUERY
           ^(TOK_FROM
             ^(TOK_SUBQUERY
@@ -2425,9 +2425,9 @@ setOpSelectStatement[CommonTree t, boolean topLevel]
              ^(TOK_SELECTDI ^(TOK_SELEXPR TOK_ALLCOLREF))
           )
        )
-   -> {$setOpSelectStatement.tree != null && u.tree.getType()!=HiveParser.TOK_UNIONDISTINCT}?
+   -> {$setOpSelectStatement.tree != null && ((CommonTree)u.getTree()).getType()!=HiveParser.TOK_UNIONDISTINCT}?
       ^(TOK_UNIONALL {$setOpSelectStatement.tree} $b)
-   -> {$setOpSelectStatement.tree == null && u.tree.getType()==HiveParser.TOK_UNIONDISTINCT}?
+   -> {$setOpSelectStatement.tree == null && ((CommonTree)u.getTree()).getType()==HiveParser.TOK_UNIONDISTINCT}?
       ^(TOK_QUERY
           ^(TOK_FROM
             ^(TOK_SUBQUERY

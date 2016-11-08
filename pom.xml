@@ -110,7 +110,7 @@
     <accumulo.version>1.8.1</accumulo.version>
     <activemq.version>5.5.0</activemq.version>
     <ant.version>1.9.1</ant.version>
-    <antlr.version>${cdh.antlr.version}</antlr.version>
+    <antlr.version>3.5.2</antlr.version>
     <apache-directory-server.version>1.5.6</apache-directory-server.version>
     <apache-directory-clientapi.version>0.1</apache-directory-clientapi.version>
     <avatica.version>1.9.0</avatica.version>
