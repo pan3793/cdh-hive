@@ -9,36 +9,21 @@ select *
 from q1
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1
+  Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-1
-    Map Reduce
-      Map Operator Tree:
-          TableScan
-            alias: src
-            Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
-            Filter Operator
-              predicate: (key = '5') (type: boolean)
-              Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-              Select Operator
-                expressions: '5' (type: string)
-                outputColumnNames: _col0
-                Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
-                  Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-
   Stage: Stage-0
     Fetch Operator
       limit: -1
       Processor Tree:
-        ListSink
+        TableScan
+          alias: src
+          Filter Operator
+            predicate: (key = '5') (type: boolean)
+            Select Operator
+              expressions: '5' (type: string)
+              outputColumnNames: _col0
+              ListSink
 
 PREHOOK: query: with q1 as ( select key from src where key = '5')
 select *
@@ -55,45 +40,32 @@ POSTHOOK: Input: default@src
 5
 5
 5
-PREHOOK: query: explain
+PREHOOK: query: -- in subquery
+explain
 with q1 as ( select key from src where key = '5')
 select * from (select key from q1) a
 PREHOOK: type: QUERY
-POSTHOOK: query: explain
+POSTHOOK: query: -- in subquery
+explain
 with q1 as ( select key from src where key = '5')
 select * from (select key from q1) a
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1
+  Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-1
-    Map Reduce
-      Map Operator Tree:
-          TableScan
-            alias: src
-            Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
-            Filter Operator
-              predicate: (key = '5') (type: boolean)
-              Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-              Select Operator
-                expressions: '5' (type: string)
-                outputColumnNames: _col0
-                Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
-                  Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-
   Stage: Stage-0
     Fetch Operator
       limit: -1
       Processor Tree:
-        ListSink
+        TableScan
+          alias: src
+          Filter Operator
+            predicate: (key = '5') (type: boolean)
+            Select Operator
+              expressions: '5' (type: string)
+              outputColumnNames: _col0
+              ListSink
 
 PREHOOK: query: with q1 as ( select key from src where key = '5')
 select * from (select key from q1) a
@@ -108,47 +80,34 @@ POSTHOOK: Input: default@src
 5
 5
 5
-PREHOOK: query: explain
+PREHOOK: query: -- chaining
+explain
 with q1 as ( select key from q2 where key = '5'),
 q2 as ( select key from src where key = '5')
 select * from (select key from q1) a
 PREHOOK: type: QUERY
-POSTHOOK: query: explain
+POSTHOOK: query: -- chaining
+explain
 with q1 as ( select key from q2 where key = '5'),
 q2 as ( select key from src where key = '5')
 select * from (select key from q1) a
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
-  Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1
+  Stage-0 is a root stage
 
 STAGE PLANS:
-  Stage: Stage-1
-    Map Reduce
-      Map Operator Tree:
-          TableScan
-            alias: src
-            Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
-            Filter Operator
-              predicate: (key = '5') (type: boolean)
-              Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-              Select Operator
-                expressions: '5' (type: string)
-                outputColumnNames: _col0
-                Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
-                  Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-
   Stage: Stage-0
     Fetch Operator
       limit: -1
       Processor Tree:
-        ListSink
+        TableScan
+          alias: src
+          Filter Operator
+            predicate: (key = '5') (type: boolean)
+            Select Operator
+              expressions: '5' (type: string)
+              outputColumnNames: _col0
+              ListSink
 
 PREHOOK: query: with q1 as ( select key from q2 where key = '5'),
 q2 as ( select key from src where key = '5')
@@ -12947,14 +12906,16 @@ NULL	y605nF0K3mMoM75j	NULL
 1073418988	s1Tij71BKtw43u	-11535.0
 1073680599	NULL	NULL
 1073680599	pWxC5d20ub50yq8EJ8qpQ4h	NULL
-PREHOOK: query: with q1 as (select * from alltypesorc)
+PREHOOK: query: --standard rollup syntax
+with q1 as (select * from alltypesorc)
            from q1
            select cint, cstring1, avg(csmallint)
            group by rollup (cint, cstring1)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@alltypesorc
 #### A masked pattern was here ####
-POSTHOOK: query: with q1 as (select * from alltypesorc)
+POSTHOOK: query: --standard rollup syntax
+with q1 as (select * from alltypesorc)
            from q1
            select cint, cstring1, avg(csmallint)
            group by rollup (cint, cstring1)
