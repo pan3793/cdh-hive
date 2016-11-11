@@ -253,13 +253,9 @@ public class TestFunctionRegistry extends TestCase {
                TypeInfoFactory.doubleTypeInfo);
 
     comparison(TypeInfoFactory.dateTypeInfo, TypeInfoFactory.stringTypeInfo,
-        TypeInfoFactory.dateTypeInfo);
+        TypeInfoFactory.stringTypeInfo);
     comparison(TypeInfoFactory.stringTypeInfo, TypeInfoFactory.dateTypeInfo,
-        TypeInfoFactory.dateTypeInfo);
-    comparison(TypeInfoFactory.timestampTypeInfo, TypeInfoFactory.stringTypeInfo,
-        TypeInfoFactory.timestampTypeInfo);
-    comparison(TypeInfoFactory.stringTypeInfo, TypeInfoFactory.timestampTypeInfo,
-        TypeInfoFactory.timestampTypeInfo);
+        TypeInfoFactory.stringTypeInfo);
 
     comparison(TypeInfoFactory.intTypeInfo, TypeInfoFactory.timestampTypeInfo,
         TypeInfoFactory.doubleTypeInfo);
@@ -368,15 +364,15 @@ public class TestFunctionRegistry extends TestCase {
 
     // non-qualified types should simply return the TypeInfo associated with that type
     assertEquals(TypeInfoFactory.stringTypeInfo, FunctionRegistry.getTypeInfoForPrimitiveCategory(
-        (PrimitiveTypeInfo) varchar10, TypeInfoFactory.stringTypeInfo,
+        (PrimitiveTypeInfo) varchar10, (PrimitiveTypeInfo) TypeInfoFactory.stringTypeInfo,
         PrimitiveCategory.STRING));
     assertEquals(TypeInfoFactory.stringTypeInfo, FunctionRegistry.getTypeInfoForPrimitiveCategory(
-        TypeInfoFactory.stringTypeInfo,
-        TypeInfoFactory.stringTypeInfo,
+        (PrimitiveTypeInfo) TypeInfoFactory.stringTypeInfo,
+        (PrimitiveTypeInfo) TypeInfoFactory.stringTypeInfo,
         PrimitiveCategory.STRING));
     assertEquals(TypeInfoFactory.doubleTypeInfo, FunctionRegistry.getTypeInfoForPrimitiveCategory(
-        TypeInfoFactory.doubleTypeInfo,
-        TypeInfoFactory.stringTypeInfo,
+        (PrimitiveTypeInfo) TypeInfoFactory.doubleTypeInfo,
+        (PrimitiveTypeInfo) TypeInfoFactory.stringTypeInfo,
         PrimitiveCategory.DOUBLE));
   }
 

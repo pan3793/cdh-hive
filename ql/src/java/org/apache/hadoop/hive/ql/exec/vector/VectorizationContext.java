@@ -655,7 +655,7 @@ public class VectorizationContext {
         genericUdf = new GenericUDFToDate();
         break;
       case TIMESTAMP:
-        genericUdf = new GenericUDFTimestamp();
+        genericUdf = new GenericUDFToUnixTimeStamp();
         break;
       case BINARY:
         genericUdf = new GenericUDFToBinary();
