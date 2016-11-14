@@ -18,8 +18,9 @@
 
 package org.apache.hadoop.hive.hbase;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
