@@ -160,7 +160,7 @@ org.apache.hadoop.hive.ql.QueryInfo;
         </%if>
         <tr>
             <td>Latency (s)</td>
-            <td><% queryInfo.getRuntime()/1000 %></td>
+            <td><% queryInfo.getRuntime() == null ? "Not finished" : queryInfo.getRuntime()/1000 %></td>
         </tr>
     </table>
 </%def>
