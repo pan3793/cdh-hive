@@ -45,7 +45,17 @@
         <exclude>log4j:*</exclude>
         <exclude>commons-configuration:commons-configuration</exclude>
         <exclude>org.apache.hive:hive-jdbc:*:standalone</exclude>
+        <exclude>org.apache.hive:hive-exec:*:core</exclude>
       </excludes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>auxlib/</outputDirectory>
+      <unpack>false</unpack>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useStrictFiltering>true</useStrictFiltering>
+      <includes>
+        <include>org.apache.hive:hive-exec:*:core</include>
+      </includes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>jdbc/</outputDirectory>
