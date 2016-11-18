@@ -1,0 +1,27 @@
+PREHOOK: query: CREATE TABLE test_uuid (key STRING, uid STRING)
+PREHOOK: type: CREATETABLE
+PREHOOK: Output: database:default
+PREHOOK: Output: default@test_uuid
+POSTHOOK: query: CREATE TABLE test_uuid (key STRING, uid STRING)
+POSTHOOK: type: CREATETABLE
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@test_uuid
+PREHOOK: query: INSERT INTO TABLE test_uuid SELECT key, uuid() FROM src
+PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@test_uuid
+POSTHOOK: query: INSERT INTO TABLE test_uuid SELECT key, uuid() FROM src
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@test_uuid
+POSTHOOK: Lineage: test_uuid.key SIMPLE [(src)src.FieldSchema(name:key, type:string, comment:default), ]
+POSTHOOK: Lineage: test_uuid.uid EXPRESSION []
+PREHOOK: query: SELECT COUNT(DISTINCT uid) FROM test_uuid
+PREHOOK: type: QUERY
+PREHOOK: Input: default@test_uuid
+#### A masked pattern was here ####
+POSTHOOK: query: SELECT COUNT(DISTINCT uid) FROM test_uuid
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_uuid
+#### A masked pattern was here ####
+500
