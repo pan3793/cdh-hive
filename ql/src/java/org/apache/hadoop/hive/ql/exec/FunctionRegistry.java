@@ -448,6 +448,8 @@ public final class FunctionRegistry {
     system.registerGenericUDF("unix_timestamp", GenericUDFUnixTimeStamp.class);
     system.registerGenericUDF("to_unix_timestamp", GenericUDFToUnixTimeStamp.class);
 
+    system.registerGenericUDF("internal_interval", GenericUDFInternalInterval.class);
+
     // Generic UDTF's
     system.registerGenericUDTF("explode", GenericUDTFExplode.class);
     system.registerGenericUDTF("inline", GenericUDTFInline.class);
