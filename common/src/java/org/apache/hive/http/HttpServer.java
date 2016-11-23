@@ -130,6 +130,7 @@ public class HttpServer {
     private String spnegoKeytab;
     private boolean useSPNEGO;
     private boolean useSSL;
+    private String contextRootRewriteTarget = "/index.html";
     private final List<Pair<String, Class<? extends HttpServlet>>> servlets =
         new LinkedList<Pair<String, Class<? extends HttpServlet>>>();
 
@@ -204,6 +205,11 @@ public class HttpServer {
 
     public Builder setContextAttribute(String name, Object value) {
       contextAttrs.put(name, value);
+      return this;
+    }
+
+    public Builder setContextRootRewriteTarget(String contextRootRewriteTarget) {
+      this.contextRootRewriteTarget = contextRootRewriteTarget;
       return this;
     }
 
@@ -402,7 +408,7 @@ public class HttpServer {
 
     RewriteRegexRule rootRule = new RewriteRegexRule();
     rootRule.setRegex("^/$");
-    rootRule.setReplacement("/hiveserver2.jsp");
+    rootRule.setReplacement(b.contextRootRewriteTarget);
     rootRule.setTerminating(true);
 
     rwHandler.addRule(rootRule);
