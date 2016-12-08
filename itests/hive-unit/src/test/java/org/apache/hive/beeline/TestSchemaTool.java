@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.sql.Connection;
 import java.util.Random;
 
 import junit.framework.TestCase;
@@ -39,6 +40,7 @@ import org.apache.hive.beeline.HiveSchemaHelper.PostgresCommandParser;
 
 public class TestSchemaTool extends TestCase {
   private HiveSchemaTool schemaTool;
+  private Connection conn;
   private HiveConf hiveConf;
   private String testMetastoreDB;
   private PrintStream errStream;
@@ -57,6 +59,7 @@ public class TestSchemaTool extends TestCase {
     System.setProperty("beeLine.system.exit", "true");
     errStream = System.err;
     outStream = System.out;
+    conn = schemaTool.getConnectionToMetastore(false);
   }
 
   @Override
@@ -67,6 +70,9 @@ public class TestSchemaTool extends TestCase {
     }
     System.setOut(outStream);
     System.setErr(errStream);
+    if (conn != null) {
+      conn.close();
+    }
   }
 
   /**
@@ -77,7 +83,7 @@ public class TestSchemaTool extends TestCase {
     schemaTool.doInit();
 
     // Test empty database
-    boolean isValid = schemaTool.validateSequences();
+    boolean isValid = schemaTool.validateSequences(conn);
     assertTrue(isValid);
 
     // Test valid case
@@ -89,7 +95,7 @@ public class TestSchemaTool extends TestCase {
     };
     File scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
-    isValid = schemaTool.validateSequences();
+    isValid = schemaTool.validateSequences(conn);
     assertTrue(isValid);
 
     // Test invalid case
@@ -103,7 +109,7 @@ public class TestSchemaTool extends TestCase {
     };
     scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
-    isValid = schemaTool.validateSequences();
+    isValid = schemaTool.validateSequences(conn);
     assertFalse(isValid);
   }
 
@@ -114,12 +120,12 @@ public class TestSchemaTool extends TestCase {
   public void testValidateSchemaTables() throws Exception {
     schemaTool.doInit("2.0.0");
 
-    boolean isValid = (boolean)schemaTool.validateSchemaTables();
+    boolean isValid = (boolean)schemaTool.validateSchemaTables(conn);
     assertTrue(isValid);
 
     // upgrade to 2.2.0 schema and re-validate
     schemaTool.doUpgrade("2.2.0");
-    isValid = (boolean)schemaTool.validateSchemaTables();
+    isValid = (boolean)schemaTool.validateSchemaTables(conn);
     assertTrue(isValid);
 
     // Simulate a missing table scenario by renaming a couple of tables
@@ -130,7 +136,7 @@ public class TestSchemaTool extends TestCase {
 
     File scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
-    isValid = schemaTool.validateSchemaTables();
+    isValid = schemaTool.validateSchemaTables(conn);
     assertFalse(isValid);
 
     // Restored the renamed tables
@@ -141,7 +147,7 @@ public class TestSchemaTool extends TestCase {
 
     scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
-    isValid = schemaTool.validateSchemaTables();
+    isValid = schemaTool.validateSchemaTables(conn);
     assertTrue(isValid);
    }
 
@@ -153,12 +159,12 @@ public class TestSchemaTool extends TestCase {
     schemaTool.doInit();
 
     // Test empty database
-    boolean isValid = schemaTool.validateColumnNullValues();
+    boolean isValid = schemaTool.validateColumnNullValues(conn);
     assertTrue(isValid);
 
     // Test valid case
     createTestHiveTableSchemas();
-    isValid = schemaTool.validateColumnNullValues();
+    isValid = schemaTool.validateColumnNullValues(conn);
 
     // Test invalid case
     String[] scripts = new String[] {
@@ -166,7 +172,7 @@ public class TestSchemaTool extends TestCase {
     };
     File scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
-    isValid = schemaTool.validateColumnNullValues();
+    isValid = schemaTool.validateColumnNullValues(conn);
     assertFalse(isValid);
   }
 
@@ -221,14 +227,14 @@ public class TestSchemaTool extends TestCase {
   */
  public void testValidateSchemaVersions() throws Exception {
    schemaTool.doInit();
-   boolean isValid = schemaTool.validateSchemaVersions();
+   boolean isValid = schemaTool.validateSchemaVersions(conn);
    // Test an invalid case with multiple versions
    String[] scripts = new String[] {
        "insert into VERSION values(100, '2.2.0', 'Hive release version 2.2.0')"
    };
    File scriptFile = generateTestScript(scripts);
    schemaTool.runBeeLine(scriptFile.getPath());
-   isValid = schemaTool.validateSchemaVersions();
+   isValid = schemaTool.validateSchemaVersions(conn);
    assertFalse(isValid);
 
    scripts = new String[] {
@@ -236,7 +242,7 @@ public class TestSchemaTool extends TestCase {
    };
    scriptFile = generateTestScript(scripts);
    schemaTool.runBeeLine(scriptFile.getPath());
-   isValid = schemaTool.validateSchemaVersions();
+   isValid = schemaTool.validateSchemaVersions(conn);
    assertTrue(isValid);
 
    // Test an invalid case without version
@@ -245,7 +251,7 @@ public class TestSchemaTool extends TestCase {
    };
    scriptFile = generateTestScript(scripts);
    schemaTool.runBeeLine(scriptFile.getPath());
-   isValid = schemaTool.validateSchemaVersions();
+   isValid = schemaTool.validateSchemaVersions(conn);
    assertFalse(isValid);
  }
 
@@ -600,12 +606,11 @@ public class TestSchemaTool extends TestCase {
     schemaTool.doInit();
     String defaultRoot = "hdfs://myhost.com:8020";
     //check empty DB
-    boolean isValid = schemaTool.validateLocations(null);
+    boolean isValid = schemaTool.validateLocations(conn, null);
     assertTrue(isValid);
-    isValid = schemaTool.validateLocations(defaultRoot);
+    isValid = schemaTool.validateLocations(conn, defaultRoot);
     assertTrue(isValid);
 
-    String dbmydbLocation = defaultRoot + "/user/hive/warehouse/mydb";
  // Test valid case
     String[] scripts = new String[] {
          "insert into DBS values(2, 'my db', 'hdfs://myhost.com:8020/user/hive/warehouse/mydb', 'mydb', 'public', 'role')",
@@ -617,9 +622,9 @@ public class TestSchemaTool extends TestCase {
        };
     File scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
-    isValid = schemaTool.validateLocations(null);
+    isValid = schemaTool.validateLocations(conn, null);
     assertTrue(isValid);
-    isValid = schemaTool.validateLocations(defaultRoot);
+    isValid = schemaTool.validateLocations(conn, defaultRoot);
     assertTrue(isValid);
     scripts = new String[] {
         "delete from PARTITIONS",
@@ -638,9 +643,9 @@ public class TestSchemaTool extends TestCase {
     };
     scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
-    isValid = schemaTool.validateLocations(null);
+    isValid = schemaTool.validateLocations(conn, null);
     assertFalse(isValid);
-    isValid = schemaTool.validateLocations(defaultRoot);
+    isValid = schemaTool.validateLocations(conn, defaultRoot);
     assertFalse(isValid);
   }
 
