@@ -2756,12 +2756,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
     if (null == pool) {
       if (inheritPerms) {
-        try {
-          HdfsUtils.setFullFileStatus(conf, fullDestStatus, null, destFs, destf, true);
-        } catch (IOException e) {
-          LOG.error("Failed to move: {}", e.getMessage());
-          throw new HiveException(e.getCause());
-        }
+        HdfsUtils.setFullFileStatus(conf, fullDestStatus, null, destFs, destf, true);
       }
     } else {
       pool.shutdown();
@@ -2926,11 +2921,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
         // For local src file, copy to hdfs
         destFs.copyFromLocalFile(srcf, destf);
         if (inheritPerms) {
-          try {
-            HdfsUtils.setFullFileStatus(conf, destStatus, destFs, destf, true);
-          } catch (IOException e) {
-            LOG.warn("Error setting permission of file " + destf + ": "+ e.getMessage(), e);
-          }
+          HdfsUtils.setFullFileStatus(conf, destStatus, destFs, destf, true);
         }
         return true;
       } else {
