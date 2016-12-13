@@ -2331,7 +2331,7 @@ public final class Utilities {
     return isEmptyPath(job, dirPath);
   }
 
-  public static boolean isEmptyPath(JobConf job, Path dirPath) throws Exception {
+  public static boolean isEmptyPath(Configuration job, Path dirPath) throws IOException {
     FileSystem inpFs = dirPath.getFileSystem(job);
     try {
       FileStatus[] fStats = inpFs.listStatus(dirPath, FileUtils.HIDDEN_FILES_PATH_FILTER);
@@ -3198,7 +3198,7 @@ public final class Utilities {
     Path newPath = createEmptyFile(hiveScratchDir, outFileFormat, job, props, oneRow);
 
     if (LOG.isInfoEnabled()) {
-      LOG.info("Changed input file " + strPath + " to empty file " + newPath);
+      LOG.info("Changed input file " + strPath + " to empty file " + newPath + " (" + oneRow + ")");
     }
     return newPath;
   }
