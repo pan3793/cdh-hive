@@ -1965,6 +1965,7 @@ public class TestInputOutputFormat {
     localFs.delete(mapXml, true);
     FSDataOutputStream planStream = localFs.create(mapXml);
     SerializationUtilities.serializePlan(mapWork, planStream);
+    conf.setBoolean(Utilities.HAS_MAP_WORK, true);
     planStream.close();
     return conf;
   }
