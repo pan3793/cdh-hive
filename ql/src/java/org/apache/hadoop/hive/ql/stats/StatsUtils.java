@@ -21,6 +21,7 @@ package org.apache.hadoop.hive.ql.stats;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.math.LongMath;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,12 +37,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -54,6 +53,7 @@ import org.apache.hadoop.hive.metastore.api.ColumnStatisticsData;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.Decimal;
 import org.apache.hadoop.hive.ql.exec.ColumnInfo;
+import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
 import org.apache.hadoop.hive.ql.exec.RowSchema;
 import org.apache.hadoop.hive.ql.exec.TableScanOperator;
 import org.apache.hadoop.hive.ql.exec.Utilities;
@@ -72,6 +72,7 @@ import org.apache.hadoop.hive.ql.plan.ExprNodeFieldDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
 import org.apache.hadoop.hive.ql.plan.Statistics;
 import org.apache.hadoop.hive.ql.plan.Statistics.State;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.ql.util.JavaDataModel;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
@@ -1247,11 +1248,42 @@ public class StatsUtils {
         oi = encd.getWritableObjectInspector();
       }
     } else if (end instanceof ExprNodeGenericFuncDesc) {
-
-      // udf projection
       ExprNodeGenericFuncDesc engfd = (ExprNodeGenericFuncDesc) end;
       colName = engfd.getName();
       colType = engfd.getTypeString();
+
+      // If it is a widening cast, we do not change NDV, min, max
+      if (isWideningCast(engfd) && engfd.getChildren().get(0) instanceof ExprNodeColumnDesc) {
+        // cast on single column
+        ColStatistics stats = parentStats.getColumnStatisticsFromColName(engfd.getCols().get(0));
+        if (stats != null) {
+          ColStatistics newStats;
+          try {
+            newStats = stats.clone();
+          } catch (CloneNotSupportedException e) {
+            LOG.warn("error cloning stats, this should not happen");
+            return null;
+          }
+          newStats.setColumnName(colName);
+          colType = colType.toLowerCase();
+          newStats.setColumnType(colType);
+          colType = colType.toLowerCase();
+          if (colType.equals(serdeConstants.STRING_TYPE_NAME)
+              || colType.equals(serdeConstants.BINARY_TYPE_NAME)
+              || colType.startsWith(serdeConstants.VARCHAR_TYPE_NAME)
+              || colType.startsWith(serdeConstants.CHAR_TYPE_NAME)
+              || colType.startsWith(serdeConstants.LIST_TYPE_NAME)
+              || colType.startsWith(serdeConstants.MAP_TYPE_NAME)
+              || colType.startsWith(serdeConstants.STRUCT_TYPE_NAME)
+              || colType.startsWith(serdeConstants.UNION_TYPE_NAME)) {
+            newStats.setAvgColLen(getAvgColLenOfVariableLengthTypes(conf, oi, colType));
+          } else {
+            newStats.setAvgColLen(getAvgColLenOfFixedLengthTypes(colType));
+          }
+          return newStats;
+        }
+      }
+      // fallback to default
       countDistincts = numRows;
       oi = engfd.getWritableObjectInspector();
     } else if (end instanceof ExprNodeColumnListDesc) {
@@ -1292,6 +1324,16 @@ public class StatsUtils {
     colStats.setNumNulls(numNulls);
 
     return colStats;
+  }
+
+  private static boolean isWideningCast(ExprNodeGenericFuncDesc engfd) {
+    GenericUDF udf = engfd.getGenericUDF();
+    if (!FunctionRegistry.isOpCast(udf)) {
+      // It is not a cast
+      return false;
+    }
+    return FunctionRegistry.implicitConvertible(engfd.getChildren().get(0).getTypeInfo(),
+            engfd.getTypeInfo());
   }
 
   /**
