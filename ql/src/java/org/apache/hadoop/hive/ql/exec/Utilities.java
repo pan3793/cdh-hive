@@ -224,6 +224,8 @@ public final class Utilities {
   public static final String REDUCE_PLAN_NAME = "reduce.xml";
   public static final String MERGE_PLAN_NAME = "merge.xml";
   public static final String INPUT_NAME = "iocontext.input.name";
+  public static final String HAS_MAP_WORK = "has.map.work";
+  public static final String HAS_REDUCE_WORK = "has.reduce.work";
   public static final String MAPRED_MAPPER_CLASS = "mapred.mapper.class";
   public static final String MAPRED_REDUCER_CLASS = "mapred.reducer.class";
   public static final String HIVE_ADDED_JARS = "hive.added.jars";
@@ -311,6 +313,9 @@ public final class Utilities {
   }
 
   public static MapWork getMapWork(Configuration conf) {
+    if (!conf.getBoolean(HAS_MAP_WORK, false)) {
+      return null;
+    }
     return (MapWork) getBaseWork(conf, MAP_PLAN_NAME);
   }
 
@@ -319,6 +324,9 @@ public final class Utilities {
   }
 
   public static ReduceWork getReduceWork(Configuration conf) {
+    if (!conf.getBoolean(HAS_REDUCE_WORK, false)) {
+      return null;
+    }
     return (ReduceWork) getBaseWork(conf, REDUCE_PLAN_NAME);
   }
 
@@ -371,6 +379,7 @@ public final class Utilities {
    */
   public static void setBaseWork(Configuration conf, String name, BaseWork work) {
     Path path = getPlanPath(conf, name);
+    setHasWork(conf, name);
     gWorkMap.get(conf).put(path, work);
   }
 
@@ -475,6 +484,14 @@ public final class Utilities {
     }
   }
 
+  private static void setHasWork(Configuration conf, String name) {
+    if (MAP_PLAN_NAME.equals(name)) {
+      conf.setBoolean(HAS_MAP_WORK, true);
+    } else if (REDUCE_PLAN_NAME.equals(name)) {
+      conf.setBoolean(HAS_REDUCE_WORK, true);
+    }
+  }
+
   public static void setWorkflowAdjacencies(Configuration conf, QueryPlan plan) {
     try {
       Graph stageGraph = plan.getQueryPlan().getStageGraph();
@@ -537,6 +554,7 @@ public final class Utilities {
       setPlanPath(conf, hiveScratchDir);
 
       Path planPath = getPlanPath(conf, name);
+      setHasWork(conf, name);
 
       OutputStream out = null;
 
