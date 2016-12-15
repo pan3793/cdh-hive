@@ -1325,6 +1325,7 @@ public class TestInputOutputFormat {
     localFs.delete(mapXml, true);
     FSDataOutputStream planStream = localFs.create(mapXml);
     Utilities.serializePlan(mapWork, planStream, conf);
+    conf.setBoolean(Utilities.HAS_MAP_WORK, true);
     planStream.close();
     return conf;
   }
