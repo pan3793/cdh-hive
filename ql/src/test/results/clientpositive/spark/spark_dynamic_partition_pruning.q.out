@@ -1918,27 +1918,6 @@ STAGE PLANS:
                         sort order: +
                         Map-reduce partition columns: _col0 (type: string)
                         Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
-        Map 8 
-            Map Operator Tree:
-                TableScan
-                  alias: srcpart
-                  filterExpr: ds is not null (type: boolean)
-                  Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
-                  Select Operator
-                    expressions: ds (type: string)
-                    outputColumnNames: _col0
-                    Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
-                    Group By Operator
-                      keys: _col0 (type: string)
-                      mode: hash
-                      outputColumnNames: _col0
-                      Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
-                      Spark Partition Pruning Sink Operator
-                        partition key expr: ds
-#### A masked pattern was here ####
-                        Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
-                        target column name: ds
-                        target work: Map 1
         Reducer 7 
             Reduce Operator Tree:
               Group By Operator
@@ -4652,38 +4631,11 @@ POSTHOOK: query: EXPLAIN select count(*) from srcpart join (select ds as ds, ds 
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
-  Stage-3 depends on stages: Stage-2
-  Stage-1 depends on stages: Stage-3
+  Stage-1 depends on stages: Stage-2
   Stage-0 depends on stages: Stage-1
 
 STAGE PLANS:
   Stage: Stage-2
-    Spark
-#### A masked pattern was here ####
-      Vertices:
-        Map 5 
-            Map Operator Tree:
-                TableScan
-                  alias: srcpart
-                  filterExpr: ds is not null (type: boolean)
-                  Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
-                  Select Operator
-                    expressions: ds (type: string)
-                    outputColumnNames: _col0
-                    Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
-                    Group By Operator
-                      keys: _col0 (type: string)
-                      mode: hash
-                      outputColumnNames: _col0
-                      Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
-                      Spark Partition Pruning Sink Operator
-                        partition key expr: ds
-#### A masked pattern was here ####
-                        Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
-                        target column name: ds
-                        target work: Map 1
-
-  Stage: Stage-3
     Spark
       Edges:
         Reducer 2 <- Map 1 (GROUP, 2)
