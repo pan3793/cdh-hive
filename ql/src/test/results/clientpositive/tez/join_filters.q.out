@@ -18,7 +18,7 @@ POSTHOOK: query: LOAD DATA LOCAL INPATH '../../data/files/in3.txt' INTO TABLE my
 POSTHOOK: type: LOAD
 #### A masked pattern was here ####
 POSTHOOK: Output: default@myinput1
-Warning: Shuffle Join JOIN[10][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[15][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -29,7 +29,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100
 YaI1msgLVpfEx943Tfea/Q==
-Warning: Shuffle Join JOIN[7][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[11][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a LEFT OUTER JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -43,7 +43,7 @@ POSTHOOK: Input: default@myinput1
 48	NULL	NULL	NULL
 NULL	40	NULL	NULL
 M3MWtBJdRXSWIJY5Qr/otw==
-Warning: Shuffle Join JOIN[7][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[11][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a RIGHT OUTER JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -57,7 +57,7 @@ NULL	NULL	12	35
 NULL	NULL	48	NULL
 NULL	NULL	NULL	40
 LNZKrcVNAvaeDALnsg72bw==
-Warning: Shuffle Join JOIN[6][tables = [$hdt$_0, $hdt$_1]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[9][tables = [$hdt$_0, $hdt$_1]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a FULL OUTER JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -308,7 +308,7 @@ NULL	NULL	12	35	NULL	NULL
 NULL	NULL	48	NULL	NULL	NULL
 NULL	NULL	NULL	40	NULL	NULL
 BYad/CYbc/RASCgl63S7Ww==
-Warning: Shuffle Join JOIN[5][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[22][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a LEFT OUTER JOIN myinput1 b RIGHT OUTER JOIN myinput1 c ON a.value = b.value and b.value = c.value AND a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value AND c.key > 40 AND c.value > 50 AND c.key = c.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -348,7 +348,7 @@ NULL	NULL	12	35	NULL	NULL
 NULL	NULL	48	NULL	NULL	NULL
 NULL	NULL	NULL	40	NULL	NULL
 BYad/CYbc/RASCgl63S7Ww==
-Warning: Shuffle Join JOIN[5][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[22][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a LEFT OUTER JOIN myinput1 b RIGHT OUTER JOIN myinput1 c ON a.value = b.value and b.key = c.key AND a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value AND c.key > 40 AND c.value > 50 AND c.key = c.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -362,7 +362,7 @@ NULL	NULL	NULL	NULL	12	35
 NULL	NULL	NULL	NULL	48	NULL
 NULL	NULL	NULL	NULL	NULL	40
 AzUxen/yR7DlsL00zfSITA==
-Warning: Map Join MAPJOIN[15][bigTable=?] in task 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[15][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT /*+ MAPJOIN(a) */ * FROM myinput1 a JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -413,7 +413,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100
 YaI1msgLVpfEx943Tfea/Q==
-Warning: Map Join MAPJOIN[15][bigTable=?] in task 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[15][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT /*+ MAPJOIN(b) */ * FROM myinput1 a JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -776,7 +776,7 @@ NULL	NULL	48	NULL
 NULL	NULL	NULL	135
 NULL	NULL	NULL	35
 UBr9lyqgsjDFvooMgQlZ9w==
-Warning: Shuffle Join JOIN[10][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[15][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -787,7 +787,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100
 YaI1msgLVpfEx943Tfea/Q==
-Warning: Shuffle Join JOIN[10][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[15][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a LEFT OUTER JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -798,7 +798,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100
 YaI1msgLVpfEx943Tfea/Q==
-Warning: Shuffle Join JOIN[10][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[15][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a RIGHT OUTER JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -809,7 +809,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100
 YaI1msgLVpfEx943Tfea/Q==
-Warning: Shuffle Join JOIN[12][tables = [$hdt$_0, $hdt$_1]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[17][tables = [$hdt$_0, $hdt$_1]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a FULL OUTER JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -1000,7 +1000,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100	100	100
 WPjT9iK+FjpywFhoiQ0jvw==
-Warning: Shuffle Join JOIN[8][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[26][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a LEFT OUTER JOIN myinput1 b RIGHT OUTER JOIN myinput1 c ON a.value = b.value and b.value = c.value AND a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value AND c.key > 40 AND c.value > 50 AND c.key = c.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -1031,7 +1031,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100	100	100
 WPjT9iK+FjpywFhoiQ0jvw==
-Warning: Shuffle Join JOIN[8][tables = [a, b]] in Stage 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[26][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT * FROM myinput1 a LEFT OUTER JOIN myinput1 b RIGHT OUTER JOIN myinput1 c ON a.value = b.value and b.key = c.key AND a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value AND c.key > 40 AND c.value > 50 AND c.key = c.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -1042,7 +1042,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100	100	100
 WPjT9iK+FjpywFhoiQ0jvw==
-Warning: Map Join MAPJOIN[15][bigTable=?] in task 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[15][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT /*+ MAPJOIN(a) */ * FROM myinput1 a JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
@@ -1093,7 +1093,7 @@ POSTHOOK: Input: default@myinput1
 #### A masked pattern was here ####
 100	100	100	100
 YaI1msgLVpfEx943Tfea/Q==
-Warning: Map Join MAPJOIN[15][bigTable=?] in task 'Stage-1:MAPRED' is a cross product
+Warning: Shuffle Join MERGEJOIN[15][tables = [a, b]] in Stage 'Reducer 2' is a cross product
 PREHOOK: query: SELECT /*+ MAPJOIN(b) */ * FROM myinput1 a JOIN myinput1 b on a.key > 40 AND a.value > 50 AND a.key = a.value AND b.key > 40 AND b.value > 50 AND b.key = b.value
 PREHOOK: type: QUERY
 PREHOOK: Input: default@myinput1
