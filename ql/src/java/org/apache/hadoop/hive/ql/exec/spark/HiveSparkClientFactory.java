@@ -31,6 +31,7 @@ import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.LogUtils;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hive.spark.client.SparkClientUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -51,11 +52,13 @@ public class HiveSparkClientFactory {
   protected static final transient Logger LOG = LoggerFactory.getLogger(HiveSparkClientFactory.class);
 
   private static final String SPARK_DEFAULT_CONF_FILE = "spark-defaults.conf";
-  private static final String SPARK_DEFAULT_MASTER = "yarn-cluster";
+  private static final String SPARK_DEFAULT_MASTER = "yarn";
+  private static final String SPARK_DEFAULT_DEPLOY_MODE = "cluster";
   private static final String SPARK_DEFAULT_APP_NAME = "Hive on Spark";
   private static final String SPARK_DEFAULT_SERIALIZER = "org.apache.spark.serializer.KryoSerializer";
   private static final String SPARK_DEFAULT_REFERENCE_TRACKING = "false";
   private static final String SPARK_YARN_REPORT_INTERVAL = "spark.yarn.report.interval";
+  private static final String SPARK_DEPLOY_MODE = "spark.submit.deployMode";
 
   public static HiveSparkClient createHiveSparkClient(HiveConf hiveconf) throws Exception {
     Map<String, String> sparkConf = initiateSparkConf(hiveconf);
@@ -124,10 +127,27 @@ public class HiveSparkClientFactory {
       sparkMaster = sparkConf.get("spark.master");
       hiveConf.set("spark.master", sparkMaster);
     }
+    String deployMode = null;
+    if (!SparkClientUtilities.isLocalMaster(sparkMaster)) {
+      deployMode = hiveConf.get(SPARK_DEPLOY_MODE);
+      if (deployMode == null) {
+        deployMode = sparkConf.get(SPARK_DEPLOY_MODE);
+        if (deployMode == null) {
+          deployMode = SparkClientUtilities.getDeployModeFromMaster(sparkMaster);
+        }
+        if (deployMode == null) {
+          deployMode = SPARK_DEFAULT_DEPLOY_MODE;
+        }
+        hiveConf.set(SPARK_DEPLOY_MODE, deployMode);
+      }
+    }
     if (SessionState.get() != null && SessionState.get().getConf() != null) {
       SessionState.get().getConf().set("spark.master", sparkMaster);
+      if (deployMode != null) {
+        SessionState.get().getConf().set(SPARK_DEPLOY_MODE, deployMode);
+      }
     }
-    if (sparkMaster.equals("yarn-cluster")) {
+    if (SparkClientUtilities.isYarnClusterMode(sparkMaster, deployMode)) {
       sparkConf.put("spark.yarn.maxAppAttempts", "1");
     }
     for (Map.Entry<String, String> entry : hiveConf) {
@@ -139,7 +159,7 @@ public class HiveSparkClientFactory {
           "load spark property from hive configuration (%s -> %s).",
           propertyName, LogUtils.maskIfPassword(propertyName,value)));
       } else if (propertyName.startsWith("yarn") &&
-        (sparkMaster.equals("yarn-client") || sparkMaster.equals("yarn-cluster"))) {
+          SparkClientUtilities.isYarnMaster(sparkMaster)) {
         String value = hiveConf.get(propertyName);
         // Add spark.hadoop prefix for yarn properties as SparkConf only accept properties
         // started with spark prefix, Spark would remove spark.hadoop prefix lately and add
@@ -183,7 +203,7 @@ public class HiveSparkClientFactory {
 
     // set yarn queue name
     final String sparkQueueNameKey = "spark.yarn.queue";
-    if (sparkMaster.startsWith("yarn") && hiveConf.get(sparkQueueNameKey) == null) {
+    if (SparkClientUtilities.isYarnMaster(sparkMaster) && hiveConf.get(sparkQueueNameKey) == null) {
       String queueName = hiveConf.get("mapreduce.job.queuename");
       if (queueName != null) {
         sparkConf.put(sparkQueueNameKey, queueName);
@@ -193,7 +213,7 @@ public class HiveSparkClientFactory {
     //The application reports tend to spam the hive logs.  This is controlled by spark, and the default seems to be 1s.
     //If it is not specified, set it to a much higher number.  It can always be overriden by user.
     String sparkYarnReportInterval = sparkConf.get(SPARK_YARN_REPORT_INTERVAL);
-    if (sparkMaster.startsWith("yarn") && sparkYarnReportInterval == null) {
+    if (SparkClientUtilities.isYarnClusterMode(sparkMaster, deployMode) && sparkYarnReportInterval == null) {
       //the new version of spark also takes time-units, but old versions do not.
       sparkConf.put(SPARK_YARN_REPORT_INTERVAL, "60000");
     }
