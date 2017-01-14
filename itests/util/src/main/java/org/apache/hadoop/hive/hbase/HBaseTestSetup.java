@@ -21,6 +21,10 @@ package org.apache.hadoop.hive.hbase;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Arrays;
+
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
