@@ -123,6 +123,8 @@ public abstract class CommonJoinOperator<T extends JoinDesc> extends
   protected transient int heartbeatInterval;
   protected static final int NOTSKIPBIGTABLE = -1;
 
+  private transient boolean closeOpCalled = false;
+
   public CommonJoinOperator() {
   }
 
@@ -186,6 +188,7 @@ public abstract class CommonJoinOperator<T extends JoinDesc> extends
   @Override
   @SuppressWarnings("unchecked")
   protected void initializeOp(Configuration hconf) throws HiveException {
+    closeOpCalled = false;
     this.handleSkewJoin = conf.getHandleSkewJoin();
     this.hconf = hconf;
 
@@ -672,6 +675,12 @@ public abstract class CommonJoinOperator<T extends JoinDesc> extends
   }
 
   protected void checkAndGenObject() throws HiveException {
+    if (closeOpCalled) {
+      LOG.warn("checkAndGenObject is called after operator " +
+          id + " " + getName() + " called closeOp");
+      return;
+    }
+
     if (condn[0].getType() == JoinDesc.UNIQUE_JOIN) {
 
       // Check if results need to be emitted.
@@ -772,6 +781,7 @@ public abstract class CommonJoinOperator<T extends JoinDesc> extends
    */
   @Override
   public void closeOp(boolean abort) throws HiveException {
+    closeOpCalled = true;
     for (AbstractRowContainer<List<Object>> alw : storage) {
       if (alw != null) {
         alw.clearRows(); // clean up the temp files
