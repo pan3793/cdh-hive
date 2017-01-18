@@ -214,7 +214,7 @@ STAGE PLANS:
           enabled: true
           enabledConditionsMet: hive.vectorized.use.vectorized.input.format IS true
           inputFileFormats: org.apache.hadoop.hive.ql.io.orc.OrcInputFormat
-          notVectorizedReason: Predicate expression for FILTER operator: UDF GenericUDFIndex(Column[a], Const int 1) not supported
+          notVectorizedReason: Predicate expression for FILTER operator: Data type array<int> of Column[a] not supported
           vectorized: false
       Local Work:
         Map Reduce Local Work
