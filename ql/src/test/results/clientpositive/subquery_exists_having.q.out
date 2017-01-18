@@ -1,5 +1,4 @@
-PREHOOK: query: -- no agg, corr
-explain
+PREHOOK: query: explain
 select b.key, count(*) 
 from src b 
 group by b.key
@@ -9,8 +8,7 @@ having exists
   where a.key = b.key and a.value > 'val_9'
   )
 PREHOOK: type: QUERY
-POSTHOOK: query: -- no agg, corr
-explain
+POSTHOOK: query: explain
 select b.key, count(*) 
 from src b 
 group by b.key
@@ -142,8 +140,7 @@ POSTHOOK: Input: default@src
 96	1
 97	2
 98	2
-PREHOOK: query: -- no agg, corr
-explain
+PREHOOK: query: explain
 select b.key, count(*)
 from src b
 group by b.key
@@ -153,8 +150,7 @@ having exists
   where a.key = b.key and a.value > 'val_9'
   )
 PREHOOK: type: QUERY
-POSTHOOK: query: -- no agg, corr
-explain
+POSTHOOK: query: explain
 select b.key, count(*)
 from src b
 group by b.key
@@ -288,8 +284,7 @@ POSTHOOK: Input: default@src
 96	1
 97	2
 98	2
-PREHOOK: query: -- view test
-create view cv1 as 
+PREHOOK: query: create view cv1 as 
 select b.key, count(*) as c
 from src b
 group by b.key
@@ -302,8 +297,7 @@ PREHOOK: type: CREATEVIEW
 PREHOOK: Input: default@src
 PREHOOK: Output: database:default
 PREHOOK: Output: default@cv1
-POSTHOOK: query: -- view test
-create view cv1 as 
+POSTHOOK: query: create view cv1 as 
 select b.key, count(*) as c
 from src b
 group by b.key
@@ -332,8 +326,7 @@ POSTHOOK: Input: default@src
 96	1
 97	2
 98	2
-PREHOOK: query: -- sq in from
-select *
+PREHOOK: query: select *
 from (select b.key, count(*) 
   from src b 
   group by b.key
@@ -346,8 +339,7 @@ from (select b.key, count(*)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 #### A masked pattern was here ####
-POSTHOOK: query: -- sq in from
-select *
+POSTHOOK: query: select *
 from (select b.key, count(*) 
   from src b 
   group by b.key
@@ -366,8 +358,7 @@ POSTHOOK: Input: default@src
 96	1
 97	2
 98	2
-PREHOOK: query: -- join on agg
-select b.key, min(b.value)
+PREHOOK: query: select b.key, min(b.value)
 from src b
 group by b.key
 having exists ( select a.key
@@ -377,8 +368,7 @@ having exists ( select a.key
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 #### A masked pattern was here ####
-POSTHOOK: query: -- join on agg
-select b.key, min(b.value)
+POSTHOOK: query: select b.key, min(b.value)
 from src b
 group by b.key
 having exists ( select a.key
