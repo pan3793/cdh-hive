@@ -15,9 +15,7 @@ Example:
   'H1'
   > SELECT hex('Facebook') FROM src LIMIT 1;
   '46616365626F6F6B'
-PREHOOK: query: -- If the argument is a string, hex should return a string containing two hex
--- digits for every character in the input.
-SELECT
+PREHOOK: query: SELECT
   hex('Facebook'),
   hex('\0'),
   hex('qwertyuiopasdfghjkl')

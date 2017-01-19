@@ -16,8 +16,7 @@ OK
  > SELECT trunc('2015-10-27', 'YEAR');
 OK
  '2015-01-01'
-PREHOOK: query: --test string with 'MM' as format
-EXPLAIN
+PREHOOK: query: EXPLAIN
 SELECT
       TRUNC('2014-01-01', 'MM'),
       TRUNC('2014-01-14', 'MM'),
