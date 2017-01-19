@@ -25,6 +25,7 @@ import java.util.Arrays;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
