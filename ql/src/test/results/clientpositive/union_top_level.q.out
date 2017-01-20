@@ -191,14 +191,14 @@ POSTHOOK: Input: default@src
 484	1
 86	2
 PREHOOK: query: explain
-select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) limit 10
+select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) order by k limit 10
 union all
-select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) limit 10
+select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) order by k limit 10
 PREHOOK: type: QUERY
 POSTHOOK: query: explain
-select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) limit 10
+select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) order by k limit 10
 union all
-select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) limit 10
+select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) order by k limit 10
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -256,29 +256,27 @@ STAGE PLANS:
             expressions: _col2 (type: string), _col1 (type: string)
             outputColumnNames: _col0, _col1
             Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
-            Limit
-              Number of rows: 10
-              Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
-              File Output Operator
-                compressed: false
-                table:
-                    input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                    output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                    serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
+            File Output Operator
+              compressed: false
+              table:
+                  input format: org.apache.hadoop.mapred.SequenceFileInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
+                  serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
   Stage: Stage-2
     Map Reduce
       Map Operator Tree:
           TableScan
             Reduce Output Operator
-              sort order: 
-              Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
-              value expressions: _col0 (type: string), _col1 (type: string)
+              key expressions: _col0 (type: string)
+              sort order: +
+              Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
+              value expressions: _col1 (type: string)
       Reduce Operator Tree:
         Select Operator
-          expressions: VALUE._col0 (type: string), VALUE._col1 (type: string)
+          expressions: KEY.reducesinkkey0 (type: string), VALUE._col0 (type: string)
           outputColumnNames: _col0, _col1
-          Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
           Limit
             Number of rows: 10
             Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
@@ -360,29 +358,27 @@ STAGE PLANS:
             expressions: _col2 (type: string), _col1 (type: string)
             outputColumnNames: _col0, _col1
             Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
-            Limit
-              Number of rows: 10
-              Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
-              File Output Operator
-                compressed: false
-                table:
-                    input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                    output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                    serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
+            File Output Operator
+              compressed: false
+              table:
+                  input format: org.apache.hadoop.mapred.SequenceFileInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
+                  serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
 
   Stage: Stage-6
     Map Reduce
       Map Operator Tree:
           TableScan
             Reduce Output Operator
-              sort order: 
-              Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
-              value expressions: _col0 (type: string), _col1 (type: string)
+              key expressions: _col0 (type: string)
+              sort order: +
+              Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
+              value expressions: _col1 (type: string)
       Reduce Operator Tree:
         Select Operator
-          expressions: VALUE._col0 (type: string), VALUE._col1 (type: string)
+          expressions: KEY.reducesinkkey0 (type: string), VALUE._col0 (type: string)
           outputColumnNames: _col0, _col1
-          Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
           Limit
             Number of rows: 10
             Statistics: Num rows: 10 Data size: 100 Basic stats: COMPLETE Column stats: NONE
@@ -399,15 +395,15 @@ STAGE PLANS:
       Processor Tree:
         ListSink
 
-PREHOOK: query: select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) limit 10
+PREHOOK: query: select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) order by k limit 10
 union all
-select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) limit 10
+select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) order by k limit 10
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 #### A masked pattern was here ####
-POSTHOOK: query: select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) limit 10
+POSTHOOK: query: select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) order by k limit 10
 union all
-select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) limit 10
+select s1.key as k, s2.value as v from src s1 join src s2 on (s1.key = s2.key) order by k limit 10
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 #### A masked pattern was here ####
