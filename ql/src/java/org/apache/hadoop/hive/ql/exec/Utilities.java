@@ -18,62 +18,12 @@
 
 package org.apache.hadoop.hive.ql.exec;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.beans.DefaultPersistenceDelegate;
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.Statement;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.URLDecoder;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLTransientException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.InflaterInputStream;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
@@ -198,8 +148,61 @@ import org.apache.hive.common.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.google.common.base.Preconditions;
+import java.beans.DefaultPersistenceDelegate;
+import java.beans.Encoder;
+import java.beans.Expression;
+import java.beans.Statement;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLDecoder;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLTransientException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
 
 /**
  * Utilities.
@@ -2930,6 +2933,19 @@ public final class Utilities {
   public static List<Path> getInputPaths(JobConf job, MapWork work, Path hiveScratchDir,
       Context ctx, boolean skipDummy) throws Exception {
 
+    int numThreads = job.getInt("mapred.dfsclient.parallelism.max", 0);
+    ExecutorService pool = null;
+    if (numThreads > 1) {
+      pool = Executors.newFixedThreadPool(numThreads,
+              new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Get-Input-Paths-%d").build());
+    }
+    return getInputPaths(job, work, hiveScratchDir, ctx, skipDummy, pool);
+  }
+
+  @VisibleForTesting
+  static List<Path> getInputPaths(JobConf job, MapWork work, Path hiveScratchDir,
+      Context ctx, boolean skipDummy, ExecutorService pool) throws Exception {
+
     Set<Path> pathsProcessed = new HashSet<Path>();
     List<Path> pathsToAdd = new LinkedList<Path>();
     // AliasToWork contains all the aliases
@@ -2937,28 +2953,28 @@ public final class Utilities {
       LOG.info("Processing alias " + alias);
 
       // The alias may not have any path
-      Path path = null;
+      boolean isEmptyTable = true;
       for (Path file : new LinkedList<Path>(work.getPathToAliases().keySet())) {
         List<String> aliases = work.getPathToAliases().get(file);
         if (aliases.contains(alias)) {
-          path = file;
-
-          // Multiple aliases can point to the same path - it should be
-          // processed only once
-          if (pathsProcessed.contains(path)) {
+          if (file != null) {
+            isEmptyTable = false;
+          } else {
+            LOG.warn("Found a null path for alias " + alias);
             continue;
           }
 
-          pathsProcessed.add(path);
-
-          LOG.info("Adding input file " + path);
-          if (!skipDummy
-              && isEmptyPath(job, path, ctx)) {
-            path = createDummyFileForEmptyPartition(path, job, work,
-                 hiveScratchDir);
-
+          // Multiple aliases can point to the same path - it should be
+          // processed only once
+          if (pathsProcessed.contains(file)) {
+            continue;
           }
-          pathsToAdd.add(path);
+
+          pathsProcessed.add(file);
+
+          LOG.debug("Adding input file " + file);
+
+          pathsToAdd.add(file);
         }
       }
 
@@ -2970,12 +2986,56 @@ public final class Utilities {
       // T2) x;
       // If T is empty and T2 contains 100 rows, the user expects: 0, 100 (2
       // rows)
-      if (path == null && !skipDummy) {
-        path = createDummyFileForEmptyTable(job, work, hiveScratchDir, alias);
-        pathsToAdd.add(path);
+      if (isEmptyTable && !skipDummy) {
+        pathsToAdd.add(createDummyFileForEmptyTable(job, work, hiveScratchDir, alias));
       }
     }
-    return pathsToAdd;
+
+    List<Path> finalPathsToAdd = new LinkedList<>();
+    List<Future<Path>> futures = new LinkedList<>();
+    for (final Path path : pathsToAdd) {
+      if (pool == null) {
+        finalPathsToAdd.add(new GetInputPathsCallable(path, job, work, hiveScratchDir, ctx, skipDummy).call());
+      } else {
+        futures.add(pool.submit(new GetInputPathsCallable(path, job, work, hiveScratchDir, ctx, skipDummy)));
+      }
+    }
+
+    if (pool != null) {
+      for (Future<Path> future : futures) {
+        finalPathsToAdd.add(future.get());
+      }
+    }
+
+    return finalPathsToAdd;
+  }
+
+  private static class GetInputPathsCallable implements Callable<Path> {
+
+    private final Path path;
+    private final JobConf job;
+    private final MapWork work;
+    private final Path hiveScratchDir;
+    private final Context ctx;
+    private final boolean skipDummy;
+
+    private GetInputPathsCallable(Path path, JobConf job, MapWork work, Path hiveScratchDir,
+      Context ctx, boolean skipDummy) {
+      this.path = path;
+      this.job = job;
+      this.work = work;
+      this.hiveScratchDir = hiveScratchDir;
+      this.ctx = ctx;
+      this.skipDummy = skipDummy;
+    }
+
+    @Override
+    public Path call() throws Exception {
+      if (!this.skipDummy && isEmptyPath(this.job, this.path, this.ctx)) {
+        return createDummyFileForEmptyPartition(this.path, this.job, this.work, this.hiveScratchDir);
+      }
+      return this.path;
+    }
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
