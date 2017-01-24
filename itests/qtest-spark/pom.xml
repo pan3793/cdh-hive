@@ -98,6 +98,12 @@
       <version>${mockito-all.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>${spark.netty.version}</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- test intra-project -->
     <dependency>
