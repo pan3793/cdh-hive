@@ -83,7 +83,7 @@ public class TestJdbcNonKrbSASLWithMiniKdc extends TestJdbcWithMiniKdc{
   public void testNonKrbSASLFullNameAuth() throws Exception {
     hs2Conn = DriverManager.getConnection(miniHS2.getBaseJdbcURL()
         + "default;user=" + SASL_NONKRB_USER2 + ";password=" + SASL_NONKRB_PWD);
-    verifyProperty(SESSION_USER_NAME, SASL_NONKRB_USER2);
+    verifyProperty(SESSION_USER_NAME, SASL_NONKRB_USER1);
     hs2Conn.close();
   }
 
