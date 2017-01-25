@@ -68,8 +68,8 @@ Stage-0
                             PartitionCols:_col0
                             Select Operator [SEL_11] (rows=36524 width=1119)
                               Output:["_col0"]
-                              Filter Operator [FIL_42] (rows=36524 width=1119)
-                                predicate:(d_date BETWEEN '2002-05-30' AND '2002-07-30' and d_date_sk is not null)
+                              Filter Operator [FIL_42] (rows=8116 width=1119)
+                                predicate:(d_date BETWEEN 2002-05-30 AND 2002-07-29 00:00:00.0 and d_date_sk is not null)
                                 TableScan [TS_9] (rows=73049 width=1119)
                                   default@date_dim,date_dim,Tbl:COMPLETE,Col:NONE,Output:["d_date_sk","d_date"]
 

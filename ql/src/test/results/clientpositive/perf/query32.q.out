@@ -50,17 +50,17 @@ Stage-0
     limit:-1
     Stage-1
       Reducer 5
-      File Output Operator [FS_38]
-        Group By Operator [GBY_36] (rows=1 width=112)
+      File Output Operator [FS_37]
+        Group By Operator [GBY_35] (rows=1 width=112)
           Output:["_col0"],aggregations:["sum(VALUE._col0)"]
-        <-Reducer 4 [SIMPLE_EDGE]
-          SHUFFLE [RS_35]
+        <-Reducer 4 [CUSTOM_SIMPLE_EDGE]
+          PARTITION_ONLY_SHUFFLE [RS_35]
             Group By Operator [GBY_34] (rows=1 width=112)
               Output:["_col0"],aggregations:["sum(_col1)"]
               Select Operator [SEL_33] (rows=232311810 width=135)
                 Output:["_col1"]
                 Filter Operator [FIL_32] (rows=232311810 width=135)
-                  predicate:(_col1 > CAST( _col5 AS decimal(20,15)))
+                  predicate:(_col1 > _col5)
                   Select Operator [SEL_31] (rows=696935432 width=135)
                     Output:["_col1","_col5"]
                     Merge Join Operator [MERGEJOIN_60] (rows=696935432 width=135)
@@ -100,9 +100,9 @@ Stage-0
                                 <-Map 6 [SIMPLE_EDGE]
                                   SHUFFLE [RS_7]
                                     PartitionCols:_col0
-                                    Select Operator [SEL_5] (rows=36524 width=1119)
+                                    Select Operator [SEL_5] (rows=8116 width=1119)
                                       Output:["_col0"]
-                                      Filter Operator [FIL_54] (rows=36524 width=1119)
+                                      Filter Operator [FIL_54] (rows=8116 width=1119)
                                         predicate:(d_date BETWEEN '2000-01-27' AND '2000-04-27' and d_date_sk is not null)
                                         TableScan [TS_3] (rows=73049 width=1119)
                                           default@date_dim,d,Tbl:COMPLETE,Col:NONE,Output:["d_date_sk","d_date"]
@@ -116,9 +116,9 @@ Stage-0
                           <-Map 10 [SIMPLE_EDGE]
                             SHUFFLE [RS_24]
                               PartitionCols:_col0
-                              Select Operator [SEL_22] (rows=36524 width=1119)
+                              Select Operator [SEL_22] (rows=8116 width=1119)
                                 Output:["_col0"]
-                                Filter Operator [FIL_57] (rows=36524 width=1119)
+                                Filter Operator [FIL_57] (rows=8116 width=1119)
                                   predicate:(d_date BETWEEN '2000-01-27' AND '2000-04-27' and d_date_sk is not null)
                                   TableScan [TS_20] (rows=73049 width=1119)
                                     default@date_dim,d,Tbl:COMPLETE,Col:NONE,Output:["d_date_sk","d_date"]

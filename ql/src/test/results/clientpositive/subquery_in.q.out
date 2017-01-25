@@ -331,7 +331,7 @@ STAGE PLANS:
             alias: part
             Statistics: Num rows: 26 Data size: 3147 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
-              predicate: UDFToDouble(p_size) is not null (type: boolean)
+              predicate: p_size is not null (type: boolean)
               Statistics: Num rows: 26 Data size: 3147 Basic stats: COMPLETE Column stats: NONE
               Select Operator
                 expressions: p_name (type: string), p_size (type: int), UDFToDouble(p_size) (type: double)

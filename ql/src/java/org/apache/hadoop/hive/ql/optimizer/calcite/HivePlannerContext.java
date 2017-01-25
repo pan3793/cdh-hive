@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.optimizer.calcite;
 
+import org.apache.calcite.config.CalciteConnectionConfig;
 import org.apache.calcite.plan.Context;
 import org.apache.hadoop.hive.ql.optimizer.calcite.cost.HiveAlgorithmsConf;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveRulesRegistry;
@@ -25,11 +26,13 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveRulesRegistry;
 public class HivePlannerContext implements Context {
   private HiveAlgorithmsConf algoConfig;
   private HiveRulesRegistry registry;
+  private CalciteConnectionConfig calciteConfig;
 
   public HivePlannerContext(HiveAlgorithmsConf algoConfig,
-          HiveRulesRegistry registry) {
+          HiveRulesRegistry registry, CalciteConnectionConfig calciteConfig) {
     this.algoConfig = algoConfig;
     this.registry = registry;
+    this.calciteConfig = calciteConfig;
   }
 
   public <T> T unwrap(Class<T> clazz) {
@@ -38,6 +41,9 @@ public class HivePlannerContext implements Context {
     }
     if (clazz.isInstance(registry)) {
       return clazz.cast(registry);
+    }
+    if (clazz.isInstance(calciteConfig)) {
+      return clazz.cast(calciteConfig);
     }
     return null;
   }
