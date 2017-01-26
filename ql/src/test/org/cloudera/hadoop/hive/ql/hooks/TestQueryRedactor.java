@@ -76,6 +76,9 @@ public class TestQueryRedactor {
 
   private static Driver createDriver(HiveConf conf) {
     HiveConf.setBoolVar(conf, HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY, false);
+    conf
+    .setVar(HiveConf.ConfVars.HIVE_AUTHORIZATION_MANAGER,
+        "org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactory");
     SessionState.start(conf);
     Driver driver = new Driver(conf);
     driver.init();
