@@ -1,4 +1,4 @@
-set hive.explain.user=true;
+set hive.explain.user=false;
 set hive.mapred.mode=nonstrict;
 set hive.cli.print.header=true;
 SET hive.exec.schema.evolution=true;
@@ -50,8 +50,8 @@ load data local inpath '../../data/files/struct1_c.txt' overwrite into table str
 
 insert into table part_change_various_various_struct1 partition(part=1) select * from struct1_c_txt;
 
-explain
-select insert_num,part,s1,b from part_change_various_various_struct1 order by insert_num;
+ explain vectorization detail
+select insert_num,part,s1,b from part_change_various_various_struct1;
 
 select insert_num,part,s1,b from part_change_various_various_struct1 order by insert_num;
 
@@ -110,8 +110,8 @@ load data local inpath '../../data/files/struct2_d.txt' overwrite into table str
 
 insert into table part_add_various_various_struct2 partition(part=1) select * from struct2_d_txt;
 
-explain
-select insert_num,part,b,s2 from part_add_various_various_struct2 order by insert_num;
+explain vectorization detail
+select insert_num,part,b,s2 from part_add_various_various_struct2;
 
 select insert_num,part,b,s2 from part_add_various_various_struct2 order by insert_num;
 
@@ -154,8 +154,8 @@ load data local inpath '../../data/files/struct4_c.txt' overwrite into table str
 
 insert into table part_add_to_various_various_struct4 partition(part=1) select * from struct4_c_txt;
 
-explain
-select insert_num,part,b,s3 from part_add_to_various_various_struct4 order by insert_num;
+explain vectorization detail
+select insert_num,part,b,s3 from part_add_to_various_various_struct4;
 
 select insert_num,part,b,s3 from part_add_to_various_various_struct4 order by insert_num;
 

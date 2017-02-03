@@ -298,8 +298,10 @@ public class TestUpdateDeleteSemanticAnalyzer {
     Path tmp = new Path(f.getPath());
     fs.create(tmp);
     fs.deleteOnExit(tmp);
+    ExplainConfiguration explainConfig = new ExplainConfiguration();
+    explainConfig.setExtended(true);
     ExplainWork work = new ExplainWork(tmp, sem.getParseContext(), sem.getRootTasks(),
-        sem.getFetchTask(), sem, true, false, false, false, false, false, null);
+        sem.getFetchTask(), sem, explainConfig, null);
     ExplainTask task = new ExplainTask();
     task.setWork(work);
     task.initialize(queryState, plan, null, null);

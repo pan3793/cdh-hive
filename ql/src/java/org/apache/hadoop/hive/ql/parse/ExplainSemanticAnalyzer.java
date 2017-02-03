@@ -29,6 +29,7 @@ import org.apache.hadoop.hive.ql.exec.ExplainTask;
 import org.apache.hadoop.hive.ql.exec.FetchTask;
 import org.apache.hadoop.hive.ql.exec.Task;
 import org.apache.hadoop.hive.ql.exec.TaskFactory;
+import org.apache.hadoop.hive.ql.parse.ExplainConfiguration.VectorizationDetailLevel;
 import org.apache.hadoop.hive.ql.plan.ExplainWork;
 
 /**
@@ -37,37 +38,68 @@ import org.apache.hadoop.hive.ql.plan.ExplainWork;
  */
 public class ExplainSemanticAnalyzer extends BaseSemanticAnalyzer {
   List<FieldSchema> fieldList;
+  ExplainConfiguration config;
 
   public ExplainSemanticAnalyzer(QueryState queryState) throws SemanticException {
     super(queryState);
+    config = new ExplainConfiguration();
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public void analyzeInternal(ASTNode ast) throws SemanticException {
-
-    boolean extended = false;
-    boolean formatted = false;
-    boolean dependency = false;
-    boolean logical = false;
-    boolean authorize = false;
-    for (int i = 1; i < ast.getChildCount(); i++) {
+    final int childCount = ast.getChildCount();
+    int i = 1;   // Skip TOK_QUERY.
+    while (i < childCount) {
       int explainOptions = ast.getChild(i).getType();
       if (explainOptions == HiveParser.KW_FORMATTED) {
-        formatted = true;
+        config.setFormatted(true);
       } else if (explainOptions == HiveParser.KW_EXTENDED) {
-        extended = true;
+        config.setExtended(true);
       } else if (explainOptions == HiveParser.KW_DEPENDENCY) {
-        dependency = true;
+        config.setDependency(true);
       } else if (explainOptions == HiveParser.KW_LOGICAL) {
-        logical = true;
+        config.setLogical(true);
       } else if (explainOptions == HiveParser.KW_AUTHORIZATION) {
-        authorize = true;
+        config.setAuthorize(true);
+      } else if (explainOptions == HiveParser.KW_VECTORIZATION) {
+        config.setVectorization(true);
+        if (i + 1 < childCount) {
+          int vectorizationOption = ast.getChild(i + 1).getType();
+
+          // [ONLY]
+          if (vectorizationOption == HiveParser.TOK_ONLY) {
+            config.setVectorizationOnly(true);
+            i++;
+            if (i + 1 >= childCount) {
+              break;
+            }
+            vectorizationOption = ast.getChild(i + 1).getType();
+          }
+
+          // [SUMMARY|OPERATOR|EXPRESSION|DETAIL]
+          if (vectorizationOption == HiveParser.TOK_SUMMARY) {
+            config.setVectorizationDetailLevel(VectorizationDetailLevel.SUMMARY);
+            i++;
+          } else if (vectorizationOption == HiveParser.TOK_OPERATOR) {
+            config.setVectorizationDetailLevel(VectorizationDetailLevel.OPERATOR);
+            i++;
+          } else if (vectorizationOption == HiveParser.TOK_EXPRESSION) {
+            config.setVectorizationDetailLevel(VectorizationDetailLevel.EXPRESSION);
+            i++;
+          } else if (vectorizationOption == HiveParser.TOK_DETAIL) {
+            config.setVectorizationDetailLevel(VectorizationDetailLevel.DETAIL);
+            i++;
+          }
+        }
+      } else {
+        // UNDONE: UNKNOWN OPTION?
       }
+      i++;
     }
 
     ctx.setExplain(true);
-    ctx.setExplainLogical(logical);
+    ctx.setExplainLogical(config.isLogical());
 
     // Create a semantic analyzer for the query
     ASTNode input = (ASTNode) ast.getChild(0);
@@ -92,24 +124,19 @@ public class ExplainSemanticAnalyzer extends BaseSemanticAnalyzer {
       pCtx = ((SemanticAnalyzer)sem).getParseContext();
     }
 
-    boolean userLevelExplain = !extended
-        && !formatted
-        && !dependency
-        && !logical
-        && !authorize
+    config.setUserLevelExplain(!config.isExtended()
+        && !config.isFormatted()
+        && !config.isDependency()
+        && !config.isLogical()
+        && !config.isAuthorize()
         && (HiveConf.getBoolVar(ctx.getConf(), HiveConf.ConfVars.HIVE_EXPLAIN_USER) && HiveConf
-            .getVar(conf, HiveConf.ConfVars.HIVE_EXECUTION_ENGINE).equals("tez"));
+            .getVar(conf, HiveConf.ConfVars.HIVE_EXECUTION_ENGINE).equals("tez")));
     ExplainWork work = new ExplainWork(ctx.getResFile(),
         pCtx,
         tasks,
         fetchTask,
         sem,
-        extended,
-        formatted,
-        dependency,
-        logical,
-        authorize,
-        userLevelExplain,
+        config,
         ctx.getCboInfo());
 
     work.setAppendTaskType(
