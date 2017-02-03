@@ -55,6 +55,7 @@ public class LocalSparkJobStatus implements SparkJobStatus {
   private SparkCounters sparkCounters;
   private JavaFutureAction<Void> future;
   private Set<Integer> cachedRDDIds;
+  private Throwable error;
 
   public LocalSparkJobStatus(JavaSparkContext sparkContext, int jobId,
       JobMetricsListener jobMetricsListener, SparkCounters sparkCounters,
@@ -65,6 +66,7 @@ public class LocalSparkJobStatus implements SparkJobStatus {
     this.sparkCounters = sparkCounters;
     this.cachedRDDIds = cachedRDDIds;
     this.future = future;
+    this.error = null;
   }
 
   @Override
@@ -168,6 +170,9 @@ public class LocalSparkJobStatus implements SparkJobStatus {
 
   @Override
   public Throwable getError() {
+    if (error != null) {
+      return error;
+    }
     if (future.isDone()) {
       try {
         future.get();
@@ -176,6 +181,11 @@ public class LocalSparkJobStatus implements SparkJobStatus {
       }
     }
     return null;
+  }
+
+  @Override
+  public void setError(Throwable e) {
+    this.error = e;
   }
 
   private SparkJobInfo getJobInfo() {
