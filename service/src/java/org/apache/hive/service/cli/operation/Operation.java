@@ -19,7 +19,6 @@ package org.apache.hive.service.cli.operation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +99,9 @@ public abstract class Operation {
     lastAccessTime = beginTime;
     operationTimeout = HiveConf.getTimeVar(parentSession.getHiveConf(),
         HiveConf.ConfVars.HIVE_SERVER2_IDLE_OPERATION_TIMEOUT, TimeUnit.MILLISECONDS);
-    setMetrics(state);
+
+    currentStateScope = updateOperationStateMetrics(null, MetricsConstant.OPERATION_PREFIX,
+        MetricsConstant.COMPLETED_OPERATION_PREFIX, state);
     queryState = new QueryState(parentSession.getHiveConf(), confOverlay, isAsyncQueryState);
   }
 
@@ -159,7 +160,8 @@ public abstract class Operation {
     state.validateTransition(newState);
     OperationState prevState = state;
     this.state = newState;
-    setMetrics(state);
+    currentStateScope = updateOperationStateMetrics(currentStateScope, MetricsConstant.OPERATION_PREFIX,
+        MetricsConstant.COMPLETED_OPERATION_PREFIX, state);
     onNewState(state, prevState);
     this.lastAccessTime = System.currentTimeMillis();
     return this.state;
@@ -261,11 +263,7 @@ public abstract class Operation {
     try {
       Metrics metrics = MetricsFactory.getInstance();
       if (metrics != null) {
-        try {
-          metrics.incrementCounter(MetricsConstant.OPEN_OPERATIONS);
-        } catch (Exception e) {
-          LOG.warn("Error Reporting open operation to Metrics system", e);
-        }
+        metrics.incrementCounter(MetricsConstant.OPEN_OPERATIONS);
       }
       runInternal();
     } finally {
@@ -354,12 +352,7 @@ public abstract class Operation {
     OperationState.UNKNOWN
   );
 
-  private void setMetrics(OperationState state) {
-    currentStateScope = setMetrics(currentStateScope, MetricsConstant.OPERATION_PREFIX,
-      MetricsConstant.COMPLETED_OPERATION_PREFIX, state);
-  }
-
-  protected static MetricsScope setMetrics(MetricsScope stateScope, String operationPrefix,
+  protected final MetricsScope updateOperationStateMetrics(MetricsScope stateScope, String operationPrefix,
       String completedOperationPrefix, OperationState state) {
     Metrics metrics = MetricsFactory.getInstance();
     if (metrics != null) {
@@ -368,7 +361,7 @@ public abstract class Operation {
         stateScope = null;
       }
       if (scopeStates.contains(state)) {
-        stateScope = metrics.createScope(operationPrefix + state);
+        stateScope = metrics.createScope(MetricsConstant.API_PREFIX + operationPrefix + state);
       }
       if (terminalStates.contains(state)) {
         metrics.incrementCounter(completedOperationPrefix + state);
