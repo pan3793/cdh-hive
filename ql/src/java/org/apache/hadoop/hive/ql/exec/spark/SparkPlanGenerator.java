@@ -204,7 +204,11 @@ public class SparkPlanGenerator {
     } else if (edge.isShuffleSort()) {
       shuffler = new SortByShuffler(true);
     } else {
-      shuffler = new GroupByShuffler();
+      boolean useSparkGroupBy = jobConf.getBoolean("hive.spark.use.groupby.shuffle", true);
+      if (!useSparkGroupBy) {
+        LOG.info("hive.spark.use.groupby.shuffle is off. Use repartitin shuffle instead.");
+      }
+      shuffler = useSparkGroupBy ? new GroupByShuffler() : new RepartitionShuffler();
     }
     return new ShuffleTran(sparkPlan, shuffler, edge.getNumPartitions(), toCache);
   }

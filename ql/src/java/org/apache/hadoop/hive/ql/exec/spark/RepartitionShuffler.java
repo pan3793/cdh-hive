@@ -21,40 +21,22 @@ package org.apache.hadoop.hive.ql.exec.spark;
 import org.apache.hadoop.hive.ql.io.HiveKey;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.spark.HashPartitioner;
-import org.apache.spark.Partitioner;
 import org.apache.spark.api.java.JavaPairRDD;
 
-public class SortByShuffler implements SparkShuffler<BytesWritable> {
-
-  private final boolean totalOrder;
-
-  /**
-   * @param totalOrder whether this shuffler provides total order shuffle.
-   */
-  public SortByShuffler(boolean totalOrder) {
-    this.totalOrder = totalOrder;
-  }
+public class RepartitionShuffler implements SparkShuffler<BytesWritable> {
 
   @Override
   public JavaPairRDD<HiveKey, BytesWritable> shuffle(
       JavaPairRDD<HiveKey, BytesWritable> input, int numPartitions) {
-    JavaPairRDD<HiveKey, BytesWritable> rdd;
-    if (totalOrder) {
-      if (numPartitions > 0) {
-        rdd = input.sortByKey(true, numPartitions);
-      } else {
-        rdd = input.sortByKey(true);
-      }
-    } else {
-      Partitioner partitioner = new HashPartitioner(numPartitions);
-      rdd = input.repartitionAndSortWithinPartitions(partitioner);
+    if (numPartitions < 0) {
+      numPartitions = 1;
     }
-    return rdd;
+    return input.repartitionAndSortWithinPartitions(new HashPartitioner(numPartitions));
   }
 
   @Override
   public String getName() {
-    return "SortBy";
+    return "GroupBy_Repartition";
   }
 
 }
