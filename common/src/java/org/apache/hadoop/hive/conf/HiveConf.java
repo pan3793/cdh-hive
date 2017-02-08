@@ -2243,6 +2243,10 @@ public class HiveConf extends Configuration {
         "hive.spark.dynamic.partition.pruning.map.join.only", false,
         "Turn on dynamic partition pruning only for map joins.\n" +
         "If hive.spark.dynamic.partition.pruning is set to true, this parameter value is ignored."),
+    SPARK_USE_GROUPBY_SHUFFLE(
+        "hive.spark.use.groupby.shuffle", true,
+        "Spark groupByKey transformation has better performance but uses unbounded memory." +
+            "Turn this off when there is a memory issue."),
     NWAYJOINREORDER("hive.reorder.nway.joins", true,
       "Runs reordering of tables within single n-way join (i.e.: picks streamtable)"),
     HIVE_MSCK_PATH_VALIDATION("hive.msck.path.validation", "throw",
