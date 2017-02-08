@@ -3083,6 +3083,10 @@ public class HiveConf extends Configuration {
     SPARK_DYNAMIC_PARTITION_PRUNING_MAX_DATA_SIZE(
         "hive.spark.dynamic.partition.pruning.max.data.size", 100*1024*1024L,
         "Maximum total data size in dynamic pruning."),
+    SPARK_USE_GROUPBY_SHUFFLE(
+        "hive.spark.use.groupby.shuffle", true,
+        "Spark groupByKey transformation has better performance but uses unbounded memory." +
+            "Turn this off when there is a memory issue."),
     NWAYJOINREORDER("hive.reorder.nway.joins", true,
       "Runs reordering of tables within single n-way join (i.e.: picks streamtable)"),
     HIVE_LOG_N_RECORDS("hive.log.every.n.records", 0L, new RangeValidator(0L, null),
