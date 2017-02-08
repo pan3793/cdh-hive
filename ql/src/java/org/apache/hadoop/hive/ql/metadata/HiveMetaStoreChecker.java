@@ -377,7 +377,7 @@ public class HiveMetaStoreChecker {
    *          Specify how deep the search goes.
    * @throws IOException
    *           Thrown if we can't get lists from the fs.
-   * @throws HiveException 
+   * @throws HiveException
    */
 
   private void checkPartitionDirs(Path basePath, Set<Path> allDirs, int maxDepth) throws IOException, HiveException {
