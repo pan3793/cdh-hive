@@ -41,6 +41,7 @@ public class TestGenericUDFLpad extends TestCase {
     udf.initialize(arguments);
     runAndVerify("hi", 5, "??", "???hi", udf);
     runAndVerify("hi", 1, "??", "h", udf);
+    runAndVerify("hi", 3, "", null, udf);
   }
 
   private void runAndVerify(String str, int len, String pad, String expResult, GenericUDF udf)
@@ -49,7 +50,11 @@ public class TestGenericUDFLpad extends TestCase {
     DeferredObject valueObj2 = new DeferredJavaObject(new IntWritable(len));
     DeferredObject valueObj3 = new DeferredJavaObject(new Text(pad));
     DeferredObject[] args = { valueObj1, valueObj2, valueObj3 };
-    Text output = (Text) udf.evaluate(args);
-    assertEquals("lpad() test ", expResult, output.toString());
+    Object output = udf.evaluate(args);
+    if(expResult != null) {
+      assertEquals("lpad() test ", expResult, output.toString());
+    } else {
+      assertNull("lpad() test ", output);
+    }
   }
 }
