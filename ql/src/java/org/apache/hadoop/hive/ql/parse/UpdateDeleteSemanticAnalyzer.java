@@ -266,13 +266,10 @@ public class UpdateDeleteSemanticAnalyzer extends SemanticAnalyzer {
     rewrittenCtx.setCmd(rewrittenQueryStr.toString());
     rewrittenCtx.setAcidOperation(ctx.getAcidOperation());
 
-    ParseDriver pd = new ParseDriver();
     ASTNode rewrittenTree;
     try {
       LOG.info("Going to reparse " + operation() + " as <" + rewrittenQueryStr.toString() + ">");
-      rewrittenTree = pd.parse(rewrittenQueryStr.toString(), rewrittenCtx);
-      rewrittenTree = ParseUtils.findRootNonNullToken(rewrittenTree);
-
+      rewrittenTree = ParseUtils.parse(rewrittenQueryStr.toString(), rewrittenCtx);
     } catch (ParseException e) {
       throw new SemanticException(ErrorMsg.UPDATEDELETE_PARSE_ERROR.getMsg(), e);
     }

@@ -112,7 +112,6 @@ import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzContext;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.session.SessionState.LogHelper;
 import org.apache.hadoop.hive.serde2.ByteStream;
-import org.apache.hadoop.hive.serde2.thrift.ThriftJDBCBinarySerDe;
 import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.mapred.ClusterStatus;
 import org.apache.hadoop.mapred.JobClient;
@@ -496,16 +495,14 @@ public class Driver implements CommandProcessor {
       ctx.setCmd(command);
       ctx.setHDFSCleanup(true);
 
-      perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.PARSE);
-
       // Trigger query hook before compilation
       queryLifeTimeHookRunner.runBeforeParseHook(command);
 
+      perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.PARSE);
+
       ASTNode tree;
       try {
-        ParseDriver pd = new ParseDriver();
-        tree = pd.parse(command, ctx);
-        tree = ParseUtils.findRootNonNullToken(tree);
+        tree = ParseUtils.parse(command, ctx);
       } catch (ParseException e) {
         parseError = true;
         throw e;

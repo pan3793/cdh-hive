@@ -2359,7 +2359,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   private void replaceViewReferenceWithDefinition(QB qb, Table tab,
       String tab_name, String alias) throws SemanticException {
 
-    ParseDriver pd = new ParseDriver();
     ASTNode viewTree;
     final ASTNodeOrigin viewOrigin = new ASTNodeOrigin("VIEW", tab.getTableName(),
         tab.getViewExpandedText(), alias, qb.getParseInfo().getSrcForAlias(
@@ -2370,8 +2369,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       String viewFullyQualifiedName = tab.getCompleteName();
       String viewText = tab.getViewExpandedText();
       TableMask viewMask = new TableMask(this, conf, false);
-      viewTree = pd.parse(viewText, ctx, tab.getCompleteName());
-      viewTree = ParseUtils.findRootNonNullToken(viewTree);
+      viewTree = ParseUtils.parse(viewText, ctx, tab.getCompleteName());
       if (!unparseTranslator.isEnabled() &&
           (viewMask.isEnabled() && analyzeRewrite == null)) {
         viewTree = rewriteASTWithMaskAndFilter(viewMask, viewTree,
@@ -10793,11 +10791,10 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       // check if we need to ctx.setCmd(rewrittenQuery);
       ParseDriver pd = new ParseDriver();
       try {
-        rewrittenTree = pd.parse(rewrittenQuery);
+        rewrittenTree = ParseUtils.parse(rewrittenQuery);
       } catch (ParseException e) {
         throw new SemanticException(e);
       }
-      rewrittenTree = ParseUtils.findRootNonNullToken(rewrittenTree);
       return rewrittenTree;
     } else {
       return ast;
