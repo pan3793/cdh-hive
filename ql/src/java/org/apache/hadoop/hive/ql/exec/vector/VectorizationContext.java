@@ -613,6 +613,29 @@ public class VectorizationContext {
       ve = getColumnVectorExpression((ExprNodeColumnDesc) exprDesc, mode);
     } else if (exprDesc instanceof ExprNodeGenericFuncDesc) {
       ExprNodeGenericFuncDesc expr = (ExprNodeGenericFuncDesc) exprDesc;
+      // push not through between...
+      if ("not".equals(expr.getFuncText())) {
+        if (expr.getChildren() != null && expr.getChildren().size() == 1) {
+          ExprNodeDesc child = expr.getChildren().get(0);
+          if (child instanceof ExprNodeGenericFuncDesc) {
+            ExprNodeGenericFuncDesc childExpr = (ExprNodeGenericFuncDesc) child;
+            if ("between".equals(childExpr.getFuncText())) {
+              ExprNodeConstantDesc flag = (ExprNodeConstantDesc) childExpr.getChildren().get(0);
+              List<ExprNodeDesc> newChildren = new ArrayList<>();
+              if (Boolean.TRUE.equals(flag.getValue())) {
+                newChildren.add(new ExprNodeConstantDesc(Boolean.FALSE));
+              } else {
+                newChildren.add(new ExprNodeConstantDesc(Boolean.TRUE));
+              }
+              newChildren
+                  .addAll(childExpr.getChildren().subList(1, childExpr.getChildren().size()));
+              expr.setTypeInfo(childExpr.getTypeInfo());
+              expr.setGenericUDF(childExpr.getGenericUDF());
+              expr.setChildren(newChildren);
+            }
+          }
+        }
+      }
       if (isCustomUDF(expr)) {
         ve = getCustomUDFExpression(expr, mode);
       } else {
