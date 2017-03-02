@@ -330,6 +330,10 @@ public class Entity implements Serializable {
   }
 
   private String computeName() {
+    return doComputeName().intern();
+  }
+
+  private String doComputeName() {
     switch (typ) {
     case DATABASE:
       return "database:" + database.getName();

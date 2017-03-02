@@ -26,11 +26,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.ql.exec.SerializationUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -386,6 +385,7 @@ public class HiveInputFormat<K extends WritableComparable, V extends Writable>
         }
       }
     }
+    StringInternUtils.internUriStringsInPathArray(dirs);
     return dirs;
   }
 

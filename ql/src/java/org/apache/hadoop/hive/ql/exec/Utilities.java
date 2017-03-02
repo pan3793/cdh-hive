@@ -44,6 +44,7 @@ import org.apache.hadoop.hive.common.HiveInterruptUtils;
 import org.apache.hadoop.hive.common.HiveStatsUtils;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.StatsSetupConst;
+import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
@@ -3002,6 +3003,7 @@ public final class Utilities {
             continue;
           }
 
+          StringInternUtils.internUriStringsInPath(file);
           pathsProcessed.add(file);
 
           LOG.debug("Adding input file " + file);
@@ -3105,7 +3107,7 @@ public final class Utilities {
     }
     recWriter.close(false);
 
-    return newPath;
+    return StringInternUtils.internUriStringsInPath(newPath);
   }
 
   @SuppressWarnings("rawtypes")
@@ -3128,15 +3130,13 @@ public final class Utilities {
 
     boolean oneRow = partDesc.getInputFileFormatClass() == OneNullRowInputFormat.class;
 
-    Path newPath = createEmptyFile(hiveScratchDir, outFileFormat, job,
-        props, oneRow);
+    Path newPath = createEmptyFile(hiveScratchDir, outFileFormat, job, props, oneRow);
 
     if (LOG.isInfoEnabled()) {
       LOG.info("Changed input file " + strPath + " to empty file " + newPath);
     }
 
     // update the work
-    String strNewPath = newPath.toString();
 
     work.addPathToAlias(newPath, work.getPathToAliases().get(path));
     work.removePathToAlias(path);
@@ -3161,8 +3161,7 @@ public final class Utilities {
     Properties props = tableDesc.getProperties();
     HiveOutputFormat outFileFormat = HiveFileFormatUtils.getHiveOutputFormat(job, tableDesc);
 
-    Path newPath = createEmptyFile(hiveScratchDir, outFileFormat, job,
-        props, false);
+    Path newPath = createEmptyFile(hiveScratchDir, outFileFormat, job, props, false);
 
     if (LOG.isInfoEnabled()) {
       LOG.info("Changed input file for alias " + alias + " to " + newPath);

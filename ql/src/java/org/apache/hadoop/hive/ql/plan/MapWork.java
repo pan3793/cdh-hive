@@ -18,6 +18,9 @@
 
 package org.apache.hadoop.hive.ql.plan;
 
+import org.apache.hadoop.hive.common.StringInternUtils;
+import org.apache.hadoop.hive.ql.exec.TableScanOperator;
+import org.apache.hadoop.hive.ql.exec.Utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -37,10 +40,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.exec.FileSinkOperator;
-import org.apache.hadoop.hive.ql.exec.TableScanOperator;
 import org.apache.hadoop.hive.ql.exec.Operator;
 import org.apache.hadoop.hive.ql.exec.OperatorUtils;
-import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.hadoop.hive.ql.io.HiveInputFormat;
@@ -172,6 +173,9 @@ public class MapWork extends BaseWork {
   }
 
   public void setPathToAliases(final LinkedHashMap<Path, ArrayList<String>> pathToAliases) {
+    for (Path p : pathToAliases.keySet()) {
+      StringInternUtils.internUriStringsInPath(p);
+    }
     this.pathToAliases = pathToAliases;
   }
 
@@ -182,10 +186,10 @@ public class MapWork extends BaseWork {
   public void addPathToAlias(Path path, String newAlias){
     ArrayList<String> aliases = pathToAliases.get(path);
     if (aliases == null) {
-      aliases=new ArrayList<String>();
+      aliases = new ArrayList<>();
       pathToAliases.put(path, aliases);
     }
-    aliases.add(newAlias);
+    aliases.add(newAlias.intern());
   }
 
   
@@ -391,10 +395,11 @@ public class MapWork extends BaseWork {
   @SuppressWarnings("nls")
   public void addMapWork(Path path, String alias, Operator<?> work,
       PartitionDesc pd) {
+    StringInternUtils.internUriStringsInPath(path);
     ArrayList<String> curAliases = pathToAliases.get(path);
     if (curAliases == null) {
       assert (pathToPartitionInfo.get(path) == null);
-      curAliases = new ArrayList<String>();
+      curAliases = new ArrayList<>();
       pathToAliases.put(path, curAliases);
       pathToPartitionInfo.put(path, pd);
     } else {
@@ -425,6 +430,7 @@ public class MapWork extends BaseWork {
 
   public void resolveDynamicPartitionStoredAsSubDirsMerge(HiveConf conf, Path path,
       TableDesc tblDesc, ArrayList<String> aliases, PartitionDesc partDesc) {
+    StringInternUtils.internUriStringsInPath(path);
     pathToAliases.put(path, aliases);
     pathToPartitionInfo.put(path, partDesc);
   }
@@ -489,9 +495,11 @@ public class MapWork extends BaseWork {
   }
 
   public void mergeAliasedInput(String alias, Path pathDir, PartitionDesc partitionInfo) {
+    StringInternUtils.internUriStringsInPath(pathDir);
+    alias = alias.intern();
     ArrayList<String> aliases = pathToAliases.get(pathDir);
     if (aliases == null) {
-      aliases = new ArrayList<String>(Arrays.asList(alias));
+      aliases = new ArrayList<>(Arrays.asList(alias));
       pathToAliases.put(pathDir, aliases);
       pathToPartitionInfo.put(pathDir, partitionInfo);
     } else {
