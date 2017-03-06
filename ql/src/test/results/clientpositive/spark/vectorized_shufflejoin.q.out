@@ -68,7 +68,7 @@ STAGE PLANS:
         Map 5 
             Map Operator Tree:
                 TableScan
-                  alias: t2
+                  alias: t1
                   Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                   TableScan Vectorization:
                       native: true
@@ -111,7 +111,7 @@ STAGE PLANS:
             Reduce Vectorization:
                 enabled: true
                 enableConditionsMet: hive.vectorized.execution.reduce.enabled IS true, hive.execution.engine spark IN [tez, spark] IS true
-                notVectorizedReason: Tez doesn't use tagging
+                notVectorizedReason: Tagging not supported
                 vectorized: false
             Reduce Operator Tree:
               Join Operator
