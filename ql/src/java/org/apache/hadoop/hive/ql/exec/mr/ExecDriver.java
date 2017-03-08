@@ -222,6 +222,11 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
     boolean ctxCreated = false;
     Path emptyScratchDir;
 
+    if (driverContext.isShutdown()) {
+      LOG.warn("Task was cancelled");
+      return 5;
+    }
+
     MapWork mWork = work.getMapWork();
     ReduceWork rWork = work.getReduceWork();
 
@@ -412,12 +417,26 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
         TezSessionPoolManager.getInstance().close(session, true);
       }
 
+      if (driverContext.isShutdown()) {
+        LOG.warn("Task was cancelled");
+        return 5;
+      }
       // Finally SUBMIT the JOB!
       rj = jc.submitJob(job);
       // replace it back
       if (pwd != null) {
         HiveConf.setVar(job, HiveConf.ConfVars.METASTOREPWD, pwd);
       }
+
+      if (driverContext.isShutdown()) {
+        LOG.warn("Task was cancelled");
+        if (rj != null) {
+          rj.killJob();
+          rj = null;
+        }
+        return 5;
+      }
+
       this.jobID = rj.getJobID();
 
       returnVal = jobExecHelper.progress(rj, jc, ctx.getHiveTxnManager());
