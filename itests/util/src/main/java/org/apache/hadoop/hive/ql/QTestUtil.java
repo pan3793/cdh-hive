@@ -1270,6 +1270,10 @@ public class QTestUtil {
     commandArgs = commandArgs.replaceAll("\\$\\{hiveconf:hive\\.metastore\\.warehouse\\.dir\\}",
       wareHouseDir);
 
+    if (SessionState.get() != null) {
+      SessionState.get().setLastCommand(commandName + " " + commandArgs.trim());
+    }
+
     enableTestOnlyCmd(SessionState.get().getConf());
 
     try {
@@ -2201,7 +2205,7 @@ public class QTestUtil {
   public void failed(int ecode, String fname, String debugHint) {
     String command = SessionState.get() != null ? SessionState.get().getLastCommand() : null;
     String message = "Client execution failed with error code = " + ecode +
-        (command != null ? " running " + command : "") + "fname=" + fname +
+        (command != null ? " running \"" + command : "") + "\" fname=" + fname + " " +
         (debugHint != null ? debugHint : "");
     LOG.error(message);
     Assert.fail(message);
