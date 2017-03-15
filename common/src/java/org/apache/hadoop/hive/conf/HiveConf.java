@@ -1166,13 +1166,13 @@ public class HiveConf extends Configuration {
         "when using UDTF's to prevent the task getting killed because of inactivity.  Users should be cautious \n" +
         "because this may prevent TaskTracker from killing tasks with infinite loops."),
 
-    HIVEDEFAULTFILEFORMAT("hive.default.fileformat", "TextFile", new StringSet("TextFile", "SequenceFile", "RCfile", "ORC"),
+    HIVEDEFAULTFILEFORMAT("hive.default.fileformat", "TextFile", new StringSet("TextFile", "SequenceFile", "RCfile", "ORC", "parquet"),
         "Default file format for CREATE TABLE statement. Users can explicitly override it by CREATE TABLE ... STORED AS [FORMAT]"),
     HIVEDEFAULTMANAGEDFILEFORMAT("hive.default.fileformat.managed", "none",
-  new StringSet("none", "TextFile", "SequenceFile", "RCfile", "ORC"),
-  "Default file format for CREATE TABLE statement applied to managed tables only. External tables will be \n" +
-  "created with format specified by hive.default.fileformat. Leaving this null will result in using hive.default.fileformat \n" +
-  "for all tables."),
+        new StringSet("none", "TextFile", "SequenceFile", "RCfile", "ORC", "parquet"),
+        "Default file format for CREATE TABLE statement applied to managed tables only. External tables will be \n" +
+        "created with format specified by hive.default.fileformat. Leaving this null will result in using hive.default.fileformat \n" +
+        "for all tables."),
     HIVEQUERYRESULTFILEFORMAT("hive.query.result.fileformat", "SequenceFile", new StringSet("TextFile", "SequenceFile", "RCfile", "Llap"),
         "Default file format for storing result of the query."),
     HIVECHECKFILEFORMAT("hive.fileformat.check", true, "Whether to check file format or not when loading data files"),
