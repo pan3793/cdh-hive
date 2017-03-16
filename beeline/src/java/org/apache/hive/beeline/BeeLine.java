@@ -1195,6 +1195,7 @@ public class BeeLine implements Closeable {
       @Override
       public void run() {
         try {
+          history.setMaxSize(getOpts().getMaxHistoryRows());
           history.flush();
         } catch (IOException e) {
           error(e);
