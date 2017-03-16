@@ -1090,6 +1090,7 @@ public class BeeLine implements Closeable {
             History h = consoleReader.getHistory();
             if (h instanceof FileHistory) {
                 try {
+                    ((FileHistory) h).setMaxSize(getOpts().getMaxHistoryRows());
                     ((FileHistory) h).flush();
                 } catch (IOException e) {
                     error(e);
