@@ -567,7 +567,7 @@ public class WindowingSpec {
    */
   public abstract static class BoundarySpec implements Comparable<BoundarySpec>
   {
-    public static int UNBOUNDED_AMOUNT = Integer.MAX_VALUE;
+    public static final int UNBOUNDED_AMOUNT = Integer.MAX_VALUE;
 
     public abstract Direction getDirection();
     public abstract void setDirection(Direction dir);

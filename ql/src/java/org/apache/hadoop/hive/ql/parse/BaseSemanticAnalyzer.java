@@ -100,8 +100,8 @@ public abstract class BaseSemanticAnalyzer {
    */
   protected Set<FileSinkDesc> acidFileSinks = new HashSet<FileSinkDesc>();
 
-  public static int HIVE_COLUMN_ORDER_ASC = 1;
-  public static int HIVE_COLUMN_ORDER_DESC = 0;
+  public static final int HIVE_COLUMN_ORDER_ASC = 1;
+  public static final int HIVE_COLUMN_ORDER_DESC = 0;
 
   /**
    * ReadEntitites that are passed to the hooks.

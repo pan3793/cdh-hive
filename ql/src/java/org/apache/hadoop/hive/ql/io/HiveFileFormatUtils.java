@@ -69,7 +69,6 @@ import org.apache.hadoop.util.ReflectionUtils;
  *
  */
 public final class HiveFileFormatUtils {
-
   static {
     outputFormatSubstituteMap =
         new ConcurrentHashMap<Class<?>, Class<? extends OutputFormat>>();

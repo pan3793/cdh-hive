@@ -1099,7 +1099,6 @@ public class OrcInputFormat  implements InputFormat<NullWritable, OrcStruct>,
     }
   }
 
-
   @Override
   public RowReader<OrcStruct> getReader(InputSplit inputSplit,
                                         Options options) throws IOException {

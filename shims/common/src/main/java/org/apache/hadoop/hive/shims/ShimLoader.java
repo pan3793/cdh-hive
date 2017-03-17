@@ -29,7 +29,7 @@ import org.apache.log4j.AppenderSkeleton;
  *
  */
 public abstract class ShimLoader {
-  private static HadoopShims hadoopShims;
+  private static volatile HadoopShims hadoopShims;
   private static JettyShims jettyShims;
   private static AppenderSkeleton eventCounter;
   private static HadoopThriftAuthBridge hadoopThriftAuthBridge;
