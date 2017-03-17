@@ -220,17 +220,17 @@ public final class Utilities {
    * The object in the reducer are composed of these top level fields.
    */
 
-  public static String HADOOP_LOCAL_FS = "file:///";
-  public static String MAP_PLAN_NAME = "map.xml";
-  public static String REDUCE_PLAN_NAME = "reduce.xml";
-  public static String MERGE_PLAN_NAME = "merge.xml";
+  public static final String HADOOP_LOCAL_FS = "file:///";
+  public static final String MAP_PLAN_NAME = "map.xml";
+  public static final String REDUCE_PLAN_NAME = "reduce.xml";
+  public static final String MERGE_PLAN_NAME = "merge.xml";
   public static final String INPUT_NAME = "iocontext.input.name";
   public static final String MAPRED_MAPPER_CLASS = "mapred.mapper.class";
   public static final String MAPRED_REDUCER_CLASS = "mapred.reducer.class";
   public static final String HIVE_ADDED_JARS = "hive.added.jars";
 
   @Deprecated
-  protected static String DEPRECATED_MAPRED_DFSCLIENT_PARALLELISM_MAX = "mapred.dfsclient.parallelism.max";
+  protected static final String DEPRECATED_MAPRED_DFSCLIENT_PARALLELISM_MAX = "mapred.dfsclient.parallelism.max";
 
   /**
    * ReduceField:
@@ -1200,8 +1200,8 @@ public final class Utilities {
   // Note: When DDL supports specifying what string to represent null,
   // we should specify "NULL" to represent null in the temp table, and then
   // we can make the following translation deprecated.
-  public static String nullStringStorage = "\\N";
-  public static String nullStringOutput = "NULL";
+  public static final String nullStringStorage = "\\N";
+  public static final String nullStringOutput = "NULL";
 
   public static Random randGen = new Random();
 
@@ -2988,7 +2988,7 @@ public final class Utilities {
     jobConf.set(serdeConstants.LIST_COLUMN_TYPES, columnTypesString);
   }
 
-  public static String suffix = ".hashtable";
+  public static final String suffix = ".hashtable";
 
   public static Path generatePath(Path basePath, String dumpFilePrefix,
       Byte tag, String bigBucketFileName) {

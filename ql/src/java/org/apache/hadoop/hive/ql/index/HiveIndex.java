@@ -24,10 +24,9 @@ import org.apache.commons.logging.LogFactory;
  * Holds index related constants
  */
 public class HiveIndex {
-
   public static final Log l4j = LogFactory.getLog("HiveIndex");
 
-  public static String INDEX_TABLE_CREATETIME = "hive.index.basetbl.dfs.lastModifiedTime";
+  public static final String INDEX_TABLE_CREATETIME = "hive.index.basetbl.dfs.lastModifiedTime";
 
   public static enum IndexType {
     AGGREGATE_TABLE("aggregate", "org.apache.hadoop.hive.ql.AggregateIndexHandler"),

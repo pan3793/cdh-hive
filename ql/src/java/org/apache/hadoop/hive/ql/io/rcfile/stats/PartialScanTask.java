@@ -33,7 +33,6 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.StatsSetupConst;
-import org.apache.hadoop.hive.common.StatsSetupConst.StatDB;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.Context;
 import org.apache.hadoop.hive.ql.DriverContext;
@@ -58,7 +57,6 @@ import org.apache.hadoop.hive.ql.stats.StatsPublisher;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.Counters;
 import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RunningJob;
@@ -75,8 +73,6 @@ import org.apache.log4j.LogManager;
 @SuppressWarnings( { "deprecation"})
 public class PartialScanTask extends Task<PartialScanWork> implements
     Serializable, HadoopJobExecHook {
-
-
   private static final long serialVersionUID = 1L;
 
   protected transient JobConf job;
@@ -271,7 +267,7 @@ public class PartialScanTask extends Task<PartialScanWork> implements
     return "RCFile Statistics Partial Scan";
   }
 
-  public static String INPUT_SEPERATOR = ":";
+  public static final String INPUT_SEPERATOR = ":";
 
   public static void main(String[] args) {
     String inputPathStr = null;

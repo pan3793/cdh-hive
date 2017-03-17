@@ -64,7 +64,7 @@ public class VirtualColumn implements Serializable {
   public static final VirtualColumn GROUPINGID =
       new VirtualColumn("GROUPING__ID", (PrimitiveTypeInfo) TypeInfoFactory.intTypeInfo);
 
-  public static ImmutableSet<String> VIRTUAL_COLUMN_NAMES =
+  public static final ImmutableSet<String> VIRTUAL_COLUMN_NAMES =
       ImmutableSet.of(FILENAME.getName(), BLOCKOFFSET.getName(), ROWOFFSET.getName(),
           RAWDATASIZE.getName(), GROUPINGID.getName(), ROWID.getName());
 

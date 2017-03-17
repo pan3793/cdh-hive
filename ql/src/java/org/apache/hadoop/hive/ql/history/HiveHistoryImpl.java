@@ -46,7 +46,6 @@ import org.apache.hadoop.mapred.Counters.Group;
  * Each session uses a new object, which creates a new file.
  */
 public class HiveHistoryImpl implements HiveHistory{
-
   PrintWriter histStream; // History File stream
 
   String histFileName; // History file name
@@ -309,7 +308,7 @@ public class HiveHistoryImpl implements HiveHistory{
   /**
    * write out counters.
    */
-  static ThreadLocal<Map<String,String>> ctrMapFactory =
+  static final ThreadLocal<Map<String,String>> ctrMapFactory =
       new ThreadLocal<Map<String, String>>() {
     @Override
     protected Map<String,String> initialValue() {

@@ -40,7 +40,6 @@ import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.Partition;
 import org.apache.hadoop.hive.ql.metadata.Table;
-import org.apache.hadoop.hive.shims.HadoopShims;
 
 /**
  * ArchiveUtils.
@@ -50,7 +49,7 @@ import org.apache.hadoop.hive.shims.HadoopShims;
 public final class ArchiveUtils {
   private static final Log LOG = LogFactory.getLog(ArchiveUtils.class.getName());
 
-  public static String ARCHIVING_LEVEL = "archiving_level";
+  public static final String ARCHIVING_LEVEL = "archiving_level";
 
   /**
    * PartSpecInfo keeps fields and values extracted from partial partition info
