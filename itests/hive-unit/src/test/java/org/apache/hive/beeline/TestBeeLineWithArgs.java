@@ -692,7 +692,7 @@ public class TestBeeLineWithArgs {
     final String SCRIPT_TEXT = "set hive.support.concurrency = false;\n" +
         "set hive.exec.parallel = true;\n" +
         "select count(*) from " + tableName + ";\n";
-    final String EXPECTED_PATTERN = "number of splits";
+    final String EXPECTED_PATTERN = "in parallel";
     testScriptFile(SCRIPT_TEXT, EXPECTED_PATTERN, true, getBaseArgs(miniHS2.getBaseJdbcURL()));
   }
 

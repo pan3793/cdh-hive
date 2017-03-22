@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.CharEncoding;
+import org.apache.hadoop.hive.common.LogUtils;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
@@ -324,9 +325,7 @@ public class SQLOperation extends ExecuteStatementOperation {
           // TODO: can this result in cross-thread reuse of session state?
           SessionState.setCurrentSessionState(parentSessionState);
           PerfLogger.setPerfLogger(parentPerfLogger);
-          // Set current OperationLog in this async thread for keeping on saving query log.
-          registerCurrentOperationLog();
-          registerLoggingContext();
+          LogUtils.registerLoggingContext(queryState.getConf());
           try {
             if (asyncPrepare) {
               prepare(queryState);
@@ -336,8 +335,7 @@ public class SQLOperation extends ExecuteStatementOperation {
             setOperationException(e);
             LOG.error("Error running hive query: ", e);
           } finally {
-            unregisterLoggingContext();
-            unregisterOperationLog();
+            LogUtils.unregisterLoggingContext();
           }
           return null;
         }
@@ -376,18 +374,6 @@ public class SQLOperation extends ExecuteStatementOperation {
       return Utils.getUGI();
     } catch (Exception e) {
       throw new HiveSQLException("Unable to get current user", e);
-    }
-  }
-
-  private void registerCurrentOperationLog() {
-    if (isOperationLogEnabled) {
-      if (operationLog == null) {
-        LOG.warn("Failed to get current OperationLog object of Operation: " +
-            getHandle().getHandleIdentifier());
-        isOperationLogEnabled = false;
-        return;
-      }
-      OperationLog.setCurrentOperationLog(operationLog);
     }
   }
 

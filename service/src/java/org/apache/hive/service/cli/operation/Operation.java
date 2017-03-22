@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.hadoop.hive.common.LogUtils;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
@@ -36,7 +37,6 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.QueryState;
 import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse;
 import org.apache.hadoop.hive.ql.session.OperationLog;
-import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.service.cli.FetchOrientation;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.OperationHandle;
@@ -47,17 +47,12 @@ import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.session.HiveSession;
 import org.apache.hive.service.rpc.thrift.TProtocolVersion;
-import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
 public abstract class Operation {
-  // Constants of the key strings for the log4j ThreadContext.
-  public static final String SESSIONID_LOG_KEY = "sessionId";
-  public static final String QUERYID_LOG_KEY = "queryId";
-
   protected final HiveSession parentSession;
   private volatile OperationState state = OperationState.INITIALIZED;
   private volatile MetricsScope currentStateScope;
@@ -223,32 +218,8 @@ public abstract class Operation {
 
   protected void createOperationLog() {
     if (parentSession.isOperationLogEnabled()) {
-      File operationLogFile = new File(parentSession.getOperationLogSessionDir(),
-          opHandle.getHandleIdentifier().toString());
+      File operationLogFile = new File(parentSession.getOperationLogSessionDir(), queryState.getQueryId());
       isOperationLogEnabled = true;
-
-      // create log file
-      try {
-        if (operationLogFile.exists()) {
-          LOG.warn("The operation log file should not exist, but it is already there: " +
-              operationLogFile.getAbsolutePath());
-          operationLogFile.delete();
-        }
-        if (!operationLogFile.createNewFile()) {
-          // the log file already exists and cannot be deleted.
-          // If it can be read/written, keep its contents and use it.
-          if (!operationLogFile.canRead() || !operationLogFile.canWrite()) {
-            LOG.warn("The already existed operation log file cannot be recreated, " +
-                "and it cannot be read or written: " + operationLogFile.getAbsolutePath());
-            isOperationLogEnabled = false;
-            return;
-          }
-        }
-      } catch (Exception e) {
-        LOG.warn("Unable to create operation log file: " + operationLogFile.getAbsolutePath(), e);
-        isOperationLogEnabled = false;
-        return;
-      }
 
       // create OperationLog object with above log file
       try {
@@ -259,15 +230,6 @@ public abstract class Operation {
         isOperationLogEnabled = false;
         return;
       }
-
-      // register this operationLog to current thread
-      OperationLog.setCurrentOperationLog(operationLog);
-    }
-  }
-
-  protected void unregisterOperationLog() {
-    if (isOperationLogEnabled) {
-      OperationLog.removeCurrentOperationLog();
     }
   }
 
@@ -277,22 +239,7 @@ public abstract class Operation {
    */
   protected void beforeRun() {
     createOperationLog();
-    registerLoggingContext();
-  }
-
-  /**
-   * Register logging context so that Log4J can print QueryId and/or SessionId for each message
-   */
-  protected void registerLoggingContext() {
-    ThreadContext.put(SESSIONID_LOG_KEY, SessionState.get().getSessionId());
-    ThreadContext.put(QUERYID_LOG_KEY, confOverlay.get(HiveConf.ConfVars.HIVEQUERYID.varname));
-  }
-
-  /**
-   * Unregister logging context
-   */
-  protected void unregisterLoggingContext() {
-    ThreadContext.clearAll();
+    LogUtils.registerLoggingContext(queryState.getConf());
   }
 
   /**
@@ -300,8 +247,7 @@ public abstract class Operation {
    * Clean up resources, which was set up in beforeRun().
    */
   protected void afterRun() {
-    unregisterLoggingContext();
-    unregisterOperationLog();
+    LogUtils.unregisterLoggingContext();
   }
 
   /**
