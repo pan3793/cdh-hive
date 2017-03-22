@@ -102,6 +102,8 @@ public class ReduceRecordSource implements RecordSource {
   private int firstValueColumnOffset;
   private final int BATCH_SIZE = VectorizedRowBatch.DEFAULT_SIZE;
 
+  private final int BATCH_BYTES = VectorizedRowBatch.DEFAULT_BYTES;
+
   private StructObjectInspector keyStructInspector;
   private StructObjectInspector valueStructInspectors;
 
@@ -429,6 +431,7 @@ public class ReduceRecordSource implements RecordSource {
     }
 
     int rowIdx = 0;
+    int batchBytes = keyBytes.length;
     try {
       for (Object value : values) {
         if (valueLazyBinaryDeserializeToRow != null) {
@@ -436,6 +439,7 @@ public class ReduceRecordSource implements RecordSource {
           BytesWritable valueWritable = (BytesWritable) value;
           byte[] valueBytes = valueWritable.getBytes();
           int valueLength = valueWritable.getLength();
+          batchBytes += valueLength;
 
           // l4j.info("ReduceRecordSource processVectorGroup valueBytes " + valueLength + " " +
           //     VectorizedBatchUtil.displayBytes(valueBytes, 0, valueLength));
@@ -444,7 +448,7 @@ public class ReduceRecordSource implements RecordSource {
           valueLazyBinaryDeserializeToRow.deserialize(batch, rowIdx);
         }
         rowIdx++;
-        if (rowIdx >= BATCH_SIZE) {
+        if (rowIdx >= BATCH_SIZE  || batchBytes >= BATCH_BYTES) {
           VectorizedBatchUtil.setBatchSize(batch, rowIdx);
           reducer.process(batch, tag);
 
@@ -454,6 +458,7 @@ public class ReduceRecordSource implements RecordSource {
             batch.cols[i].reset();
           }
           rowIdx = 0;
+          batchBytes = 0;
         }
       }
       if (rowIdx > 0) {
