@@ -27,12 +27,16 @@ import org.apache.hadoop.hive.metastore.messaging.InsertMessage;
 import org.apache.hadoop.hive.metastore.messaging.MessageDeserializer;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 
 public class ExtendedJSONMessageDeserializer extends MessageDeserializer {
   private static ObjectMapper mapper = new ObjectMapper();
 
   static {
     mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.configure(SerializationConfig.Feature.AUTO_DETECT_GETTERS, false);
+    mapper.configure(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS, false);
+    mapper.configure(SerializationConfig.Feature.AUTO_DETECT_FIELDS, false);
   }
 
   public ExtendedJSONMessageDeserializer() {
