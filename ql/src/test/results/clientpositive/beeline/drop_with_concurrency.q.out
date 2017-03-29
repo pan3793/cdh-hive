@@ -9,8 +9,7 @@ No rows affected
 No rows affected 
 >>>  
 >>>  drop table if exists drop_with_concurrency_1;
-DEBUG : Acquired the compile lock.
-INFO  : Compiling commandqueryId=(!!{queryId}!!): drop table if exists drop_with_concurrency_1
+DEBUG : INFO  : Compiling commandqueryId=(!!{queryId}!!): drop table if exists drop_with_concurrency_1
 INFO  : Semantic Analysis Completed
 INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
 INFO  : Completed compiling commandqueryId=(!!{queryId}!!); Time taken: !!ELIDED!! seconds
@@ -25,8 +24,7 @@ INFO  : OK
 DEBUG : Shutting down query drop table if exists drop_with_concurrency_1
 No rows affected 
 >>>  create table drop_with_concurrency_1 (c1 int);
-DEBUG : Acquired the compile lock.
-INFO  : Compiling commandqueryId=(!!{queryId}!!): create table drop_with_concurrency_1 (c1 int)
+DEBUG : INFO  : Compiling commandqueryId=(!!{queryId}!!): create table drop_with_concurrency_1 (c1 int)
 INFO  : Semantic Analysis Completed
 INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
 INFO  : Completed compiling commandqueryId=(!!{queryId}!!); Time taken: !!ELIDED!! seconds
@@ -45,8 +43,7 @@ INFO  : OK
 DEBUG : Shutting down query create table drop_with_concurrency_1 (c1 int)
 No rows affected 
 >>>  drop table drop_with_concurrency_1;
-DEBUG : Acquired the compile lock.
-INFO  : Compiling commandqueryId=(!!{queryId}!!): drop table drop_with_concurrency_1
+DEBUG : INFO  : Compiling commandqueryId=(!!{queryId}!!): drop table drop_with_concurrency_1
 INFO  : Semantic Analysis Completed
 INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
 INFO  : Completed compiling commandqueryId=(!!{queryId}!!); Time taken: !!ELIDED!! seconds
