@@ -219,6 +219,7 @@ DEBUG : Shutting down query describe formatted escape_comments_tbl1
 '','COLUMN_STATS_ACCURATE','{\"BASIC_STATS\":\"true\"}'
 '','comment             ','a\nb                '
 '','numFiles            ','0                   '
+'','numPartitions       ','0                   '
 '','numRows             ','0                   '
 '','rawDataSize         ','0                   '
 '','totalSize           ','0                   '
@@ -234,7 +235,7 @@ DEBUG : Shutting down query describe formatted escape_comments_tbl1
 'Sort Columns:       ','[]                  ','NULL'
 'Storage Desc Params:','NULL','NULL'
 '','serialization.format','1                   '
-36 rows selected 
+37 rows selected 
 >>>  describe pretty escape_comments_tbl1;
 DEBUG : INFO  : Compiling commandqueryId=(!!{queryId}!!): describe pretty escape_comments_tbl1
 INFO  : Semantic Analysis Completed
