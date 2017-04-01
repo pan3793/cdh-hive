@@ -59,9 +59,9 @@ public class PostExecTezSummaryPrinter implements ExecuteWithHookContext {
       if (counters != null) {
         for (CounterGroup group : counters) {
           if ("HIVE".equals(group.getDisplayName())) {
-            console.printError(tezTask.getId() + " HIVE COUNTERS:");
+            console.printInfo(tezTask.getId() + " HIVE COUNTERS:", false);
             for (TezCounter counter : group) {
-              console.printError("   " + counter.getDisplayName() + ": " + counter.getValue());
+              console.printInfo("   " + counter.getDisplayName() + ": " + counter.getValue(), false);
             }
           }
         }
