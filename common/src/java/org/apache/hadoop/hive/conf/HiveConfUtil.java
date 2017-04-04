@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.conf;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience.Private;
 
@@ -86,9 +87,20 @@ public class HiveConfUtil {
   public static void stripConfigurations(Configuration conf, Set<String> hiddenSet) {
     for (String name : hiddenSet) {
       if (conf.get(name) != null) {
-        conf.set(name, "");
+        conf.set(name, StringUtils.EMPTY);
       }
     }
+  }
+
+  /**
+   * Searches the given configuration object and replaces all the configuration values for keys
+   * defined hive.conf.hidden.list by empty String
+   *
+   * @param conf - Configuration object which needs to be modified to remove sensitive keys
+   */
+  public static void stripConfigurations(Configuration conf) {
+    Set<String> hiddenSet = getHiddenSet(conf);
+    stripConfigurations(conf, hiddenSet);
   }
 
   public static void dumpConfig(Configuration originalConf, StringBuilder sb) {
