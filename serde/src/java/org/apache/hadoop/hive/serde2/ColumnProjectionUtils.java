@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.util.StringUtils;
+import org.apache.hive.common.util.HiveStringUtils;
 
 /**
  * ColumnProjectionUtils.
@@ -95,10 +96,7 @@ public final class ColumnProjectionUtils {
   public static void appendReadColumns(Configuration conf, List<Integer> ids) {
     String id = toReadColumnIDString(ids);
     String old = conf.get(READ_COLUMN_IDS_CONF_STR, null);
-    String newConfStr = id;
-    if (old != null && !old.isEmpty()) {
-      newConfStr = newConfStr + StringUtils.COMMA_STR + old;
-    }
+    String newConfStr = HiveStringUtils.joinIgnoringEmpty(new String[] {id, old}, StringUtils.COMMA);
     setReadColumnIDConf(conf, newConfStr);
     // Set READ_ALL_COLUMNS to false
     conf.setBoolean(READ_ALL_COLUMNS, false);
