@@ -383,9 +383,15 @@
       </properties>
       <dependencies>
       	<dependency>
-	        <groupId>org.apache.accumulo</groupId>
-	        <artifactId>accumulo-minicluster</artifactId>
-	        <scope>test</scope>
+	  <groupId>org.apache.accumulo</groupId>
+	  <artifactId>accumulo-minicluster</artifactId>
+	  <scope>test</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>commons-beanutils</groupId>
+              <artifactId>commons-beanutils-core</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <!-- Override the thrift dependency pulled in for metaserver -->
         <dependency>
