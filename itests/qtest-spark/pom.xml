@@ -32,7 +32,7 @@
     <hive.path.to.root>../..</hive.path.to.root>
 
     <!-- The following are to match the latest in spark project, overriding hive's versions -->
-    <spark.jetty.version>8.1.14.v20131031</spark.jetty.version>
+    <spark.jetty.version>9.3.8.v20160314</spark.jetty.version>
     <spark.kryo.version>2.21</spark.kryo.version>
     <qfile></qfile>
     <qfile_regex></qfile_regex>
