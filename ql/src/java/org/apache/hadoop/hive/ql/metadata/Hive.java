@@ -2845,8 +2845,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     if (!fullDestStatus.getFileStatus().isDirectory()) {
       throw new HiveException(destf + " is not a directory.");
     }
-    final boolean inheritPerms = HiveConf.getBoolVar(conf,
-        HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
+    final boolean inheritPerms = FileUtils.shouldInheritPerms(conf, destFs);
     final List<Future<ObjectPair<Path, Path>>> futures = new LinkedList<>();
     final ExecutorService pool = conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25) > 0 ?
         Executors.newFixedThreadPool(conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25),
@@ -2904,7 +2903,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
                     mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
 
                 if (inheritPerms) {
-                  HdfsUtils.setFullFileStatus(conf, fullDestStatus, srcGroup, destFs, destPath, false);
+                  FileUtils.inheritPerms(conf, fullDestStatus, srcGroup, destFs, destPath, false);
                 }
                 if (null != newFiles) {
                   newFiles.add(destPath);
@@ -2920,7 +2919,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
     if (null == pool) {
       if (inheritPerms) {
-        HdfsUtils.setFullFileStatus(conf, fullDestStatus, null, destFs, destf, true);
+        FileUtils.inheritPerms(conf, fullDestStatus, destFs, destf, true);
       }
     } else {
       pool.shutdown();
@@ -3071,8 +3070,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
 
     //needed for perm inheritance.
-    final boolean inheritPerms = HiveConf.getBoolVar(conf,
-        HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
+    final boolean inheritPerms = FileUtils.shouldInheritPerms(conf, destFs);
     HdfsUtils.HadoopFileStatus destStatus = null;
     final boolean shouldRenameDirectoryInParallel = BlobStorageUtils.shouldRenameDirectoryInParallel(conf, srcFs, destFs);
 
@@ -3087,7 +3085,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
     try {
       if (inheritPerms || replace) {
-        try{
+        try {
           destStatus = new HdfsUtils.HadoopFileStatus(conf, destFs, destf);
           //if destf is an existing directory:
           //if replace is true, delete followed by rename(mv) is equivalent to replace
@@ -3111,7 +3109,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
         // For local src file, copy to hdfs
         destFs.copyFromLocalFile(srcf, destf);
         if (inheritPerms) {
-          HdfsUtils.setFullFileStatus(conf, destStatus, destFs, destf, true);
+          FileUtils.inheritPerms(conf, destStatus, destFs, destf, true);
         }
         return true;
       } else {
@@ -3153,7 +3151,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
                     try {
                       if(destFs.rename(srcStatus.getPath(), destFile)) {
                         if (inheritPerms) {
-                          HdfsUtils.setFullFileStatus(conf, desiredStatus, group, destFs, destFile, false);
+                          FileUtils.inheritPerms(conf, desiredStatus, group, destFs, destFile, false);
                         }
                       } else {
                         throw new IOException(
@@ -3169,7 +3167,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
             }
             if (null == pool) {
               if (inheritPerms) {
-                HdfsUtils.setFullFileStatus(conf, desiredStatus, null, destFs, destf, true);
+                FileUtils.inheritPerms(conf, desiredStatus, destFs, destf, true);
               }
             } else {
               pool.shutdown();
@@ -3200,7 +3198,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
             } else {
               if (destFs.rename(srcf, destf)) {
                 if (inheritPerms) {
-                  HdfsUtils.setFullFileStatus(conf, destStatus, null, destFs, destf, true);
+                  FileUtils.inheritPerms(conf, destStatus, destFs, destf, true);
                 }
                 return true;
               }
@@ -3301,12 +3299,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
    */
   static protected void copyFiles(HiveConf conf, Path srcf, Path destf,
       FileSystem fs, boolean isSrcLocal, boolean isAcid, List<Path> newFiles) throws HiveException {
-    boolean inheritPerms = HiveConf.getBoolVar(conf,
-        HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
     try {
       // create the destination if it does not exist
       if (!fs.exists(destf)) {
-        FileUtils.mkdir(fs, destf, inheritPerms, conf);
+        FileUtils.mkdir(fs, destf, conf);
       }
     } catch (IOException e) {
       throw new HiveException(
@@ -3496,9 +3492,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
       // first call FileUtils.mkdir to make sure that destf directory exists, if not, it creates
       // destf with inherited permissions
-      boolean inheritPerms = HiveConf.getBoolVar(conf, HiveConf.ConfVars
-          .HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
-      boolean destfExist = FileUtils.mkdir(destFs, destf, inheritPerms, conf);
+      boolean destfExist = FileUtils.mkdir(destFs, destf, conf);
       if(!destfExist) {
         throw new IOException("Directory " + destf.toString()
             + " does not exist and could not be created.");

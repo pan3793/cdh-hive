@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.hadoop.hive.common;
 
 import org.apache.hadoop.conf.Configuration;
@@ -37,10 +38,10 @@ public class BlobStorageUtils {
     }
 
     public static boolean isBlobStorageFileSystem(final Configuration conf, final FileSystem fs) {
-        return fs != null && isBlobStorageScheme(conf, fs.getUri().getScheme());
+        return fs != null && fs.getUri() != null && isBlobStorageScheme(conf, fs.getUri().getScheme());
     }
 
-    public static boolean isBlobStorageScheme(final Configuration conf, final String scheme) {
+    static boolean isBlobStorageScheme(final Configuration conf, final String scheme) {
         Collection<String> supportedBlobStoreSchemes =
                 conf.getStringCollection(HiveConf.ConfVars.HIVE_BLOBSTORE_SUPPORTED_SCHEMES.varname);
 
