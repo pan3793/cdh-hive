@@ -39,6 +39,7 @@ import org.apache.hadoop.hive.serde2.columnar.BytesRefWritable;
 import org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
@@ -85,6 +86,7 @@ public class TestRCFileMapReduceInputFormat extends TestCase {
   private static BytesRefArrayWritable patialS = new BytesRefArrayWritable();
 
   private static byte[][] bytesArray = null;
+  private static int numRepeat = 1000;
 
   private static BytesRefArrayWritable s = null;
 
@@ -115,6 +117,7 @@ public class TestRCFileMapReduceInputFormat extends TestCase {
       patialS.set(6, new BytesRefWritable("NULL".getBytes("UTF-8")));
       patialS.set(7, new BytesRefWritable("NULL".getBytes("UTF-8")));
 
+      numRepeat = (int) Math.ceil((double)SequenceFile.SYNC_INTERVAL / (double)bytesArray.length);
     } catch (UnsupportedEncodingException e) {
     }
   }
@@ -182,24 +185,24 @@ public class TestRCFileMapReduceInputFormat extends TestCase {
   }
 
   private void splitBeforeSync() throws IOException, InterruptedException {
-    writeThenReadByRecordReader(600, 1000, 2, 17684, null);
+    writeThenReadByRecordReader(600, numRepeat, 2, 17684, null);
   }
 
   private void splitRightBeforeSync() throws IOException, InterruptedException {
-    writeThenReadByRecordReader(500, 1000, 2, 17750, null);
+    writeThenReadByRecordReader(500, numRepeat, 2, 17750, null);
   }
 
   private void splitInMiddleOfSync() throws IOException, InterruptedException {
-    writeThenReadByRecordReader(500, 1000, 2, 17760, null);
+    writeThenReadByRecordReader(500, numRepeat, 2, 17760, null);
 
   }
 
   private void splitRightAfterSync() throws IOException, InterruptedException {
-    writeThenReadByRecordReader(500, 1000, 2, 17770, null);
+    writeThenReadByRecordReader(500, numRepeat, 2, 17770, null);
   }
 
   private void splitAfterSync() throws IOException, InterruptedException {
-    writeThenReadByRecordReader(500, 1000, 2, 19950, null);
+    writeThenReadByRecordReader(500, numRepeat, 2, 19950, null);
   }
 
   private void writeThenReadByRecordReader(int intervalRecordCount,
