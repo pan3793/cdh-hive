@@ -230,25 +230,21 @@ public class ObjectStore implements RawStore, Configurable {
   private Pattern partitionValidationPattern;
 
   /**
-   * A class to pass the Query object to the caller to let the caller release
-   * resources by calling QueryWrapper.query.closeAll() after consuming all the query results.
+   * A Autocloseable wrapper around Query class to pass the Query object to the caller and let the caller release
+   * the resources when the QueryWrapper goes out of scope
    */
-  public static class QueryWrapper {
+  public static class QueryWrapper implements AutoCloseable {
     public Query query;
 
     /**
      * Explicitly closes the query object to release the resources
      */
+    @Override
     public void close() {
       if (query != null) {
         query.closeAll();
         query = null;
       }
-    }
-
-    @Override
-    protected void finalize() {
-      this.close();
     }
   }
 
@@ -693,12 +689,7 @@ public class ObjectStore implements RawStore, Configurable {
       pm.retrieve(mdb);
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     if (mdb == null) {
       throw new NoSuchObjectException("There is no database named " + name);
@@ -817,10 +808,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       success = commitTransaction();
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      queryWrapper.close();
+      rollbackAndCleanup(success, queryWrapper);
     }
     return success;
   }
@@ -851,12 +839,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return databases;
   }
@@ -876,12 +859,7 @@ public class ObjectStore implements RawStore, Configurable {
       databases = new ArrayList<String>((Collection<String>) query.execute());
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     Collections.sort(databases);
     return databases;
@@ -949,12 +927,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return type;
   }
@@ -978,12 +951,7 @@ public class ObjectStore implements RawStore, Configurable {
       success = commitTransaction();
       LOG.debug("type not found " + typeName, e);
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return success;
   }
@@ -1216,12 +1184,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return tbls;
   }
@@ -1253,12 +1216,7 @@ public class ObjectStore implements RawStore, Configurable {
       result = (Long) query.execute();
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return result.intValue();
   }
@@ -1296,12 +1254,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return metas;
   }
@@ -1387,12 +1340,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     nmtbl.mtbl = mtbl;
     return nmtbl;
@@ -1435,14 +1383,9 @@ public class ObjectStore implements RawStore, Configurable {
       }
       committed = commitTransaction();
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
+      rollbackAndCleanup(committed, query);
       if (dbExistsQuery != null) {
         dbExistsQuery.closeAll();
-      }
-      if (query != null) {
-        query.closeAll();
       }
     }
     return tables;
@@ -1959,12 +1902,7 @@ public class ObjectStore implements RawStore, Configurable {
         }
       }
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return ret;
   }
@@ -2196,10 +2134,7 @@ public class ObjectStore implements RawStore, Configurable {
       success =  commitTransaction();
       return parts;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      queryWrapper.close();
+      rollbackAndCleanup(success, queryWrapper);
     }
   }
 
@@ -2301,6 +2236,7 @@ public class ObjectStore implements RawStore, Configurable {
     for (Iterator i = names.iterator(); i.hasNext();) {
       pns.add((String) i.next());
     }
+
     if (query != null) {
       query.closeAll();
     }
@@ -2395,10 +2331,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       success = commitTransaction();
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      queryWrapper.close();
+      rollbackAndCleanup(success, queryWrapper);
     }
     return partitions;
   }
@@ -2420,10 +2353,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       success = commitTransaction();
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      queryWrapper.close();
+      rollbackAndCleanup(success, queryWrapper);
     }
     return partitionNames;
   }
@@ -3189,12 +3119,7 @@ public class ObjectStore implements RawStore, Configurable {
       success = commitTransaction();
       LOG.debug("Done retrieving all objects for listTableNamesByFilter");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return tableNames;
   }
@@ -3240,12 +3165,7 @@ public class ObjectStore implements RawStore, Configurable {
       success = commitTransaction();
       LOG.debug("Done retrieving all objects for listMPartitionNamesByFilter");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return partNames;
   }
@@ -3463,10 +3383,7 @@ public class ObjectStore implements RawStore, Configurable {
       success = commitTransaction();
       LOG.debug("successfully deleted a CD in removeUnusedColumnDescriptor");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      queryWrapper.close();
+      rollbackAndCleanup(success, queryWrapper);
     }
   }
 
@@ -3550,12 +3467,7 @@ public class ObjectStore implements RawStore, Configurable {
       constraintNameIfExists = (String) constraintExistsQuery.execute(name);
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (constraintExistsQuery != null) {
-          constraintExistsQuery.closeAll();
-      }
+      rollbackAndCleanup(commited, constraintExistsQuery);
     }
     return constraintNameIfExists != null && !constraintNameIfExists.isEmpty();
   }
@@ -3803,12 +3715,7 @@ public class ObjectStore implements RawStore, Configurable {
       pm.retrieve(midx);
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return midx;
   }
@@ -3871,12 +3778,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       return indexes;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -3903,12 +3805,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       success = commitTransaction();
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return pns;
   }
@@ -4031,12 +3928,7 @@ public class ObjectStore implements RawStore, Configurable {
       pm.retrieve(mRoleMember);
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return mRoleMember;
   }
@@ -4105,11 +3997,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       success = commitTransaction();
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-
-      queryWrapper.close();
+      rollbackAndCleanup(success, queryWrapper);
     }
     return success;
   }
@@ -4179,12 +4067,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listRoles");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
 
     if (principalType == PrincipalType.USER) {
@@ -4250,7 +4133,6 @@ public class ObjectStore implements RawStore, Configurable {
       mRoleMemebership = (List<MRoleMap>) query.execute(roleName, principalType.toString());
       pm.retrieveAll(mRoleMemebership);
       success = commitTransaction();
-
       LOG.debug("Done retrieving all objects for listMSecurityPrincipalMembershipRole");
     } finally {
       if (!success) {
@@ -4284,12 +4166,7 @@ public class ObjectStore implements RawStore, Configurable {
       pm.retrieve(mrole);
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return mrole;
   }
@@ -4311,12 +4188,7 @@ public class ObjectStore implements RawStore, Configurable {
       success = commitTransaction();
       return roleNames;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -5142,12 +5014,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listRoleMembers");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mRoleMemeberList;
   }
@@ -5198,12 +5065,7 @@ public class ObjectStore implements RawStore, Configurable {
         userNameDbPriv.addAll(mPrivs);
       }
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return userNameDbPriv;
   }
@@ -5243,12 +5105,7 @@ public class ObjectStore implements RawStore, Configurable {
       commited = commitTransaction();
       return convertGlobal(userNameDbPriv);
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
   }
 
@@ -5291,12 +5148,7 @@ public class ObjectStore implements RawStore, Configurable {
       mSecurityDBList.addAll(mPrivs);
       LOG.debug("Done retrieving all objects for listPrincipalDBGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mSecurityDBList;
   }
@@ -5419,12 +5271,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listAllTableGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mSecurityTabList;
   }
@@ -5451,12 +5298,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listTableAllPartitionGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mSecurityTabPartList;
   }
@@ -5484,12 +5326,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listTableAllColumnGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mTblColPrivilegeList;
   }
@@ -5518,12 +5355,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listTableAllPartitionColumnGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mSecurityColList;
   }
@@ -5566,7 +5398,6 @@ public class ObjectStore implements RawStore, Configurable {
   private List<MDBPrivilege> listDatabaseGrants(String dbName, QueryWrapper queryWrapper) {
     dbName = HiveStringUtils.normalizeIdentifier(dbName);
     boolean success = false;
-
     try {
       LOG.debug("Executing listDatabaseGrants");
 
@@ -5674,12 +5505,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listAllTableGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mSecurityTabPartList;
   }
@@ -5739,12 +5565,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listPrincipalPartitionGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mSecurityTabPartList;
   }
@@ -5808,12 +5629,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listPrincipalTableColumnGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mSecurityColList;
   }
@@ -5875,12 +5691,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       LOG.debug("Done retrieving all objects for listPrincipalPartitionColumnGrants");
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     return mSecurityColList;
   }
@@ -5942,12 +5753,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPrincipalPartitionColumnGrantsAll");
       return result;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -5975,12 +5781,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPartitionColumnGrantsAll");
       return result;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -6055,12 +5856,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPrincipalAllTableGrants");
       return result;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -6085,12 +5881,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPrincipalAllTableGrants");
       return result;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -6130,7 +5921,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPrincipalAllPartitionGrants");
     } finally {
       if (!success) {
-        rollbackTransaction();
+       rollbackTransaction();
       }
     }
     return mSecurityTabPartList;
@@ -6162,12 +5953,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPrincipalPartitionGrantsAll");
       return result;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -6193,12 +5979,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPrincipalPartitionGrantsAll");
       return result;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -6276,12 +6057,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPrincipalTableColumnGrantsAll");
       return result;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -6308,12 +6084,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done retrieving all objects for listPrincipalTableColumnGrantsAll");
       return result;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -6390,12 +6161,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("Done executing isPartitionMarkedForEvent");
       return (partEvents != null && !partEvents.isEmpty()) ? true : false;
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
   }
 
@@ -6449,7 +6215,6 @@ public class ObjectStore implements RawStore, Configurable {
   public Collection<?> executeJDOQLSelect(String queryStr, QueryWrapper queryWrapper) {
     boolean committed = false;
     Collection<?> result = null;
-
     try {
       openTransaction();
       Query query = queryWrapper.query = pm.newQuery(queryStr);
@@ -6490,12 +6255,7 @@ public class ObjectStore implements RawStore, Configurable {
         return -1;
       }
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -6525,12 +6285,7 @@ public class ObjectStore implements RawStore, Configurable {
         return null;
       }
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -6641,12 +6396,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       return retVal;
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -6734,12 +6484,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       return retVal;
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -6773,12 +6518,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       return retVal;
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -6869,12 +6609,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       return retVal;
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -6951,12 +6686,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       return retVal;
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -7163,7 +6893,6 @@ public class ObjectStore implements RawStore, Configurable {
   private List<MTableColumnStatistics> getMTableColumnStatistics(Table table, List<String> colNames, QueryWrapper queryWrapper)
       throws MetaException {
     boolean committed = false;
-
     try {
       openTransaction();
 
@@ -7485,12 +7214,7 @@ public class ObjectStore implements RawStore, Configurable {
       rollbackTransaction();
       throw e;
     } finally {
-      if (!ret) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(ret, query);
     }
     return ret;
   }
@@ -7560,12 +7284,7 @@ public class ObjectStore implements RawStore, Configurable {
       rollbackTransaction();
       throw e;
     } finally {
-      if (!ret) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(ret, query);
     }
     return ret;
   }
@@ -7587,12 +7306,7 @@ public class ObjectStore implements RawStore, Configurable {
       delCnt = query.deletePersistentAll(curTime, expiryTime);
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
       LOG.debug("Done executing cleanupEvents");
     }
     return delCnt;
@@ -7696,12 +7410,7 @@ public class ObjectStore implements RawStore, Configurable {
       return tokenIdents;
     } finally {
       LOG.debug("Done executing getAllTokenIdentifers with status : " + committed);
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -7744,12 +7453,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       committed = commitTransaction();
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
     LOG.debug("Done executing updateMasterKey with status : " + committed);
     if (null == masterKey) {
@@ -7777,12 +7481,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       success = commitTransaction();
     } finally {
-      if (!success) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(success, query);
     }
     LOG.debug("Done executing removeMasterKey with status : " + success);
     return (null != masterKey) && success;
@@ -7808,12 +7507,7 @@ public class ObjectStore implements RawStore, Configurable {
       return masterKeys;
     } finally {
       LOG.debug("Done executing getMasterKeys with status : " + committed);
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -7925,12 +7619,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       return mVerTables.get(0);
     } finally {
-      if (!committed) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(committed, query);
     }
   }
 
@@ -8156,12 +7845,7 @@ public class ObjectStore implements RawStore, Configurable {
       pm.retrieve(mfunc);
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return mfunc;
   }
@@ -8225,12 +7909,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return funcs;
   }
@@ -8261,11 +7940,8 @@ public class ObjectStore implements RawStore, Configurable {
       }
       return result;
     } finally {
-      if (query != null) {
-        query.closeAll();
-      }
       if (!commited) {
-        rollbackTransaction();
+        rollbackAndCleanup(commited, query);
         return null;
       }
     }
@@ -8295,12 +7971,7 @@ public class ObjectStore implements RawStore, Configurable {
       pm.makePersistent(translateThriftToDb(entry));
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
   }
 
@@ -8320,12 +7991,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
   }
 
@@ -8344,12 +8010,7 @@ public class ObjectStore implements RawStore, Configurable {
       commited = commitTransaction();
       return new CurrentNotificationEventId(id);
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
   }
 
@@ -8485,12 +8146,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return primaryKeys;
   }
@@ -8515,12 +8171,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
      } finally {
-       if (!commited) {
-        rollbackTransaction();
-       }
-       if (query != null) {
-        query.closeAll();
-       }
+        rollbackAndCleanup(commited, query);
      }
      return ret;
    }
@@ -8639,12 +8290,7 @@ public class ObjectStore implements RawStore, Configurable {
       }
       commited = commitTransaction();
     } finally {
-      if (!commited) {
-        rollbackTransaction();
-      }
-      if (query != null) {
-        query.closeAll();
-      }
+      rollbackAndCleanup(commited, query);
     }
     return foreignKeys;
   }
@@ -8672,4 +8318,43 @@ public class ObjectStore implements RawStore, Configurable {
     }
   }
 
+  /**
+   * This is a cleanup method which is used to rollback a active transaction
+   * if the success flag is false and close the associated Query object. This method is used
+   * internally and visible for testing purposes only
+   * @param success Rollback the current active transaction if false
+   * @param query Query object which needs to be closed
+   */
+  @VisibleForTesting
+  void rollbackAndCleanup(boolean success, Query query) {
+    try {
+      if(!success) {
+        rollbackTransaction();
+      }
+    } finally {
+      if (query != null) {
+        query.closeAll();
+      }
+    }
+  }
+
+  /**
+   * This is a cleanup method which is used to rollback a active transaction
+   * if the success flag is false and close the associated QueryWrapper object. This method is used
+   * internally and visible for testing purposes only
+   * @param success Rollback the current active transaction if false
+   * @param queryWrapper QueryWrapper object which needs to be closed
+   */
+  @VisibleForTesting
+  void rollbackAndCleanup(boolean success, QueryWrapper queryWrapper) {
+    try {
+      if(!success) {
+        rollbackTransaction();
+      }
+    } finally {
+      if (queryWrapper != null) {
+        queryWrapper.close();
+      }
+    }
+  }
 }
