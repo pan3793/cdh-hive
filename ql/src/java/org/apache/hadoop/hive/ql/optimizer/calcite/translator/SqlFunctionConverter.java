@@ -316,8 +316,8 @@ public class SqlFunctionConverter {
       registerFunction("+", SqlStdOperatorTable.PLUS, hToken(HiveParser.PLUS, "+"));
       registerFunction("-", SqlStdOperatorTable.MINUS, hToken(HiveParser.MINUS, "-"));
       registerFunction("*", SqlStdOperatorTable.MULTIPLY, hToken(HiveParser.STAR, "*"));
-      registerFunction("/", SqlStdOperatorTable.DIVIDE, hToken(HiveParser.STAR, "/"));
-      registerFunction("%", SqlStdOperatorTable.MOD, hToken(HiveParser.STAR, "%"));
+      registerFunction("/", SqlStdOperatorTable.DIVIDE, hToken(HiveParser.DIVIDE, "/"));
+      registerFunction("%", SqlStdOperatorTable.MOD, hToken(HiveParser.Identifier, "%"));
       registerFunction("and", SqlStdOperatorTable.AND, hToken(HiveParser.KW_AND, "and"));
       registerFunction("or", SqlStdOperatorTable.OR, hToken(HiveParser.KW_OR, "or"));
       registerFunction("=", SqlStdOperatorTable.EQUALS, hToken(HiveParser.EQUAL, "="));

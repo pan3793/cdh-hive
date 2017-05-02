@@ -358,10 +358,8 @@ POSTHOOK: type: QUERY
 LOGICAL PLAN:
 $hdt$_0:srcpart 
   TableScan (TS_0)
-    alias: src
-    properties:
-      insideView TRUE
-    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+    alias: srcpart
+    Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
     Filter Operator (FIL_15)
       predicate: key is not null (type: boolean)
       Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
@@ -398,10 +396,8 @@ $hdt$_0:srcpart
                     serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
 $hdt$_1:src 
   TableScan (TS_3)
-    alias: srcpart
-    properties:
-      insideView TRUE
-    Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+    alias: src
+    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
     Filter Operator (FIL_16)
       predicate: key is not null (type: boolean)
       Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
