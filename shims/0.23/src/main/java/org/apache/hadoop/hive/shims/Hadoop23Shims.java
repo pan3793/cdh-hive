@@ -1089,11 +1089,11 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
   @Override
   public boolean runDistCp(Path src, Path dst, Configuration conf) throws IOException {
-
-    DistCpOptions options = new DistCpOptions(Collections.singletonList(src), dst);
-    options.setSyncFolder(true);
-    options.setSkipCRC(true);
-    options.preserve(FileAttribute.BLOCKSIZE);
+    DistCpOptions options = new DistCpOptions.Builder(Collections.singletonList(src), dst)
+        .withSyncFolder(true)
+        .withCRC(true)
+        .preserve(FileAttribute.BLOCKSIZE)
+        .build();
 
     // Creates the command-line parameters for distcp
     String[] params = {"-update", "-skipcrccheck", src.toString(), dst.toString()};
