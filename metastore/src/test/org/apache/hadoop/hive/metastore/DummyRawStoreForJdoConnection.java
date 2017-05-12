@@ -879,6 +879,9 @@ public class DummyRawStoreForJdoConnection implements RawStore {
     throws InvalidObjectException, MetaException {
     // TODO Auto-generated method stub
   }
+
+  @Override
+  public String getMetastoreDbUuid() throws MetaException {
+    throw new MetaException("Get metastore uuid is not implemented");
+  }
 }
-
-

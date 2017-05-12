@@ -2551,4 +2551,9 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
     CacheFileMetadataResult result = client.cache_file_metadata(req);
     return result.isIsSupported();
   }
+
+  @Override
+  public String getMetastoreDbUuid() throws TException {
+    return client.get_metastore_db_uuid();
+  }
 }

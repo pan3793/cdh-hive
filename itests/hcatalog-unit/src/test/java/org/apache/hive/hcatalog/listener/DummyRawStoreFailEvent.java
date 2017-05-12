@@ -906,4 +906,9 @@ public class DummyRawStoreFailEvent implements RawStore, Configurable {
   public void addForeignKeys(List<SQLForeignKey> fks)
       throws InvalidObjectException, MetaException {
   }
+
+  @Override
+  public String getMetastoreDbUuid() throws MetaException {
+    throw new MetaException("getMetastoreDbUuid is not implemented");
+  }
 }

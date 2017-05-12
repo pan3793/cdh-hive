@@ -2722,4 +2722,9 @@ public class HBaseStore implements RawStore {
     throws InvalidObjectException, MetaException {
     // TODO: WTF?
   }
+
+  @Override
+  public String getMetastoreDbUuid() throws MetaException {
+    throw new MetaException("Get metastore DB uuid is not implemented");
+  }
 }
