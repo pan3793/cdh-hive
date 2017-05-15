@@ -64,7 +64,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.util.Shell;
-
 /**
  * Mimics the actual query compiler in generating end to end plans and testing
  * them out.
@@ -84,7 +83,7 @@ public class TestExecDriver extends TestCase {
 
   static {
     try {
-      queryState = new QueryState(new HiveConf(ExecDriver.class));
+      queryState = new QueryState.Builder().withHiveConf(new HiveConf(ExecDriver.class)).build();
       conf = queryState.getConf();
       conf.setBoolVar(HiveConf.ConfVars.SUBMITVIACHILD, true);
       conf.setBoolVar(HiveConf.ConfVars.SUBMITLOCALTASKVIACHILD, true);

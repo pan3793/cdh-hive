@@ -19,7 +19,6 @@ package org.apache.hive.service.cli.operation;
 
 import java.io.File;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +64,6 @@ public abstract class Operation {
   protected volatile Future<?> backgroundHandle;
   protected OperationLog operationLog;
   protected boolean isOperationLogEnabled;
-  protected Map<String, String> confOverlay = new HashMap<String, String>();
 
   private long operationTimeout;
   private volatile long lastAccessTime;
@@ -92,9 +90,6 @@ public abstract class Operation {
   protected Operation(HiveSession parentSession,
       Map<String, String> confOverlay, OperationType opType, boolean isAsyncQueryState) {
     this.parentSession = parentSession;
-    if (confOverlay != null) {
-      this.confOverlay = confOverlay;
-    }
     this.opHandle = new OperationHandle(opType, parentSession.getProtocolVersion());
     beginTime = System.currentTimeMillis();
     lastAccessTime = beginTime;
@@ -103,7 +98,12 @@ public abstract class Operation {
 
     currentStateScope = updateOperationStateMetrics(null, MetricsConstant.OPERATION_PREFIX,
         MetricsConstant.COMPLETED_OPERATION_PREFIX, state);
-    queryState = new QueryState(parentSession.getHiveConf(), confOverlay, isAsyncQueryState);
+    queryState = new QueryState.Builder()
+                     .withConfOverlay(confOverlay)
+                     .withRunAsync(isAsyncQueryState)
+                     .withGenerateNewQueryId(true)
+                     .withHiveConf(parentSession.getHiveConf())
+                     .build();
   }
 
   public Future<?> getBackgroundHandle() {

@@ -220,7 +220,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
 
   @Before
   public void setup() {
-    queryState = new QueryState(null);
+    queryState = new QueryState.Builder().build();
     conf = queryState.getConf();
     conf
     .setVar(HiveConf.ConfVars.HIVE_AUTHORIZATION_MANAGER,

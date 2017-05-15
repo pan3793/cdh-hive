@@ -30,7 +30,6 @@ import org.apache.hadoop.hive.ql.session.LineageState;
  * The class to store query level info such as queryId. Multiple queries can run
  * in the same session, so SessionState is to hold common session related info, and
  * each QueryState is to hold query related info.
- *
  */
 public class QueryState {
   /**
@@ -52,6 +51,7 @@ public class QueryState {
    */
   private long numModifiedRows = 0;
 
+  //TODO remove these QueryState constructors once CDH-69019 is committed
   public QueryState(HiveConf conf) {
     this(conf, null, false);
   }
@@ -104,6 +104,13 @@ public class QueryState {
     conf.setVar(HiveConf.ConfVars.HIVEQUERYID, QueryPlan.makeQueryId());
     return conf;
   }
+  //TODO : end remove for CDH-69019
+  //TODO Uncomment this constructor after CDH-69019 is committed
+  /*
+  private QueryState(HiveConf conf) {
+    this.queryConf = conf;
+  }
+  */
 
   public String getQueryId() {
     return (queryConf.getVar(HiveConf.ConfVars.HIVEQUERYID));
@@ -146,5 +153,121 @@ public class QueryState {
 
   public void setNumModifiedRows(long numModifiedRows) {
     this.numModifiedRows = numModifiedRows;
+  }
+
+  /**
+   * Builder to instantiate the QueryState object.
+   */
+  public static class Builder {
+    private Map<String, String> confOverlay = null;
+    private boolean runAsync = false;
+    private boolean generateNewQueryId = false;
+    private HiveConf hiveConf = null;
+    private LineageState lineageState = null;
+
+    /**
+     * Default constructor - use this builder to create a QueryState object
+     */
+    public Builder() {
+    }
+
+    /**
+     * Set this to true if the configuration should be detached from the original config. If not
+     * set the default value is false.
+     * @param runAsync If the configuration should be detached
+     * @return The builder
+     */
+    public Builder withRunAsync(boolean runAsync) {
+      this.runAsync = runAsync;
+      return this;
+    }
+
+    /**
+     * Set this if there are specific configuration values which should be added to the original
+     * config. If at least one value is set, then the configuration will be detached from the
+     * original one.
+     * @param confOverlay The query specific parameters
+     * @return The builder
+     */
+    public Builder withConfOverlay(Map<String, String> confOverlay) {
+      this.confOverlay = confOverlay;
+      return this;
+    }
+
+    /**
+     * Set this to true if new queryId should be generated, otherwise the original one will be kept.
+     * If not set the default value is false.
+     * @param generateNewQueryId If new queryId should be generated
+     * @return The builder
+     */
+    public Builder withGenerateNewQueryId(boolean generateNewQueryId) {
+      this.generateNewQueryId = generateNewQueryId;
+      return this;
+    }
+
+    /**
+     * The source HiveConf object used to create the QueryState. If runAsync is false, and the
+     * confOverLay is empty then we will reuse the hiveConf object as a backing datastore for the
+     * QueryState. We will create a clone of the hiveConf object otherwise.
+     * @param hiveConf The source HiveConf
+     * @return The builder
+     */
+    public Builder withHiveConf(HiveConf hiveConf) {
+      this.hiveConf = hiveConf;
+      return this;
+    }
+
+    /**
+     * add a LineageState that will be set in the built QueryState
+     * @param lineageState the source lineageState
+     * @return the builder
+     */
+    public Builder withLineageState(LineageState lineageState) {
+      this.lineageState = lineageState;
+      return this;
+    }
+
+    /**
+     * Creates the QueryState object. The default values are:
+     * - runAsync false
+     * - confOverlay null
+     * - generateNewQueryId false
+     * - hiveConf null
+     * @return The generated QueryState object
+     */
+    public QueryState build() {
+      HiveConf queryConf = hiveConf;
+
+      if (queryConf == null) {
+        // Generate a new conf if necessary
+        queryConf = new HiveConf();
+      } else if (runAsync || (confOverlay != null && !confOverlay.isEmpty())) {
+        // Detach the original conf if necessary
+        queryConf = new HiveConf(queryConf);
+      }
+
+      // Set the specific parameters if needed
+      if (confOverlay != null && !confOverlay.isEmpty()) {
+        // apply overlay query specific settings, if any
+        for (Map.Entry<String, String> confEntry : confOverlay.entrySet()) {
+          try {
+            queryConf.verifyAndSet(confEntry.getKey(), confEntry.getValue());
+          } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error applying statement specific settings", e);
+          }
+        }
+      }
+
+      // Generate the new queryId if needed
+      if (generateNewQueryId) {
+        queryConf.setVar(HiveConf.ConfVars.HIVEQUERYID, QueryPlan.makeQueryId());
+      }
+
+      QueryState queryState = new QueryState(queryConf);
+      if (lineageState != null) {
+        queryState.setLineageState(lineageState);
+      }
+      return queryState;
+    }
   }
 }

@@ -48,7 +48,7 @@ public class DriverFactory {
 
   private static QueryState getNewQueryState(HiveConf conf) {
     // FIXME: isolate hiveConf used for a single query
-    return new QueryState(conf);
+    return new QueryState.Builder().withGenerateNewQueryId(true).withHiveConf(conf).build();
   }
 
   // FIXME: remove this method ; and use the conf at the callsite...

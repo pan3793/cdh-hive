@@ -567,7 +567,7 @@ public class QTestUtil {
       System.out.println("Setting hive-site: "+HiveConf.getHiveSiteLocation());
     }
 
-    queryState = new QueryState(new HiveConf(IDriver.class));
+    queryState = new QueryState.Builder().withHiveConf(new HiveConf(IDriver.class)).build();
     if (useHBaseMetastore) {
       startMiniHBaseCluster();
     } else {
@@ -1906,7 +1906,7 @@ public class QTestUtil {
   public void resetParser() throws SemanticException {
     drv.init();
     pd = new ParseDriver();
-    queryState = new QueryState(conf);
+    queryState = new QueryState.Builder().withHiveConf(conf).build();
     sem = new SemanticAnalyzer(queryState);
   }
 

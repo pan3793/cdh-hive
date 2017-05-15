@@ -187,8 +187,9 @@ public final class QFile {
    */
   private String revertReplaceTableNames(String source) {
     for (String table : srcTables) {
-      source = source.replaceAll("(?is)(?<!name:?|alias:?)(\\s+)default\\.(" + table
-          + ")([\\s;\\n\\),])", "$1$2$3");
+      source = source
+          .replaceAll("(?is)(?<!name:?|alias:?)(\\s+)default\\.(" + table + ")([\\s;\\n\\),])",
+              "$1$2$3");
     }
     return source;
   }
