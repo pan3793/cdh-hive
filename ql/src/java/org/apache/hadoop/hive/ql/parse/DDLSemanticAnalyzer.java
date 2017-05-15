@@ -3008,6 +3008,44 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   /**
+   * Check if MSCK is called to add partitions.
+   *
+   * @param keyWord
+   *   could be ADD, DROP or SYNC.  ADD or SYNC will indicate that add partition is on.
+   *
+   * @return true if add is on; false otherwise
+   */
+  private static boolean isMsckAddPartition(int keyWord) {
+    switch (keyWord) {
+    case HiveParser.KW_DROP:
+      return false;
+    case HiveParser.KW_SYNC:
+    case HiveParser.KW_ADD:
+    default:
+      return true;
+    }
+  }
+
+  /**
+   * Check if MSCK is called to drop partitions.
+   *
+   * @param keyWord
+   *   could be ADD, DROP or SYNC.  DROP or SYNC will indicate that drop partition is on.
+   *
+   * @return true if drop is on; false otherwise
+   */
+  private static boolean isMsckDropPartition(int keyWord) {
+    switch (keyWord) {
+    case HiveParser.KW_DROP:
+    case HiveParser.KW_SYNC:
+      return true;
+    case HiveParser.KW_ADD:
+    default:
+      return false;
+    }
+  }
+
+  /**
    * Verify that the information in the metastore matches up with the data on
    * the fs.
    *
@@ -3017,18 +3055,32 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
    */
   private void analyzeMetastoreCheck(CommonTree ast) throws SemanticException {
     String tableName = null;
+
+    boolean addPartitions = true;
+    boolean dropPartitions = false;
+
     boolean repair = false;
     if (ast.getChildCount() > 0) {
       repair = ast.getChild(0).getType() == HiveParser.KW_REPAIR;
       if (!repair) {
         tableName = getUnescapedName((ASTNode) ast.getChild(0));
+
+        if (ast.getChildCount() > 1) {
+          addPartitions = isMsckAddPartition(ast.getChild(1).getType());
+          dropPartitions = isMsckDropPartition(ast.getChild(1).getType());
+        }
       } else if (ast.getChildCount() > 1) {
         tableName = getUnescapedName((ASTNode) ast.getChild(1));
+
+        if (ast.getChildCount() > 2) {
+          addPartitions = isMsckAddPartition(ast.getChild(2).getType());
+          dropPartitions = isMsckDropPartition(ast.getChild(2).getType());
+        }
       }
     }
     List<Map<String, String>> specs = getPartitionSpecs(getTable(tableName), ast);
     MsckDesc checkDesc = new MsckDesc(tableName, specs, ctx.getResFile(),
-        repair);
+        repair, addPartitions, dropPartitions);
     rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
         checkDesc), conf));
   }
@@ -3148,11 +3200,12 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     return result;
   }
 
-  private static ExprNodeGenericFuncDesc makeBinaryPredicate(
+  public static ExprNodeGenericFuncDesc makeBinaryPredicate(
       String fn, ExprNodeDesc left, ExprNodeDesc right) throws SemanticException {
       return new ExprNodeGenericFuncDesc(TypeInfoFactory.booleanTypeInfo,
           FunctionRegistry.getFunctionInfo(fn).getGenericUDF(), Lists.newArrayList(left, right));
   }
+  
   public static ExprNodeGenericFuncDesc makeUnaryPredicate(
       String fn, ExprNodeDesc arg) throws SemanticException {
       return new ExprNodeGenericFuncDesc(TypeInfoFactory.booleanTypeInfo,

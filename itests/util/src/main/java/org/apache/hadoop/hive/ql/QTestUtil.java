@@ -663,7 +663,9 @@ public class QTestUtil {
         "fk_-?[0-9]*_[0-9]*_[0-9]*",
         ".*at com\\.sun\\.proxy.*",
         ".*at com\\.jolbox.*",
-        "org\\.apache\\.hadoop\\.hive\\.metastore\\.model\\.MConstraint@([0-9]|[a-z])*");
+        "org\\.apache\\.hadoop\\.hive\\.metastore\\.model\\.MConstraint@([0-9]|[a-z])*",
+        "^Repair: Added partition to metastore.*",
+        "^Repair: Dropped partition from metastore.*");
     planMasks.addAll(additionalPlanMasks);
     return toPattern(planMasks.toArray(new String[]{}));
   }
