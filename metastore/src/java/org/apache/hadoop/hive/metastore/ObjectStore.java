@@ -6034,6 +6034,8 @@ public class ObjectStore implements RawStore, Configurable {
   public List<HiveObjectPrivilege> listTableGrantsAll(String dbName, String tableName) {
     boolean success = false;
     Query query = null;
+    dbName = HiveStringUtils.normalizeIdentifier(dbName);
+    tableName = HiveStringUtils.normalizeIdentifier(tableName);
     try {
       openTransaction();
       LOG.debug("Executing listTableGrantsAll");
@@ -6254,6 +6256,8 @@ public class ObjectStore implements RawStore, Configurable {
       String columnName) {
     boolean success = false;
     Query query = null;
+    dbName = HiveStringUtils.normalizeIdentifier(dbName);
+    tableName = HiveStringUtils.normalizeIdentifier(tableName);
     try {
       openTransaction();
       LOG.debug("Executing listPrincipalTableColumnGrantsAll");
