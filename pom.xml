@@ -173,7 +173,7 @@
     <mina.version>2.0.0-M5</mina.version>
     <spark.netty.version>4.0.29.Final</spark.netty.version>
     <netty.version>4.1.1.Final</netty.version>
-    <parquet.version>1.8.1</parquet.version>
+    <parquet.version>${cdh.apache-parquet.version}</parquet.version>
     <pig.version>${cdh.pig.version}</pig.version>
     <protobuf.version>2.5.0</protobuf.version>
     <stax.version>1.0.1</stax.version>
