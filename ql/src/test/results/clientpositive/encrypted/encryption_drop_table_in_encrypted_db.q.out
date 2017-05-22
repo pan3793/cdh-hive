@@ -6,9 +6,12 @@ PREHOOK: query: DROP DATABASE IF EXISTS encrypted_db
 PREHOOK: type: DROPDATABASE
 POSTHOOK: query: DROP DATABASE IF EXISTS encrypted_db
 POSTHOOK: type: DROPDATABASE
+PREHOOK: query: -- create database encrypted_db in its default warehouse location {hiveconf:hive.metastore.warehouse.dir}/encrypted_db.db
 #### A masked pattern was here ####
 PREHOOK: type: CREATEDATABASE
 PREHOOK: Output: database:encrypted_db
+#### A masked pattern was here ####
+POSTHOOK: query: -- create database encrypted_db in its default warehouse location {hiveconf:hive.metastore.warehouse.dir}/encrypted_db.db
 #### A masked pattern was here ####
 POSTHOOK: type: CREATEDATABASE
 POSTHOOK: Output: database:encrypted_db
