@@ -35,7 +35,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaException;
+import org.apache.hadoop.hive.metastore.IMetaStoreSchemaInfo;
 import org.apache.hadoop.hive.metastore.MetaStoreSchemaInfo;
+import org.apache.hadoop.hive.metastore.MetaStoreSchemaInfoFactory;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.beeline.HiveSchemaHelper.NestedScriptParser;
 import org.apache.hive.beeline.HiveSchemaHelper.PostgresCommandParser;
@@ -124,13 +126,13 @@ public class TestSchemaTool extends TestCase {
    * @throws Exception
    */
   public void testValidateSchemaTables() throws Exception {
-    schemaTool.doInit("2.0.0");
+    schemaTool.doInit("0.12.0");
 
     boolean isValid = (boolean)schemaTool.validateSchemaTables(conn);
     assertTrue(isValid);
 
     // upgrade to 2.2.0 schema and re-validate
-    schemaTool.doUpgrade("2.2.0");
+    schemaTool.doUpgrade("0.12.0");
     isValid = (boolean)schemaTool.validateSchemaTables(conn);
     assertTrue(isValid);
 
@@ -223,7 +225,9 @@ public class TestSchemaTool extends TestCase {
    * @throws Exception
    */
   public void testSchemaInit() throws Exception {
-    schemaTool.doInit(MetaStoreSchemaInfo.getHiveSchemaVersion());
+    IMetaStoreSchemaInfo metastoreSchemaInfo = MetaStoreSchemaInfoFactory.get(hiveConf,
+        System.getProperty("test.tmp.dir", "target/tmp"), "derby");
+    schemaTool.doInit(metastoreSchemaInfo.getHiveSchemaVersion());
     schemaTool.verifySchemaVersion();
   }
 
@@ -669,7 +673,7 @@ public class TestSchemaTool extends TestCase {
   }
 
   public void testHiveMetastoreDbPropertiesTable() throws HiveMetaException, IOException {
-    schemaTool.doInit("3.0.0");
+    schemaTool.doInit("2.1.0");
     validateMetastoreDbPropertiesTable();
   }
 
