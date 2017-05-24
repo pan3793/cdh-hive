@@ -155,7 +155,7 @@
     <javax-servlet.version>3.1.0</javax-servlet.version>
     <javolution.version>5.5.1</javolution.version>
     <jdo-api.version>3.0.1</jdo-api.version>
-    <jetty.version>9.3.8.v20160314</jetty.version>
+    <jetty.version>${cdh.jetty9.version}</jetty.version>
     <jersey.version>1.14</jersey.version>
     <!-- Glassfish jersey is included for Spark client test only -->
     <glassfish.jersey.version>2.22.2</glassfish.jersey.version>
