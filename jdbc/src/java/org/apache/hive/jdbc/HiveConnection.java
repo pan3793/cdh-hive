@@ -18,6 +18,7 @@
 
 package org.apache.hive.jdbc;
 
+import org.apache.http.conn_452.ssl.DefaultHostnameVerifier;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -331,7 +332,7 @@ public class HiveConnection implements java.sql.Connection {
               sslTrustStorePassword.toCharArray());
           socketFactory = new SSLSocketFactory(sslTrustStore);
         }
-        socketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        socketFactory.setHostnameVerifier(new DefaultHostnameVerifier());
         Scheme sslScheme = new Scheme("https", 443, socketFactory);
         httpClient.getConnectionManager().getSchemeRegistry().register(sslScheme);
       }
