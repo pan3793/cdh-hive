@@ -80,8 +80,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
  */
 public class TaskExecutorService extends AbstractService implements Scheduler<TaskRunnerCallable> {
   private static final Logger LOG = LoggerFactory.getLogger(TaskExecutorService.class);
-  private static final boolean isInfoEnabled = LOG.isInfoEnabled();
-  private static final boolean isDebugEnabled = LOG.isDebugEnabled();
   private static final String TASK_EXECUTOR_THREAD_NAME_FORMAT = "Task-Executor-%d";
   private static final String WAIT_QUEUE_SCHEDULER_THREAD_NAME_FORMAT = "Wait-Queue-Scheduler-%d";
 
@@ -250,7 +248,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
             // if the task cannot finish and if no slots are available then don't schedule it.
             boolean shouldWait = false;
             if (task.getTaskRunnerCallable().canFinish()) {
-              if (isDebugEnabled) {
+              if (LOG.isDebugEnabled()) {
                 LOG.debug(
                     "Attempting to schedule task {}, canFinish={}. Current state: preemptionQueueSize={}, numSlotsAvailable={}, waitQueueSize={}",
                     task.getRequestId(), task.getTaskRunnerCallable().canFinish(),
@@ -353,25 +351,25 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
       if (evictedTask == null || evictedTask != taskWrapper) {
         knownTasks.put(taskWrapper.getRequestId(), taskWrapper);
         taskWrapper.setIsInWaitQueue(true);
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           LOG.debug("{} added to wait queue. Current wait queue size={}", task.getRequestId(),
               waitQueue.size());
         }
 
         result = evictedTask == null ? SubmissionState.ACCEPTED : SubmissionState.EVICTED_OTHER;
 
-        if (isDebugEnabled && evictedTask != null) {
+        if (LOG.isDebugEnabled() && evictedTask != null) {
           LOG.debug("Eviction: {} {} {}", taskWrapper, result, evictedTask);
         }
       } else {
-        if (isInfoEnabled) {
+        if (LOG.isInfoEnabled()) {
           LOG.info("wait queue full, size={}. {} not added", waitQueue.size(), task.getRequestId());
         }
         evictedTask.getTaskRunnerCallable().killTask();
 
         result = SubmissionState.REJECTED;
 
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           LOG.debug("{} is {} as wait queue is full", taskWrapper.getRequestId(), result);
         }
         if (metrics != null) {
@@ -389,14 +387,14 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
     // if the fragment moves in or out of the finishable state.
     boolean stateChanged = taskWrapper.maybeRegisterForFinishedStateNotifications(canFinish);
     if (stateChanged) {
-      if (isDebugEnabled) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug("Finishable state of {} updated to {} during registration for state updates",
             taskWrapper.getRequestId(), !canFinish);
       }
       finishableStateUpdated(taskWrapper, !canFinish);
     }
 
-    if (isDebugEnabled) {
+    if (LOG.isDebugEnabled()) {
       LOG.debug("Wait Queue: {}", waitQueue);
     }
     if (evictedTask != null) {
@@ -404,7 +402,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
       evictedTask.maybeUnregisterForFinishedStateNotifications();
       evictedTask.setIsInWaitQueue(false);
       evictedTask.getTaskRunnerCallable().killTask();
-      if (isInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("{} evicted from wait queue in favor of {} because of lower priority",
             evictedTask.getRequestId(), task.getRequestId());
       }
@@ -438,7 +436,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
       // Can be null since the task may have completed meanwhile.
       if (taskWrapper != null) {
         if (taskWrapper.isInWaitQueue()) {
-          if (isDebugEnabled) {
+          if (LOG.isDebugEnabled()) {
             LOG.debug("Removing {} from waitQueue", fragmentId);
           }
           taskWrapper.setIsInWaitQueue(false);
@@ -449,7 +447,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
           }
         }
         if (taskWrapper.isInPreemptionQueue()) {
-          if (isDebugEnabled) {
+          if (LOG.isDebugEnabled()) {
             LOG.debug("Removing {} from preemptionQueue", fragmentId);
           }
           removeFromPreemptionQueue(taskWrapper);
@@ -477,7 +475,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
         // is actually available for execution and will not potentially result in a RejectedExecution
         Futures.addCallback(future, wrappedCallback, executionCompletionExecutorService);
 
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           LOG.debug("{} scheduled for execution. canFinish={}",
               taskWrapper.getRequestId(), canFinish);
         }
@@ -486,7 +484,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
         // to the tasks are not ready yet, the task is eligible for pre-emptable.
         if (enablePreemption) {
           if (!canFinish) {
-            if (isInfoEnabled) {
+            if (LOG.isInfoEnabled()) {
               LOG.info("{} is not finishable. Adding it to pre-emption queue",
                   taskWrapper.getRequestId());
             }
@@ -504,7 +502,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
     if (enablePreemption && taskWrapper.getTaskRunnerCallable().canFinish()
         && !preemptionQueue.isEmpty()) {
 
-      if (isDebugEnabled) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug("Preemption Queue: " + preemptionQueue);
       }
 
@@ -517,7 +515,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
               "Removed {} from preemption queue, but not preempting since it's now finishable",
               pRequest.getRequestId());
         } else {
-          if (isInfoEnabled) {
+          if (LOG.isInfoEnabled()) {
             LOG.info("Invoking kill task for {} due to pre-emption to run {}",
                 pRequest.getRequestId(), taskWrapper.getRequestId());
           }
@@ -664,7 +662,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
       if (enablePreemption) {
         String state = reason == null ? "FAILED" : reason.name();
         boolean removed = removeFromPreemptionQueueUnlocked(taskWrapper);
-        if (removed && isInfoEnabled) {
+        if (removed && LOG.isInfoEnabled()) {
           TaskRunnerCallable trc = taskWrapper.getTaskRunnerCallable();
           LOG.info(TaskRunnerCallable.getTaskIdentifierString(trc.getRequest(),
               trc.getVertexSpec()) + " request " + state + "! Removed from preemption list.");
@@ -675,7 +673,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
       if (metrics != null) {
         metrics.setNumExecutorsAvailable(numSlotsAvailable.get());
       }
-      if (isDebugEnabled) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug("Task {} complete. WaitQueueSize={}, numSlotsAvailable={}, preemptionQueueSize={}",
           taskWrapper.getRequestId(), waitQueue.size(), numSlotsAvailable.get(),
           preemptionQueue.size());
@@ -692,7 +690,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
   public void shutDown(boolean awaitTermination) {
     if (!isShutdown.getAndSet(true)) {
       if (awaitTermination) {
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           LOG.debug("awaitTermination: " + awaitTermination + " shutting down task executor" +
               " service gracefully");
         }
@@ -700,7 +698,7 @@ public class TaskExecutorService extends AbstractService implements Scheduler<Ta
         shutdownExecutor(executorService);
         shutdownExecutor(executionCompletionExecutorService);
       } else {
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           LOG.debug("awaitTermination: " + awaitTermination + " shutting down task executor" +
               " service immediately");
         }

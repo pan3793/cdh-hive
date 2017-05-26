@@ -522,7 +522,7 @@ public abstract class VectorMapJoinGenerateResultOperator extends VectorMapJoinC
     needHashTableSetup = true;
     LOG.info("Created " + vectorMapJoinHashTable.getClass().getSimpleName() + " from " + this.getClass().getSimpleName());
 
-    if (isLogDebugEnabled) {
+    if (LOG.isDebugEnabled()) {
       LOG.debug(CLASS_NAME + " reloadHashTable!");
     }
   }
@@ -531,7 +531,7 @@ public abstract class VectorMapJoinGenerateResultOperator extends VectorMapJoinC
   protected void reProcessBigTable(int partitionId)
       throws HiveException {
 
-    if (isLogDebugEnabled) {
+    if (LOG.isDebugEnabled()) {
       LOG.debug(CLASS_NAME + " reProcessBigTable enter...");
     }
 
@@ -585,7 +585,7 @@ public abstract class VectorMapJoinGenerateResultOperator extends VectorMapJoinC
       throw new HiveException(e);
     }
 
-    if (isLogDebugEnabled) {
+    if (LOG.isDebugEnabled()) {
       LOG.debug(CLASS_NAME + " reProcessBigTable exit! " + rowCount + " row processed and " + batchCount + " batches processed");
     }
   }
@@ -649,7 +649,7 @@ public abstract class VectorMapJoinGenerateResultOperator extends VectorMapJoinC
     if (!aborted && overflowBatch.size > 0) {
       forwardOverflow();
     }
-    if (isLogDebugEnabled) {
+    if (LOG.isDebugEnabled()) {
       LOG.debug("VectorMapJoinInnerLongOperator closeOp " + batchCounter + " batches processed");
     }
   }

@@ -65,7 +65,7 @@ public class HostAffinitySplitLocationProvider implements SplitLocationProvider 
       }
       return new String[]{knownLocations[index]};
     } else {
-      if (isDebugEnabled) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug("Split: " + split + " is not a FileSplit. Using default locations");
       }
       return split.getLocations();

@@ -173,7 +173,7 @@ public class MapJoinOperator extends AbstractMapJoinOperator<MapJoinDesc> implem
        * requires changes in the Tez API with regard to finding bucket id and
        * also ability to schedule tasks to re-use containers that have cached the specific bucket.
        */
-      if (isLogDebugEnabled) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug("This is not bucket map join, so cache");
       }
 
@@ -314,7 +314,7 @@ public class MapJoinOperator extends AbstractMapJoinOperator<MapJoinDesc> implem
     try {
       loader.load(mapJoinTables, mapJoinTableSerdes);
     } catch (HiveException e) {
-      if (isLogInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("Exception loading hash tables. Clearing partially loaded hash table containers.");
       }
 
@@ -554,7 +554,7 @@ public class MapJoinOperator extends AbstractMapJoinOperator<MapJoinDesc> implem
         }
       }
 
-      if (isLogInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("spilled: " + spilled + " abort: " + abort + ". Clearing spilled partitions.");
       }
 
@@ -568,7 +568,7 @@ public class MapJoinOperator extends AbstractMapJoinOperator<MapJoinDesc> implem
         && (this.getExecContext().getLocalWork().getInputFileChangeSensitive())
         && !(HiveConf.getVar(hconf, ConfVars.HIVE_EXECUTION_ENGINE).equals("spark")
             && SparkUtilities.isDedicatedCluster(hconf))) {
-      if (isLogInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("MR: Clearing all map join table containers.");
       }
       clearAllTableContainers();

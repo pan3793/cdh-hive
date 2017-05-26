@@ -60,9 +60,6 @@ public abstract class RecordProcessor  {
 
   protected volatile boolean abort = false;
 
-  // used to log memory usage periodically
-  protected boolean isLogInfoEnabled = false;
-  protected boolean isLogTraceEnabled = false;
   protected MRTaskReporter reporter;
 
   protected PerfLogger perfLogger = SessionState.getPerfLogger();
@@ -85,9 +82,6 @@ public abstract class RecordProcessor  {
     this.reporter = mrReporter;
     this.inputs = inputs;
     this.outputs = outputs;
-
-    isLogInfoEnabled = l4j.isInfoEnabled();
-    isLogTraceEnabled = l4j.isTraceEnabled();
 
     checkAbortCondition();
 

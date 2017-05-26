@@ -99,8 +99,6 @@ import com.google.common.collect.Sets;
 public class StatsRulesProcFactory {
 
   private static final Logger LOG = LoggerFactory.getLogger(StatsRulesProcFactory.class.getName());
-  private static final boolean isDebugEnabled = LOG.isDebugEnabled();
-
 
   /**
    * Collect basic statistics like number of rows, data size and column level statistics from the
@@ -126,7 +124,7 @@ public class StatsRulesProcFactory {
         Statistics stats = StatsUtils.collectStatistics(aspCtx.getConf(), partList, table, tsop);
         tsop.setStatistics(stats.clone());
 
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           LOG.debug("[0] STATS-" + tsop.toString() + " (" + table.getTableName() + "): " +
               stats.extendedToString());
         }
@@ -190,14 +188,14 @@ public class StatsRulesProcFactory {
           }
           sop.setStatistics(stats);
 
-          if (isDebugEnabled) {
+          if (LOG.isDebugEnabled()) {
             LOG.debug("[0] STATS-" + sop.toString() + ": " + stats.extendedToString());
           }
         } else {
           if (parentStats != null) {
             sop.setStatistics(parentStats.clone());
 
-            if (isDebugEnabled) {
+            if (LOG.isDebugEnabled()) {
               LOG.debug("[1] STATS-" + sop.toString() + ": " + parentStats.extendedToString());
             }
           }
@@ -287,7 +285,7 @@ public class StatsRulesProcFactory {
               updateStats(st, newNumRows, true, fop);
             }
 
-            if (isDebugEnabled) {
+            if (LOG.isDebugEnabled()) {
               LOG.debug("[0] STATS-" + fop.toString() + ": " + st.extendedToString());
             }
           } else {
@@ -297,7 +295,7 @@ public class StatsRulesProcFactory {
               updateStats(st, newNumRows, false, fop);
             }
 
-            if (isDebugEnabled) {
+            if (LOG.isDebugEnabled()) {
               LOG.debug("[1] STATS-" + fop.toString() + ": " + st.extendedToString());
             }
           }
@@ -992,7 +990,7 @@ public class StatsRulesProcFactory {
         parallelism = (int) Math.ceil((double) inputSize / maxSplitSize);
       }
 
-      if (isDebugEnabled) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug("STATS-" + gop.toString() + ": inputSize: " + inputSize + " maxSplitSize: " +
             maxSplitSize + " parallelism: " + parallelism + " containsGroupingSet: " +
             containsGroupingSet + " sizeOfGroupingSet: " + sizeOfGroupingSet);
@@ -1005,7 +1003,7 @@ public class StatsRulesProcFactory {
           // check if map side aggregation is possible or not based on column stats
           hashAgg = checkMapSideAggregation(gop, colStats, conf);
 
-          if (isDebugEnabled) {
+          if (LOG.isDebugEnabled()) {
             LOG.debug("STATS-" + gop.toString() + " hashAgg: " + hashAgg);
           }
 
@@ -1044,7 +1042,7 @@ public class StatsRulesProcFactory {
           if (ndvProduct == 0) {
             ndvProduct = parentNumRows / 2;
 
-            if (isDebugEnabled) {
+            if (LOG.isDebugEnabled()) {
               LOG.debug("STATS-" + gop.toString() + ": ndvProduct became 0 as some column does not" +
                   " have stats. ndvProduct changed to: " + ndvProduct);
             }
@@ -1059,14 +1057,14 @@ public class StatsRulesProcFactory {
                     (StatsUtils.safeMult(parentNumRows, sizeOfGroupingSet)) / 2,
                     StatsUtils.safeMult(StatsUtils.safeMult(ndvProduct, parallelism), sizeOfGroupingSet));
 
-                if (isDebugEnabled) {
+                if (LOG.isDebugEnabled()) {
                   LOG.debug("[Case 4] STATS-" + gop.toString() + ": cardinality: " + cardinality);
                 }
               } else {
                 // Case 3: column stats, hash aggregation, NO grouping sets
                 cardinality = Math.min(parentNumRows / 2, StatsUtils.safeMult(ndvProduct, parallelism));
 
-                if (isDebugEnabled) {
+                if (LOG.isDebugEnabled()) {
                   LOG.debug("[Case 3] STATS-" + gop.toString() + ": cardinality: " + cardinality);
                 }
               }
@@ -1075,14 +1073,14 @@ public class StatsRulesProcFactory {
                 // Case 6: column stats, NO hash aggregation, grouping sets
                 cardinality = StatsUtils.safeMult(parentNumRows, sizeOfGroupingSet);
 
-                if (isDebugEnabled) {
+                if (LOG.isDebugEnabled()) {
                   LOG.debug("[Case 6] STATS-" + gop.toString() + ": cardinality: " + cardinality);
                 }
               } else {
                 // Case 5: column stats, NO hash aggregation, NO grouping sets
                 cardinality = parentNumRows;
 
-                if (isDebugEnabled) {
+                if (LOG.isDebugEnabled()) {
                   LOG.debug("[Case 5] STATS-" + gop.toString() + ": cardinality: " + cardinality);
                 }
               }
@@ -1101,14 +1099,14 @@ public class StatsRulesProcFactory {
               sizeOfGroupingSet = mGop.getConf().getListGroupingSets().size();
               cardinality = Math.min(parentNumRows, StatsUtils.safeMult(ndvProduct, sizeOfGroupingSet));
 
-              if (isDebugEnabled) {
+              if (LOG.isDebugEnabled()) {
                 LOG.debug("[Case 8] STATS-" + gop.toString() + ": cardinality: " + cardinality);
               }
             } else {
               // Case 9: column stats, NO grouping sets
               cardinality = Math.min(parentNumRows, ndvProduct);
 
-              if (isDebugEnabled) {
+              if (LOG.isDebugEnabled()) {
                 LOG.debug("[Case 9] STATS-" + gop.toString() + ": cardinality: " + cardinality);
               }
             }
@@ -1131,14 +1129,14 @@ public class StatsRulesProcFactory {
                 // Case 2: NO column stats, NO hash aggregation, grouping sets
                 cardinality = StatsUtils.safeMult(parentNumRows, sizeOfGroupingSet);
 
-                if (isDebugEnabled) {
+                if (LOG.isDebugEnabled()) {
                   LOG.debug("[Case 2] STATS-" + gop.toString() + ": cardinality: " + cardinality);
                 }
               } else {
                 // Case 1: NO column stats, NO hash aggregation, NO grouping sets
                 cardinality = parentNumRows;
 
-                if (isDebugEnabled) {
+                if (LOG.isDebugEnabled()) {
                   LOG.debug("[Case 1] STATS-" + gop.toString() + ": cardinality: " + cardinality);
                 }
               }
@@ -1147,7 +1145,7 @@ public class StatsRulesProcFactory {
               // Case 7: NO column stats
               cardinality = parentNumRows / 2;
 
-              if (isDebugEnabled) {
+              if (LOG.isDebugEnabled()) {
                 LOG.debug("[Case 7] STATS-" + gop.toString() + ": cardinality: " + cardinality);
               }
             }
@@ -1198,7 +1196,7 @@ public class StatsRulesProcFactory {
 
         gop.setStatistics(stats);
 
-        if (isDebugEnabled && stats != null) {
+        if (LOG.isDebugEnabled() && stats != null) {
           LOG.debug("[0] STATS-" + gop.toString() + ": " + stats.extendedToString());
         }
       } catch (CloneNotSupportedException e) {
@@ -1476,7 +1474,7 @@ public class StatsRulesProcFactory {
         updateColStats(conf, stats, newRowCount, jop, rowCountParents);
         jop.setStatistics(stats);
 
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           LOG.debug("[0] STATS-" + jop.toString() + ": " + stats.extendedToString());
         }
       } else {
@@ -1534,7 +1532,7 @@ public class StatsRulesProcFactory {
         wcStats.setDataSize(newDataSize);
         jop.setStatistics(wcStats);
 
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           LOG.debug("[1] STATS-" + jop.toString() + ": " + wcStats.extendedToString());
         }
       }
@@ -1569,7 +1567,7 @@ public class StatsRulesProcFactory {
         newNumRows = getCardinality(parents, pkPos, csPK, csFKs, jop);
 
         // some debug information
-        if (isDebugEnabled) {
+        if (LOG.isDebugEnabled()) {
           List<String> parentIds = Lists.newArrayList();
 
           // print primary key containing parents
@@ -1988,7 +1986,7 @@ public class StatsRulesProcFactory {
           }
           lop.setStatistics(stats);
 
-          if (isDebugEnabled) {
+          if (LOG.isDebugEnabled()) {
             LOG.debug("[0] STATS-" + lop.toString() + ": " + stats.extendedToString());
           }
         } else {
@@ -2007,7 +2005,7 @@ public class StatsRulesProcFactory {
             }
             lop.setStatistics(wcStats);
 
-            if (isDebugEnabled) {
+            if (LOG.isDebugEnabled()) {
               LOG.debug("[1] STATS-" + lop.toString() + ": " + wcStats.extendedToString());
             }
           }
@@ -2075,7 +2073,7 @@ public class StatsRulesProcFactory {
             outStats.setColumnStats(colStats);
           }
           rop.setStatistics(outStats);
-          if (isDebugEnabled) {
+          if (LOG.isDebugEnabled()) {
             LOG.debug("[0] STATS-" + rop.toString() + ": " + outStats.extendedToString());
           }
         } catch (CloneNotSupportedException e) {
@@ -2120,7 +2118,7 @@ public class StatsRulesProcFactory {
                   stats.addToColumnStats(colStats);
                   op.getConf().setStatistics(stats);
 
-                  if (isDebugEnabled) {
+                  if (LOG.isDebugEnabled()) {
                     LOG.debug("[0] STATS-" + op.toString() + ": " + stats.extendedToString());
                   }
                 }

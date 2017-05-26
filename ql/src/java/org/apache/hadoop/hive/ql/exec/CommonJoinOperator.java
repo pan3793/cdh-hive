@@ -326,7 +326,7 @@ public abstract class CommonJoinOperator<T extends JoinDesc> extends
       }
     }
 
-    if (isLogInfoEnabled) {
+    if (LOG.isInfoEnabled()) {
       LOG.info("JOIN " + outputObjInspector.getTypeName() + " totalsz = " + totalSz);
     }
   }

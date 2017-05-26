@@ -89,8 +89,6 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
 
   private static final Logger LOG = LoggerFactory.getLogger(LlapTaskCommunicator.class);
 
-  private static final boolean isInfoEnabled = LOG.isInfoEnabled();
-  
   private final ConcurrentMap<QueryIdentifierProto, ByteBuffer> credentialMap;
 
   // Tracks containerIds and taskAttemptIds, so can be kept independent of the running DAG.
@@ -507,7 +505,7 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
     Long old = knownNodeMap.putIfAbsent(nodeId,
         TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
     if (old == null) {
-      if (isInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("Added new known node: {}", nodeId);
       }
     }
@@ -518,7 +516,7 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
     PingingNodeInfo ni = new PingingNodeInfo(currentTs);
     PingingNodeInfo old = pingedNodeMap.put(nodeId, ni);
     if (old == null) {
-      if (isInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("Added new pinging node: [{}]", nodeId);
       }
     } else {

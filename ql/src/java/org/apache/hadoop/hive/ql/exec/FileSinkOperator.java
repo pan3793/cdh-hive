@@ -93,8 +93,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     Serializable {
 
   public static final Logger LOG = LoggerFactory.getLogger(FileSinkOperator.class);
-  private static final boolean isInfoEnabled = LOG.isInfoEnabled();
-  private static final boolean isDebugEnabled = LOG.isDebugEnabled();
 
   protected transient HashMap<String, FSPaths> valToPaths;
   protected transient int numDynParts;
@@ -160,7 +158,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       finalPaths = new Path[numFiles];
       outWriters = new RecordWriter[numFiles];
       updaters = new RecordUpdater[numFiles];
-      if (isDebugEnabled) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug("Created slots for  " + numFiles);
       }
       stat = new Stat();
@@ -370,7 +368,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       serializer.initialize(hconf, conf.getTableInfo().getProperties());
       outputClass = serializer.getSerializedClass();
 
-      if (isLogInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("Using serializer : " + serializer + " and formatter : " + hiveOutputFormat +
             (isCompressed ? " with compression" : ""));
       }
@@ -518,13 +516,13 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       Set<Integer> seenBuckets = new HashSet<Integer>();
       for (int idx = 0; idx < totalFiles; idx++) {
         if (this.getExecContext() != null && this.getExecContext().getFileId() != null) {
-          if (isInfoEnabled) {
+          if (LOG.isInfoEnabled()) {
             LOG.info("replace taskId from execContext ");
           }
 
           taskId = Utilities.replaceTaskIdFromFilename(taskId, this.getExecContext().getFileId());
 
-          if (isInfoEnabled) {
+          if (LOG.isInfoEnabled()) {
             LOG.info("new taskId: FS " + taskId);
           }
 
@@ -580,11 +578,11 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     try {
       if (isNativeTable) {
         fsp.finalPaths[filesIdx] = fsp.getFinalPath(taskId, fsp.tmpPath, null);
-        if (isInfoEnabled) {
+        if (LOG.isInfoEnabled()) {
           LOG.info("Final Path: FS " + fsp.finalPaths[filesIdx]);
         }
         fsp.outPaths[filesIdx] = fsp.getTaskOutPath(taskId);
-        if (isInfoEnabled) {
+        if (LOG.isInfoEnabled()) {
           LOG.info("Writing to temp file: FS " + fsp.outPaths[filesIdx]);
         }
       } else {
@@ -601,7 +599,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         fsp.finalPaths[filesIdx] = fsp.getFinalPath(taskId, fsp.tmpPath, extension);
       }
 
-      if (isInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("New Final Path: FS " + fsp.finalPaths[filesIdx]);
       }
 
@@ -740,7 +738,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         fpaths.stat.addToStat(StatsSetupConst.ROW_COUNT, 1);
       }
 
-      if ((++numRows == cntr) && isLogInfoEnabled) {
+      if ((++numRows == cntr) && LOG.isInfoEnabled()) {
         cntr = logEveryNRows == 0 ? cntr * 10 : numRows + logEveryNRows;
         if (cntr < 0 || numRows < 0) {
           cntr = 0;
@@ -775,7 +773,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           fpaths.updaters[++fpaths.acidFileOffset] = HiveFileFormatUtils.getAcidRecordUpdater(
               jc, conf.getTableInfo(), bucketNum, conf, fpaths.outPaths[fpaths.acidFileOffset],
               rowInspector, reporter, 0);
-          if (isDebugEnabled) {
+          if (LOG.isDebugEnabled()) {
             LOG.debug("Created updater for bucket number " + bucketNum + " using file " +
                 fpaths.outPaths[fpaths.acidFileOffset]);
           }

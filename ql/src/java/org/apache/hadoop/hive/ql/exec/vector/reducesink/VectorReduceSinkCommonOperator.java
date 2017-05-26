@@ -265,7 +265,7 @@ public abstract class VectorReduceSinkCommonOperator extends TerminalOperator<Re
     reduceSkipTag = conf.getSkipTag();
     reduceTagByte = (byte) conf.getTag();
 
-    if (isLogInfoEnabled) {
+    if (LOG.isInfoEnabled()) {
       LOG.info("Using tag = " + (int) reduceTagByte);
     }
 
@@ -396,7 +396,7 @@ public abstract class VectorReduceSinkCommonOperator extends TerminalOperator<Re
 
           collect(keyWritable, valueBytesWritable);
         } while (++logical < end);
-  
+
         if (!serializedKeySeries.next()) {
           break;
         }
@@ -412,7 +412,7 @@ public abstract class VectorReduceSinkCommonOperator extends TerminalOperator<Re
     // forward is not called
     if (null != out) {
       numRows++;
-      if (isLogInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         if (numRows == cntr) {
           cntr = logEveryNRows == 0 ? cntr * 10 : numRows + logEveryNRows;
           if (cntr < 0 || numRows < 0) {
@@ -437,7 +437,7 @@ public abstract class VectorReduceSinkCommonOperator extends TerminalOperator<Re
   protected void closeOp(boolean abort) throws HiveException {
     super.closeOp(abort);
     out = null;
-    if (isLogInfoEnabled) {
+    if (LOG.isInfoEnabled()) {
       LOG.info(toString() + ": records written - " + numRows);
     }
     recordCounter.set(numRows);
