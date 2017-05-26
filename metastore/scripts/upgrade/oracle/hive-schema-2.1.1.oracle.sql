@@ -803,7 +803,8 @@ CREATE INDEX CONSTRAINTS_PT_INDEX ON KEY_CONSTRAINTS(PARENT_TBL_ID);
 ------------------------------
 @hive-txn-schema-2.1.1.oracle.sql;
 
+ALTER TABLE VERSION ADD SCHEMA_VERSION_V2 VARCHAR2(255);
 -- -----------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
-INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.0', 'Hive release version 2.1.1 for CDH 6.0');
+INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '2.1.1', '2.1.1-cdh6.0', 'Hive release version 2.1.1 for CDH 6.0');
