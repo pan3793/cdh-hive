@@ -1,0 +1,1 @@
+INSERT INTO "APP"."VERSION" (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '1.1.0-cdh5.13.0', 'Hive release version 1.1.0-cdh5.13.0');

@@ -1495,4 +1495,4 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 -- ------------------------------------------------------------------------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script. Starting CDH-5.12.0 schema version must include CDH version
 -- ------------------------------------------------------------------------------------------------------------------------------
-INSERT INTO "VERSION" ("VER_ID", "SCHEMA_VERSION", "VERSION_COMMENT") VALUES (1, '1.1.0-cdh5.12.0', 'Hive release version 1.1.0-cdh5.12.0');
+\i update-cdh-version.postgres.sql;
