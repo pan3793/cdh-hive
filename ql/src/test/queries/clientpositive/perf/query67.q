@@ -1,5 +1,6 @@
 set hive.mapred.mode=nonstrict;
-explain 
+-- start query 1 in stream 0 using template query67.tpl and seed 1819994127
+explain
 select  *
 from (select i_category
             ,i_class
@@ -42,4 +43,4 @@ order by i_category
         ,rk
 limit 100;
 
-
+-- end query 1 in stream 0 using template query67.tpl

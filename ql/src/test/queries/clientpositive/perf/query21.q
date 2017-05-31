@@ -1,4 +1,7 @@
-explain select  *
+set hive.mapred.mode=nonstrict;
+-- start query 1 in stream 0 using template query21.tpl and seed 1819994127
+explain
+select  *
  from(select w_warehouse_name
             ,i_item_id
             ,sum(case when (cast(d_date as date) < cast ('1998-04-08' as date))
@@ -24,3 +27,5 @@ explain select  *
  order by w_warehouse_name
          ,i_item_id
  limit 100;
+
+-- end query 1 in stream 0 using template query21.tpl
