@@ -335,7 +335,7 @@ RUN 'hive-txn-schema-0.13.0.derby.sql';
 RUN '041-HIVE-16556.derby.sql';
 
 -- -------------------------------------------------------------------------------------------------------------------------------------------------
--- Record schema version. Should be the last step in the init script. Starting CDH-5.13.0 CDH version also needs to be recorded in the version table
+-- Record schema version. Should be the last step in the init script. Starting CDH-5.12.0 CDH version also needs to be recorded in the version table
 -- -------------------------------------------------------------------------------------------------------------------------------------------------
-RUN 'update-cdh-version.derby.sql';
+INSERT INTO "APP"."VERSION" (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '1.1.0-cdh5.12.0', 'Hive release version 1.1.0-cdh5.12.0');
 
