@@ -82,8 +82,10 @@ public class TestSchemaTool extends TestCase {
 
     // Test valid case
     String[] scripts = new String[] {
+        "!autocommit on",
         "insert into SEQUENCE_TABLE values('org.apache.hadoop.hive.metastore.model.MDatabase', 100)",
-        "insert into DBS values(99, 'test db1', 'hdfs:///tmp', 'db1', 'test', 'test')"
+        "insert into DBS values(99, 'test db1', 'hdfs:///tmp', 'db1', 'test', 'test')",
+        "!closeall"
     };
     File scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
@@ -92,10 +94,12 @@ public class TestSchemaTool extends TestCase {
 
     // Test invalid case
     scripts = new String[] {
+        "!autocommit on",
         "delete from SEQUENCE_TABLE",
         "delete from DBS",
         "insert into SEQUENCE_TABLE values('org.apache.hadoop.hive.metastore.model.MDatabase', 100)",
-        "insert into DBS values(102, 'test db1', 'hdfs:///tmp', 'db1', 'test', 'test')"
+        "insert into DBS values(102, 'test db1', 'hdfs:///tmp', 'db1', 'test', 'test')",
+        "!closeall"
     };
     scriptFile = generateTestScript(scripts);
     schemaTool.runBeeLine(scriptFile.getPath());
