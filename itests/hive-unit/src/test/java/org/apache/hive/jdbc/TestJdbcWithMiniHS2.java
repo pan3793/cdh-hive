@@ -184,9 +184,17 @@ public class TestJdbcWithMiniHS2 {
   }
 
   private static void startMiniHS2(HiveConf conf) throws Exception {
+    startMiniHS2(conf, false);
+  }
+
+  private static void startMiniHS2(HiveConf conf, boolean httpMode) throws Exception {
     conf.setBoolVar(ConfVars.HIVE_SUPPORT_CONCURRENCY, false);
     conf.setBoolVar(ConfVars.HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
-    miniHS2 = new MiniHS2.Builder().withConf(conf).cleanupLocalDirOnStartup(false).build();
+    MiniHS2.Builder builder = new MiniHS2.Builder().withConf(conf).cleanupLocalDirOnStartup(false);
+    if (httpMode) {
+      builder = builder.withHTTPTransport();
+    }
+    miniHS2 = builder.build();
     Map<String, String> confOverlay = new HashMap<String, String>();
     miniHS2.start(confOverlay);
   }
@@ -909,10 +917,9 @@ public class TestJdbcWithMiniHS2 {
     // Stop HiveServer2
     stopMiniHS2();
     HiveConf conf = new HiveConf();
-    conf.set("hive.server2.transport.mode", "http");
-    conf.setInt("hive.server2.thrift.http.request.header.size", 1024);
-    conf.setInt("hive.server2.thrift.http.response.header.size", 1024);
-    startMiniHS2(conf);
+    conf.setIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_HTTP_REQUEST_HEADER_SIZE, 1024);
+    conf.setIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_HTTP_RESPONSE_HEADER_SIZE, 1024);
+    startMiniHS2(conf, true);
 
     // Username is added to the request header
     String userName = StringUtils.leftPad("*", 100);
@@ -949,8 +956,8 @@ public class TestJdbcWithMiniHS2 {
 
     // Stop HiveServer2 to increase header size
     stopMiniHS2();
-    conf.setInt("hive.server2.thrift.http.request.header.size", 3000);
-    conf.setInt("hive.server2.thrift.http.response.header.size", 3000);
+    conf.setIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_HTTP_REQUEST_HEADER_SIZE, 3000);
+    conf.setIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_HTTP_RESPONSE_HEADER_SIZE, 3000);
     startMiniHS2(conf);
 
     // This should now go fine, since we increased the configured header size
