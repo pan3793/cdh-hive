@@ -148,8 +148,8 @@ STAGE PLANS:
                     name: default.srcpart
                   name: default.srcpart
             Truncated Path -> Alias:
-              /srcpart/ds=2008-04-08/hr=11 [x]
-              /srcpart/ds=2008-04-08/hr=12 [x]
+              /srcpart/ds=2008-04-08/hr=11 [null-subquery1:a-subquery1:x]
+              /srcpart/ds=2008-04-08/hr=12 [null-subquery1:a-subquery1:x]
         Map 3 
             Map Operator Tree:
                 TableScan
@@ -271,8 +271,8 @@ STAGE PLANS:
                     name: default.srcpart
                   name: default.srcpart
             Truncated Path -> Alias:
-              /srcpart/ds=2008-04-08/hr=11 [y]
-              /srcpart/ds=2008-04-08/hr=12 [y]
+              /srcpart/ds=2008-04-08/hr=11 [null-subquery2:a-subquery2:y]
+              /srcpart/ds=2008-04-08/hr=12 [null-subquery2:a-subquery2:y]
         Reducer 2 
             Needs Tagging: false
             Reduce Operator Tree:

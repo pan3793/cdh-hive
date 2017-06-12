@@ -163,7 +163,7 @@ STAGE PLANS:
                     name: default.src2
                   name: default.src2
             Truncated Path -> Alias:
-              /src2 [src2]
+              /src2 [null-subquery1:$hdt$_0-subquery1-subquery1:$hdt$_0-subquery1-subquery1:$hdt$_0-subquery1:src2]
         Map 2 
             Map Operator Tree:
                 TableScan
@@ -248,7 +248,7 @@ STAGE PLANS:
                     name: default.src3
                   name: default.src3
             Truncated Path -> Alias:
-              /src3 [src3]
+              /src3 [null-subquery1:$hdt$_0-subquery1-subquery1:$hdt$_0-subquery1-subquery2:$hdt$_0-subquery2:src3]
         Map 3 
             Map Operator Tree:
                 TableScan
@@ -333,7 +333,7 @@ STAGE PLANS:
                     name: default.src4
                   name: default.src4
             Truncated Path -> Alias:
-              /src4 [src4]
+              /src4 [null-subquery1:$hdt$_0-subquery1-subquery2:$hdt$_0-subquery2:src4]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -411,7 +411,7 @@ STAGE PLANS:
                     name: default.src5
                   name: default.src5
             Truncated Path -> Alias:
-              /src5 [src5]
+              /src5 [null-subquery2:$hdt$_0-subquery2:$hdt$_0:src5]
         Reducer 5 
             Needs Tagging: false
             Reduce Operator Tree:
@@ -617,7 +617,7 @@ STAGE PLANS:
                     name: default.src2
                   name: default.src2
             Truncated Path -> Alias:
-              /src2 [src2]
+              /src2 [null-subquery1:$hdt$_0-subquery1-subquery1:$hdt$_0-subquery1:src2]
         Map 2 
             Map Operator Tree:
                 TableScan
@@ -702,7 +702,7 @@ STAGE PLANS:
                     name: default.src3
                   name: default.src3
             Truncated Path -> Alias:
-              /src3 [src3]
+              /src3 [null-subquery1:$hdt$_0-subquery1-subquery2:$hdt$_0-subquery2:src3]
         Map 3 
             Map Operator Tree:
                 TableScan
@@ -773,7 +773,7 @@ STAGE PLANS:
                     name: default.src4
                   name: default.src4
             Truncated Path -> Alias:
-              /src4 [a]
+              /src4 [null-subquery2:$hdt$_0-subquery2:$hdt$_0:a]
         Map 5 
             Map Operator Tree:
                 TableScan
@@ -845,7 +845,7 @@ STAGE PLANS:
                     name: default.src5
                   name: default.src5
             Truncated Path -> Alias:
-              /src5 [b]
+              /src5 [null-subquery2:$hdt$_0-subquery2:$hdt$_1:b]
         Reducer 4 
             Needs Tagging: true
             Reduce Operator Tree:
@@ -1045,7 +1045,7 @@ STAGE PLANS:
                     name: default.src2
                   name: default.src2
             Truncated Path -> Alias:
-              /src2 [src2]
+              /src2 [null-subquery1:$hdt$_0-subquery1-subquery1:$hdt$_0-subquery1:src2]
         Map 2 
             Map Operator Tree:
                 TableScan
@@ -1130,7 +1130,7 @@ STAGE PLANS:
                     name: default.src3
                   name: default.src3
             Truncated Path -> Alias:
-              /src3 [src3]
+              /src3 [null-subquery1:$hdt$_0-subquery1-subquery2:$hdt$_0-subquery2:src3]
         Map 3 
             Map Operator Tree:
                 TableScan
@@ -1201,7 +1201,7 @@ STAGE PLANS:
                     name: default.src4
                   name: default.src4
             Truncated Path -> Alias:
-              /src4 [a]
+              /src4 [null-subquery2:$hdt$_0-subquery2:$hdt$_0:$hdt$_0:a]
         Map 6 
             Map Operator Tree:
                 TableScan
@@ -1272,7 +1272,7 @@ STAGE PLANS:
                     name: default.src5
                   name: default.src5
             Truncated Path -> Alias:
-              /src5 [b]
+              /src5 [null-subquery2:$hdt$_0-subquery2:$hdt$_0:$hdt$_1:b]
         Reducer 4 
             Needs Tagging: true
             Reduce Operator Tree:

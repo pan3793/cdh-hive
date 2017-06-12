@@ -187,7 +187,7 @@ STAGE PLANS:
                     name: default.srcbucket_mapjoin_part
                   name: default.srcbucket_mapjoin_part
             Truncated Path -> Alias:
-              /srcbucket_mapjoin_part/ds=2008-04-08 [a]
+              /srcbucket_mapjoin_part/ds=2008-04-08 [$hdt$_0:a]
 
   Stage: Stage-1
     Spark
@@ -311,7 +311,7 @@ STAGE PLANS:
                     name: default.srcbucket_mapjoin_part_2
                   name: default.srcbucket_mapjoin_part_2
             Truncated Path -> Alias:
-              /srcbucket_mapjoin_part_2/ds=2008-04-08 [b]
+              /srcbucket_mapjoin_part_2/ds=2008-04-08 [$hdt$_1:b]
 
   Stage: Stage-0
     Move Operator
@@ -483,7 +483,7 @@ STAGE PLANS:
                     name: default.srcbucket_mapjoin_part
                   name: default.srcbucket_mapjoin_part
             Truncated Path -> Alias:
-              /srcbucket_mapjoin_part/ds=2008-04-08 [a]
+              /srcbucket_mapjoin_part/ds=2008-04-08 [$hdt$_0:a]
 
   Stage: Stage-1
     Spark
@@ -601,7 +601,7 @@ STAGE PLANS:
                     name: default.srcbucket_mapjoin_part_2
                   name: default.srcbucket_mapjoin_part_2
             Truncated Path -> Alias:
-              /srcbucket_mapjoin_part_2/ds=2008-04-08 [b]
+              /srcbucket_mapjoin_part_2/ds=2008-04-08 [$hdt$_1:b]
 
   Stage: Stage-0
     Move Operator

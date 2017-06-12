@@ -2360,7 +2360,7 @@ STAGE PLANS:
                     name: default.pcr_t1
                   name: default.pcr_t1
             Truncated Path -> Alias:
-              /pcr_t1/ds=2000-04-08 [t1]
+              /pcr_t1/ds=2000-04-08 [$hdt$_0:t1]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -2433,7 +2433,7 @@ STAGE PLANS:
                     name: default.pcr_t1
                   name: default.pcr_t1
             Truncated Path -> Alias:
-              /pcr_t1/ds=2000-04-08 [t1]
+              /pcr_t1/ds=2000-04-08 [$hdt$_1:t1]
         Reducer 2 
             Needs Tagging: true
             Reduce Operator Tree:
@@ -2625,7 +2625,7 @@ STAGE PLANS:
                     name: default.pcr_t1
                   name: default.pcr_t1
             Truncated Path -> Alias:
-              /pcr_t1/ds=2000-04-08 [t1]
+              /pcr_t1/ds=2000-04-08 [$hdt$_0:t1]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -2698,7 +2698,7 @@ STAGE PLANS:
                     name: default.pcr_t1
                   name: default.pcr_t1
             Truncated Path -> Alias:
-              /pcr_t1/ds=2000-04-09 [t1]
+              /pcr_t1/ds=2000-04-09 [$hdt$_1:t1]
         Reducer 2 
             Needs Tagging: true
             Reduce Operator Tree:

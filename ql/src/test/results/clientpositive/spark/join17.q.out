@@ -97,7 +97,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [src1]
+              /src [$hdt$_0:src1]
         Map 3 
             Map Operator Tree:
                 TableScan
@@ -169,7 +169,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [src1]
+              /src [$hdt$_1:src1]
         Reducer 2 
             Needs Tagging: true
             Reduce Operator Tree:

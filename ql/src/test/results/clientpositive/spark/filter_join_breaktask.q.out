@@ -111,7 +111,7 @@ STAGE PLANS:
                     name: default.filter_join_breaktask
                   name: default.filter_join_breaktask
             Truncated Path -> Alias:
-              /filter_join_breaktask/ds=2008-04-08 [f]
+              /filter_join_breaktask/ds=2008-04-08 [$hdt$_0:f]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -184,7 +184,7 @@ STAGE PLANS:
                     name: default.filter_join_breaktask
                   name: default.filter_join_breaktask
             Truncated Path -> Alias:
-              /filter_join_breaktask/ds=2008-04-08 [f]
+              /filter_join_breaktask/ds=2008-04-08 [$hdt$_1:f]
         Map 5 
             Map Operator Tree:
                 TableScan
@@ -256,7 +256,7 @@ STAGE PLANS:
                     name: default.filter_join_breaktask
                   name: default.filter_join_breaktask
             Truncated Path -> Alias:
-              /filter_join_breaktask/ds=2008-04-08 [f]
+              /filter_join_breaktask/ds=2008-04-08 [$hdt$_2:f]
         Reducer 2 
             Needs Tagging: true
             Reduce Operator Tree:

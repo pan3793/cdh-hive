@@ -109,7 +109,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [x]
+              /src [$hdt$_0-subquery1:$hdt$_0-subquery1:x]
         Map 3 
             Map Operator Tree:
                 TableScan
@@ -181,7 +181,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [x]
+              /src [$hdt$_0-subquery2:$hdt$_0-subquery2:x]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -253,7 +253,7 @@ STAGE PLANS:
                     name: default.src1
                   name: default.src1
             Truncated Path -> Alias:
-              /src1 [x]
+              /src1 [$hdt$_1:x]
         Reducer 2 
             Needs Tagging: true
             Reduce Operator Tree:
