@@ -21,7 +21,6 @@ package org.apache.hadoop.hive.metastore.hbase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hbase.Cell;
-import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.StatObjectConverter;
 import org.apache.hadoop.hive.metastore.api.AggrStats;
@@ -57,7 +56,7 @@ public class TestHBaseAggregateStatsNDVUniformDist {
       .getLogger(TestHBaseAggregateStatsNDVUniformDist.class.getName());
 
   @Mock
-  HTableInterface htable;
+  org.apache.hadoop.hbase.client.Table htable;
   private HBaseStore store;
   SortedMap<String, Cell> rows = new TreeMap<>();
 
