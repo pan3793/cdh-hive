@@ -224,7 +224,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [x]
+              /src [null-subquery1:subq1-subquery1:x]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -297,7 +297,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [x1]
+              /src [null-subquery2:subq1-subquery2:x1]
         Map 6 
             Map Operator Tree:
                 TableScan
