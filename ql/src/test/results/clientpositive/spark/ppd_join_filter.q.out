@@ -203,7 +203,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [src]
+              /src [b:src]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -577,7 +577,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [src]
+              /src [b:src]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -951,7 +951,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [src]
+              /src [b:src]
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -1325,7 +1325,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [src]
+              /src [b:src]
         Map 4 
             Map Operator Tree:
                 TableScan
