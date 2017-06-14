@@ -128,7 +128,7 @@
     <commons-httpclient.version>3.0.1</commons-httpclient.version>
     <commons-io.version>2.4</commons-io.version>
     <commons-lang.version>2.6</commons-lang.version>
-    <commons-lang3.version>3.1</commons-lang3.version>
+    <commons-lang3.version>3.2</commons-lang3.version>
     <commons-pool.version>1.5.4</commons-pool.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <derby.version>10.10.2.0</derby.version>
