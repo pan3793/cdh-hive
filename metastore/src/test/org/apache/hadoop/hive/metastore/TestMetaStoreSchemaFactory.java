@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class TestMetaStoreSchemaFactory {
     Class<?> clasz = null;
     try {
       clasz = conf.getClassByName(className);
-      clasz.getConstructor(String.class, HiveConf.class, String.class);
+      clasz.getConstructor(String.class, Configuration.class, String.class);
     } catch (NoSuchMethodException | IllegalArgumentException | ClassNotFoundException e) {
       throw new IllegalArgumentException(e);
     }

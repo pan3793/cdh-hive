@@ -53,7 +53,7 @@ public class MetaStoreSchemaInfoFactory {
     }
     Constructor<?> constructor = null;
     try {
-      constructor = clasz.getConstructor(String.class, HiveConf.class, String.class);
+      constructor = clasz.getConstructor(String.class, Configuration.class, String.class);
       constructor.setAccessible(true);
       return (IMetaStoreSchemaInfo) constructor.newInstance(hiveHome, conf, dbType);
     } catch (NoSuchMethodException | InstantiationException | IllegalAccessException

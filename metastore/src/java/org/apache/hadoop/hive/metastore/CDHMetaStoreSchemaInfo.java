@@ -16,7 +16,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.tools.HiveSchemaHelper;
 import org.apache.hadoop.hive.metastore.tools.HiveSchemaHelper.MetaStoreConnectionInfo;
 import org.apache.hive.common.util.HiveVersionInfo;
@@ -58,7 +58,7 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
     return cdhVersionsWithSchemaChanges;
   }
 
-  public CDHMetaStoreSchemaInfo(String hiveHome, HiveConf conf, String dbType)
+  public CDHMetaStoreSchemaInfo(String hiveHome, Configuration conf, String dbType)
     throws HiveMetaException {
     super(hiveHome, conf, dbType);
   }

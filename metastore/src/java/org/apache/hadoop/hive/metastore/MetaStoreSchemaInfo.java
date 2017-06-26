@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.tools.HiveSchemaHelper;
 import org.apache.hadoop.hive.metastore.tools.HiveSchemaHelper.MetaStoreConnectionInfo;
@@ -46,7 +47,7 @@ public class MetaStoreSchemaInfo implements IMetaStoreSchemaInfo {
   private static final String PRE_UPGRADE_PREFIX = "pre-";
   protected final String dbType;
   private String[] hiveSchemaVersions;
-  private final HiveConf hiveConf;
+  private final Configuration hiveConf;
   private final String hiveHome;
 
   // Some version upgrades often don't change schema. So they are equivalent to
@@ -60,7 +61,7 @@ public class MetaStoreSchemaInfo implements IMetaStoreSchemaInfo {
           "2.1.1", "2.1.0"
       );
 
-  public MetaStoreSchemaInfo(String hiveHome, HiveConf hiveConf, String dbType) throws HiveMetaException {
+  public MetaStoreSchemaInfo(String hiveHome, Configuration hiveConf, String dbType) throws HiveMetaException {
     this.hiveHome = hiveHome;
     this.dbType = dbType;
     this.hiveConf = hiveConf;

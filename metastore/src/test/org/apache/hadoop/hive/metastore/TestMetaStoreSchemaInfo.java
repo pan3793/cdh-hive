@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.metastore;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,8 +33,10 @@ public class TestMetaStoreSchemaInfo {
     // first argument is hiveVersion, it is compatible if 2nd argument - dbVersion is
     // greater than or equal to it
     // check the compatible case
-    IMetaStoreSchemaInfo metastoreSchemaInfo =
-        MetaStoreSchemaInfoFactory.get(new HiveConf(TestMetaStoreSchemaInfo.class));
+    HiveConf conf = new HiveConf(TestMetaStoreSchemaInfo.class);
+    conf.setVar(HiveConf.ConfVars.METASTORE_SCHEMA_INFO_CLASS,
+        "org.apache.hadoop.hive.metastore.MetaStoreSchemaInfo");
+    IMetaStoreSchemaInfo metastoreSchemaInfo = MetaStoreSchemaInfoFactory.get(conf);
     Assert.assertTrue(metastoreSchemaInfo.isVersionCompatible("0.0.1", "0.0.1"));
     Assert.assertTrue(metastoreSchemaInfo.isVersionCompatible("0.0.1", "0.0.2"));
     Assert.assertTrue(metastoreSchemaInfo.isVersionCompatible("1.0.2", "2.0.1"));
