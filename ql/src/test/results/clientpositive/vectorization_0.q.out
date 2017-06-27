@@ -1,7 +1,4 @@
-PREHOOK: query: -- SORT_QUERY_RESULTS
-
--- Use ORDER BY clauses to generate 2 stages.
-EXPLAIN
+PREHOOK: query: EXPLAIN
 SELECT MIN(ctinyint) as c1,
        MAX(ctinyint),
        COUNT(ctinyint),
@@ -9,10 +6,7 @@ SELECT MIN(ctinyint) as c1,
 FROM   alltypesorc
 ORDER BY c1
 PREHOOK: type: QUERY
-POSTHOOK: query: -- SORT_QUERY_RESULTS
-
--- Use ORDER BY clauses to generate 2 stages.
-EXPLAIN
+POSTHOOK: query: EXPLAIN
 SELECT MIN(ctinyint) as c1,
        MAX(ctinyint),
        COUNT(ctinyint),
@@ -1013,8 +1007,8 @@ STAGE PLANS:
               predicate: ((cstring2 like '%b%') or (79.553 <> UDFToDouble(cint)) or (UDFToDouble(cbigint) < cdouble) or ((UDFToShort(ctinyint) >= csmallint) and (cboolean2 = 1) and (3569 = UDFToInteger(ctinyint)))) (type: boolean)
               Statistics: Num rows: 12288 Data size: 2641964 Basic stats: COMPLETE Column stats: NONE
               Select Operator
-                expressions: cbigint (type: bigint), cfloat (type: float), ctinyint (type: tinyint)
-                outputColumnNames: cbigint, cfloat, ctinyint
+                expressions: ctinyint (type: tinyint), cbigint (type: bigint), cfloat (type: float)
+                outputColumnNames: ctinyint, cbigint, cfloat
                 Statistics: Num rows: 12288 Data size: 2641964 Basic stats: COMPLETE Column stats: NONE
                 Group By Operator
                   aggregations: avg(cbigint), stddev_pop(cbigint), var_samp(cbigint), count(), sum(cfloat), min(ctinyint)

@@ -61,12 +61,10 @@ POSTHOOK: Lineage: orc_create_complex.mp SIMPLE [(orc_create_staging)orc_create_
 POSTHOOK: Lineage: orc_create_complex.str SIMPLE [(orc_create_staging)orc_create_staging.FieldSchema(name:str, type:string, comment:null), ]
 POSTHOOK: Lineage: orc_create_complex.strct SIMPLE [(orc_create_staging)orc_create_staging.FieldSchema(name:strct, type:struct<A:string,B:string>, comment:null), ]
 orc_create_staging.str	orc_create_staging.mp	orc_create_staging.lst	orc_create_staging.strct
-PREHOOK: query: -- Since complex types are not supported, this query should not vectorize.
-EXPLAIN
+PREHOOK: query: EXPLAIN
 SELECT * FROM orc_create_complex
 PREHOOK: type: QUERY
-POSTHOOK: query: -- Since complex types are not supported, this query should not vectorize.
-EXPLAIN
+POSTHOOK: query: EXPLAIN
 SELECT * FROM orc_create_complex
 POSTHOOK: type: QUERY
 Explain
@@ -111,12 +109,10 @@ orc_create_complex.str	orc_create_complex.mp	orc_create_complex.lst	orc_create_c
 line1	{"key13":"value13","key11":"value11","key12":"value12"}	["a","b","c"]	{"a":"one","b":"two"}
 line2	{"key21":"value21","key22":"value22","key23":"value23"}	["d","e","f"]	{"a":"three","b":"four"}
 line3	{"key31":"value31","key32":"value32","key33":"value33"}	["g","h","i"]	{"a":"five","b":"six"}
-PREHOOK: query: -- However, since this query is not referencing the complex fields, it should vectorize.
-EXPLAIN
+PREHOOK: query: EXPLAIN
 SELECT COUNT(*) FROM orc_create_complex
 PREHOOK: type: QUERY
-POSTHOOK: query: -- However, since this query is not referencing the complex fields, it should vectorize.
-EXPLAIN
+POSTHOOK: query: EXPLAIN
 SELECT COUNT(*) FROM orc_create_complex
 POSTHOOK: type: QUERY
 Explain
@@ -173,12 +169,10 @@ POSTHOOK: Input: default@orc_create_complex
 #### A masked pattern was here ####
 c0
 3
-PREHOOK: query: -- Also, since this query is not referencing the complex fields, it should vectorize.
-EXPLAIN
+PREHOOK: query: EXPLAIN
 SELECT str FROM orc_create_complex ORDER BY str
 PREHOOK: type: QUERY
-POSTHOOK: query: -- Also, since this query is not referencing the complex fields, it should vectorize.
-EXPLAIN
+POSTHOOK: query: EXPLAIN
 SELECT str FROM orc_create_complex ORDER BY str
 POSTHOOK: type: QUERY
 Explain

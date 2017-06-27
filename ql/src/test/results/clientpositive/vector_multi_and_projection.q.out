@@ -1,6 +1,4 @@
-PREHOOK: query: -- SORT_QUERY_RESULTS
-
-create table vectortab2k(
+PREHOOK: query: create table vectortab2k(
             t tinyint,
             si smallint,
             i int,
@@ -19,9 +17,7 @@ STORED AS TEXTFILE
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@vectortab2k
-POSTHOOK: query: -- SORT_QUERY_RESULTS
-
-create table vectortab2k(
+POSTHOOK: query: create table vectortab2k(
             t tinyint,
             si smallint,
             i int,
@@ -66,11 +62,9 @@ POSTHOOK: Lineage: scratch.t SIMPLE [(vectortab2k)vectortab2k.FieldSchema(name:t
 t	si	i	b	bo
 PREHOOK: query: INSERT INTO TABLE scratch VALUES (NULL, NULL, NULL, NULL, NULL)
 PREHOOK: type: QUERY
-PREHOOK: Input: default@values__tmp__table__1
 PREHOOK: Output: default@scratch
 POSTHOOK: query: INSERT INTO TABLE scratch VALUES (NULL, NULL, NULL, NULL, NULL)
 POSTHOOK: type: QUERY
-POSTHOOK: Input: default@values__tmp__table__1
 POSTHOOK: Output: default@scratch
 POSTHOOK: Lineage: scratch.b EXPRESSION [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col4, type:string, comment:), ]
 POSTHOOK: Lineage: scratch.bo EXPRESSION [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col5, type:string, comment:), ]
@@ -234,14 +228,12 @@ POSTHOOK: Input: default@vectortab2k_orc
 #### A masked pattern was here ####
 c0
 96890477236
-PREHOOK: query: -- Use a boolean column rather than a column comparison expression.
-EXPLAIN
+PREHOOK: query: EXPLAIN
 SELECT sum(hash(*)) FROM
     (SELECT t, si, bo, b, (t < 0) as child1, (si > 0) as child2, (bo) as child3, (b > 0) as child4, (t < 0 AND si > 0 AND bo AND b > 0) as multi_and_col from vectortab2k_orc
         order by t, si, bo, b) as q
 PREHOOK: type: QUERY
-POSTHOOK: query: -- Use a boolean column rather than a column comparison expression.
-EXPLAIN
+POSTHOOK: query: EXPLAIN
 SELECT sum(hash(*)) FROM
     (SELECT t, si, bo, b, (t < 0) as child1, (si > 0) as child2, (bo) as child3, (b > 0) as child4, (t < 0 AND si > 0 AND bo AND b > 0) as multi_and_col from vectortab2k_orc
         order by t, si, bo, b) as q
@@ -306,16 +298,14 @@ POSTHOOK: Input: default@vectortab2k_orc
 #### A masked pattern was here ####
 c0
 26141424353
-PREHOOK: query: -- With some filtering
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t, si, i, (t < 0) as child1, (si > 0) as child2, (i < 0) as child3, (t < 0 AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc
         where pmod(t, 4) > 1
         order by t, si, i) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc
 #### A masked pattern was here ####
-POSTHOOK: query: -- With some filtering
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t, si, i, (t < 0) as child1, (si > 0) as child2, (i < 0) as child3, (t < 0 AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc
         where pmod(t, 4) > 1
         order by t, si, i) as q
@@ -380,16 +370,12 @@ POSTHOOK: Lineage: scratch_repeat.si_repeat SIMPLE []
 POSTHOOK: Lineage: scratch_repeat.t SIMPLE [(vectortab2k)vectortab2k.FieldSchema(name:t, type:tinyint, comment:null), ]
 POSTHOOK: Lineage: scratch_repeat.t_repeat SIMPLE []
 t	si	i	b	bo	t_repeat	si_repeat	i_repeat	b_repeat	bo_repeat_false	bo_repeat_true
-PREHOOK: query: -- The repeated columns ought to create repeated VectorizedRowBatch for those columns.
--- And then when we do a comparison, we should generate a repeated boolean result.
-CREATE TABLE vectortab2k_orc_repeat STORED AS ORC AS SELECT * FROM scratch_repeat
+PREHOOK: query: CREATE TABLE vectortab2k_orc_repeat STORED AS ORC AS SELECT * FROM scratch_repeat
 PREHOOK: type: CREATETABLE_AS_SELECT
 PREHOOK: Input: default@scratch_repeat
 PREHOOK: Output: database:default
 PREHOOK: Output: default@vectortab2k_orc_repeat
-POSTHOOK: query: -- The repeated columns ought to create repeated VectorizedRowBatch for those columns.
--- And then when we do a comparison, we should generate a repeated boolean result.
-CREATE TABLE vectortab2k_orc_repeat STORED AS ORC AS SELECT * FROM scratch_repeat
+POSTHOOK: query: CREATE TABLE vectortab2k_orc_repeat STORED AS ORC AS SELECT * FROM scratch_repeat
 POSTHOOK: type: CREATETABLE_AS_SELECT
 POSTHOOK: Input: default@scratch_repeat
 POSTHOOK: Output: database:default
@@ -406,15 +392,13 @@ POSTHOOK: Lineage: vectortab2k_orc_repeat.si_repeat SIMPLE [(scratch_repeat)scra
 POSTHOOK: Lineage: vectortab2k_orc_repeat.t SIMPLE [(scratch_repeat)scratch_repeat.FieldSchema(name:t, type:tinyint, comment:null), ]
 POSTHOOK: Lineage: vectortab2k_orc_repeat.t_repeat SIMPLE [(scratch_repeat)scratch_repeat.FieldSchema(name:t_repeat, type:int, comment:null), ]
 scratch_repeat.t	scratch_repeat.si	scratch_repeat.i	scratch_repeat.b	scratch_repeat.bo	scratch_repeat.t_repeat	scratch_repeat.si_repeat	scratch_repeat.i_repeat	scratch_repeat.b_repeat	scratch_repeat.bo_repeat_false	scratch_repeat.bo_repeat_true
-PREHOOK: query: -- t_repeat > 0 should generate all true.
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_repeat, si, i, (t_repeat > 0) as child1, (si > 0) as child2, (i < 0) as child3, (t_repeat > 0 AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc_repeat
         order by t_repeat, si, i) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
-POSTHOOK: query: -- t_repeat > 0 should generate all true.
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_repeat, si, i, (t_repeat > 0) as child1, (si > 0) as child2, (i < 0) as child3, (t_repeat > 0 AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc_repeat
         order by t_repeat, si, i) as q
 POSTHOOK: type: QUERY
@@ -422,15 +406,13 @@ POSTHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
 c0
 -53648296618
-PREHOOK: query: -- t_repeat < 0 should generate all false.
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_repeat, si, i, (t_repeat < 0) as child1, (si > 0) as child2, (i < 0) as child3, (t_repeat < 0 AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc_repeat
         order by t_repeat, si, i) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
-POSTHOOK: query: -- t_repeat < 0 should generate all false.
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_repeat, si, i, (t_repeat < 0) as child1, (si > 0) as child2, (i < 0) as child3, (t_repeat < 0 AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc_repeat
         order by t_repeat, si, i) as q
 POSTHOOK: type: QUERY
@@ -438,15 +420,13 @@ POSTHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
 c0
 -53707879050
-PREHOOK: query: -- Two repeated false columns at beginning...
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_repeat, si_repeat, i, (t_repeat > 0) as child1, (si_repeat > 0) as child2, (i < 0) as child3, (t_repeat > 0 AND si_repeat > 0 AND i < 0) as multi_and_col from vectortab2k_orc_repeat
         order by t_repeat, si_repeat, i) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
-POSTHOOK: query: -- Two repeated false columns at beginning...
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_repeat, si_repeat, i, (t_repeat > 0) as child1, (si_repeat > 0) as child2, (i < 0) as child3, (t_repeat > 0 AND si_repeat > 0 AND i < 0) as multi_and_col from vectortab2k_orc_repeat
         order by t_repeat, si_repeat, i) as q
 POSTHOOK: type: QUERY
@@ -454,15 +434,13 @@ POSTHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
 c0
 -55121400269
-PREHOOK: query: -- si_repeat > 0 should generate all true.
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t, si_repeat, i, b_repeat, (t < 0 ) as child1, (si_repeat > 0) as child2, (i < 0) as child3, (b_repeat > 0) as child4, (t < 0 AND si_repeat > 0 AND i < 0 AND b_repeat > 0) as multi_and_col from vectortab2k_orc_repeat
         order by t, si_repeat, i, b_repeat) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
-POSTHOOK: query: -- si_repeat > 0 should generate all true.
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t, si_repeat, i, b_repeat, (t < 0 ) as child1, (si_repeat > 0) as child2, (i < 0) as child3, (b_repeat > 0) as child4, (t < 0 AND si_repeat > 0 AND i < 0 AND b_repeat > 0) as multi_and_col from vectortab2k_orc_repeat
         order by t, si_repeat, i, b_repeat) as q
 POSTHOOK: type: QUERY
@@ -470,15 +448,13 @@ POSTHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
 c0
 -39803959564
-PREHOOK: query: -- si_repeat < 0 should generate all false.
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t, si_repeat, i, b_repeat, (t < 0) as child1, (si_repeat < 0) as child2, (i < 0) as child3, (b_repeat > 0) as child4, (t < 0 AND si_repeat < 0 AND i < 0 AND b_repeat > 0) as multi_and_col from vectortab2k_orc_repeat
         order by t, si_repeat, i, b_repeat) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
-POSTHOOK: query: -- si_repeat < 0 should generate all false.
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t, si_repeat, i, b_repeat, (t < 0) as child1, (si_repeat < 0) as child2, (i < 0) as child3, (b_repeat > 0) as child4, (t < 0 AND si_repeat < 0 AND i < 0 AND b_repeat > 0) as multi_and_col from vectortab2k_orc_repeat
         order by t, si_repeat, i, b_repeat) as q
 POSTHOOK: type: QUERY
@@ -486,15 +462,13 @@ POSTHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
 c0
 -39863541564
-PREHOOK: query: -- Use a boolean column rather than a column comparison expression.
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t, si, bo_repeat_false, b, (t < 0) as child1, (si > 0) as child2, (bo_repeat_false) as child3, (b > 0) as child4, (t < 0 AND si > 0 AND bo_repeat_false AND b > 0) as multi_and_col from vectortab2k_orc_repeat
         order by t, si, bo_repeat_false, b) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
-POSTHOOK: query: -- Use a boolean column rather than a column comparison expression.
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t, si, bo_repeat_false, b, (t < 0) as child1, (si > 0) as child2, (bo_repeat_false) as child3, (b > 0) as child4, (t < 0 AND si > 0 AND bo_repeat_false AND b > 0) as multi_and_col from vectortab2k_orc_repeat
         order by t, si, bo_repeat_false, b) as q
 POSTHOOK: type: QUERY
@@ -516,16 +490,14 @@ POSTHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
 c0
 2303712725
-PREHOOK: query: -- With some filtering
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_repeat, si, i, (t_repeat > 0) as child1, (si > 0) as child2, (i < 0) as child3, (t_repeat > 0 AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc_repeat
         where pmod(si, 4) = 0
         order by t_repeat, si, i) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc_repeat
 #### A masked pattern was here ####
-POSTHOOK: query: -- With some filtering
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_repeat, si, i, (t_repeat > 0) as child1, (si > 0) as child2, (i < 0) as child3, (t_repeat > 0 AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc_repeat
         where pmod(si, 4) = 0
         order by t_repeat, si, i) as q
@@ -653,14 +625,12 @@ POSTHOOK: Lineage: scratch_null.si_null SIMPLE []
 POSTHOOK: Lineage: scratch_null.t SIMPLE [(vectortab2k)vectortab2k.FieldSchema(name:t, type:tinyint, comment:null), ]
 POSTHOOK: Lineage: scratch_null.t_null SIMPLE []
 t	si	i	b	bo	t_null	si_null	i_null	b_null	bo_null
-PREHOOK: query: -- The nulled columns ought to create repeated null VectorizedRowBatch for those columns.
-CREATE TABLE vectortab2k_orc_null STORED AS ORC AS SELECT * FROM scratch_null
+PREHOOK: query: CREATE TABLE vectortab2k_orc_null STORED AS ORC AS SELECT * FROM scratch_null
 PREHOOK: type: CREATETABLE_AS_SELECT
 PREHOOK: Input: default@scratch_null
 PREHOOK: Output: database:default
 PREHOOK: Output: default@vectortab2k_orc_null
-POSTHOOK: query: -- The nulled columns ought to create repeated null VectorizedRowBatch for those columns.
-CREATE TABLE vectortab2k_orc_null STORED AS ORC AS SELECT * FROM scratch_null
+POSTHOOK: query: CREATE TABLE vectortab2k_orc_null STORED AS ORC AS SELECT * FROM scratch_null
 POSTHOOK: type: CREATETABLE_AS_SELECT
 POSTHOOK: Input: default@scratch_null
 POSTHOOK: Output: database:default
@@ -732,16 +702,14 @@ POSTHOOK: Input: default@vectortab2k_orc_null
 #### A masked pattern was here ####
 c0
 61568000
-PREHOOK: query: -- With some filtering
-SELECT sum(hash(*)) FROM
+PREHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_null, si, i, (t_null is null) as child1, (si > 0) as child2, (i < 0) as child3, (t_null is null AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc_null
         where pmod(i,4) = 3
         order by t_null, si, i) as q
 PREHOOK: type: QUERY
 PREHOOK: Input: default@vectortab2k_orc_null
 #### A masked pattern was here ####
-POSTHOOK: query: -- With some filtering
-SELECT sum(hash(*)) FROM
+POSTHOOK: query: SELECT sum(hash(*)) FROM
     (SELECT t_null, si, i, (t_null is null) as child1, (si > 0) as child2, (i < 0) as child3, (t_null is null AND si > 0 AND i < 0) as multi_and_col from vectortab2k_orc_null
         where pmod(i,4) = 3
         order by t_null, si, i) as q
