@@ -32,19 +32,63 @@ public class TestParquetFilterPredicate {
   public void testFilterColumnsThatDoNoExistOnSchema() {
     MessageType schema = MessageTypeParser.parseMessageType("message test { required int32 a; required binary stinger; }");
     SearchArgument sarg = SearchArgumentFactory.newBuilder()
-        .startNot()
+            .startNot()
+            .startOr()
+            .isNull("a")
+            .between("y", 10L, 20L) // Column will be removed from filter
+            .in("z", 1L, 2L, 3L) // Column will be removed from filter
+            .nullSafeEquals("a", "stinger")
+            .end()
+            .end()
+            .build();
+
+    FilterPredicate p = ParquetFilterPredicateConverter.toFilterPredicate(sarg, schema);
+
+    String expected = "and(not(eq(a, null)), not(eq(a, Binary{\"stinger\"})))";
+    assertEquals(expected, p.toString());
+  }
+
+  @Test
+  public void testFilterColumnsThatDoNoExistOnSchemaHighOrder1() {
+    MessageType schema = MessageTypeParser.parseMessageType("message test { required int32 a; required int32 b; }");
+    SearchArgument sarg = SearchArgumentFactory.newBuilder()
         .startOr()
-        .isNull("a")
-        .between("y", 10, 20) // Column will be removed from filter
-        .in("z", 1, 2, 3) // Column will be removed from filter
-        .nullSafeEquals("a", "stinger")
+        .startAnd()
+        .equals("a", 1L)
+        .equals("none", 1L)
+        .end()
+        .startAnd()
+        .equals("a", 999L)
+        .equals("none", 999L)
         .end()
         .end()
         .build();
 
     FilterPredicate p = ParquetFilterPredicateConverter.toFilterPredicate(sarg, schema);
 
-    String expected = "and(not(eq(a, null)), not(eq(a, Binary{\"stinger\"})))";
+    String expected = "or(eq(a, 1), eq(a, 999))";
+    assertEquals(expected, p.toString());
+  }
+
+  @Test
+  public void testFilterColumnsThatDoNoExistOnSchemaHighOrder2() {
+    MessageType schema = MessageTypeParser.parseMessageType("message test { required int32 a; required int32 b; }");
+    SearchArgument sarg = SearchArgumentFactory.newBuilder()
+        .startAnd()
+        .startOr()
+        .equals("a", 1L)
+        .equals("b", 1L)
+        .end()
+        .startOr()
+        .equals("a", 999L)
+        .equals("none", 999L)
+        .end()
+        .end()
+        .build();
+
+    FilterPredicate p = ParquetFilterPredicateConverter.toFilterPredicate(sarg, schema);
+
+    String expected = "or(eq(a, 1), eq(b, 1))";
     assertEquals(expected, p.toString());
   }
 
