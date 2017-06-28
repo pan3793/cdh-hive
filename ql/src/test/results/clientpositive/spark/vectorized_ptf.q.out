@@ -605,7 +605,7 @@ STAGE PLANS:
                     name: default.part_orc
                   name: default.part_orc
             Truncated Path -> Alias:
-              /part_orc [p1]
+              /part_orc [j:p1]
             Execution mode: vectorized
         Map 5 
             Map Operator Tree:
@@ -672,7 +672,7 @@ STAGE PLANS:
                     name: default.part_orc
                   name: default.part_orc
             Truncated Path -> Alias:
-              /part_orc [p2]
+              /part_orc [j:p2]
             Execution mode: vectorized
         Reducer 2 
             Needs Tagging: true
@@ -4206,7 +4206,7 @@ STAGE PLANS:
                     name: default.part_orc
                   name: default.part_orc
             Truncated Path -> Alias:
-              /part_orc [part_orc]
+              /part_orc [sub1:part_orc]
             Execution mode: vectorized
         Reducer 2 
             Needs Tagging: false
@@ -5290,7 +5290,7 @@ STAGE PLANS:
                     name: default.part_orc
                   name: default.part_orc
             Truncated Path -> Alias:
-              /part_orc [part_orc]
+              /part_orc [mfgr_price_view:part_orc]
             Execution mode: vectorized
         Reducer 2 
             Needs Tagging: false
