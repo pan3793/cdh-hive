@@ -1,30 +1,8 @@
-PREHOOK: query: -- SORT_QUERY_RESULTS
---
--- FILE VARIATION: ORC, Vectorized, MapWork, Table
---
-------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE ADD COLUMNS
---
---
--- SUBSECTION: ALTER TABLE ADD COLUMNS: INT PERMUTE SELECT
---
---
-CREATE TABLE table_add_int_permute_select(insert_num int, a INT, b STRING)
+PREHOOK: query: CREATE TABLE table_add_int_permute_select(insert_num int, a INT, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_add_int_permute_select
-POSTHOOK: query: -- SORT_QUERY_RESULTS
---
--- FILE VARIATION: ORC, Vectorized, MapWork, Table
---
-------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE ADD COLUMNS
---
---
--- SUBSECTION: ALTER TABLE ADD COLUMNS: INT PERMUTE SELECT
---
---
-CREATE TABLE table_add_int_permute_select(insert_num int, a INT, b STRING)
+POSTHOOK: query: CREATE TABLE table_add_int_permute_select(insert_num int, a INT, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_add_int_permute_select
@@ -83,13 +61,11 @@ POSTHOOK: Lineage: table_add_int_permute_select.a EXPRESSION [(values__tmp__tabl
 POSTHOOK: Lineage: table_add_int_permute_select.b SIMPLE [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col3, type:string, comment:), ]
 POSTHOOK: Lineage: table_add_int_permute_select.insert_num EXPRESSION [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 _col0	_col1	_col2
-PREHOOK: query: -- Table-Non-Cascade ADD COLUMNS ...
-alter table table_add_int_permute_select add columns(c int)
+PREHOOK: query: alter table table_add_int_permute_select add columns(c int)
 PREHOOK: type: ALTERTABLE_ADDCOLS
 PREHOOK: Input: default@table_add_int_permute_select
 PREHOOK: Output: default@table_add_int_permute_select
-POSTHOOK: query: -- Table-Non-Cascade ADD COLUMNS ...
-alter table table_add_int_permute_select add columns(c int)
+POSTHOOK: query: alter table table_add_int_permute_select add columns(c int)
 POSTHOOK: type: ALTERTABLE_ADDCOLS
 POSTHOOK: Input: default@table_add_int_permute_select
 POSTHOOK: Output: default@table_add_int_permute_select
@@ -114,6 +90,7 @@ Retention:          	0
 #### A masked pattern was here ####
 Table Type:         	MANAGED_TABLE       	 
 Table Parameters:	 	 
+	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
 #### A masked pattern was here ####
 	numFiles            	1                   
 	numRows             	4                   
@@ -182,25 +159,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_add_int_permute_select
-            Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 994 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), a (type: int), b (type: string)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 994 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 994 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: int), _col2 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: int), VALUE._col1 (type: string)
           outputColumnNames: _col0, _col1, _col2
-          Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 994 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 994 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -212,13 +189,11 @@ STAGE PLANS:
       Processor Tree:
         ListSink
 
-PREHOOK: query: -- SELECT permutation columns to make sure NULL defaulting works right
-select insert_num,a,b from table_add_int_permute_select order by insert_num
+PREHOOK: query: select insert_num,a,b from table_add_int_permute_select order by insert_num
 PREHOOK: type: QUERY
 PREHOOK: Input: default@table_add_int_permute_select
 #### A masked pattern was here ####
-POSTHOOK: query: -- SELECT permutation columns to make sure NULL defaulting works right
-select insert_num,a,b from table_add_int_permute_select order by insert_num
+POSTHOOK: query: select insert_num,a,b from table_add_int_permute_select order by insert_num
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@table_add_int_permute_select
 #### A masked pattern was here ####
@@ -279,17 +254,11 @@ POSTHOOK: query: drop table table_add_int_permute_select
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_add_int_permute_select
 POSTHOOK: Output: default@table_add_int_permute_select
-PREHOOK: query: -- SUBSECTION: ALTER TABLE ADD COLUMNS: INT, STRING, PERMUTE SELECT
---
---
-CREATE TABLE table_add_int_string_permute_select(insert_num int, a INT, b STRING)
+PREHOOK: query: CREATE TABLE table_add_int_string_permute_select(insert_num int, a INT, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_add_int_string_permute_select
-POSTHOOK: query: -- SUBSECTION: ALTER TABLE ADD COLUMNS: INT, STRING, PERMUTE SELECT
---
---
-CREATE TABLE table_add_int_string_permute_select(insert_num int, a INT, b STRING)
+POSTHOOK: query: CREATE TABLE table_add_int_string_permute_select(insert_num int, a INT, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_add_int_string_permute_select
@@ -348,13 +317,11 @@ POSTHOOK: Lineage: table_add_int_string_permute_select.a EXPRESSION [(values__tm
 POSTHOOK: Lineage: table_add_int_string_permute_select.b SIMPLE [(values__tmp__table__4)values__tmp__table__4.FieldSchema(name:tmp_values_col3, type:string, comment:), ]
 POSTHOOK: Lineage: table_add_int_string_permute_select.insert_num EXPRESSION [(values__tmp__table__4)values__tmp__table__4.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 _col0	_col1	_col2
-PREHOOK: query: -- Table-Non-Cascade ADD COLUMNS ...
-alter table table_add_int_string_permute_select add columns(c int, d string)
+PREHOOK: query: alter table table_add_int_string_permute_select add columns(c int, d string)
 PREHOOK: type: ALTERTABLE_ADDCOLS
 PREHOOK: Input: default@table_add_int_string_permute_select
 PREHOOK: Output: default@table_add_int_string_permute_select
-POSTHOOK: query: -- Table-Non-Cascade ADD COLUMNS ...
-alter table table_add_int_string_permute_select add columns(c int, d string)
+POSTHOOK: query: alter table table_add_int_string_permute_select add columns(c int, d string)
 POSTHOOK: type: ALTERTABLE_ADDCOLS
 POSTHOOK: Input: default@table_add_int_string_permute_select
 POSTHOOK: Output: default@table_add_int_string_permute_select
@@ -380,6 +347,7 @@ Retention:          	0
 #### A masked pattern was here ####
 Table Type:         	MANAGED_TABLE       	 
 Table Parameters:	 	 
+	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
 #### A masked pattern was here ####
 	numFiles            	1                   
 	numRows             	4                   
@@ -450,25 +418,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_add_int_string_permute_select
-            Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1536 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), a (type: int), b (type: string)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 1536 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 1536 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: int), _col2 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: int), VALUE._col1 (type: string)
           outputColumnNames: _col0, _col1, _col2
-          Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 1536 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 400 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1536 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -480,13 +448,11 @@ STAGE PLANS:
       Processor Tree:
         ListSink
 
-PREHOOK: query: -- SELECT permutation columns to make sure NULL defaulting works right
-select insert_num,a,b from table_add_int_string_permute_select order by insert_num
+PREHOOK: query: select insert_num,a,b from table_add_int_string_permute_select order by insert_num
 PREHOOK: type: QUERY
 PREHOOK: Input: default@table_add_int_string_permute_select
 #### A masked pattern was here ####
-POSTHOOK: query: -- SELECT permutation columns to make sure NULL defaulting works right
-select insert_num,a,b from table_add_int_string_permute_select order by insert_num
+POSTHOOK: query: select insert_num,a,b from table_add_int_string_permute_select order by insert_num
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@table_add_int_string_permute_select
 #### A masked pattern was here ####
@@ -623,25 +589,11 @@ POSTHOOK: query: drop table table_add_int_string_permute_select
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_add_int_string_permute_select
 POSTHOOK: Output: default@table_add_int_string_permute_select
-PREHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> DOUBLE
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> DOUBLE: (STRING, CHAR, VARCHAR)
---
-CREATE TABLE table_change_string_group_double(insert_num int, c1 STRING, c2 CHAR(50), c3 VARCHAR(50), b STRING)
+PREHOOK: query: CREATE TABLE table_change_string_group_double(insert_num int, c1 STRING, c2 CHAR(50), c3 VARCHAR(50), b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_string_group_double
-POSTHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> DOUBLE
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> DOUBLE: (STRING, CHAR, VARCHAR)
---
-CREATE TABLE table_change_string_group_double(insert_num int, c1 STRING, c2 CHAR(50), c3 VARCHAR(50), b STRING)
+POSTHOOK: query: CREATE TABLE table_change_string_group_double(insert_num int, c1 STRING, c2 CHAR(50), c3 VARCHAR(50), b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_string_group_double
@@ -665,13 +617,11 @@ POSTHOOK: Lineage: table_change_string_group_double.c2 EXPRESSION [(values__tmp_
 POSTHOOK: Lineage: table_change_string_group_double.c3 EXPRESSION [(values__tmp__table__7)values__tmp__table__7.FieldSchema(name:tmp_values_col4, type:string, comment:), ]
 POSTHOOK: Lineage: table_change_string_group_double.insert_num EXPRESSION [(values__tmp__table__7)values__tmp__table__7.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 _col0	_col1	_col2	_col3	_col4
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_string_group_double replace columns (insert_num int, c1 DOUBLE, c2 DOUBLE, c3 DOUBLE, b STRING)
+PREHOOK: query: alter table table_change_string_group_double replace columns (insert_num int, c1 DOUBLE, c2 DOUBLE, c3 DOUBLE, b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_string_group_double
 PREHOOK: Output: default@table_change_string_group_double
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_string_group_double replace columns (insert_num int, c1 DOUBLE, c2 DOUBLE, c3 DOUBLE, b STRING)
+POSTHOOK: query: alter table table_change_string_group_double replace columns (insert_num int, c1 DOUBLE, c2 DOUBLE, c3 DOUBLE, b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_string_group_double
 POSTHOOK: Output: default@table_change_string_group_double
@@ -728,25 +678,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_string_group_double
-            Statistics: Num rows: 4 Data size: 1656 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 2346 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: double), c2 (type: double), c3 (type: double), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 1656 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 2346 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 1656 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 2346 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: double), _col2 (type: double), _col3 (type: double), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: double), VALUE._col1 (type: double), VALUE._col2 (type: double), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 1656 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 2346 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 1656 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 2346 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -785,25 +735,11 @@ POSTHOOK: query: drop table table_change_string_group_double
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_string_group_double
 POSTHOOK: Output: default@table_change_string_group_double
-PREHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for DATE_GROUP -> STRING_GROUP
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for DATE_GROUP -> STRING_GROUP: TIMESTAMP, (STRING, CHAR, CHAR trunc, VARCHAR, VARCHAR trunc)
---
-CREATE TABLE table_change_date_group_string_group_timestamp(insert_num int, c1 TIMESTAMP, c2 TIMESTAMP, c3 TIMESTAMP, c4 TIMESTAMP, c5 TIMESTAMP, b STRING)
+PREHOOK: query: CREATE TABLE table_change_date_group_string_group_timestamp(insert_num int, c1 TIMESTAMP, c2 TIMESTAMP, c3 TIMESTAMP, c4 TIMESTAMP, c5 TIMESTAMP, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_date_group_string_group_timestamp
-POSTHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for DATE_GROUP -> STRING_GROUP
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for DATE_GROUP -> STRING_GROUP: TIMESTAMP, (STRING, CHAR, CHAR trunc, VARCHAR, VARCHAR trunc)
---
-CREATE TABLE table_change_date_group_string_group_timestamp(insert_num int, c1 TIMESTAMP, c2 TIMESTAMP, c3 TIMESTAMP, c4 TIMESTAMP, c5 TIMESTAMP, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_date_group_string_group_timestamp(insert_num int, c1 TIMESTAMP, c2 TIMESTAMP, c3 TIMESTAMP, c4 TIMESTAMP, c5 TIMESTAMP, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_date_group_string_group_timestamp
@@ -827,13 +763,11 @@ POSTHOOK: Lineage: table_change_date_group_string_group_timestamp.c4 EXPRESSION 
 POSTHOOK: Lineage: table_change_date_group_string_group_timestamp.c5 EXPRESSION [(values__tmp__table__10)values__tmp__table__10.FieldSchema(name:tmp_values_col6, type:string, comment:), ]
 POSTHOOK: Lineage: table_change_date_group_string_group_timestamp.insert_num EXPRESSION [(values__tmp__table__10)values__tmp__table__10.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 _col0	_col1	_col2	_col3	_col4	_col5	_col6
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_date_group_string_group_timestamp replace columns(insert_num int, c1 STRING, c2 CHAR(50), c3 CHAR(15), c4 VARCHAR(50), c5 VARCHAR(15), b STRING)
+PREHOOK: query: alter table table_change_date_group_string_group_timestamp replace columns(insert_num int, c1 STRING, c2 CHAR(50), c3 CHAR(15), c4 VARCHAR(50), c5 VARCHAR(15), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_date_group_string_group_timestamp
 PREHOOK: Output: default@table_change_date_group_string_group_timestamp
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_date_group_string_group_timestamp replace columns(insert_num int, c1 STRING, c2 CHAR(50), c3 CHAR(15), c4 VARCHAR(50), c5 VARCHAR(15), b STRING)
+POSTHOOK: query: alter table table_change_date_group_string_group_timestamp replace columns(insert_num int, c1 STRING, c2 CHAR(50), c3 CHAR(15), c4 VARCHAR(50), c5 VARCHAR(15), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_date_group_string_group_timestamp
 POSTHOOK: Output: default@table_change_date_group_string_group_timestamp
@@ -894,25 +828,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_date_group_string_group_timestamp
-            Statistics: Num rows: 3 Data size: 888 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 9 Data size: 4770 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: string), c2 (type: char(50)), c3 (type: char(15)), c4 (type: varchar(50)), c5 (type: varchar(15)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6
-              Statistics: Num rows: 3 Data size: 888 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 9 Data size: 4770 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 3 Data size: 888 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 9 Data size: 4770 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: string), _col2 (type: char(50)), _col3 (type: char(15)), _col4 (type: varchar(50)), _col5 (type: varchar(15)), _col6 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: string), VALUE._col1 (type: char(50)), VALUE._col2 (type: char(15)), VALUE._col3 (type: varchar(50)), VALUE._col4 (type: varchar(15)), VALUE._col5 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6
-          Statistics: Num rows: 3 Data size: 888 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 9 Data size: 4770 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 3 Data size: 888 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 9 Data size: 4770 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -950,17 +884,11 @@ POSTHOOK: query: drop table table_change_date_group_string_group_timestamp
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_date_group_string_group_timestamp
 POSTHOOK: Output: default@table_change_date_group_string_group_timestamp
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for DATE_GROUP -> STRING_GROUP: DATE, (STRING, CHAR, CHAR trunc, VARCHAR, VARCHAR trunc)
---
-CREATE TABLE table_change_date_group_string_group_date(insert_num int, c1 DATE, c2 DATE, c3 DATE, c4 DATE, c5 DATE, b STRING)
+PREHOOK: query: CREATE TABLE table_change_date_group_string_group_date(insert_num int, c1 DATE, c2 DATE, c3 DATE, c4 DATE, c5 DATE, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_date_group_string_group_date
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for DATE_GROUP -> STRING_GROUP: DATE, (STRING, CHAR, CHAR trunc, VARCHAR, VARCHAR trunc)
---
-CREATE TABLE table_change_date_group_string_group_date(insert_num int, c1 DATE, c2 DATE, c3 DATE, c4 DATE, c5 DATE, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_date_group_string_group_date(insert_num int, c1 DATE, c2 DATE, c3 DATE, c4 DATE, c5 DATE, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_date_group_string_group_date
@@ -984,13 +912,11 @@ POSTHOOK: Lineage: table_change_date_group_string_group_date.c4 EXPRESSION [(val
 POSTHOOK: Lineage: table_change_date_group_string_group_date.c5 EXPRESSION [(values__tmp__table__13)values__tmp__table__13.FieldSchema(name:tmp_values_col6, type:string, comment:), ]
 POSTHOOK: Lineage: table_change_date_group_string_group_date.insert_num EXPRESSION [(values__tmp__table__13)values__tmp__table__13.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 _col0	_col1	_col2	_col3	_col4	_col5	_col6
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_date_group_string_group_date replace columns(insert_num int, c1 STRING, c2 CHAR(50), c3 CHAR(15), c4 VARCHAR(50), c5 VARCHAR(15), b STRING)
+PREHOOK: query: alter table table_change_date_group_string_group_date replace columns(insert_num int, c1 STRING, c2 CHAR(50), c3 CHAR(15), c4 VARCHAR(50), c5 VARCHAR(15), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_date_group_string_group_date
 PREHOOK: Output: default@table_change_date_group_string_group_date
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_date_group_string_group_date replace columns(insert_num int, c1 STRING, c2 CHAR(50), c3 CHAR(15), c4 VARCHAR(50), c5 VARCHAR(15), b STRING)
+POSTHOOK: query: alter table table_change_date_group_string_group_date replace columns(insert_num int, c1 STRING, c2 CHAR(50), c3 CHAR(15), c4 VARCHAR(50), c5 VARCHAR(15), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_date_group_string_group_date
 POSTHOOK: Output: default@table_change_date_group_string_group_date
@@ -1018,6 +944,7 @@ Retention:          	0
 #### A masked pattern was here ####
 Table Type:         	MANAGED_TABLE       	 
 Table Parameters:	 	 
+	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
 #### A masked pattern was here ####
 	numFiles            	1                   
 	numRows             	3                   
@@ -1078,25 +1005,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_date_group_string_group_date
-            Statistics: Num rows: 3 Data size: 1128 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 9 Data size: 4764 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: string), c2 (type: char(50)), c3 (type: char(15)), c4 (type: varchar(50)), c5 (type: varchar(15)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6
-              Statistics: Num rows: 3 Data size: 1128 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 9 Data size: 4764 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 3 Data size: 1128 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 9 Data size: 4764 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: string), _col2 (type: char(50)), _col3 (type: char(15)), _col4 (type: varchar(50)), _col5 (type: varchar(15)), _col6 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: string), VALUE._col1 (type: char(50)), VALUE._col2 (type: char(15)), VALUE._col3 (type: varchar(50)), VALUE._col4 (type: varchar(15)), VALUE._col5 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6
-          Statistics: Num rows: 3 Data size: 1128 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 9 Data size: 4764 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 3 Data size: 1128 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 9 Data size: 4764 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1134,25 +1061,11 @@ POSTHOOK: query: drop table table_change_date_group_string_group_date
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_date_group_string_group_date
 POSTHOOK: Output: default@table_change_date_group_string_group_date
-PREHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), STRING
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_string(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_string(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_string
-POSTHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), STRING
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_string(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_string(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_string
@@ -1190,13 +1103,11 @@ insert_num	c1	c2	c3	c4	b
 2	-2	-6737	56	28899333	original
 3	NULL	4957	832222222	9000000000	original
 4	0	20435	847492223	-999999999999	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_string replace columns (insert_num int, c1 STRING, c2 STRING, c3 STRING, c4 STRING, b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_string replace columns (insert_num int, c1 STRING, c2 STRING, c3 STRING, c4 STRING, b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_string
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_string
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_string replace columns (insert_num int, c1 STRING, c2 STRING, c3 STRING, c4 STRING, b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_string replace columns (insert_num int, c1 STRING, c2 STRING, c3 STRING, c4 STRING, b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_string
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_string
@@ -1242,25 +1153,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_multi_ints_string
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: string), c2 (type: string), c3 (type: string), c4 (type: string), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-              Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: string), _col2 (type: string), _col3 (type: string), _col4 (type: string), _col5 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: string), VALUE._col1 (type: string), VALUE._col2 (type: string), VALUE._col3 (type: string), VALUE._col4 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-          Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1299,17 +1210,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_multi_ints_s
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_string
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_string
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), CHAR
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_char(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_char(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), CHAR
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_char(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_char(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char
@@ -1347,13 +1252,11 @@ insert_num	c1	c2	c3	c4	b
 2	-2	-6737	56	28899333	original
 3	NULL	4957	832222222	9000000000	original
 4	0	20435	847492223	-999999999999	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_char replace columns (insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), c4 CHAR(50), b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_char replace columns (insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), c4 CHAR(50), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_char replace columns (insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), c4 CHAR(50), b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_char replace columns (insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), c4 CHAR(50), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char
@@ -1399,25 +1302,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_multi_ints_char
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 4222 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: char(50)), c2 (type: char(50)), c3 (type: char(50)), c4 (type: char(50)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-              Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 4222 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 4222 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: char(50)), _col2 (type: char(50)), _col3 (type: char(50)), _col4 (type: char(50)), _col5 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: char(50)), VALUE._col1 (type: char(50)), VALUE._col2 (type: char(50)), VALUE._col3 (type: char(50)), VALUE._col4 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-          Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 4222 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 4222 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1456,17 +1359,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_multi_ints_c
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), CHAR truncation
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_char_trunc(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_char_trunc(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char_trunc
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), CHAR truncation
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_char_trunc(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_char_trunc(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char_trunc
@@ -1504,13 +1401,11 @@ insert_num	c1	c2	c3	c4	b
 2	-2	-6737	56	28899333	original
 3	NULL	4957	832222222	9000000000	original
 4	0	20435	847492223	-999999999999	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_char_trunc replace columns (insert_num int, c1 CHAR(5), c2 CHAR(5), c3 CHAR(5), c4 CHAR(5), b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_char_trunc replace columns (insert_num int, c1 CHAR(5), c2 CHAR(5), c3 CHAR(5), c4 CHAR(5), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char_trunc
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char_trunc
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_char_trunc replace columns (insert_num int, c1 CHAR(5), c2 CHAR(5), c3 CHAR(5), c4 CHAR(5), b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_char_trunc replace columns (insert_num int, c1 CHAR(5), c2 CHAR(5), c3 CHAR(5), c4 CHAR(5), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char_trunc
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char_trunc
@@ -1556,25 +1451,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_multi_ints_char_trunc
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3142 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: char(5)), c2 (type: char(5)), c3 (type: char(5)), c4 (type: char(5)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-              Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3142 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3142 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: char(5)), _col2 (type: char(5)), _col3 (type: char(5)), _col4 (type: char(5)), _col5 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: char(5)), VALUE._col1 (type: char(5)), VALUE._col2 (type: char(5)), VALUE._col3 (type: char(5)), VALUE._col4 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-          Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3142 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3142 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1613,17 +1508,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_multi_ints_c
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char_trunc
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_char_trunc
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), VARCHAR
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_varchar(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_varchar(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), VARCHAR
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_varchar(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_varchar(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar
@@ -1661,13 +1550,11 @@ insert_num	c1	c2	c3	c4	b
 2	-2	-6737	56	28899333	original
 3	NULL	4957	832222222	9000000000	original
 4	0	20435	847492223	-999999999999	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_varchar replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), c4 VARCHAR(50), b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_varchar replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), c4 VARCHAR(50), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_varchar replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), c4 VARCHAR(50), b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_varchar replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), c4 VARCHAR(50), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar
@@ -1713,25 +1600,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_multi_ints_varchar
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: varchar(50)), c2 (type: varchar(50)), c3 (type: varchar(50)), c4 (type: varchar(50)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-              Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: varchar(50)), _col2 (type: varchar(50)), _col3 (type: varchar(50)), _col4 (type: varchar(50)), _col5 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: varchar(50)), VALUE._col1 (type: varchar(50)), VALUE._col2 (type: varchar(50)), VALUE._col3 (type: varchar(50)), VALUE._col4 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-          Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3136 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1770,17 +1657,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_multi_ints_v
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), VARCHAR truncation
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_varchar_trunc(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_varchar_trunc(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (TINYINT, SMALLINT, INT, BIGINT), VARCHAR truncation
---
-CREATE TABLE table_change_numeric_group_string_group_multi_ints_varchar_trunc(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_multi_ints_varchar_trunc(insert_num int, c1 tinyint, c2 smallint, c3 int, c4 bigint, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
@@ -1818,13 +1699,11 @@ insert_num	c1	c2	c3	c4	b
 2	-2	-6737	56	28899333	original
 3	NULL	4957	832222222	9000000000	original
 4	0	20435	847492223	-999999999999	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_varchar_trunc replace columns (insert_num int, c1 VARCHAR(5), c2 VARCHAR(5), c3 VARCHAR(5), c4 VARCHAR(5), b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_varchar_trunc replace columns (insert_num int, c1 VARCHAR(5), c2 VARCHAR(5), c3 VARCHAR(5), c4 VARCHAR(5), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
 PREHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_multi_ints_varchar_trunc replace columns (insert_num int, c1 VARCHAR(5), c2 VARCHAR(5), c3 VARCHAR(5), c4 VARCHAR(5), b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_multi_ints_varchar_trunc replace columns (insert_num int, c1 VARCHAR(5), c2 VARCHAR(5), c3 VARCHAR(5), c4 VARCHAR(5), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
@@ -1870,25 +1749,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_multi_ints_varchar_trunc
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3106 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: varchar(5)), c2 (type: varchar(5)), c3 (type: varchar(5)), c4 (type: varchar(5)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-              Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3106 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3106 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: varchar(5)), _col2 (type: varchar(5)), _col3 (type: varchar(5)), _col4 (type: varchar(5)), _col5 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: varchar(5)), VALUE._col1 (type: varchar(5)), VALUE._col2 (type: varchar(5)), VALUE._col3 (type: varchar(5)), VALUE._col4 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-          Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3106 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 460 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3106 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1927,17 +1806,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_multi_ints_v
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
 POSTHOOK: Output: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (FLOAT, DOUBLE, DECIMAL), STRING
---
-CREATE TABLE table_change_numeric_group_string_group_floating_string(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_string(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_string
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (FLOAT, DOUBLE, DECIMAL), STRING
---
-CREATE TABLE table_change_numeric_group_string_group_floating_string(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_string(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_string
@@ -1974,13 +1847,11 @@ insert_num	c1	c2	c3	b
 2	-10.300000000000000000	-2.0	-29.0764	original
 3	-832222222.000000000000000000	255.0	4957.0	original
 4	847492223.000000000000000000	0.0	20435.0	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_string replace columns (insert_num int, c1 STRING, c2 STRING, c3 STRING, b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_floating_string replace columns (insert_num int, c1 STRING, c2 STRING, c3 STRING, b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_floating_string
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_string
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_string replace columns (insert_num int, c1 STRING, c2 STRING, c3 STRING, b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_floating_string replace columns (insert_num int, c1 STRING, c2 STRING, c3 STRING, b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_string
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_string
@@ -2025,25 +1896,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_floating_string
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: string), c2 (type: string), c3 (type: string), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: string), _col2 (type: string), _col3 (type: string), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: string), VALUE._col1 (type: string), VALUE._col2 (type: string), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -2082,17 +1953,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_floating_str
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_string
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_string
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (DECIMAL, FLOAT, DOUBLE), CHAR
---
-CREATE TABLE table_change_numeric_group_string_group_floating_char(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_char(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_char
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (DECIMAL, FLOAT, DOUBLE), CHAR
---
-CREATE TABLE table_change_numeric_group_string_group_floating_char(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_char(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_char
@@ -2129,13 +1994,11 @@ insert_num	c1	c2	c3	b
 2	-10.300000000000000000	-2.0	-29.0764	original
 3	9000000000.000000000000000000	-255.0	4957.0	original
 4	-999999999999.000000000000000000	0.0	20435.0	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_char replace columns (insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_floating_char replace columns (insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_floating_char
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_char
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_char replace columns (insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_floating_char replace columns (insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_char
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_char
@@ -2180,25 +2043,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_floating_char
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3838 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: char(50)), c2 (type: char(50)), c3 (type: char(50)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3838 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3838 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: char(50)), _col2 (type: char(50)), _col3 (type: char(50)), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: char(50)), VALUE._col1 (type: char(50)), VALUE._col2 (type: char(50)), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3838 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3838 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -2237,17 +2100,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_floating_cha
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_char
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_char
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (DECIMAL, FLOAT, DOUBLE), CHAR truncation
---
-CREATE TABLE table_change_numeric_group_string_group_floating_char_trunc(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_char_trunc(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_char_trunc
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (DECIMAL, FLOAT, DOUBLE), CHAR truncation
---
-CREATE TABLE table_change_numeric_group_string_group_floating_char_trunc(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_char_trunc(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_char_trunc
@@ -2284,13 +2141,11 @@ insert_num	c1	c2	c3	b
 2	-10.300000000000000000	-2.0	-29.0764	original
 3	832222222.000000000000000000	-255.0	4957.0	original
 4	847492223.000000000000000000	0.0	20435.0	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_char_trunc replace columns (insert_num int, c1 CHAR(7), c2 CHAR(7), c3 CHAR(7), b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_floating_char_trunc replace columns (insert_num int, c1 CHAR(7), c2 CHAR(7), c3 CHAR(7), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_floating_char_trunc
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_char_trunc
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_char_trunc replace columns (insert_num int, c1 CHAR(7), c2 CHAR(7), c3 CHAR(7), b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_floating_char_trunc replace columns (insert_num int, c1 CHAR(7), c2 CHAR(7), c3 CHAR(7), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_char_trunc
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_char_trunc
@@ -2335,25 +2190,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_floating_char_trunc
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3064 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: char(7)), c2 (type: char(7)), c3 (type: char(7)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3064 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3064 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: char(7)), _col2 (type: char(7)), _col3 (type: char(7)), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: char(7)), VALUE._col1 (type: char(7)), VALUE._col2 (type: char(7)), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3064 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3064 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -2392,17 +2247,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_floating_cha
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_char_trunc
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_char_trunc
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (DECIMAL, FLOAT, DOUBLE), VARCHAR
---
-CREATE TABLE table_change_numeric_group_string_group_floating_varchar(insert_num int, c1 float, c2 double, c3 decimal(38,18), b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_varchar(insert_num int, c1 float, c2 double, c3 decimal(38,18), b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (DECIMAL, FLOAT, DOUBLE), VARCHAR
---
-CREATE TABLE table_change_numeric_group_string_group_floating_varchar(insert_num int, c1 float, c2 double, c3 decimal(38,18), b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_varchar(insert_num int, c1 float, c2 double, c3 decimal(38,18), b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar
@@ -2439,13 +2288,11 @@ insert_num	c1	c2	c3	b
 2	-10.3	-2.0	-29.076400000000000000	original
 3	8.9999995E9	-255.0	4957.000000000000000000	original
 4	-1.0E12	0.0	20435.000000000000000000	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_varchar replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_floating_varchar replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_varchar replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_floating_varchar replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar
@@ -2490,25 +2337,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_floating_varchar
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: varchar(50)), c2 (type: varchar(50)), c3 (type: varchar(50)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: varchar(50)), _col2 (type: varchar(50)), _col3 (type: varchar(50)), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: varchar(50)), VALUE._col1 (type: varchar(50)), VALUE._col2 (type: varchar(50)), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3046 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -2547,17 +2394,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_floating_var
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (DECIMAL, FLOAT, DOUBLE), VARCHAR truncation
---
-CREATE TABLE table_change_numeric_group_string_group_floating_varchar_trunc(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
+PREHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_varchar_trunc(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar_trunc
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for NUMERIC_GROUP -> STRING_GROUP: (DECIMAL, FLOAT, DOUBLE), VARCHAR truncation
---
-CREATE TABLE table_change_numeric_group_string_group_floating_varchar_trunc(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_numeric_group_string_group_floating_varchar_trunc(insert_num int, c1 decimal(38,18), c2 float, c3 double, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar_trunc
@@ -2594,13 +2435,11 @@ insert_num	c1	c2	c3	b
 2	-10.300000000000000000	-2.0	-29.0764	original
 3	9000000000.000000000000000000	-255.0	4957.0	original
 4	-999999999999.000000000000000000	0.0	20435.0	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_varchar_trunc replace columns (insert_num int, c1 VARCHAR(7), c2 VARCHAR(7), c3 VARCHAR(7), b STRING)
+PREHOOK: query: alter table table_change_numeric_group_string_group_floating_varchar_trunc replace columns (insert_num int, c1 VARCHAR(7), c2 VARCHAR(7), c3 VARCHAR(7), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar_trunc
 PREHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar_trunc
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_numeric_group_string_group_floating_varchar_trunc replace columns (insert_num int, c1 VARCHAR(7), c2 VARCHAR(7), c3 VARCHAR(7), b STRING)
+POSTHOOK: query: alter table table_change_numeric_group_string_group_floating_varchar_trunc replace columns (insert_num int, c1 VARCHAR(7), c2 VARCHAR(7), c3 VARCHAR(7), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar_trunc
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar_trunc
@@ -2645,25 +2484,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_numeric_group_string_group_floating_varchar_trunc
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3028 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: varchar(7)), c2 (type: varchar(7)), c3 (type: varchar(7)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 3028 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 3028 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: varchar(7)), _col2 (type: varchar(7)), _col3 (type: varchar(7)), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: varchar(7)), VALUE._col1 (type: varchar(7)), VALUE._col2 (type: varchar(7)), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 3028 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 880 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 3028 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -2702,25 +2541,11 @@ POSTHOOK: query: drop table table_change_numeric_group_string_group_floating_var
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar_trunc
 POSTHOOK: Output: default@table_change_numeric_group_string_group_floating_varchar_trunc
-PREHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> STRING_GROUP
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> STRING_GROUP: STRING, (CHAR, CHAR trunc, VARCHAR, VARCHAR trunc)
---
-CREATE TABLE table_change_string_group_string_group_string(insert_num int, c1 string, c2 string, c3 string, c4 string, b STRING)
+PREHOOK: query: CREATE TABLE table_change_string_group_string_group_string(insert_num int, c1 string, c2 string, c3 string, c4 string, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_string_group_string_group_string
-POSTHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> STRING_GROUP
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> STRING_GROUP: STRING, (CHAR, CHAR trunc, VARCHAR, VARCHAR trunc)
---
-CREATE TABLE table_change_string_group_string_group_string(insert_num int, c1 string, c2 string, c3 string, c4 string, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_string_group_string_group_string(insert_num int, c1 string, c2 string, c3 string, c4 string, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_string_group_string_group_string
@@ -2758,13 +2583,11 @@ insert_num	c1	c2	c3	c4	b
 2	heartbeat	heartbeat	heartbeat	heartbeat	original
 3	dynamic reptile	dynamic reptile	dynamic reptile	dynamic reptile	original
 4	blank pads   	blank pads   	blank pads   	blank pads   	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_string_group_string_group_string replace columns (insert_num int, c1 CHAR(50), c2 CHAR(9), c3 VARCHAR(50), c4 CHAR(9), b STRING)
+PREHOOK: query: alter table table_change_string_group_string_group_string replace columns (insert_num int, c1 CHAR(50), c2 CHAR(9), c3 VARCHAR(50), c4 CHAR(9), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_string_group_string_group_string
 PREHOOK: Output: default@table_change_string_group_string_group_string
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_string_group_string_group_string replace columns (insert_num int, c1 CHAR(50), c2 CHAR(9), c3 VARCHAR(50), c4 CHAR(9), b STRING)
+POSTHOOK: query: alter table table_change_string_group_string_group_string replace columns (insert_num int, c1 CHAR(50), c2 CHAR(9), c3 VARCHAR(50), c4 CHAR(9), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_string_group_string_group_string
 POSTHOOK: Output: default@table_change_string_group_string_group_string
@@ -2810,25 +2633,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_string_group_string_group_string
-            Statistics: Num rows: 4 Data size: 1904 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 4964 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: char(50)), c2 (type: char(9)), c3 (type: varchar(50)), c4 (type: char(9)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-              Statistics: Num rows: 4 Data size: 1904 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 4964 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 1904 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 4964 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: char(50)), _col2 (type: char(9)), _col3 (type: varchar(50)), _col4 (type: char(9)), _col5 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: char(50)), VALUE._col1 (type: char(9)), VALUE._col2 (type: varchar(50)), VALUE._col3 (type: char(9)), VALUE._col4 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-          Statistics: Num rows: 4 Data size: 1904 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 4964 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 1904 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 4964 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -2867,17 +2690,11 @@ POSTHOOK: query: drop table table_change_string_group_string_group_string
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_string_group_string_group_string
 POSTHOOK: Output: default@table_change_string_group_string_group_string
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> STRING_GROUP: CHAR, (VARCHAR, VARCHAR trunc, STRING)
---
-CREATE TABLE table_change_string_group_string_group_char(insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), b STRING)
+PREHOOK: query: CREATE TABLE table_change_string_group_string_group_char(insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_string_group_string_group_char
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> STRING_GROUP: CHAR, (VARCHAR, VARCHAR trunc, STRING)
---
-CREATE TABLE table_change_string_group_string_group_char(insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), b STRING)
+POSTHOOK: query: CREATE TABLE table_change_string_group_string_group_char(insert_num int, c1 CHAR(50), c2 CHAR(50), c3 CHAR(50), b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_string_group_string_group_char
@@ -2914,13 +2731,11 @@ insert_num	c1	c2	c3	b
 2	heartbeat                                         	heartbeat                                         	heartbeat                                         	original
 3	dynamic reptile                                   	dynamic reptile                                   	dynamic reptile                                   	original
 4	blank pads                                        	blank pads                                        	blank pads                                        	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_string_group_string_group_char replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(9), c3 STRING, b STRING)
+PREHOOK: query: alter table table_change_string_group_string_group_char replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(9), c3 STRING, b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_string_group_string_group_char
 PREHOOK: Output: default@table_change_string_group_string_group_char
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_string_group_string_group_char replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(9), c3 STRING, b STRING)
+POSTHOOK: query: alter table table_change_string_group_string_group_char replace columns (insert_num int, c1 VARCHAR(50), c2 VARCHAR(9), c3 STRING, b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_string_group_string_group_char
 POSTHOOK: Output: default@table_change_string_group_string_group_char
@@ -2965,25 +2780,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_string_group_string_group_char
-            Statistics: Num rows: 4 Data size: 1992 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 4278 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: varchar(50)), c2 (type: varchar(9)), c3 (type: string), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 1992 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 4278 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 1992 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 4278 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: varchar(50)), _col2 (type: varchar(9)), _col3 (type: string), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: varchar(50)), VALUE._col1 (type: varchar(9)), VALUE._col2 (type: string), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 1992 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 4278 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 1992 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 4278 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -3022,17 +2837,11 @@ POSTHOOK: query: drop table table_change_string_group_string_group_char
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_string_group_string_group_char
 POSTHOOK: Output: default@table_change_string_group_string_group_char
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> STRING_GROUP: VARCHAR, (CHAR, CHAR trunc, STRING)
---
-CREATE TABLE table_change_string_group_string_group_varchar(insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), b STRING)
+PREHOOK: query: CREATE TABLE table_change_string_group_string_group_varchar(insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_string_group_string_group_varchar
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for STRING_GROUP -> STRING_GROUP: VARCHAR, (CHAR, CHAR trunc, STRING)
---
-CREATE TABLE table_change_string_group_string_group_varchar(insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), b STRING)
+POSTHOOK: query: CREATE TABLE table_change_string_group_string_group_varchar(insert_num int, c1 VARCHAR(50), c2 VARCHAR(50), c3 VARCHAR(50), b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_string_group_string_group_varchar
@@ -3069,13 +2878,11 @@ insert_num	c1	c2	c3	b
 2	heartbeat	heartbeat	heartbeat	original
 3	dynamic reptile	dynamic reptile	dynamic reptile	original
 4	blank pads   	blank pads   	blank pads   	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_string_group_string_group_varchar replace columns (insert_num int, c1 CHAR(50), c2 CHAR(9), c3 STRING, b STRING)
+PREHOOK: query: alter table table_change_string_group_string_group_varchar replace columns (insert_num int, c1 CHAR(50), c2 CHAR(9), c3 STRING, b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_string_group_string_group_varchar
 PREHOOK: Output: default@table_change_string_group_string_group_varchar
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_string_group_string_group_varchar replace columns (insert_num int, c1 CHAR(50), c2 CHAR(9), c3 STRING, b STRING)
+POSTHOOK: query: alter table table_change_string_group_string_group_varchar replace columns (insert_num int, c1 CHAR(50), c2 CHAR(9), c3 STRING, b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_string_group_string_group_varchar
 POSTHOOK: Output: default@table_change_string_group_string_group_varchar
@@ -3120,25 +2927,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_string_group_string_group_varchar
-            Statistics: Num rows: 4 Data size: 1524 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 4026 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: char(50)), c2 (type: char(9)), c3 (type: string), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 1524 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 4026 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 1524 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 4026 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: char(50)), _col2 (type: char(9)), _col3 (type: string), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: char(50)), VALUE._col1 (type: char(9)), VALUE._col2 (type: string), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 1524 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 4026 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 1524 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 4026 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -3177,25 +2984,11 @@ POSTHOOK: query: drop table table_change_string_group_string_group_varchar
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_string_group_string_group_varchar
 POSTHOOK: Output: default@table_change_string_group_string_group_varchar
-PREHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: TINYINT, (SMALLINT, INT, BIGINT, DECIMAL, FLOAT, DOUBLE)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_tinyint(insert_num int, c1 tinyint, c2 tinyint, c3 tinyint, c4 tinyint, c5 tinyint, c6 tinyint, b STRING)
+PREHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_tinyint(insert_num int, c1 tinyint, c2 tinyint, c3 tinyint, c4 tinyint, c5 tinyint, c6 tinyint, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_tinyint
-POSTHOOK: query: ------------------------------------------------------------------------------------------
--- SECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP
---
---
---
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: TINYINT, (SMALLINT, INT, BIGINT, DECIMAL, FLOAT, DOUBLE)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_tinyint(insert_num int, c1 tinyint, c2 tinyint, c3 tinyint, c4 tinyint, c5 tinyint, c6 tinyint, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_tinyint(insert_num int, c1 tinyint, c2 tinyint, c3 tinyint, c4 tinyint, c5 tinyint, c6 tinyint, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_tinyint
@@ -3235,13 +3028,11 @@ insert_num	c1	c2	c3	c4	c5	c6	b
 2	-2	-2	-2	-2	-2	-2	original
 3	NULL	NULL	NULL	NULL	NULL	NULL	original
 4	100	100	100	100	100	100	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_tinyint replace columns (insert_num int, c1 SMALLINT, c2 INT, c3 BIGINT, c4 decimal(38,18), c5 FLOAT, c6 DOUBLE, b STRING)
+PREHOOK: query: alter table table_change_lower_to_higher_numeric_group_tinyint replace columns (insert_num int, c1 SMALLINT, c2 INT, c3 BIGINT, c4 decimal(38,18), c5 FLOAT, c6 DOUBLE, b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_tinyint
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_tinyint
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_tinyint replace columns (insert_num int, c1 SMALLINT, c2 INT, c3 BIGINT, c4 decimal(38,18), c5 FLOAT, c6 DOUBLE, b STRING)
+POSTHOOK: query: alter table table_change_lower_to_higher_numeric_group_tinyint replace columns (insert_num int, c1 SMALLINT, c2 INT, c3 BIGINT, c4 decimal(38,18), c5 FLOAT, c6 DOUBLE, b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_tinyint
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_tinyint
@@ -3289,25 +3080,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_lower_to_higher_numeric_group_tinyint
-            Statistics: Num rows: 4 Data size: 456 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1838 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: smallint), c2 (type: int), c3 (type: bigint), c4 (type: decimal(38,18)), c5 (type: float), c6 (type: double), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6, _col7
-              Statistics: Num rows: 4 Data size: 456 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 1838 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 456 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 1838 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: smallint), _col2 (type: int), _col3 (type: bigint), _col4 (type: decimal(38,18)), _col5 (type: float), _col6 (type: double), _col7 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: smallint), VALUE._col1 (type: int), VALUE._col2 (type: bigint), VALUE._col3 (type: decimal(38,18)), VALUE._col4 (type: float), VALUE._col5 (type: double), VALUE._col6 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6, _col7
-          Statistics: Num rows: 4 Data size: 456 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 1838 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 456 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1838 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -3346,17 +3137,11 @@ POSTHOOK: query: drop table table_change_lower_to_higher_numeric_group_tinyint
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_tinyint
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_tinyint
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: SMALLINT, (INT, BIGINT, DECIMAL, FLOAT, DOUBLE)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_smallint(insert_num int, c1 smallint, c2 smallint, c3 smallint, c4 smallint, c5 smallint, b STRING)
+PREHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_smallint(insert_num int, c1 smallint, c2 smallint, c3 smallint, c4 smallint, c5 smallint, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_smallint
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: SMALLINT, (INT, BIGINT, DECIMAL, FLOAT, DOUBLE)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_smallint(insert_num int, c1 smallint, c2 smallint, c3 smallint, c4 smallint, c5 smallint, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_smallint(insert_num int, c1 smallint, c2 smallint, c3 smallint, c4 smallint, c5 smallint, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_smallint
@@ -3395,13 +3180,11 @@ insert_num	c1	c2	c3	c4	c5	b
 2	-2	-2	-2	-2	-2	original
 3	-5000	-5000	-5000	-5000	-5000	original
 4	100	100	100	100	100	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_smallint replace columns (insert_num int, c1 INT, c2 BIGINT, c3 decimal(38,18), c4 FLOAT, c5 DOUBLE, b STRING)
+PREHOOK: query: alter table table_change_lower_to_higher_numeric_group_smallint replace columns (insert_num int, c1 INT, c2 BIGINT, c3 decimal(38,18), c4 FLOAT, c5 DOUBLE, b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_smallint
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_smallint
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_smallint replace columns (insert_num int, c1 INT, c2 BIGINT, c3 decimal(38,18), c4 FLOAT, c5 DOUBLE, b STRING)
+POSTHOOK: query: alter table table_change_lower_to_higher_numeric_group_smallint replace columns (insert_num int, c1 INT, c2 BIGINT, c3 decimal(38,18), c4 FLOAT, c5 DOUBLE, b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_smallint
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_smallint
@@ -3448,25 +3231,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_lower_to_higher_numeric_group_smallint
-            Statistics: Num rows: 4 Data size: 464 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1826 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: int), c2 (type: bigint), c3 (type: decimal(38,18)), c4 (type: float), c5 (type: double), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6
-              Statistics: Num rows: 4 Data size: 464 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 1826 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 464 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 1826 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: int), _col2 (type: bigint), _col3 (type: decimal(38,18)), _col4 (type: float), _col5 (type: double), _col6 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: int), VALUE._col1 (type: bigint), VALUE._col2 (type: decimal(38,18)), VALUE._col3 (type: float), VALUE._col4 (type: double), VALUE._col5 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6
-          Statistics: Num rows: 4 Data size: 464 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 1826 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 464 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1826 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -3505,17 +3288,11 @@ POSTHOOK: query: drop table table_change_lower_to_higher_numeric_group_smallint
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_smallint
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_smallint
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: INT, (BIGINT, DECIMAL, FLOAT, DOUBLE)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_int(insert_num int, c1 int, c2 int, c3 int, c4 int, b STRING)
+PREHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_int(insert_num int, c1 int, c2 int, c3 int, c4 int, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_int
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: INT, (BIGINT, DECIMAL, FLOAT, DOUBLE)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_int(insert_num int, c1 int, c2 int, c3 int, c4 int, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_int(insert_num int, c1 int, c2 int, c3 int, c4 int, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_int
@@ -3553,13 +3330,11 @@ insert_num	c1	c2	c3	c4	b
 2	-2	-2	-2	-2	original
 3	-5000	-5000	-5000	-5000	original
 4	52927714	52927714	52927714	52927714	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_int replace columns (insert_num int, c1 BIGINT, c2 decimal(38,18), c3 FLOAT, c4 DOUBLE,  b STRING)
+PREHOOK: query: alter table table_change_lower_to_higher_numeric_group_int replace columns (insert_num int, c1 BIGINT, c2 decimal(38,18), c3 FLOAT, c4 DOUBLE,  b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_int
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_int
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_int replace columns (insert_num int, c1 BIGINT, c2 decimal(38,18), c3 FLOAT, c4 DOUBLE,  b STRING)
+POSTHOOK: query: alter table table_change_lower_to_higher_numeric_group_int replace columns (insert_num int, c1 BIGINT, c2 decimal(38,18), c3 FLOAT, c4 DOUBLE,  b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_int
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_int
@@ -3605,25 +3380,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_lower_to_higher_numeric_group_int
-            Statistics: Num rows: 4 Data size: 448 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1786 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: bigint), c2 (type: decimal(38,18)), c3 (type: float), c4 (type: double), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-              Statistics: Num rows: 4 Data size: 448 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 1786 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 448 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 1786 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: bigint), _col2 (type: decimal(38,18)), _col3 (type: float), _col4 (type: double), _col5 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: bigint), VALUE._col1 (type: decimal(38,18)), VALUE._col2 (type: float), VALUE._col3 (type: double), VALUE._col4 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
-          Statistics: Num rows: 4 Data size: 448 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 1786 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 448 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1786 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -3662,17 +3437,11 @@ POSTHOOK: query: drop table table_change_lower_to_higher_numeric_group_int
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_int
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_int
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: BIGINT, (DECIMAL, FLOAT, DOUBLE)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_bigint(insert_num int, c1 bigint, c2 bigint, c3 bigint, b STRING)
+PREHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_bigint(insert_num int, c1 bigint, c2 bigint, c3 bigint, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_bigint
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: BIGINT, (DECIMAL, FLOAT, DOUBLE)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_bigint(insert_num int, c1 bigint, c2 bigint, c3 bigint, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_bigint(insert_num int, c1 bigint, c2 bigint, c3 bigint, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_bigint
@@ -3709,13 +3478,11 @@ insert_num	c1	c2	c3	b
 2	-2	-2	-2	original
 3	-5000	-5000	-5000	original
 4	52927714	52927714	52927714	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_bigint replace columns (insert_num int, c1 decimal(38,18), c2 FLOAT, c3 DOUBLE, b STRING)
+PREHOOK: query: alter table table_change_lower_to_higher_numeric_group_bigint replace columns (insert_num int, c1 decimal(38,18), c2 FLOAT, c3 DOUBLE, b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_bigint
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_bigint
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_bigint replace columns (insert_num int, c1 decimal(38,18), c2 FLOAT, c3 DOUBLE, b STRING)
+POSTHOOK: query: alter table table_change_lower_to_higher_numeric_group_bigint replace columns (insert_num int, c1 decimal(38,18), c2 FLOAT, c3 DOUBLE, b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_bigint
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_bigint
@@ -3760,25 +3527,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_lower_to_higher_numeric_group_bigint
-            Statistics: Num rows: 4 Data size: 480 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1770 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: decimal(38,18)), c2 (type: float), c3 (type: double), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3, _col4
-              Statistics: Num rows: 4 Data size: 480 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 1770 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 480 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 1770 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: decimal(38,18)), _col2 (type: float), _col3 (type: double), _col4 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: decimal(38,18)), VALUE._col1 (type: float), VALUE._col2 (type: double), VALUE._col3 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3, _col4
-          Statistics: Num rows: 4 Data size: 480 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 1770 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 480 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1770 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -3817,17 +3584,11 @@ POSTHOOK: query: drop table table_change_lower_to_higher_numeric_group_bigint
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_bigint
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_bigint
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: FLOAT, (DOUBLE, DECIMAL)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_decimal(insert_num int, c1 float, c2 float, b STRING)
+PREHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_decimal(insert_num int, c1 float, c2 float, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_decimal
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: FLOAT, (DOUBLE, DECIMAL)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_decimal(insert_num int, c1 float, c2 float, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_decimal(insert_num int, c1 float, c2 float, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_decimal
@@ -3863,13 +3624,11 @@ insert_num	c1	c2	b
 2	753.7028	753.7028	original
 3	-5000.0	-5000.0	original
 4	5.2927712E7	5.2927712E7	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_decimal replace columns (insert_num int, c1 double, c2 decimal(38,18), b STRING)
+PREHOOK: query: alter table table_change_lower_to_higher_numeric_group_decimal replace columns (insert_num int, c1 double, c2 decimal(38,18), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_decimal
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_decimal
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_decimal replace columns (insert_num int, c1 double, c2 decimal(38,18), b STRING)
+POSTHOOK: query: alter table table_change_lower_to_higher_numeric_group_decimal replace columns (insert_num int, c1 double, c2 decimal(38,18), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_decimal
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_decimal
@@ -3913,25 +3672,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_lower_to_higher_numeric_group_decimal
-            Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1682 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: double), c2 (type: decimal(38,18)), b (type: string)
               outputColumnNames: _col0, _col1, _col2, _col3
-              Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 1682 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 1682 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: double), _col2 (type: decimal(38,18)), _col3 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: double), VALUE._col1 (type: decimal(38,18)), VALUE._col2 (type: string)
           outputColumnNames: _col0, _col1, _col2, _col3
-          Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 1682 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1682 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -3970,17 +3729,11 @@ POSTHOOK: query: drop table table_change_lower_to_higher_numeric_group_decimal
 POSTHOOK: type: DROPTABLE
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_decimal
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_decimal
-PREHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: DOUBLE, (DECIMAL)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_float(insert_num int, c1 double, b STRING)
+PREHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_float(insert_num int, c1 double, b STRING)
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_float
-POSTHOOK: query: --
--- SUBSECTION: ALTER TABLE CHANGE COLUMNS for "lower" type to "higher" NUMERIC_GROUP: DOUBLE, (DECIMAL)
---
-CREATE TABLE table_change_lower_to_higher_numeric_group_float(insert_num int, c1 double, b STRING)
+POSTHOOK: query: CREATE TABLE table_change_lower_to_higher_numeric_group_float(insert_num int, c1 double, b STRING)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_float
@@ -4015,13 +3768,11 @@ insert_num	c1	b
 2	753.7028	original
 3	-5000.0	original
 4	5.2927714E7	original
-PREHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_float replace columns (insert_num int, c1 decimal(38,18), b STRING)
+PREHOOK: query: alter table table_change_lower_to_higher_numeric_group_float replace columns (insert_num int, c1 decimal(38,18), b STRING)
 PREHOOK: type: ALTERTABLE_REPLACECOLS
 PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_float
 PREHOOK: Output: default@table_change_lower_to_higher_numeric_group_float
-POSTHOOK: query: -- Table-Non-Cascade CHANGE COLUMNS ...
-alter table table_change_lower_to_higher_numeric_group_float replace columns (insert_num int, c1 decimal(38,18), b STRING)
+POSTHOOK: query: alter table table_change_lower_to_higher_numeric_group_float replace columns (insert_num int, c1 decimal(38,18), b STRING)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_float
 POSTHOOK: Output: default@table_change_lower_to_higher_numeric_group_float
@@ -4064,25 +3815,25 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: table_change_lower_to_higher_numeric_group_float
-            Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1634 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: insert_num (type: int), c1 (type: decimal(38,18)), b (type: string)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 10 Data size: 1634 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: int)
                 sort order: +
-                Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 10 Data size: 1634 Basic stats: COMPLETE Column stats: NONE
                 value expressions: _col1 (type: decimal(38,18)), _col2 (type: string)
       Execution mode: vectorized
       Reduce Operator Tree:
         Select Operator
           expressions: KEY.reducesinkkey0 (type: int), VALUE._col0 (type: decimal(38,18)), VALUE._col1 (type: string)
           outputColumnNames: _col0, _col1, _col2
-          Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+          Statistics: Num rows: 10 Data size: 1634 Basic stats: COMPLETE Column stats: NONE
           File Output Operator
             compressed: false
-            Statistics: Num rows: 4 Data size: 416 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 10 Data size: 1634 Basic stats: COMPLETE Column stats: NONE
             table:
                 input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                 output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
