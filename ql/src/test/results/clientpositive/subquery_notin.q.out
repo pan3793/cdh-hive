@@ -1459,6 +1459,8 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: ((key < '11') and CASE WHEN ((key > '104')) THEN (true) ELSE (key is null) END) (type: boolean)
@@ -1497,6 +1499,8 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: src
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: (key < '11') (type: boolean)
@@ -1540,6 +1544,8 @@ STAGE PLANS:
               Statistics: Num rows: 166 Data size: 3257 Basic stats: COMPLETE Column stats: NONE
           TableScan
             alias: src
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: ((key < '11') and CASE WHEN ((key > '104')) THEN (null) ELSE ((key < '11')) END) (type: boolean)
