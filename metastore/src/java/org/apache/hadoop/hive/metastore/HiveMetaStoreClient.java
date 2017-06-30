@@ -161,7 +161,7 @@ import com.google.common.annotations.VisibleForTesting;
  */
 @Public
 @Unstable
-public class HiveMetaStoreClient implements IMetaStoreClient {
+public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   ThriftHiveMetastore.Iface client = null;
   private TTransport transport = null;
   private boolean isConnected = false;
