@@ -14,8 +14,8 @@ set -ex
 # Script created by Cloudcat with useful environment information
 [ -f /opt/toolchain/toolchain.sh ] && . /opt/toolchain/toolchain.sh
 
-# Use JAVA7_HOME if exists
-export JAVA_HOME=${JAVA7_HOME:-$JAVA_HOME}
+# Use JAVA8_HOME if exists
+export JAVA_HOME=${JAVA8_HOME:-$JAVA_HOME}
 
 # If JDK_VERSION exists, then try to get the value from JAVAX_HOME
 if [ -n "$JDK_VERSION" ]; then
