@@ -23,6 +23,7 @@ import org.apache.hadoop.hive.ql.exec.TableScanOperator;
 import org.apache.hadoop.hive.ql.plan.AbstractOperatorDesc;
 import org.apache.hadoop.hive.ql.plan.Explain;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
+import org.apache.hadoop.hive.ql.plan.MapWork;
 import org.apache.hadoop.hive.ql.plan.TableDesc;
 
 @Explain(displayName = "Spark Partition Pruning Sink Operator")
@@ -30,6 +31,9 @@ public class SparkPartitionPruningSinkDesc extends AbstractOperatorDesc {
 
   // column in the target table that will be pruned against
   private String targetColumnName;
+
+  // type of target column
+  private String targetColumnType;
 
   private TableDesc table;
 
@@ -40,7 +44,7 @@ public class SparkPartitionPruningSinkDesc extends AbstractOperatorDesc {
 
   private Path path;
 
-  private String targetWork;
+  private MapWork targetMapWork;
 
   @Explain(displayName = "tmp Path", explainLevels = { Explain.Level.EXTENDED })
   public Path getPath() {
@@ -53,11 +57,15 @@ public class SparkPartitionPruningSinkDesc extends AbstractOperatorDesc {
 
   @Explain(displayName = "target work")
   public String getTargetWork() {
-    return this.targetWork;
+    return this.targetMapWork.getName();
   }
 
-  public void setTargetWork(String targetWork) {
-    this.targetWork = targetWork;
+  public MapWork getTargetMapWork() {
+    return this.targetMapWork;
+  }
+
+  public void setTargetMapWork(MapWork targetMapWork) {
+    this.targetMapWork = targetMapWork;
   }
 
   public TableScanOperator getTableScan() {
@@ -68,13 +76,25 @@ public class SparkPartitionPruningSinkDesc extends AbstractOperatorDesc {
     this.tableScan = tableScan;
   }
 
-  @Explain(displayName = "target column name")
+  @Explain(displayName = "Target column")
+  public String displayTargetColumn() {
+    return targetColumnName + " (" + targetColumnType + ")";
+  }
+
   public String getTargetColumnName() {
     return targetColumnName;
   }
 
   public void setTargetColumnName(String targetColumnName) {
     this.targetColumnName = targetColumnName;
+  }
+
+  public String getTargetColumnType() {
+    return targetColumnType;
+  }
+
+  public void setTargetColumnType(String columnType) {
+    this.targetColumnType = columnType;
   }
 
   public ExprNodeDesc getPartKey() {

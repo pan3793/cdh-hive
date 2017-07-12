@@ -24,9 +24,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.hadoop.hive.ql.exec.NodeUtils.Function;
 import org.apache.hadoop.hive.ql.plan.MapJoinDesc;
+import org.apache.hadoop.hive.ql.plan.BaseWork;
+import org.apache.hadoop.hive.ql.plan.MapWork;
 import org.apache.hadoop.hive.ql.plan.OperatorDesc;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.slf4j.Logger;
@@ -329,5 +332,52 @@ public class OperatorUtils {
       }
     }
     return numberOperators;
+  }
+
+  /**
+   * Remove the branch that contains the specified operator. Do nothing if there's no branching,
+   * i.e. all the upstream operators have only one child.
+   */
+  public static void removeBranch(Operator<?> op) {
+    Operator<?> child = op;
+    Operator<?> curr = op;
+
+    while (curr.getChildOperators().size() <= 1) {
+      child = curr;
+      if (curr.getParentOperators() == null || curr.getParentOperators().isEmpty()) {
+        return;
+      }
+      curr = curr.getParentOperators().get(0);
+    }
+
+    curr.removeChild(child);
+  }
+
+  public static Set<Operator<?>> getOp(BaseWork work, Class<?> clazz) {
+    Set<Operator<?>> ops = new HashSet<Operator<?>>();
+    if (work instanceof MapWork) {
+      Collection<Operator<?>> opSet = ((MapWork) work).getAliasToWork().values();
+      Stack<Operator<?>> opStack = new Stack<Operator<?>>();
+      opStack.addAll(opSet);
+
+      while (!opStack.empty()) {
+        Operator<?> op = opStack.pop();
+        ops.add(op);
+        if (op.getChildOperators() != null) {
+          opStack.addAll(op.getChildOperators());
+        }
+      }
+    } else {
+      ops.addAll(work.getAllOperators());
+    }
+
+    Set<Operator<? extends OperatorDesc>> matchingOps =
+      new HashSet<Operator<? extends OperatorDesc>>();
+    for (Operator<? extends OperatorDesc> op : ops) {
+      if (clazz.isInstance(op)) {
+        matchingOps.add(op);
+      }
+    }
+    return matchingOps;
   }
 }

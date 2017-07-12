@@ -33,6 +33,9 @@ import com.google.common.annotations.VisibleForTesting;
 /**
  * Vectorized version for SparkPartitionPruningSinkOperator.
  * Forked from VectorAppMasterEventOperator.
+ *
+ * The vectorization APIs between CDH and Apache Hive are very different, so backporting this class required rewriting
+ * a lot of it. Most of the rewrite is copied from {@link VectorAppMasterEventOperator}.
  **/
 public class VectorSparkPartitionPruningSinkOperator extends SparkPartitionPruningSinkOperator {
 

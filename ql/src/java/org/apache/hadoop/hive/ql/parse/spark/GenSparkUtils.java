@@ -400,7 +400,7 @@ public class GenSparkUtils {
     }
 
     desc.setPath(new Path(tmpPath, sourceId));
-    desc.setTargetWork(targetWork.getName());
+    desc.setTargetMapWork(targetWork);
 
     // store table descriptor in map-targetWork
     if (!targetWork.getEventSourceTableDescMap().containsKey(sourceId)) {
@@ -415,6 +415,12 @@ public class GenSparkUtils {
     }
     List<String> columns = targetWork.getEventSourceColumnNameMap().get(sourceId);
     columns.add(desc.getTargetColumnName());
+
+    if (!targetWork.getEventSourceColumnTypeMap().containsKey(sourceId)) {
+      targetWork.getEventSourceColumnTypeMap().put(sourceId, new LinkedList<String>());
+    }
+    List<String> columnTypes = targetWork.getEventSourceColumnTypeMap().get(sourceId);
+    columnTypes.add(desc.getTargetColumnType());
 
     // store partition key expr in map-targetWork
     if (!targetWork.getEventSourcePartKeyExprMap().containsKey(sourceId)) {

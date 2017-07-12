@@ -151,7 +151,7 @@ public class DynamicPartitionPruningOptimization implements NodeProcessor {
     TableScanOperator ts = null;
 
     if (!parseContext.getConf().getBoolVar(ConfVars.TEZ_DYNAMIC_PARTITION_PRUNING) &&
-        !parseContext.getConf().getBoolVar(ConfVars.SPARK_DYNAMIC_PARTITION_PRUNING)) {
+        !parseContext.getConf().isSparkDPPAny()) {
       // nothing to do when the optimization is off
       return null;
     }
@@ -322,6 +322,7 @@ public class DynamicPartitionPruningOptimization implements NodeProcessor {
       desc.setTable(PlanUtils.getReduceValueTableDesc(PlanUtils
           .getFieldSchemasFromColumnList(keyExprs, "key")));
       desc.setTargetColumnName(column);
+      desc.setTargetColumnType(columnType);
       desc.setPartKey(partKey);
       OperatorFactory.getAndMakeChild(desc, groupByOp);
     }
