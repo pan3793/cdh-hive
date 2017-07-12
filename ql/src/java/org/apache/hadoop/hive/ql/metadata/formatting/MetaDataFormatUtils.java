@@ -354,6 +354,10 @@ public final class MetaDataFormatUtils {
     return tableInfo.toString();
   }
 
+  public static String getTableInformation(Table table) {
+    return getTableInformation(table, true);
+  }
+
   public static String getTableInformation(Table table, boolean isOutputPadded) {
     StringBuilder tableInfo = new StringBuilder(DEFAULT_STRINGBUILDER_SIZE);
 
