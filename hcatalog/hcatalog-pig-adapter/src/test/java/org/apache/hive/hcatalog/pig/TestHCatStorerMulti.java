@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +34,6 @@ import org.apache.hadoop.hive.cli.CliSessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.CommandNeedRetryException;
 import org.apache.hadoop.hive.ql.Driver;
-import org.apache.hadoop.hive.ql.io.IOConstants;
 import org.apache.hadoop.hive.ql.io.StorageFormats;
 import org.apache.hadoop.hive.ql.session.SessionState;
 
@@ -69,13 +67,7 @@ public class TestHCatStorerMulti {
   private static Map<Integer, Pair<Integer, String>> basicInputData;
 
   private static final Map<String, Set<String>> DISABLED_STORAGE_FORMATS =
-      new HashMap<String, Set<String>>() {{
-        put(IOConstants.PARQUETFILE, new HashSet<String>() {{
-          add("testStoreBasicTable");
-          add("testStorePartitionedTable");
-          add("testStoreTableMulti");
-        }});
-      }};
+      new HashMap<String, Set<String>>();
 
   private String storageFormat;
 
