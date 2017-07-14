@@ -88,7 +88,7 @@ public class TestQueryHooks {
 
   @Test
   public void testQueryLifeTimeWithParseHooksWithCompileError() throws IllegalAccessException, ClassNotFoundException, InstantiationException, CommandNeedRetryException {
-    String query = "select * from foo";
+    String query = "select * from testQueryLifeTimeWithParseHooksWithCompileError";
     ArgumentMatcher<QueryLifeTimeHookContext> argMatcher = new QueryLifeTimeHookContextMatcher(query);
     QueryLifeTimeHookWithParseHooks mockHook = mock(QueryLifeTimeHookWithParseHooks.class);
     int ret = createDriver(mockHook).run(query).getResponseCode();
@@ -118,7 +118,7 @@ public class TestQueryHooks {
 
   @Test
   public void testQueryLifeTimeWithCompileError() throws IllegalAccessException, ClassNotFoundException, InstantiationException, CommandNeedRetryException {
-    String query = "select * from foo";
+    String query = "select * from testQueryLifeTimeWithCompileError";
     ArgumentMatcher<QueryLifeTimeHookContext> argMatcher = new QueryLifeTimeHookContextMatcher(query);
     QueryLifeTimeHook mockHook = mock(QueryLifeTimeHook.class);
     int ret = createDriver(mockHook).run(query).getResponseCode();
