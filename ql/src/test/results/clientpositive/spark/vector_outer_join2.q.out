@@ -256,11 +256,11 @@ STAGE PLANS:
             Map Operator Tree:
                 TableScan
                   alias: c
-                  Statistics: Num rows: 20 Data size: 5286 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 20 Data size: 5237 Basic stats: COMPLETE Column stats: NONE
                   Select Operator
                     expressions: cint (type: int)
                     outputColumnNames: _col0
-                    Statistics: Num rows: 20 Data size: 5286 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 20 Data size: 5237 Basic stats: COMPLETE Column stats: NONE
                     Spark HashTable Sink Operator
                       keys:
                         0 _col0 (type: int)
@@ -272,11 +272,11 @@ STAGE PLANS:
             Map Operator Tree:
                 TableScan
                   alias: c
-                  Statistics: Num rows: 20 Data size: 5286 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 20 Data size: 5237 Basic stats: COMPLETE Column stats: NONE
                   Select Operator
                     expressions: cbigint (type: bigint)
                     outputColumnNames: _col0
-                    Statistics: Num rows: 20 Data size: 5286 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 20 Data size: 5237 Basic stats: COMPLETE Column stats: NONE
                     Spark HashTable Sink Operator
                       keys:
                         0 _col1 (type: bigint)
@@ -295,11 +295,11 @@ STAGE PLANS:
             Map Operator Tree:
                 TableScan
                   alias: c
-                  Statistics: Num rows: 20 Data size: 5286 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 20 Data size: 5237 Basic stats: COMPLETE Column stats: NONE
                   Select Operator
                     expressions: cint (type: int), cbigint (type: bigint)
                     outputColumnNames: _col0, _col1
-                    Statistics: Num rows: 20 Data size: 5286 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 20 Data size: 5237 Basic stats: COMPLETE Column stats: NONE
                     Map Join Operator
                       condition map:
                            Left Outer Join0 to 1
@@ -309,7 +309,7 @@ STAGE PLANS:
                       outputColumnNames: _col1
                       input vertices:
                         1 Map 3
-                      Statistics: Num rows: 22 Data size: 5814 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 22 Data size: 5760 Basic stats: COMPLETE Column stats: NONE
                       Map Join Operator
                         condition map:
                              Left Outer Join0 to 1
@@ -319,7 +319,7 @@ STAGE PLANS:
                         outputColumnNames: _col1
                         input vertices:
                           1 Map 4
-                        Statistics: Num rows: 24 Data size: 6395 Basic stats: COMPLETE Column stats: NONE
+                        Statistics: Num rows: 24 Data size: 6336 Basic stats: COMPLETE Column stats: NONE
                         Group By Operator
                           aggregations: count(), sum(_col1)
                           mode: hash
