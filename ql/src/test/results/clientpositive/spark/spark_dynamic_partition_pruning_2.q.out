@@ -846,41 +846,6 @@ STAGE PLANS:
     Spark
 #### A masked pattern was here ####
       Vertices:
-        Map 4 
-            Map Operator Tree:
-                TableScan
-                  alias: dim_shops
-                  filterExpr: (id is not null and (label = 'bar')) (type: boolean)
-                  Statistics: Num rows: 3 Data size: 15 Basic stats: COMPLETE Column stats: NONE
-                  Filter Operator
-                    predicate: (id is not null and (label = 'bar')) (type: boolean)
-                    Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
-                    Spark HashTable Sink Operator
-                      keys:
-                        0 dim_shops_id (type: int)
-                        1 id (type: int)
-                    Select Operator
-                      expressions: id (type: int)
-                      outputColumnNames: _col0
-                      Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
-                      Group By Operator
-                        keys: _col0 (type: int)
-                        mode: hash
-                        outputColumnNames: _col0
-                        Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
-                        Spark Partition Pruning Sink Operator
-                          partition key expr: dim_shops_id
-#### A masked pattern was here ####
-                          Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
-                          target column name: dim_shops_id
-                          target work: Map 3
-            Local Work:
-              Map Reduce Local Work
-
-  Stage: Stage-3
-    Spark
-#### A masked pattern was here ####
-      Vertices:
         Map 2 
             Map Operator Tree:
                 TableScan
@@ -909,6 +874,41 @@ STAGE PLANS:
                           Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
                           target column name: dim_shops_id
                           target work: Map 1
+            Local Work:
+              Map Reduce Local Work
+
+  Stage: Stage-3
+    Spark
+#### A masked pattern was here ####
+      Vertices:
+        Map 4 
+            Map Operator Tree:
+                TableScan
+                  alias: dim_shops
+                  filterExpr: (id is not null and (label = 'bar')) (type: boolean)
+                  Statistics: Num rows: 3 Data size: 15 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (id is not null and (label = 'bar')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
+                    Spark HashTable Sink Operator
+                      keys:
+                        0 dim_shops_id (type: int)
+                        1 id (type: int)
+                    Select Operator
+                      expressions: id (type: int)
+                      outputColumnNames: _col0
+                      Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
+                      Group By Operator
+                        keys: _col0 (type: int)
+                        mode: hash
+                        outputColumnNames: _col0
+                        Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
+                        Spark Partition Pruning Sink Operator
+                          partition key expr: dim_shops_id
+#### A masked pattern was here ####
+                          Statistics: Num rows: 1 Data size: 5 Basic stats: COMPLETE Column stats: NONE
+                          target column name: dim_shops_id
+                          target work: Map 3
             Local Work:
               Map Reduce Local Work
 
