@@ -139,6 +139,7 @@ import org.apache.hadoop.util.StringUtils;
 import org.apache.thrift.TException;
 
 import com.google.common.collect.Sets;
+import com.google.common.base.Splitter;
 
 /**
  * This class has functions that implement meta data/DDL operations using calls
@@ -2599,6 +2600,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
         final boolean needToCopy = needToCopy(srcP, destf, srcFs, destFs);
 
         final boolean isRenameAllowed = !needToCopy && !isSrcLocal;
+
+        final String msg = "Unable to move source " + srcP + " to destination " + destf;
+
         // If we do a rename for a non-local file, we will be transfering the original
         // file permissions from source to the destination. Else, in case of mvFile() where we
         // copy from source to destination, we will inherit the destination's parent group ownership.
@@ -2611,25 +2615,29 @@ private void constructOneLBLocationMap(FileStatus fSta,
             if (null != newFiles) {
               newFiles.add(destPath);
             }
-          } catch (IOException ioe) {
-            LOG.error(String.format("Failed to move: {}", ioe.getMessage()));
-            throw new HiveException(ioe.getCause());
+          } catch (Exception e) {
+            throw getHiveException(e, msg, "Failed to move: {}");
           }
         } else {
           futures.add(pool.submit(new Callable<ObjectPair<Path, Path>>() {
             @Override
-            public ObjectPair<Path, Path> call() throws Exception {
+            public ObjectPair<Path, Path> call() throws HiveException {
               SessionState.setCurrentSessionState(parentSession);
 
-              Path destPath = mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
+              try {
+                Path destPath =
+                    mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
 
-              if (inheritPerms) {
-                ShimLoader.getHadoopShims().setFullFileStatus(conf, fullDestStatus, srcGroup, destFs, destPath, false);
+                if (inheritPerms) {
+                  ShimLoader.getHadoopShims().setFullFileStatus(conf, fullDestStatus, srcGroup, destFs, destPath, false);
+                }
+                if (null != newFiles) {
+                  newFiles.add(destPath);
+                }
+                return ObjectPair.create(srcP, destPath);
+              } catch (Exception e) {
+                throw getHiveException(e, msg);
               }
-              if (null != newFiles) {
-                newFiles.add(destPath);
-              }
-              return ObjectPair.create(srcP, destPath);
             }
           }));
         }
@@ -2646,9 +2654,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
           ObjectPair<Path, Path> pair = future.get();
           LOG.debug(String.format("Moved src: {}", pair.getFirst().toString(), ", to dest: {}", pair.getSecond().toString()));
         } catch (Exception e) {
-          LOG.error(String.format("Failed to move: {}", e.getMessage()));
-          pool.shutdownNow();
-          throw new HiveException(e.getCause());
+          throw handlePoolException(pool, e);
         }
       }
     }
@@ -2841,6 +2847,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
     // (2) It is assumed that subdir and dir are in same encryption zone.
     // (3) Move individual files from scr dir to dest dir.
     boolean destIsSubDir = isSubDir(srcf, destf, srcFs, destFs, isSrcLocal);
+    final String msg = "Unable to move source " + srcf + " to destination " + destf;
+
     try {
       if (inheritPerms || replace) {
         try{
@@ -2891,6 +2899,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
             for (final FileStatus srcStatus : srcs) {
 
               final Path destFile = new Path(destf, srcStatus.getPath().getName());
+
+              final String poolMsg =
+                  "Unable to move source " + srcStatus.getPath() + " to destination " + destFile;
+
               if (null == pool) {
                 if(!destFs.rename(srcStatus.getPath(), destFile)) {
                   throw new IOException("rename for src path: " + srcStatus.getPath() + " to dest:"
@@ -2899,16 +2911,21 @@ private void constructOneLBLocationMap(FileStatus fSta,
               } else {
                 futures.add(pool.submit(new Callable<Void>() {
                   @Override
-                  public Void call() throws Exception {
+                  public Void call() throws HiveException {
                     SessionState.setCurrentSessionState(parentSession);
                     final String group = srcStatus.getGroup();
-                    if(destFs.rename(srcStatus.getPath(), destFile)) {
-                      if (inheritPerms) {
-                        ShimLoader.getHadoopShims().setFullFileStatus(conf, desiredStatus, group, destFs, destFile, false);
+
+                    try {
+                      if(destFs.rename(srcStatus.getPath(), destFile)) {
+                        if (inheritPerms) {
+                          ShimLoader.getHadoopShims().setFullFileStatus(conf, desiredStatus, group, destFs, destFile, false);
+                        }
+                      } else {
+                        throw new IOException(
+                            "rename for src path: " + srcStatus.getPath() + " to dest path:" + destFile + " returned false");
                       }
-                    } else {
-                      throw new IOException("rename for src path: " + srcStatus.getPath() + " to dest path:"
-                          + destFile + " returned false");
+                    } catch (Exception e) {
+                      throw getHiveException(e, poolMsg);
                     }
                     return null;
                   }
@@ -2925,9 +2942,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
                 try {
                   future.get();
                 } catch (Exception e) {
-                  LOG.debug(e.getMessage());
-                  pool.shutdownNow();
-                  throw new HiveException(e.getCause());
+                  throw handlePoolException(pool, e);
                 }
               }
             }
@@ -2953,9 +2968,57 @@ private void constructOneLBLocationMap(FileStatus fSta,
           }
         }
       }
-    } catch (IOException ioe) {
-      throw new HiveException("Unable to move source " + srcf + " to destination " + destf, ioe);
+    } catch (Exception e) {
+      throw getHiveException(e, msg);
     }
+  }
+
+  static private HiveException getHiveException(Exception e, String msg) {
+    return getHiveException(e, msg, null);
+  }
+
+  static private HiveException handlePoolException(ExecutorService pool, Exception e) {
+    HiveException he = null;
+
+    if (e instanceof HiveException) {
+      he = (HiveException) e;
+      if (he.getCanonicalErrorMsg() != ErrorMsg.GENERIC_ERROR) {
+        if (he.getCanonicalErrorMsg() == ErrorMsg.UNRESOLVED_RT_EXCEPTION) {
+          LOG.error(String.format("Failed to move: {}", he.getMessage()));
+        } else {
+          LOG.info(String.format("Failed to move: {}", he.getRemoteErrorMsg()));
+        }
+      }
+    } else {
+      LOG.error(String.format("Failed to move: {}", e.getMessage()));
+      he = new HiveException(e.getCause());
+    }
+    pool.shutdownNow();
+    return he;
+  }
+
+  static private HiveException getHiveException(Exception e, String msg, String logMsg) {
+    // The message from remote exception includes the entire stack.  The error thrown from
+    // hive based on the remote exception needs only the first line.
+    String hiveErrMsg = null;
+
+    if (e.getMessage() != null) {
+      hiveErrMsg = String.format("%s%s%s", msg, ": ",
+          Splitter.on(System.getProperty("line.separator")).split(e.getMessage()).iterator()
+              .next());
+    } else {
+      hiveErrMsg = msg;
+    }
+
+    ErrorMsg errorMsg = ErrorMsg.getErrorMsg(e);
+
+    if (logMsg != null)
+      LOG.info(String.format(logMsg, e.getMessage()));
+
+    if (errorMsg != ErrorMsg.UNRESOLVED_RT_EXCEPTION)
+      return new HiveException(e, e.getMessage(), errorMsg, hiveErrMsg);
+    else
+      return new HiveException(msg, e);
   }
 
   /**
@@ -3096,10 +3159,16 @@ private void constructOneLBLocationMap(FileStatus fSta,
             for (FileStatus bucketStat : bucketStats) {
               Path bucketSrc = bucketStat.getPath();
               Path bucketDest = new Path(deltaDest, bucketSrc.getName());
+              final String msg = "Unable to move source " + bucketSrc + " to destination " +
+                  bucketDest;
               LOG.info("Moving bucket " + bucketSrc.toUri().toString() + " to " +
                   bucketDest.toUri().toString());
-              fs.rename(bucketSrc, bucketDest);
-              if (newFiles != null) newFiles.add(bucketDest);
+              try {
+                fs.rename(bucketSrc, bucketDest);
+                if (newFiles != null) newFiles.add(bucketDest);
+              } catch (Exception e) {
+                throw getHiveException(e, msg);
+              }
             }
           } catch (IOException e) {
             throw new HiveException("Error moving acid files " + e.getMessage(), e);

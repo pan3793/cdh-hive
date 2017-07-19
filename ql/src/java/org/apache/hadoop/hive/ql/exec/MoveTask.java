@@ -33,6 +33,7 @@ import org.apache.hadoop.hive.metastore.api.InvalidOperationException;
 import org.apache.hadoop.hive.metastore.api.Order;
 import org.apache.hadoop.hive.ql.Context;
 import org.apache.hadoop.hive.ql.DriverContext;
+import org.apache.hadoop.hive.ql.ErrorMsg;
 import org.apache.hadoop.hive.ql.exec.mr.MapRedTask;
 import org.apache.hadoop.hive.ql.exec.mr.MapredLocalTask;
 import org.apache.hadoop.hive.ql.hooks.LineageInfo.DataContainer;
@@ -301,8 +302,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
             boolean flag = HiveFileFormatUtils.checkInputFormat(
                 srcFs, conf, tbd.getTable().getInputFileFormatClass(), files);
             if (!flag) {
-              throw new HiveException(
-                  "Wrong file format. Please check the file's format.");
+              throw new HiveException(ErrorMsg.WRONG_FILE_FORMAT);
             }
           }
         }
@@ -496,6 +496,23 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
       }
 
       return 0;
+    } catch (HiveException he) {
+      int errorCode = 1;
+
+      if (he.getCanonicalErrorMsg() != ErrorMsg.GENERIC_ERROR) {
+        errorCode = he.getCanonicalErrorMsg().getErrorCode();
+        if (he.getCanonicalErrorMsg() == ErrorMsg.UNRESOLVED_RT_EXCEPTION) {
+          console.printError("Failed with exception " + he.getMessage(), "\n"
+              + StringUtils.stringifyException(he));
+        } else {
+          console.printError("Failed with exception " + he.getMessage()
+              + "\nRemote Exception: " + he.getRemoteErrorMsg());
+          console.printInfo("\n", StringUtils.stringifyException(he),false);
+        }
+      }
+
+      setException(he);
+      return errorCode;
     } catch (Exception e) {
       console.printError("Failed with exception " + e.getMessage(), "\n"
           + StringUtils.stringifyException(e));
