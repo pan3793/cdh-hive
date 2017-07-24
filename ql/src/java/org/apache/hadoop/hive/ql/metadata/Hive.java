@@ -1976,10 +1976,12 @@ private void constructOneLBLocationMap(FileStatus fSta,
               if (tpart == null) {
                 // This means the exception was caused by something other than a race condition
                 // in creating the partition, since the partition still doesn't exist.
+                cleanPartitionContents(new Path(partPath), tbl);
                 throw e;
               }
               alterPartitionSpec(tbl, partSpec, tpart, inheritTableSpecs, partPath);
             } else {
+              cleanPartitionContents(new Path(partPath), tbl);
               throw e;
             }
           }
@@ -1997,6 +1999,15 @@ private void constructOneLBLocationMap(FileStatus fSta,
       throw new HiveException(e);
     }
     return new Partition(tbl, tpart);
+  }
+
+  private void cleanPartitionContents(Path newPartPath, Table tbl) {
+    try {
+      final FileSystem newPathFileSystem = newPartPath.getFileSystem(this.getConf());
+      FileUtils.moveToTrash(newPathFileSystem, newPartPath, this.getConf());
+    } catch (IOException io) {
+      LOG.error("Could not delete partition directory contents after failed partition creation: ", io);
+    }
   }
 
   private void alterPartitionSpec(Table tbl,
