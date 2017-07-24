@@ -1182,45 +1182,75 @@ public class Commands {
     return true;
   }
 
-  private Runnable createLogRunnable(Statement statement) {
+  private Runnable createLogRunnable(final Statement statement) {
     if (statement instanceof HiveStatement) {
-      final HiveStatement hiveStatement = (HiveStatement) statement;
-
-      Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-          while (hiveStatement.hasMoreLogs()) {
-            try {
-              // fetch the log periodically and output to beeline console
-              for (String log : hiveStatement.getQueryLog()) {
-                if (!beeLine.isTestMode()) {
-                  beeLine.info(log);
-                } else {
-                  // In test mode print the logs to the output
-                  beeLine.output(log);
-                }
-              }
-              Thread.sleep(DEFAULT_QUERY_PROGRESS_INTERVAL);
-            } catch (SQLException e) {
-              beeLine.error(new SQLWarning(e));
-              return;
-            } catch (InterruptedException e) {
-              beeLine.debug("Getting log thread is interrupted, since query is done!");
-              showRemainingLogsIfAny(hiveStatement);
-              return;
-            }
-          }
-        }
-      };
-      return runnable;
+      return new LogRunnable(this, (HiveStatement) statement, DEFAULT_QUERY_PROGRESS_INTERVAL);
     } else {
-      beeLine.debug("The statement instance is not HiveStatement type: " + statement.getClass());
+      beeLine.debug(
+          "The statement instance is not HiveStatement type: " + statement
+               .getClass());
       return new Runnable() {
         @Override
         public void run() {
           // do nothing.
         }
       };
+    }
+  }
+
+  private void error(Throwable throwable) {
+    beeLine.error(throwable);
+  }
+
+  private void debug(String message) {
+    beeLine.debug(message);
+  }
+
+  static class LogRunnable implements Runnable {
+    private final Commands commands;
+    private final HiveStatement hiveStatement;
+    private final long queryProgressInterval;
+
+    LogRunnable(Commands commands, HiveStatement hiveStatement,
+                long queryProgressInterval) {
+      this.hiveStatement = hiveStatement;
+      this.commands = commands;
+      this.queryProgressInterval = queryProgressInterval;
+    }
+
+    private void updateQueryLog() {
+      try {
+        List<String> queryLogs = hiveStatement.getQueryLog();
+        for (String log : queryLogs) {
+          if (!commands.beeLine.isTestMode()) {
+            commands.beeLine.info(log);
+          } else {
+            // In test mode print the logs to the output
+            commands.beeLine.output(log);
+          }
+        }
+      } catch (SQLException e) {
+        commands.error(new SQLWarning(e));
+      }
+    }
+
+    @Override public void run() {
+      try {
+        while (hiveStatement.hasMoreLogs()) {
+          /*
+            get the operation logs once and print it, then wait till progress bar update is complete
+            before printing the remaining logs.
+          */
+          commands.debug("going to print operations logs");
+          updateQueryLog();
+          commands.debug("printed operations logs");
+          Thread.sleep(queryProgressInterval);
+        }
+      } catch (InterruptedException e) {
+        commands.debug("Getting log thread is interrupted, since query is done!");
+      } finally {
+        commands.showRemainingLogsIfAny(hiveStatement);
+      }
     }
   }
 
