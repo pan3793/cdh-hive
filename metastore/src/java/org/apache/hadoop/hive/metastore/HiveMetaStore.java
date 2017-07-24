@@ -902,7 +902,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.CREATE_DATABASE,
                                                 new CreateDatabaseEvent(db, success, this),
                                                 null,
-                                                transactionalListenersResponses);
+                                                transactionalListenersResponses, ms);
         }
       }
     }
@@ -1134,7 +1134,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.DROP_DATABASE,
                                                 new DropDatabaseEvent(db, success, this),
                                                 null,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
     }
@@ -1475,7 +1475,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.CREATE_TABLE,
                                                 new CreateTableEvent(tbl, success, this),
                                                 envContext,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
     }
@@ -1719,7 +1719,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.DROP_TABLE,
                                                 new DropTableEvent(tbl, deleteData, success, this),
                                                 envContext,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
       return success;
@@ -2170,7 +2170,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.ADD_PARTITION,
                                                 new AddPartitionEvent(tbl, part, success, this),
                                                 envContext,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
       return part;
@@ -2425,7 +2425,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           if (!listeners.isEmpty()) {
             MetaStoreListenerNotifier.notifyEvent(listeners,
                                                   EventType.ADD_PARTITION,
-                                                  new AddPartitionEvent(tbl, parts, false, this));
+                                                  new AddPartitionEvent(tbl, parts, false, this),
+                                                  null, null, ms);
           }
         } else {
           if (!listeners.isEmpty()) {
@@ -2433,13 +2434,14 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                   EventType.ADD_PARTITION,
                                                   new AddPartitionEvent(tbl, newParts, true, this),
                                                   null,
-                                                  transactionalListenerResponses);
+                                                  transactionalListenerResponses, ms);
 
             if (!existingParts.isEmpty()) {
               // The request has succeeded but we failed to add these partitions.
               MetaStoreListenerNotifier.notifyEvent(listeners,
                                                     EventType.ADD_PARTITION,
-                                                    new AddPartitionEvent(tbl, existingParts, false, this));
+                                                    new AddPartitionEvent(tbl, existingParts, false, this),
+                                                    null, null, ms);
             }
           }
         }
@@ -2627,7 +2629,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.ADD_PARTITION,
                                                 new AddPartitionEvent(tbl, partitionSpecProxy, true, this),
                                                 null,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
     }
@@ -2781,7 +2783,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.ADD_PARTITION,
                                                 new AddPartitionEvent(tbl, Arrays.asList(part), success, this),
                                                 envContext,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
 
         }
       }
@@ -2935,7 +2937,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.ADD_PARTITION,
                                                 addPartitionEvent,
                                                 null,
-                                                transactionalListenerResponsesForAddPartition);
+                                                transactionalListenerResponsesForAddPartition, ms);
 
           i = 0;
           for (Partition partition : partitionsToExchange) {
@@ -2950,7 +2952,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                   EventType.DROP_PARTITION,
                                                   dropPartitionEvent,
                                                   null,
-                                                  parameters);
+                                                  parameters, ms);
             i++;
           }
         }
@@ -3037,7 +3039,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.DROP_PARTITION,
                                                 new DropPartitionEvent(tbl, part, success, deleteData, this),
                                                 envContext,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
       return true;
@@ -3230,7 +3232,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                     EventType.DROP_PARTITION,
                                                     new DropPartitionEvent(tbl, part, success, deleteData, this),
                                                     envContext,
-                                                    parameters);
+                                                    parameters, ms);
 
               i++;
             }
@@ -3822,7 +3824,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.ALTER_INDEX,
                                                 new AlterIndexEvent(oldIndex, newIndex, success, this),
                                                 null,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
     }
@@ -4503,7 +4505,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.CREATE_INDEX,
                                                 new AddIndexEvent(index, success, this),
                                                 null,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
     }
@@ -4596,7 +4598,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.DROP_INDEX,
                                                 new DropIndexEvent(index, success, this),
                                                 null,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
       return success;
@@ -6067,7 +6069,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.CREATE_FUNCTION,
                                                 new CreateFunctionEvent(func, success, this),
                                                 null,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
     }
@@ -6106,7 +6108,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                                                 EventType.DROP_FUNCTION,
                                                 new DropFunctionEvent(func, success, this),
                                                 null,
-                                                transactionalListenerResponses);
+                                                transactionalListenerResponses, ms);
         }
       }
     }

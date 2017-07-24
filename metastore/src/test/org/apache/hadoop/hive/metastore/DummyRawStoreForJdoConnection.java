@@ -108,6 +108,11 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   }
 
   @Override
+  public boolean isActiveTransaction() {
+    return false;
+  }
+
+  @Override
   public void rollbackTransaction() {
 
 
