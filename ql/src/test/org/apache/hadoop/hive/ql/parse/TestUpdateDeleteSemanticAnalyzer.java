@@ -40,7 +40,9 @@ import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.plan.ExplainWork;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +54,17 @@ public class TestUpdateDeleteSemanticAnalyzer {
   private HiveConf conf;
   private Hive db;
 
-  // All of the insert, update, and delete tests assume two tables, T and U, each with columns a,
-  // and b.  U it partitioned by an additional column ds.  These are created by parseAndAnalyze
+  // All of the insert, update, and delete tests assume two tables, T_<testName> and U_<testName>, each with columns a,
+  // and b.  U_<testName> it partitioned by an additional column ds.  These are created by parseAndAnalyze
   // and removed by cleanupTables().
+
+  @Rule
+  public TestName name = new TestName();
 
   @Test
   public void testInsertSelect() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("insert into table T select a, b from U", "testInsertSelect");
+      ReturnInfo rc = parseAndAnalyze("insert into table T_testInsertSelect select a, b from U_testInsertSelect");
 
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
 
@@ -71,7 +76,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testDeleteAllNonPartitioned() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("delete from T", "testDeleteAllNonPartitioned");
+      ReturnInfo rc = parseAndAnalyze("delete from T_testDeleteAllNonPartitioned");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -81,7 +86,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testDeleteWhereNoPartition() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("delete from T where a > 5", "testDeleteWhereNoPartition");
+      ReturnInfo rc = parseAndAnalyze("delete from T_testDeleteWhereNoPartition where a > 5");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -91,7 +96,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testDeleteAllPartitioned() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("delete from U", "testDeleteAllPartitioned");
+      ReturnInfo rc = parseAndAnalyze("delete from U_testDeleteAllPartitioned");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -101,7 +106,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testDeleteAllWherePartitioned() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("delete from U where a > 5", "testDeleteAllWherePartitioned");
+      ReturnInfo rc = parseAndAnalyze("delete from U_testDeleteAllWherePartitioned where a > 5");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -111,8 +116,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testDeleteOnePartition() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("delete from U where ds = 'today'",
-          "testDeleteFromPartitionOnly");
+      ReturnInfo rc = parseAndAnalyze("delete from U_testDeleteOnePartition where ds = 'today'");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -122,8 +126,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testDeleteOnePartitionWhere() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("delete from U where ds = 'today' and a > 5",
-          "testDeletePartitionWhere");
+      ReturnInfo rc = parseAndAnalyze("delete from U_testDeleteOnePartitionWhere where ds = 'today' and a > 5");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -133,7 +136,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testUpdateAllNonPartitioned() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("update T set b = 5", "testUpdateAllNonPartitioned");
+      ReturnInfo rc = parseAndAnalyze("update T_testUpdateAllNonPartitioned set b = 5");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -143,8 +146,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testUpdateAllNonPartitionedWhere() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("update T set b = 5 where b > 5",
-          "testUpdateAllNonPartitionedWhere");
+      ReturnInfo rc = parseAndAnalyze("update T_testUpdateAllNonPartitionedWhere set b = 5 where b > 5");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -154,7 +156,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testUpdateAllPartitioned() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("update U set b = 5", "testUpdateAllPartitioned");
+      ReturnInfo rc = parseAndAnalyze("update U_testUpdateAllPartitioned set b = 5");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -164,8 +166,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testUpdateAllPartitionedWhere() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("update U set b = 5 where b > 5",
-          "testUpdateAllPartitionedWhere");
+      ReturnInfo rc = parseAndAnalyze("update U_testUpdateAllPartitionedWhere set b = 5 where b > 5");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -175,8 +176,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testUpdateOnePartition() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("update U set b = 5 where ds = 'today'",
-          "testUpdateOnePartition");
+      ReturnInfo rc = parseAndAnalyze("update U_testUpdateOnePartition set b = 5 where ds = 'today'");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -186,8 +186,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testUpdateOnePartitionWhere() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("update U set b = 5 where ds = 'today' and b > 5",
-          "testUpdateOnePartitionWhere");
+      ReturnInfo rc = parseAndAnalyze("update U_testUpdateOnePartitionWhere set b = 5 where ds = 'today' and b > 5");
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
     } finally {
       cleanupTables();
@@ -197,8 +196,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   @Test
   public void testInsertValues() throws Exception {
     try {
-      ReturnInfo rc = parseAndAnalyze("insert into table T values ('abc', 3), ('ghi', null)",
-          "testInsertValues");
+      ReturnInfo rc = parseAndAnalyze("insert into table T_testInsertValues values ('abc', 3), ('ghi', null)");
 
       LOG.info(explain((SemanticAnalyzer)rc.sem, rc.plan));
 
@@ -209,10 +207,9 @@ public class TestUpdateDeleteSemanticAnalyzer {
 
   @Test
   public void testInsertValuesPartitioned() throws Exception {
-    try {
-      ReturnInfo rc = parseAndAnalyze("insert into table U partition (ds) values " +
-              "('abc', 3, 'today'), ('ghi', 5, 'tomorrow')",
-          "testInsertValuesPartitioned");
+	try {
+      ReturnInfo rc = parseAndAnalyze("insert into table U_testInsertValuesPartitioned partition (ds) values " +
+              "('abc', 3, 'today'), ('ghi', 5, 'tomorrow')");
 
       LOG.info(explain((SemanticAnalyzer) rc.sem, rc.plan));
 
@@ -234,9 +231,10 @@ public class TestUpdateDeleteSemanticAnalyzer {
   }
 
   public void cleanupTables() throws HiveException {
+    String testName = name.getMethodName();
     if (db != null) {
-      db.dropTable("T");
-      db.dropTable("U");
+      db.dropTable("T_" + testName);
+      db.dropTable("U_" + testName);
     }
   }
 
@@ -250,9 +248,12 @@ public class TestUpdateDeleteSemanticAnalyzer {
     }
   }
 
-  private ReturnInfo parseAndAnalyze(String query, String testName)
+  private ReturnInfo parseAndAnalyze(String query)
       throws IOException, ParseException, HiveException {
 
+    String testName = name.getMethodName();
+    String tTable = "T_" + testName;
+    String uTable = "U_" + testName;
     SessionState.start(conf);
     Context ctx = new Context(conf);
     ctx.setCmd(query);
@@ -270,11 +271,11 @@ public class TestUpdateDeleteSemanticAnalyzer {
     // connection, which is conveniently created by the semantic analyzer.
     Map<String, String> params = new HashMap<String, String>(1);
     params.put(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL, "true");
-    db.createTable("T", Arrays.asList("a", "b"), null, OrcInputFormat.class,
+    db.createTable(tTable, Arrays.asList("a", "b"), null, OrcInputFormat.class,
         OrcOutputFormat.class, 2, Arrays.asList("a"), params);
-    db.createTable("U", Arrays.asList("a", "b"), Arrays.asList("ds"), OrcInputFormat.class,
+    db.createTable(uTable, Arrays.asList("a", "b"), Arrays.asList("ds"), OrcInputFormat.class,
         OrcOutputFormat.class, 2, Arrays.asList("a"), params);
-    Table u = db.getTable("U");
+    Table u = db.getTable(uTable);
     Map<String, String> partVals = new HashMap<String, String>(2);
     partVals.put("ds", "yesterday");
     db.createPartition(u, partVals);
