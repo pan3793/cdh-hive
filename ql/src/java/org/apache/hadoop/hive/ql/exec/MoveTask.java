@@ -507,7 +507,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         } else {
           console.printError("Failed with exception " + he.getMessage()
               + "\nRemote Exception: " + he.getRemoteErrorMsg());
-          console.printInfo("\n", StringUtils.stringifyException(he),false);
+          console.printInfo("", StringUtils.stringifyException(he),false);
         }
       }
 

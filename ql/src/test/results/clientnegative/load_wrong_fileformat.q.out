@@ -11,4 +11,6 @@ PREHOOK: type: LOAD
 #### A masked pattern was here ####
 PREHOOK: Output: default@load_wrong_fileformat_t1
 Failed with exception Wrong file format. Please check the file's format.
-FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.MoveTask
+Remote Exception: null
+
+FAILED: Execution Error, return code 20013 from org.apache.hadoop.hive.ql.exec.MoveTask. Wrong file format. Please check the file's format.
