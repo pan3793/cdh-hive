@@ -18,6 +18,9 @@
 
 package org.apache.hadoop.hive.serde2;
 
+import org.apache.hadoop.hive.common.classification.InterfaceAudience;
+import org.apache.hadoop.hive.common.classification.InterfaceStability;
+
 /**
  * A union of HiveDeserializer and HiveSerializer interface.
  *
@@ -30,6 +33,8 @@ package org.apache.hadoop.hive.serde2;
  * should be removed
  */
 @Deprecated
+@InterfaceAudience.Public
+@InterfaceStability.Stable
 public interface SerDe extends Deserializer, Serializer {
 
 }
