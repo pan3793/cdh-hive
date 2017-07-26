@@ -21,6 +21,8 @@ package org.apache.hadoop.hive.serde2;
 import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.common.classification.InterfaceAudience;
+import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.io.Writable;
 
@@ -32,6 +34,8 @@ import org.apache.hadoop.io.Writable;
  * Serializer interface should be removed
  */
 @Deprecated
+@InterfaceAudience.Public
+@InterfaceStability.Stable
 public interface Serializer {
 
   /**
