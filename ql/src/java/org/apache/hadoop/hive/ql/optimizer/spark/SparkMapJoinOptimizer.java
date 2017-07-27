@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.optimizer.spark;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +27,9 @@ import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.hive.ql.exec.OperatorUtils;
+import org.apache.hadoop.hive.ql.exec.TerminalOperator;
+import org.apache.hadoop.hive.ql.parse.spark.SparkPartitionPruningSinkOperator;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.GroupByOperator;
 import org.apache.hadoop.hive.ql.exec.JoinOperator;
@@ -380,6 +384,27 @@ public class SparkMapJoinOptimizer implements NodeProcessor {
     Operator<? extends OperatorDesc> parentBigTableOp =
         mapJoinOp.getParentOperators().get(bigTablePosition);
     if (parentBigTableOp instanceof ReduceSinkOperator) {
+
+      for (Operator<?> parentOp : parentBigTableOp.getParentOperators()) {
+        // we might have generated a dynamic partition operator chain. Since
+        // we're removing the reduce sink we need do remove that too.
+        Set<SparkPartitionPruningSinkOperator> partitionPruningSinkOps = new HashSet<>();
+        for (Operator<?> childOp : parentOp.getChildOperators()) {
+          SparkPartitionPruningSinkOperator partitionPruningSinkOp = findPartitionPruningSinkOperator(childOp);
+          if (partitionPruningSinkOp != null) {
+            partitionPruningSinkOps.add(partitionPruningSinkOp);
+          }
+        }
+
+        for (SparkPartitionPruningSinkOperator partitionPruningSinkOp : partitionPruningSinkOps) {
+            OperatorUtils.removeBranch(partitionPruningSinkOp);
+            // at this point we've found the fork in the op pipeline that has the pruning as a child plan.
+            LOG.info("Disabling dynamic pruning for: "
+                    + (partitionPruningSinkOp.getConf()).getTableScan().getName()
+                    + ". Need to be removed together with reduce sink");
+        }
+      }
+
       mapJoinOp.getParentOperators().remove(bigTablePosition);
       if (!(mapJoinOp.getParentOperators().contains(parentBigTableOp.getParentOperators().get(0)))) {
         mapJoinOp.getParentOperators().add(bigTablePosition,
@@ -399,6 +424,32 @@ public class SparkMapJoinOptimizer implements NodeProcessor {
 
     return mapJoinOp;
   }
+
+  private SparkPartitionPruningSinkOperator findPartitionPruningSinkOperator(Operator<?> parent) {
+
+    for (Operator<?> op : parent.getChildOperators()) {
+      while (op != null) {
+        if (op instanceof SparkPartitionPruningSinkOperator && op.getConf() instanceof SparkPartitionPruningSinkDesc) {
+          // found dynamic partition pruning operator
+          return (SparkPartitionPruningSinkOperator) op;
+        }
+        if (op instanceof TerminalOperator) {
+          // crossing reduce sink or file sink means the pruning isn't for this parent.
+          break;
+        }
+
+        if (op.getChildOperators().size() != 1) {
+          // dynamic partition pruning pipeline doesn't have multiple children
+          break;
+        }
+
+        op = op.getChildOperators().get(0);
+      }
+    }
+
+    return null;
+  }
+
 
   private boolean containUnionWithoutRS(Operator<? extends OperatorDesc> op) {
     boolean result = false;
