@@ -29,7 +29,7 @@ import java.util.Map;
  *
  */
 public abstract class ShimLoader {
-  public static String HADOOP23VERSIONNAME = "0.23";
+  public static final String HADOOP23VERSIONNAME = "0.23";
 
   private static volatile HadoopShims hadoopShims;
   private static JettyShims jettyShims;

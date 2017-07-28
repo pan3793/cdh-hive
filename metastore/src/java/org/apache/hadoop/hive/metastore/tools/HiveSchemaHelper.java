@@ -298,7 +298,7 @@ public class HiveSchemaHelper {
 
   // Derby commandline parser
   public static class DerbyCommandParser extends AbstractCommandParser {
-    private static String DERBY_NESTING_TOKEN = "RUN";
+    private static final String DERBY_NESTING_TOKEN = "RUN";
 
     public DerbyCommandParser(String dbOpts, String msUsername, String msPassword,
         HiveConf hiveConf) {
@@ -386,11 +386,11 @@ public class HiveSchemaHelper {
 
   // Postgres specific parser
   public static class PostgresCommandParser extends AbstractCommandParser {
-    private static String POSTGRES_NESTING_TOKEN = "\\i";
+    private static final String POSTGRES_NESTING_TOKEN = "\\i";
     @VisibleForTesting
-    public static String POSTGRES_STANDARD_STRINGS_OPT = "SET standard_conforming_strings";
+    public static final String POSTGRES_STANDARD_STRINGS_OPT = "SET standard_conforming_strings";
     @VisibleForTesting
-    public static String POSTGRES_SKIP_STANDARD_STRINGS_DBOPT = "postgres.filter.81";
+    public static final String POSTGRES_SKIP_STANDARD_STRINGS_DBOPT = "postgres.filter.81";
 
     public PostgresCommandParser(String dbOpts, String msUsername, String msPassword,
         HiveConf hiveConf) {
@@ -433,7 +433,7 @@ public class HiveSchemaHelper {
 
   //Oracle specific parser
   public static class OracleCommandParser extends AbstractCommandParser {
-    private static String ORACLE_NESTING_TOKEN = "@";
+    private static final String ORACLE_NESTING_TOKEN = "@";
 
     public OracleCommandParser(String dbOpts, String msUsername, String msPassword,
         HiveConf hiveConf) {
@@ -457,7 +457,7 @@ public class HiveSchemaHelper {
 
   //MSSQL specific parser
   public static class MSSQLCommandParser extends AbstractCommandParser {
-    private static String MSSQL_NESTING_TOKEN = ":r";
+    private static final String MSSQL_NESTING_TOKEN = ":r";
 
     public MSSQLCommandParser(String dbOpts, String msUsername, String msPassword,
         HiveConf hiveConf) {

@@ -28,7 +28,7 @@ package org.apache.hadoop.hive.ql.plan;
  */
 public class VectorGroupByDesc extends AbstractVectorDesc  {
 
-  private static long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   private boolean isReduceMergePartial;
 

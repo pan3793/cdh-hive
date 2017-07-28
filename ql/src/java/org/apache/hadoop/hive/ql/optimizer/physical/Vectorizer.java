@@ -217,9 +217,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     supportedDataTypesPattern = Pattern.compile(patternBuilder.toString());
   }
 
-  List<Task<? extends Serializable>> vectorizableTasks =
-      new ArrayList<Task<? extends Serializable>>();
-  Set<Class<?>> supportedGenericUDFs = new HashSet<Class<?>>();
+  private Set<Class<?>> supportedGenericUDFs = new HashSet<Class<?>>();
 
   Set<String> supportedAggregationUdfs = new HashSet<String>();
 
@@ -227,9 +225,9 @@ public class Vectorizer implements PhysicalPlanResolver {
 
   private boolean isSpark;
 
-  boolean useVectorizedInputFileFormat;
-  boolean useVectorDeserialize;
-  boolean useRowDeserialize;
+  private boolean useVectorizedInputFileFormat;
+  private boolean useVectorDeserialize;
+  private boolean useRowDeserialize;
 
   boolean isSchemaEvolution;
 
@@ -409,7 +407,6 @@ public class Vectorizer implements PhysicalPlanResolver {
   }
 
   class VectorizationDispatcher implements Dispatcher {
-
     private final PhysicalContext physicalContext;
 
     public VectorizationDispatcher(PhysicalContext physicalContext) {

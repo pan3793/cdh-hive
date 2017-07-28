@@ -24,7 +24,6 @@ import org.apache.orc.ColumnStatistics;
  * Statistics for decimal columns.
  */
 public interface DecimalColumnStatistics extends ColumnStatistics {
-
   /**
    * Get the minimum value for the column.
    * @return the minimum value

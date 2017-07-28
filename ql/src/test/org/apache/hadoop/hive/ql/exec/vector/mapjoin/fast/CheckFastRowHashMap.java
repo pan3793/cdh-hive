@@ -92,9 +92,7 @@ public class CheckFastRowHashMap extends CheckFastHashTable {
   }
 
   private static String debugDetailedReadPositionString;
-
   private static String debugDetailedHashMapResultPositionString;
-
   private static String debugExceptionMessage;
   private static StackTraceElement[] debugStackTrace;
 

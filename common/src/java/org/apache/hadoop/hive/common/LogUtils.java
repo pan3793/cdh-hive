@@ -55,8 +55,8 @@ public class LogUtils {
   /**
    * Constants for log masking
    */
-  private static String KEY_TO_MASK_WITH = "password";
-  private static String MASKED_VALUE = "###_MASKED_###";
+  private static final String KEY_TO_MASK_WITH = "password";
+  private static final String MASKED_VALUE = "###_MASKED_###";
 
   /**
    * Constants of the key strings for the logging ThreadContext.

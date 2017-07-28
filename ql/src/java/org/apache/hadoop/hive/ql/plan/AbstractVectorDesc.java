@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.ql.plan;
 
 public class AbstractVectorDesc implements VectorDesc {
 
+  private static final long serialVersionUID = 1L;
   @Override
   public Object clone() throws CloneNotSupportedException {
     throw new CloneNotSupportedException("clone not supported");
