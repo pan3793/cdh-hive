@@ -1665,7 +1665,8 @@ public class HiveConf extends Configuration {
 
     HIVE_LOG_EXPLAIN_OUTPUT("hive.log.explain.output", false,
         "Whether to log explain output for every query.\n" +
-        "When enabled, will log EXPLAIN EXTENDED output for the query at INFO log4j log level."),
+        "When enabled, will log EXPLAIN EXTENDED output for the query at INFO log4j log level\n" +
+        "and in WebUI / Drilldown / Show Query."),
 
     // prefix used to auto generated column aliases (this should be started with '_')
     HIVE_AUTOGEN_COLUMNALIAS_PREFIX_LABEL("hive.autogen.columnalias.prefix.label", "_c",
