@@ -18,10 +18,15 @@
 
 package org.apache.hadoop.hive.metastore.events;
 
+import org.apache.hadoop.hive.common.classification.InterfaceAudience;
+import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.metastore.HiveMetaStore.HMSHandler;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.Table;
 
+
+@InterfaceAudience.Public
+@InterfaceStability.Stable
 public class PreDropPartitionEvent extends PreEventContext {
 
   private final Partition partition;
