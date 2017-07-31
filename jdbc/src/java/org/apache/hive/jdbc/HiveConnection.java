@@ -19,6 +19,7 @@
 package org.apache.hive.jdbc;
 
 import org.apache.hadoop.hive.common.auth.HiveAuthUtils;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.jdbc.Utils.JdbcConnectionParams;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.auth.KerberosSaslHelper;
@@ -129,7 +130,7 @@ public class HiveConnection implements java.sql.Connection {
     // sess_var_list -> sessConfMap
     // hive_conf_list -> hiveConfMap
     // hive_var_list -> hiveVarMap
-    host = connParams.getHost();
+    host = ShimLoader.getHadoopThriftAuthBridge().getCanonicalHostName(connParams.getHost());
     port = connParams.getPort();
     sessConfMap = connParams.getSessionVars();
     hiveConfMap = connParams.getHiveConfs();

@@ -228,7 +228,15 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
             throw new IllegalArgumentException("URI: " + s
                 + " does not have a scheme");
           }
-          metastoreUris[i++] = tmpUri;
+          metastoreUris[i++] = new URI(
+              tmpUri.getScheme(),
+              tmpUri.getUserInfo(),
+              ShimLoader.getHadoopThriftAuthBridge().getCanonicalHostName(tmpUri.getHost()),
+              tmpUri.getPort(),
+              tmpUri.getPath(),
+              tmpUri.getQuery(),
+              tmpUri.getFragment()
+          );
 
         }
       } catch (IllegalArgumentException e) {
