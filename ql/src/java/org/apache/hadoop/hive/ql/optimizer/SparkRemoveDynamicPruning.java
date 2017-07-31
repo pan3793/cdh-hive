@@ -23,24 +23,26 @@ import java.util.Stack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.ql.exec.OperatorUtils;
 import org.apache.hadoop.hive.ql.lib.Node;
 import org.apache.hadoop.hive.ql.lib.NodeProcessor;
 import org.apache.hadoop.hive.ql.lib.NodeProcessorCtx;
 import org.apache.hadoop.hive.ql.optimizer.spark.SparkPartitionPruningSinkDesc;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
-import org.apache.hadoop.hive.ql.parse.spark.GenSparkUtils;
 import org.apache.hadoop.hive.ql.parse.spark.OptimizeSparkProcContext;
 import org.apache.hadoop.hive.ql.parse.spark.SparkPartitionPruningSinkOperator;
 
 /**
- * If we expect the number of keys for dynamic pruning to be too large we
- * disable it.
+ * Check if dynamic partition pruning should be disabled.  Currently the following 2 cases
+ * checked.
+ * 1.  The expected number of keys for dynamic pruning is too large
+ * 2.  If DPP enabled only for mapjoin and join is not a map join.
  *
  * Cloned from RemoveDynamicPruningBySize
  */
-public class SparkRemoveDynamicPruningBySize implements NodeProcessor {
+public class SparkRemoveDynamicPruning implements NodeProcessor {
 
-  static final private Log LOG = LogFactory.getLog(SparkRemoveDynamicPruningBySize.class.getName());
+  static final private Log LOG = LogFactory.getLog(SparkRemoveDynamicPruning.class.getName());
 
   @Override
   public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx procContext,
@@ -48,18 +50,30 @@ public class SparkRemoveDynamicPruningBySize implements NodeProcessor {
       throws SemanticException {
 
     OptimizeSparkProcContext context = (OptimizeSparkProcContext) procContext;
+    boolean remove = false;
 
     SparkPartitionPruningSinkOperator op = (SparkPartitionPruningSinkOperator) nd;
     SparkPartitionPruningSinkDesc desc = op.getConf();
 
-    if (desc.getStatistics().getDataSize() > context.getConf()
+    if (context.getConf().isSparkDPPOnlyMapjoin() &&
+        !op.isWithMapjoin()) {
+      LOG.info("Disabling dynamic partition pruning based on: " + desc.getTableScan().getName()
+          + ". This is not part of a map join.");
+      remove = true;
+    }
+    else if (desc.getStatistics().getDataSize() > context.getConf()
         .getLongVar(ConfVars.SPARK_DYNAMIC_PARTITION_PRUNING_MAX_DATA_SIZE)) {
-      GenSparkUtils.removeBranch(op);
-      // at this point we've found the fork in the op pipeline that has the pruning as a child plan.
-      LOG.info("Disabling dynamic pruning for: "
+      LOG.info("Disabling dynamic partition pruning based on: "
           + desc.getTableScan().getName()
           + ". Expected data size is too big: " + desc.getStatistics().getDataSize());
+      remove = true;
     }
+
+    if (remove) {
+      // at this point we've found the fork in the op pipeline that has the pruning as a child plan.
+      OperatorUtils.removeBranch(op);
+    }
+
     return false;
   }
 }

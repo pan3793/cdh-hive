@@ -25,9 +25,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.google.common.base.Preconditions;
-import org.apache.hadoop.hive.ql.exec.MapJoinOperator;
 import org.apache.hadoop.hive.ql.exec.Operator;
-import org.apache.hadoop.hive.ql.exec.ReduceSinkOperator;
 import org.apache.hadoop.hive.ql.exec.TableScanOperator;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.spark.SparkUtilities;
@@ -89,18 +87,17 @@ public class SplitOpTreeForDPP implements NodeProcessor {
       }
     }
 
-    // Check if this is a MapJoin. If so, do not split.
-    for (Operator<?> childOp : filterOp.getChildOperators()) {
-      if (childOp instanceof ReduceSinkOperator &&
-          childOp.getChildOperators().get(0) instanceof MapJoinOperator) {
-        context.pruningSinkSet.add(pruningSinkOp);
-        return null;
-      }
+    // If pruning sink operator is with map join, then pruning sink need not be split to a
+    // separate tree.  Add the pruning sink operator to context and return
+    if (pruningSinkOp.isWithMapjoin()) {
+      context.pruningSinkSet.add(pruningSinkOp);
+      return null;
     }
 
     List<Operator<?>> roots = new LinkedList<Operator<?>>();
     collectRoots(roots, pruningSinkOp);
 
+    Operator<?> branchingOp = pruningSinkOp.getBranchingOp();
     List<Operator<?>> savedChildOps = filterOp.getChildOperators();
     filterOp.setChildOperators(Utilities.makeList(selOp));
 
