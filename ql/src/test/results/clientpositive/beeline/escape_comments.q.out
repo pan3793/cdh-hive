@@ -104,6 +104,7 @@ Retention:          	0                   	NULL
 Table Type:         	MANAGED_TABLE       	NULL
 Table Parameters:	NULL	NULL
 	comment             	a\nb                
+	numPartitions       	0                   
 #### A masked pattern was here ####
 	NULL	NULL
 # Storage Information	NULL	NULL
