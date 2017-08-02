@@ -26,11 +26,11 @@ POSTHOOK: query: select * from newtypestbl where cast(ts as string)='2011-01-01 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where cast(ts as string)='2011-01-01 01:01:01'
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -39,11 +39,11 @@ POSTHOOK: query: select * from newtypestbl where cast(ts as string)='2011-01-01 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts=cast('2011-01-01 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -52,11 +52,11 @@ POSTHOOK: query: select * from newtypestbl where ts=cast('2011-01-01 01:01:01' a
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts=cast('2011-01-01 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -65,11 +65,11 @@ POSTHOOK: query: select * from newtypestbl where ts=cast('2011-01-01 01:01:01' a
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts=cast('2011-01-01 01:01:01' as varchar(20))
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -78,11 +78,11 @@ POSTHOOK: query: select * from newtypestbl where ts=cast('2011-01-01 01:01:01' a
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts=cast('2011-01-01 01:01:01' as varchar(20))
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -91,11 +91,11 @@ POSTHOOK: query: select * from newtypestbl where ts=cast('2011-01-01 01:01:01' a
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts!=cast('2011-01-01 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -104,11 +104,11 @@ POSTHOOK: query: select * from newtypestbl where ts!=cast('2011-01-01 01:01:01' 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts!=cast('2011-01-01 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -117,11 +117,11 @@ POSTHOOK: query: select * from newtypestbl where ts!=cast('2011-01-01 01:01:01' 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts<cast('2011-01-20 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -130,11 +130,11 @@ POSTHOOK: query: select * from newtypestbl where ts<cast('2011-01-20 01:01:01' a
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts<cast('2011-01-20 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -143,11 +143,11 @@ POSTHOOK: query: select * from newtypestbl where ts<cast('2011-01-20 01:01:01' a
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts<cast('2011-01-22 01:01:01' as timestamp) sort by c
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -156,16 +156,16 @@ POSTHOOK: query: select * from newtypestbl where ts<cast('2011-01-22 01:01:01' a
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts<cast('2011-01-22 01:01:01' as timestamp) sort by c
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -174,16 +174,16 @@ POSTHOOK: query: select * from newtypestbl where ts<cast('2011-01-22 01:01:01' a
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts<cast('2010-10-01 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -208,11 +208,11 @@ POSTHOOK: query: select * from newtypestbl where ts<=cast('2011-01-01 01:01:01' 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts<=cast('2011-01-01 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -221,11 +221,11 @@ POSTHOOK: query: select * from newtypestbl where ts<=cast('2011-01-01 01:01:01' 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts<=cast('2011-01-20 01:01:01' as timestamp) sort by c
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -234,16 +234,16 @@ POSTHOOK: query: select * from newtypestbl where ts<=cast('2011-01-20 01:01:01' 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts<=cast('2011-01-20 01:01:01' as timestamp) sort by c
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -252,16 +252,16 @@ POSTHOOK: query: select * from newtypestbl where ts<=cast('2011-01-20 01:01:01' 
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts in (cast('2011-01-02 01:01:01' as timestamp), cast('2011-01-20 01:01:01' as timestamp))
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -270,11 +270,11 @@ POSTHOOK: query: select * from newtypestbl where ts in (cast('2011-01-02 01:01:0
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts in (cast('2011-01-02 01:01:01' as timestamp), cast('2011-01-20 01:01:01' as timestamp))
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -283,11 +283,11 @@ POSTHOOK: query: select * from newtypestbl where ts in (cast('2011-01-02 01:01:0
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts in (cast('2011-01-01 01:01:01' as timestamp), cast('2011-01-20 01:01:01' as timestamp)) sort by c
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -296,16 +296,16 @@ POSTHOOK: query: select * from newtypestbl where ts in (cast('2011-01-01 01:01:0
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts in (cast('2011-01-01 01:01:01' as timestamp), cast('2011-01-20 01:01:01' as timestamp)) sort by c
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -314,16 +314,16 @@ POSTHOOK: query: select * from newtypestbl where ts in (cast('2011-01-01 01:01:0
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts in (cast('2011-01-02 01:01:01' as timestamp), cast('2011-01-08 01:01:01' as timestamp))
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -348,11 +348,11 @@ POSTHOOK: query: select * from newtypestbl where ts between cast('2010-10-01 01:
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts between cast('2010-10-01 01:01:01' as timestamp) and cast('2011-01-08 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -361,11 +361,11 @@ POSTHOOK: query: select * from newtypestbl where ts between cast('2010-10-01 01:
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
 PREHOOK: query: select * from newtypestbl where ts between cast('2010-10-01 01:01:01' as timestamp) and cast('2011-01-25 01:01:01' as timestamp) sort by c
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -374,16 +374,16 @@ POSTHOOK: query: select * from newtypestbl where ts between cast('2010-10-01 01:
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts between cast('2010-10-01 01:01:01' as timestamp) and cast('2011-01-25 01:01:01' as timestamp) sort by c
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl
@@ -392,16 +392,16 @@ POSTHOOK: query: select * from newtypestbl where ts between cast('2010-10-01 01:
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@newtypestbl
 #### A masked pattern was here ####
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-apple     	bee	0.220	2011-01-01 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
-hello     	world	11.220	2011-01-20 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+apple     	bee	0.22	2011-01-01 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
+hello     	world	11.22	2011-01-20 01:01:01
 PREHOOK: query: select * from newtypestbl where ts between cast('2010-10-01 01:01:01' as timestamp) and cast('2010-11-01 01:01:01' as timestamp)
 PREHOOK: type: QUERY
 PREHOOK: Input: default@newtypestbl

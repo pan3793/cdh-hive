@@ -144,13 +144,17 @@ STAGE PLANS:
                 mode: mergepartial
                 outputColumnNames: _col0, _col1, _col2, _col3
                 Statistics: Num rows: 1 Data size: 448 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
+                Select Operator
+                  expressions: _col0 (type: decimal(38,18)), _col1 (type: decimal(38,18)), _col2 (type: decimal(38,18)), _col3 (type: decimal(38,18))
+                  outputColumnNames: _col0, _col1, _col2, _col3
                   Statistics: Num rows: 1 Data size: 448 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.TextInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+                  File Output Operator
+                    compressed: false
+                    Statistics: Num rows: 1 Data size: 448 Basic stats: COMPLETE Column stats: NONE
+                    table:
+                        input format: org.apache.hadoop.mapred.TextInputFormat
+                        output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                        serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
 
   Stage: Stage-0
     Fetch Operator
@@ -166,4 +170,4 @@ POSTHOOK: query: select min(dc), max(dc), sum(dc), avg(dc) from vectortab2korc
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@vectortab2korc
 #### A masked pattern was here ####
--4997414117561.546875000000000000	4994550248722.298828000000000000	-10252745435816.024410000000000000	-5399023399.587163986308583465
+-4997414117561.546875	4994550248722.298828	-10252745435816.024410	-5399023399.587163986308583465

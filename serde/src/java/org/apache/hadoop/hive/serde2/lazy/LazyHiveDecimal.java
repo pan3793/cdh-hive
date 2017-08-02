@@ -103,12 +103,12 @@ public class LazyHiveDecimal extends LazyPrimitive<LazyHiveDecimalObjectInspecto
    * @param hiveDecimal
    * @throws IOException
    */
-  public static void writeUTF8(OutputStream outputStream, HiveDecimal hiveDecimal, int scale)
+  public static void writeUTF8(OutputStream outputStream, HiveDecimal hiveDecimal)
     throws IOException {
     if (hiveDecimal == null) {
       outputStream.write(nullBytes);
     } else {
-      ByteBuffer b = Text.encode(hiveDecimal.toFormatString(scale));
+      ByteBuffer b = Text.encode(hiveDecimal.toString());
       outputStream.write(b.array(), 0, b.limit());
     }
   }
