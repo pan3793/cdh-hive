@@ -25,7 +25,7 @@ POSTHOOK: query: select * from decimal_tbl_1_orc
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@decimal_tbl_1_orc
 #### A masked pattern was here ####
-55555.000000000000000000
+55555
 PREHOOK: query: EXPLAIN
 SELECT
   round(dec) as d, round(dec, 0), round(dec, 1), round(dec, 2), round(dec, 3),
@@ -132,7 +132,7 @@ POSTHOOK: query: select * from decimal_tbl_2_orc
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@decimal_tbl_2_orc
 #### A masked pattern was here ####
-125.315000000000000000	-125.315000000000000000
+125.315	-125.315
 PREHOOK: query: EXPLAIN
 SELECT
   round(pos) as p, round(pos, 0),
@@ -250,7 +250,7 @@ POSTHOOK: query: select * from decimal_tbl_3_orc
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@decimal_tbl_3_orc
 #### A masked pattern was here ####
-3.141592653589793000
+3.141592653589793
 PREHOOK: query: EXPLAIN
 SELECT
   round(dec, -15) as d, round(dec, -16),
@@ -413,7 +413,7 @@ POSTHOOK: query: select * from decimal_tbl_4_orc
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@decimal_tbl_4_orc
 #### A masked pattern was here ####
-1809242.315111134400000000	-1809242.315111134400000000
+1809242.3151111344	-1809242.3151111344
 PREHOOK: query: EXPLAIN
 SELECT round(pos, 9) as p, round(neg, 9), round(1809242.3151111344BD, 9), round(-1809242.3151111344BD, 9)
 FROM decimal_tbl_4_orc ORDER BY p
