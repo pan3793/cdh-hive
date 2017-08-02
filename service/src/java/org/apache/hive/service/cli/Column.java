@@ -41,8 +41,6 @@ import org.apache.hive.service.cli.thrift.TI32Column;
 import org.apache.hive.service.cli.thrift.TI64Column;
 import org.apache.hive.service.cli.thrift.TStringColumn;
 
-import org.apache.hadoop.hive.common.type.HiveDecimal;
-
 /**
  * Column.
  */
@@ -326,14 +324,6 @@ public class Column extends AbstractList {
 
   private static final ByteBuffer EMPTY_BINARY = ByteBuffer.allocate(0);
   private static final String EMPTY_STRING = "";
-
-  public void addValue(TypeDescriptor typeDescriptor, Object field) {
-    if (field != null && typeDescriptor.getType() == Type.DECIMAL_TYPE) {
-      int scale = typeDescriptor.getDecimalDigits();
-      field = ((HiveDecimal) field).toFormatString(scale);
-    }
-    addValue(typeDescriptor.getType(), field);
-  }
 
   public void addValue(Type type, Object field) {
     switch (type) {

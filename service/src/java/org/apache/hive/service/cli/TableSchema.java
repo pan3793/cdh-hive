@@ -82,10 +82,10 @@ public class TableSchema {
     return tTableSchema;
   }
 
-  public TypeDescriptor[] toTypeDescriptors() {
-    TypeDescriptor[] types = new TypeDescriptor[columns.size()];
+  public Type[] toTypes() {
+    Type[] types = new Type[columns.size()];
     for (int i = 0; i < types.length; i++) {
-      types[i] = columns.get(i).getTypeDescriptor();
+      types[i] = columns.get(i).getType();
     }
     return types;
   }
