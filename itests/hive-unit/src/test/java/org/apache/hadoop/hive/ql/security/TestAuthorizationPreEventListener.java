@@ -40,7 +40,7 @@ import org.apache.hadoop.hive.shims.ShimLoader;
 
 /**
  * TestAuthorizationPreEventListener. Test case for
- * {@link org.apache.hadoop.hive.metastore.AuthorizationPreEventListener} and
+ * {@link org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventListener} and
  * {@link org.apache.hadoop.hive.metastore.MetaStorePreEventListener}
  */
 public class TestAuthorizationPreEventListener extends TestCase {
@@ -155,6 +155,10 @@ public class TestAuthorizationPreEventListener extends TestCase {
   }
 
   private void validateDropDb(Database expectedDb, Database actualDb) {
+    assertEquals(expectedDb, actualDb);
+  }
+
+  private void validateAlterDb(Database expectedDb, Database actualDb) {
     assertEquals(expectedDb, actualDb);
   }
 
@@ -323,6 +327,19 @@ public class TestAuthorizationPreEventListener extends TestCase {
 
     validateDropTable(tCustom, table2FromDropTableEvent);
 
+    // Test ALTER DATABASE SET LOCATION.
+    String oldDatabaseLocation = db.getLocationUri();
+    String newDatabaseLocation = oldDatabaseLocation.replace(db.getName(), "new." + db.getName());
+    driver.run("ALTER DATABASE " + dbName + " SET LOCATION \"" + newDatabaseLocation + "\"");
+    listSize = authCalls.size();
+    Database dbFromAlterDatabaseEvent =
+        (Database)assertAndExtractSingleObjectFromEvent(listSize, authCalls,
+        DummyHiveMetastoreAuthorizationProvider.AuthCallContextType.DB);
+    validateAlterDb(db, dbFromAlterDatabaseEvent);
+    // Reset database location.
+    driver.run("ALTER DATABASE " + dbName + " SET LOCATION \"" + oldDatabaseLocation + "\"");
+
+    // Test DROP DATABASE.
     driver.run("drop database " + dbName);
     listSize = authCalls.size();
     Database dbFromDropDatabaseEvent =
