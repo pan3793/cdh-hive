@@ -74,7 +74,8 @@ class BeeLineOpts implements Completer {
   private boolean autoCommit = true;
   private boolean verbose = false;
   private boolean force = false;
-  private boolean incremental = false;
+  private boolean incremental = true;
+  private boolean convertBinaryArrayToString = true;
   private int incrementalBufferRows = DEFAULT_INCREMENTAL_BUFFER_ROWS;
   private boolean showWarnings = false;
   private boolean showNestedErrs = false;
@@ -382,6 +383,14 @@ class BeeLineOpts implements Completer {
 
   public String getNumberFormat() {
     return numberFormat;
+  }
+
+  public void setConvertBinaryArrayToString(boolean convert) {
+    this.convertBinaryArrayToString = convert;
+  }
+
+  public boolean getConvertBinaryArrayToString() {
+    return this.convertBinaryArrayToString;
   }
 
   public void setMaxWidth(int maxWidth) {
