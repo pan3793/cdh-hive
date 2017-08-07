@@ -35,11 +35,8 @@ import org.apache.hadoop.io.Writable;
  * Vectorized version for SparkPartitionPruningSinkOperator.
  * Forked from VectorAppMasterEventOperator.
  *
- * THIS CLASS IS NOT READY FOR USE IN PRODUCTION
- *
  * The vectorization APIs between CDH and Apache Hive are very different, so backporting this class required rewriting
- * a lot of it. The rewrite was done on a best effort basis and has not been tested. Most of the rewrite is copied from
- * {@link VectorAppMasterEventOperator}.
+ * a lot of it. Most of the rewrite is copied from {@link VectorAppMasterEventOperator}.
  **/
 public class VectorSparkPartitionPruningSinkOperator extends SparkPartitionPruningSinkOperator {
 
