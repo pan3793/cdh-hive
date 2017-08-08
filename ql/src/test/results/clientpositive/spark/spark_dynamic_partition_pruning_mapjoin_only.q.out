@@ -191,10 +191,10 @@ STAGE PLANS:
                         outputColumnNames: _col0
                         Statistics: Num rows: 1000 Data size: 24624 Basic stats: COMPLETE Column stats: NONE
                         Spark Partition Pruning Sink Operator
+                          Target column: hr (string)
                           partition key expr: hr
 #### A masked pattern was here ####
                           Statistics: Num rows: 1000 Data size: 24624 Basic stats: COMPLETE Column stats: NONE
-                          target column name: hr
                           target work: Map 1
 
   Stage: Stage-3
@@ -224,10 +224,10 @@ STAGE PLANS:
                         outputColumnNames: _col0
                         Statistics: Num rows: 1 Data size: 21 Basic stats: COMPLETE Column stats: NONE
                         Spark Partition Pruning Sink Operator
+                          Target column: ds (string)
                           partition key expr: ds
 #### A masked pattern was here ####
                           Statistics: Num rows: 1 Data size: 21 Basic stats: COMPLETE Column stats: NONE
-                          target column name: ds
                           target work: Map 1
             Local Work:
               Map Reduce Local Work
@@ -352,10 +352,10 @@ STAGE PLANS:
                         outputColumnNames: _col0
                         Statistics: Num rows: 1 Data size: 21 Basic stats: COMPLETE Column stats: NONE
                         Spark Partition Pruning Sink Operator
+                          Target column: ds (string)
                           partition key expr: ds
 #### A masked pattern was here ####
                           Statistics: Num rows: 1 Data size: 21 Basic stats: COMPLETE Column stats: NONE
-                          target column name: ds
                           target work: Map 1
             Local Work:
               Map Reduce Local Work
