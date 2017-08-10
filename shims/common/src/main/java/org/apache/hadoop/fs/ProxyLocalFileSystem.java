@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Options.Rename;
 import org.apache.hadoop.util.Shell;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.shims.HadoopShims;
@@ -69,10 +68,5 @@ public class ProxyLocalFileSystem extends FilterFileSystem {
         localFs, URI.create(proxyUriString));
 
     fs.initialize(name, conf);
-  }
-
-  @Override
-  public void rename(Path src, Path dst, Rename... options) throws IOException {
-    fs.rename(src, dst, options);
   }
 }
