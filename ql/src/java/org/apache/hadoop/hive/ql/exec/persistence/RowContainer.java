@@ -25,6 +25,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
@@ -502,7 +505,10 @@ public class RowContainer<ROW extends List<Object>>
 
       String suffix = ".tmp";
       if (this.keyObject != null) {
-        suffix = "." + this.keyObject.toString() + suffix;
+        String keyObjectStr = this.keyObject.toString();
+        String md5Str = DigestUtils.md5Hex(keyObjectStr.toString());
+        LOG.info("Using md5Str: " + md5Str + " for keyObject: " + keyObjectStr);
+        suffix = "." + md5Str + suffix;
       }
 
       while (true) {
@@ -598,5 +604,9 @@ public class RowContainer<ROW extends List<Object>>
 
   protected int getLastActualSplit() {
     return actualSplitNum - 1;
+  }
+
+  public int getNumFlushedBlocks() {
+    return numFlushedBlocks;
   }
 }
