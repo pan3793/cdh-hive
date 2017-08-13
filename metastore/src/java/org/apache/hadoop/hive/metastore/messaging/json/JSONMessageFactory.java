@@ -76,7 +76,6 @@ public class JSONMessageFactory extends MessageFactory {
   private static final Logger LOG = LoggerFactory.getLogger(JSONMessageFactory.class.getName());
 
   private static JSONMessageDeserializer deserializer = new JSONMessageDeserializer();
-  private static TDeserializer thriftDeSerializer = new TDeserializer(new TJSONProtocol.Factory());
 
   @Override
   public MessageDeserializer getDeserializer() {
@@ -253,6 +252,7 @@ public class JSONMessageFactory extends MessageFactory {
    *
    */
   public static TBase getTObj(String tSerialized, Class<? extends TBase> objClass) throws Exception {
+    TDeserializer thriftDeSerializer = new TDeserializer(new TJSONProtocol.Factory());
     TBase obj = objClass.newInstance();
     thriftDeSerializer.deserialize(obj, tSerialized, "UTF-8");
     return obj;
