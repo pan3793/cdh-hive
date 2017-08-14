@@ -360,6 +360,9 @@ public class VectorMapOperator extends AbstractMapOperator {
           throws SerDeException, Exception {
 
     VectorPartitionDesc vectorPartDesc = partDesc.getVectorPartitionDesc();
+    if (vectorPartDesc == null) {
+      return null;
+    }
     VectorPartitionContext vectorPartitionContext;
     VectorMapOperatorReadType vectorMapOperatorReadType =
         vectorPartDesc.getVectorMapOperatorReadType();
@@ -583,6 +586,10 @@ public class VectorMapOperator extends AbstractMapOperator {
   private void setupPartitionContextVars(String nominalPath) throws HiveException {
 
     currentVectorPartContext = fileToPartitionContextMap.get(nominalPath);
+    if (currentVectorPartContext == null) {
+      return;
+    }
+
     PartitionDesc partDesc = currentVectorPartContext.getPartDesc();
     VectorPartitionDesc vectorPartDesc = partDesc.getVectorPartitionDesc();
     currentReadType = vectorPartDesc.getVectorMapOperatorReadType();
