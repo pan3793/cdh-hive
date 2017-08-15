@@ -3550,9 +3550,9 @@ public class HiveConf extends Configuration {
     } else if (unit.equals("gb")) {
       return 1024*1024*1024;
     } else if (unit.equals("tb")) {
-      return 1024*1024*1024*1024;
+      return 1024L*1024*1024*1024;
     } else if (unit.equals("pb")) {
-      return 1024*1024*1024*1024*1024;
+      return 1024L*1024*1024*1024*1024;
     }
     throw new IllegalArgumentException("Invalid size unit " + unit);
   }
