@@ -312,6 +312,7 @@ PREHOOK: Output: default@conditional
 POSTHOOK: query: INSERT INTO TABLE conditional VALUES (2)
 POSTHOOK: type: QUERY
 POSTHOOK: Output: default@conditional
+POSTHOOK: Lineage: conditional.id EXPRESSION [(values__tmp__table__6)values__tmp__table__6.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 PREHOOK: query: SELECT * FROM conditional
 PREHOOK: type: QUERY
 PREHOOK: Input: default@conditional
@@ -418,6 +419,7 @@ PREHOOK: Output: default@conditional
 POSTHOOK: query: INSERT OVERWRITE TABLE conditional VALUES (22)
 POSTHOOK: type: QUERY
 POSTHOOK: Output: default@conditional
+POSTHOOK: Lineage: conditional.id EXPRESSION [(values__tmp__table__8)values__tmp__table__8.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 PREHOOK: query: SELECT * FROM conditional
 PREHOOK: type: QUERY
 PREHOOK: Input: default@conditional
