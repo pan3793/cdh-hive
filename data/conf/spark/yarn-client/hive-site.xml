@@ -33,6 +33,12 @@
 </property>
 
 <property>
+  <name>mapreduce.jobtracker.staging.root.dir</name>
+  <value>${test.tmp.dir}/hadoop-tmp</value>
+  <description>A base for other temporary directories.</description>
+</property>
+
+<property>
   <name>hive.exec.scratchdir</name>
   <value>${test.tmp.dir}/scratchdir</value>
   <description>Scratch space for Hive jobs</description>
