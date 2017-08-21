@@ -97,6 +97,7 @@ import org.apache.hadoop.tools.DistCpOptions.FileAttribute;
 import org.apache.hadoop.util.Progressable;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairSchedulerConfiguration;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 import org.apache.tez.test.MiniTezCluster;
@@ -530,6 +531,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       // YARN-3086 is not yet backported to CDH - Asked for backpot CDH-58325
       // conf.setInt(YarnConfiguration.YARN_MINICLUSTER_NM_PMEM_MB, 2048);
       conf.setInt(YarnConfiguration.RM_SCHEDULER_MINIMUM_ALLOCATION_MB, 512);
+      conf.setInt(FairSchedulerConfiguration.RM_SCHEDULER_INCREMENT_ALLOCATION_MB, 512);
       conf.setInt(YarnConfiguration.RM_SCHEDULER_MAXIMUM_ALLOCATION_MB, 2048);
       configureImpersonation(conf);
       mr.init(conf);
