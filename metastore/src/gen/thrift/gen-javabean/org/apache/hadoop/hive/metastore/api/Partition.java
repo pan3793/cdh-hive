@@ -412,7 +412,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
     if (this.parameters == null) {
       this.parameters = new HashMap<String,String>();
     }
-    this.parameters.put(key, val);
+    this.parameters.put(org.apache.hive.common.util.HiveStringUtils.intern(key), org.apache.hive.common.util.HiveStringUtils.intern(val));
   }
 
   public Map<String,String> getParameters() {
@@ -1012,7 +1012,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
                 }
                 iprot.readMapEnd();
               }
-              struct.setParametersIsSet(true);
+              struct.parameters = org.apache.hive.common.util.HiveStringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1225,7 +1225,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
             struct.parameters.put(_key224, _val225);
           }
         }
-        struct.setParametersIsSet(true);
+        struct.parameters = org.apache.hive.common.util.HiveStringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
       }
       if (incoming.get(7)) {
         struct.privileges = new PrincipalPrivilegeSet();

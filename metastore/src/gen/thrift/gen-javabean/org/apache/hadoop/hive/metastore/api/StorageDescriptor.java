@@ -571,7 +571,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
     if (this.parameters == null) {
       this.parameters = new HashMap<String,String>();
     }
-    this.parameters.put(key, val);
+    this.parameters.put(org.apache.hive.common.util.HiveStringUtils.intern(key), org.apache.hive.common.util.HiveStringUtils.intern(val));
   }
 
   public Map<String,String> getParameters() {
@@ -1417,7 +1417,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
                 }
                 iprot.readMapEnd();
               }
-              struct.setParametersIsSet(true);
+              struct.parameters = org.apache.hive.common.util.HiveStringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1740,7 +1740,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
             struct.parameters.put(_key188, _val189);
           }
         }
-        struct.setParametersIsSet(true);
+        struct.parameters = org.apache.hive.common.util.HiveStringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
       }
       if (incoming.get(10)) {
         struct.skewedInfo = new SkewedInfo();

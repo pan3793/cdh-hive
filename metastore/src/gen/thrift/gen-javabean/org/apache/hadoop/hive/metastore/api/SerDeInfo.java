@@ -234,7 +234,7 @@ public class SerDeInfo implements org.apache.thrift.TBase<SerDeInfo, SerDeInfo._
     if (this.parameters == null) {
       this.parameters = new HashMap<String,String>();
     }
-    this.parameters.put(key, val);
+    this.parameters.put(org.apache.hive.common.util.HiveStringUtils.intern(key), org.apache.hive.common.util.HiveStringUtils.intern(val));
   }
 
   public Map<String,String> getParameters() {
@@ -541,7 +541,7 @@ public class SerDeInfo implements org.apache.thrift.TBase<SerDeInfo, SerDeInfo._
                 }
                 iprot.readMapEnd();
               }
-              struct.setParametersIsSet(true);
+              struct.parameters = org.apache.hive.common.util.HiveStringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -653,7 +653,7 @@ public class SerDeInfo implements org.apache.thrift.TBase<SerDeInfo, SerDeInfo._
             struct.parameters.put(_key112, _val113);
           }
         }
-        struct.setParametersIsSet(true);
+        struct.parameters = org.apache.hive.common.util.HiveStringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
       }
     }
   }
