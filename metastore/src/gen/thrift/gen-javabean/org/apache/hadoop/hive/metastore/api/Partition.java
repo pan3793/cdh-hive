@@ -402,7 +402,7 @@ import org.slf4j.LoggerFactory;
     if (this.parameters == null) {
       this.parameters = new HashMap<String,String>();
     }
-    this.parameters.put(key, val);
+    this.parameters.put(org.apache.hive.common.util.HiveStringUtils.intern(key), org.apache.hive.common.util.HiveStringUtils.intern(val));
   }
 
   public Map<String,String> getParameters() {
@@ -1002,7 +1002,7 @@ import org.slf4j.LoggerFactory;
                 }
                 iprot.readMapEnd();
               }
-              struct.setParametersIsSet(true);
+              struct.parameters = org.apache.hive.common.util.HiveStringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1215,7 +1215,7 @@ import org.slf4j.LoggerFactory;
             struct.parameters.put(_key223, _val224);
           }
         }
-        struct.setParametersIsSet(true);
+        struct.parameters = org.apache.hive.common.util.HiveStringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
       }
       if (incoming.get(7)) {
         struct.privileges = new PrincipalPrivilegeSet();
