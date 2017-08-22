@@ -18,7 +18,11 @@
 
 package org.apache.hadoop.hive.ql.plan.ptf;
 
+import org.apache.hadoop.hive.common.classification.InterfaceAudience;
+import org.apache.hadoop.hive.common.classification.InterfaceStability;
 
+@InterfaceAudience.Public
+@InterfaceStability.Stable
 public class WindowFrameDef {
   private BoundaryDef start;
   private BoundaryDef end;
