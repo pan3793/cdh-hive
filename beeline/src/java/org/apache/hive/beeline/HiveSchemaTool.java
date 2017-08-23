@@ -727,10 +727,11 @@ public class HiveSchemaTool {
     hmsConn = getConnectionToMetastore(false);
 
     LOG.debug("Validating tables in the schema for version " + version);
+    String schemaName  = System.getProperty("hive.schematool.db.schemaname");
     try {
       metadata       = conn.getMetaData();
       String[] types = {"TABLE"};
-      rs             = metadata.getTables(null, null, "%", types);
+      rs             = metadata.getTables(null, schemaName, "%", types);
       String table   = null;
 
       while (rs.next()) {
