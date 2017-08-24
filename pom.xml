@@ -109,7 +109,7 @@
     <accumulo.version>1.8.1</accumulo.version>
     <activemq.version>5.5.0</activemq.version>
     <ant.version>1.9.1</ant.version>
-    <antlr.version>3.4</antlr.version>
+    <antlr.version>${cdh.antlr.version}</antlr.version>
     <apache-directory-server.version>1.5.6</apache-directory-server.version>
     <apache-directory-clientapi.version>0.1</apache-directory-clientapi.version>
     <avatica.version>1.8.0</avatica.version>
@@ -120,18 +120,18 @@
     <datanucleus-core.version>4.1.6</datanucleus-core.version>
     <datanucleus-rdbms.version>4.1.7</datanucleus-rdbms.version>
     <datanucleus-jdo.version>3.2.0-m3</datanucleus-jdo.version>
-    <commons-cli.version>1.2</commons-cli.version>
-    <commons-codec.version>1.4</commons-codec.version>
-    <commons-collections.version>3.2.2</commons-collections.version>
+    <commons-cli.version>${cdh.commons-cli.version}</commons-cli.version>
+    <commons-codec.version>${cdh.commons-codec.version}</commons-codec.version>
+    <commons-collections.version>${cdh.commons-collections.version}</commons-collections.version>
     <commons-compress.version>1.9</commons-compress.version>
     <commons-exec.version>1.1</commons-exec.version>
     <commons-httpclient.version>${cdh.commons-httpclient.version}</commons-httpclient.version>
     <commons-io.version>2.4</commons-io.version>
-    <commons-lang.version>2.6</commons-lang.version>
+    <commons-lang.version>${cdh.commons-lang.version}</commons-lang.version>
     <commons-lang3.version>3.2</commons-lang3.version>
     <commons-pool.version>1.5.4</commons-pool.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
-    <derby.version>10.10.2.0</derby.version>
+    <derby.version>${cdh.derby.version}</derby.version>
     <dropwizard.version>3.1.0</dropwizard.version>
     <dropwizard-metrics-hadoop-metrics2-reporter.version>0.1.2</dropwizard-metrics-hadoop-metrics2-reporter.version>
     <guava.version>14.0.1</guava.version>
@@ -142,13 +142,13 @@
     <!-- required for logging test to avoid including hbase which pulls disruptor transitively -->
     <disruptor.version>3.3.6</disruptor.version>
     <!-- httpcomponents are not always in version sync -->
-    <httpcomponents.client.version>4.4</httpcomponents.client.version>
-    <httpcomponents.core.version>4.4</httpcomponents.core.version>
+    <httpcomponents.client.version>${cdh.httpcomponents.version}</httpcomponents.client.version>
+    <httpcomponents.core.version>${cdh.httpcomponents.core.version}</httpcomponents.core.version>
     <ivy.version>2.4.0</ivy.version>
-    <jackson.version>1.9.2</jackson.version>
+    <jackson.version>${cdh.jackson.version}</jackson.version>
     <!-- jackson 1 and 2 lines can coexist without issue, as they have different artifactIds -->
     <jackson.new.version>2.6.5</jackson.new.version>
-    <jasper.version>5.5.23</jasper.version>
+    <jasper.version>${cdh.jasper.version}</jasper.version>
     <jamon.plugin.version>2.3.4</jamon.plugin.version>
     <jamon-runtime.version>2.3.1</jamon-runtime.version>
     <javaewah.version>0.3.2</javaewah.version>
@@ -157,11 +157,11 @@
     <javolution.version>5.5.1</javolution.version>
     <jdo-api.version>3.0.1</jdo-api.version>
     <jetty.version>${cdh.jetty9.version}</jetty.version>
-    <jersey.version>1.14</jersey.version>
+    <jersey.version>${cdh.jersey.version}</jersey.version>
     <!-- Glassfish jersey is included for Spark client test only -->
     <glassfish.jersey.version>2.22.2</glassfish.jersey.version>
-    <jline.version>2.12</jline.version>
-    <jms.version>1.1</jms.version>
+    <jline.version>${cdh.jline.version}</jline.version>
+    <jms.version>${cdh.jms.version}</jms.version>
     <joda.version>${cdh.joda-time.version}</joda.version>
     <jodd.version>3.5.2</jodd.version>
     <json.version>20090211</json.version>
@@ -171,13 +171,13 @@
     <libthrift.version>${cdh.thrift.version}</libthrift.version>
     <log4j2.version>2.8.2</log4j2.version>
     <opencsv.version>2.3</opencsv.version>
-    <mockito-all.version>1.9.5</mockito-all.version>
-    <mina.version>2.0.0-M5</mina.version>
+    <mockito-all.version>${cdh.mockito.version}</mockito-all.version>
+    <mina.version>${cdh.mina.version}</mina.version>
     <spark.netty.version>4.0.29.Final</spark.netty.version>
-    <netty.version>4.1.1.Final</netty.version>
+    <netty.version>${cdh.io.netty-all.version}</netty.version>
     <parquet.version>${cdh.apache-parquet.version}</parquet.version>
     <pig.version>${cdh.pig.version}</pig.version>
-    <protobuf.version>2.5.0</protobuf.version>
+    <protobuf.version>${cdh.protobuf.version}</protobuf.version>
     <stax.version>1.0.1</stax.version>
     <slf4j.version>${cdh.slf4j.version}</slf4j.version>
     <ST4.version>4.0.4</ST4.version>
