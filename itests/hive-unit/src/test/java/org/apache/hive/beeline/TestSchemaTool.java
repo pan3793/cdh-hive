@@ -693,7 +693,11 @@ public class TestSchemaTool extends TestCase {
   }
 
   public void testMetastoreDbPropertiesAfterUpgrade() throws HiveMetaException, IOException {
-    schemaTool.doInit("2.0.0");
+    // this test case is different than upstream. We don't support the use-case where schema is
+    // initialized
+    // to 2.0.0 and upgraded. In case of CDH the schema could be either be 0.14.0 (CDH5.3.x), 1.1.0
+    // (CDH5.4.x) or 2.1.1 (CDH6.x)
+    schemaTool.doInit("1.1.0");
     schemaTool.doUpgrade();
     validateMetastoreDbPropertiesTable();
   }

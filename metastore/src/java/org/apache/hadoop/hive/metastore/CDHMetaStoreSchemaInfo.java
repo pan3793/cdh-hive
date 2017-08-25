@@ -9,8 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -110,9 +112,48 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
     }
     List <String> cdhScriptList = getCDHSchemaUpgrades(fromVersion);
     if (cdhScriptList.size() > 0) {
+      removeRedundantScripts(fromVersion, upgradeScriptList, cdhScriptList);
       upgradeScriptList.addAll(cdhScriptList);
     }
     return upgradeScriptList;
+  }
+
+  /**
+   * Removes the upstream upgrade script files which are already included in the CDH
+   * upgrade path
+   * @param upgradeScriptList - Current upstream upgrade path scripts
+   * @param cdhScriptList - the CDH upgrade path list
+   */
+  private void removeRedundantScripts(String fromVersion, List<String> upgradeScriptList,
+    List<String> cdhScriptList) {
+    if (cdhScriptList == null || cdhScriptList.isEmpty()) {
+      return;
+    }
+    // given a cdh hive upgrade path, find the starting and ending hive versions
+    // of the CDH upgrade script.
+    // eg: if cdhScriptList contains [upgrade-1.1.0-to-1.1.0-cdh5.12.0.mysql.sql,
+    // upgrade-1.1.0-cdh5.12.0-to-2.1.1-cdh6.0.0.mysql.sql]
+    //start version is 1.1.0 and end version 2.1.1
+    String first = getUpgradePathFromUpgradeFileName(cdhScriptList.get(0));
+    String last = getUpgradePathFromUpgradeFileName(cdhScriptList.get(cdhScriptList.size() - 1));
+
+    String firstHiveVersion = first.split("-to-")[0].split("-")[0];
+    String lastHiveVersion = last.split("-to-")[1].split("-")[0];
+
+    // remove all the upgrade paths from upgradeScriptList which
+    // are in between firstHiveVersion and lastHiveVersion because they
+    // are already taken care of using CDH upgrade scripts
+    Iterator<String> it = upgradeScriptList.iterator();
+    while(it.hasNext()) {
+      String upgradePathFromScript = getUpgradePathFromUpgradeFileName(it.next());
+      String fromHiveVersion = upgradePathFromScript.split("-to-")[0];
+      String toHiveVersion = upgradePathFromScript.split("-to-")[1];
+
+      if(CDHVersion.compareVersionStrings(fromHiveVersion, firstHiveVersion) >= 0
+        && CDHVersion.compareVersionStrings(toHiveVersion, lastHiveVersion) <= 0) {
+        it.remove();
+      }
+    }
   }
 
   /***
@@ -134,6 +175,19 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
   // format the upgrade script name eg upgrade-x-y-dbType.sql
   private String generateUpgradeFileName(String fileVersion) {
     return UPGRADE_FILE_PREFIX +  fileVersion + "." + dbType + SQL_FILE_EXTENSION;
+  }
+
+  /*
+   * given a upgrade file name like upgrade-x-to-y.dbtype.sql return x-to-y
+   */
+  private String getUpgradePathFromUpgradeFileName(String upgradeFileName) {
+    //replace the beginning "upgrade-" part
+    upgradeFileName = upgradeFileName.replaceAll(UPGRADE_FILE_PREFIX, "");
+    //remove the last .sql part
+    upgradeFileName = upgradeFileName.substring(0, upgradeFileName.lastIndexOf('.'));
+    //remove the last .dbType part
+    upgradeFileName = upgradeFileName.substring(0, upgradeFileName.lastIndexOf('.'));
+    return upgradeFileName;
   }
 
   private String getMajorVersion(String fullVersion) {
@@ -344,6 +398,15 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
       throw new IllegalArgumentException("Invalid format of cdh version string " + version);
     }
 
+    private String getHiveVersionString() {
+      // versionString is of the format <hiveversion>-<cdhversion> eg: 1.1.0-cdh5.12.0
+      String[] parts = version.split("-");
+      if (parts.length > 1) {
+        return parts[0];
+      }
+      throw new IllegalArgumentException("Invalid format of cdh version string " + version);
+    }
+
     public CDHVersion(String versionStr) {
       this(versionStr, false);
     }
@@ -383,15 +446,26 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
       if ("6".equals(aVersionParts[0]) || "6".equals(bVersionParts[0])) {
         return aVersionParts[0].compareTo(bVersionParts[0]);
       }
+      return compareVersionStrings(aVersionParts, bVersionParts, skipMaintainenceRelease);
+    }
+
+    private static int compareVersionStrings(String aVersion, String bVersion) {
+      return compareVersionStrings(aVersion.split("\\."), bVersion.split("\\."),
+        false);
+    }
+
+    private static int compareVersionStrings(String[] aVersionParts, String[] bVersionParts,
+      boolean skipMaintainenceRelease) {
       if (aVersionParts.length != bVersionParts.length) {
         // cannot compare if both the version strings are of different format
-        throw new IllegalArgumentException("Cannot compare Version strings " + cdhVersion1 + " and "
-          + cdhVersion2 + " since follow different format");
+        throw new IllegalArgumentException(
+          "Cannot compare Version strings " + Arrays.toString(aVersionParts) + " and "
+            + Arrays.toString(bVersionParts) + " since follow different format");
       }
       for (int i = 0; i < aVersionParts.length; i++) {
         Integer aVersionPart = Integer.valueOf(aVersionParts[i]);
         Integer bVersionPart = Integer.valueOf(bVersionParts[i]);
-        if (this.skipMaintainenceRelease && i == aVersionParts.length - 1) {
+        if (skipMaintainenceRelease && i == aVersionParts.length - 1) {
           continue;
         }
         if (aVersionPart > bVersionPart) {
@@ -402,7 +476,7 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
           return -1;
         }
       }
-      return 0; // versions are equal
+      return 0;
     }
 
     @Override
