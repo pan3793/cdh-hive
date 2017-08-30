@@ -1807,11 +1807,17 @@ public final class Utilities {
     if (!fs.exists(dst)) {
       final boolean shouldRenameDirectoryInParallel = BlobStorageUtils.shouldRenameDirectoryInParallel(conf, fs, fs);
       if (shouldRenameDirectoryInParallel && conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25) > 0) {
-        final ExecutorService pool = Executors.newFixedThreadPool(
+        ExecutorService pool = null;
+        try {
+          pool = Executors.newFixedThreadPool(
                 conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25),
                 new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Move-Thread-%d").build());
-        ParallelDirectoryRenamer.renameDirectoryInParallel(conf, fs, fs, src, dst, true, SessionState.get(), pool);
-        pool.shutdown();
+          ParallelDirectoryRenamer.renameDirectoryInParallel(conf, fs, fs, src, dst, true, SessionState.get(), pool);
+        } finally {
+          if (pool != null) {
+            pool.shutdownNow();
+          }
+        }
       } else if (!fs.rename(src, dst)) {
         throw new HiveException("Unable to move: " + src + " to: " + dst);
       }

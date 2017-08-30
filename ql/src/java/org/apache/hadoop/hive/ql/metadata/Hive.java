@@ -2960,12 +2960,18 @@ private void constructOneLBLocationMap(FileStatus fSta,
             return true;
           } else {
             if (shouldRenameDirectoryInParallel && conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25) > 0) {
-              final ExecutorService pool = Executors.newFixedThreadPool(
+              ExecutorService pool = null;
+              try {
+                pool = Executors.newFixedThreadPool(
                       conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25),
                       new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Move-Thread-%d").build());
-              ParallelDirectoryRenamer.renameDirectoryInParallel(conf, srcFs, destFs, srcf, destf, inheritPerms,
-                      SessionState.get(), pool);
-              pool.shutdown();
+                ParallelDirectoryRenamer.renameDirectoryInParallel(conf, srcFs, destFs, srcf, destf, inheritPerms,
+                        SessionState.get(), pool);
+              } finally {
+                if (pool != null) {
+                  pool.shutdownNow();
+                }
+              }
               return true;
             } else {
               if (destFs.rename(srcf, destf)) {
