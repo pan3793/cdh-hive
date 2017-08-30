@@ -114,13 +114,12 @@ public class ParallelDirectoryRenamer {
           }
         }));
       }
-
+      pool.shutdown();
       for (Future<Void> future : futures) {
         try {
           future.get();
         } catch (Exception e) {
           LOG.debug(e.getMessage());
-          pool.shutdownNow();
           throw new HiveException(e);
         }
       }
