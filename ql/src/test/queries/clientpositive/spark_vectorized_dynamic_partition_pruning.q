@@ -5,7 +5,7 @@ set hive.optimize.metadataonly=false;
 set hive.optimize.index.filter=true;
 set hive.vectorized.execution.enabled=true;
 
-
+-- SORT_QUERY_RESULTS
 select distinct ds from srcpart;
 select distinct hr from srcpart;
 
