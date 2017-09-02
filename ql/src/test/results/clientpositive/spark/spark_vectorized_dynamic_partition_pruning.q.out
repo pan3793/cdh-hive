@@ -427,6 +427,515 @@ POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
 POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
 #### A masked pattern was here ####
 1000
+PREHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+POSTHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+STAGE DEPENDENCIES:
+  Stage-2 is a root stage
+  Stage-1 depends on stages: Stage-2
+  Stage-0 depends on stages: Stage-1
+
+STAGE PLANS:
+  Stage: Stage-2
+    Spark
+#### A masked pattern was here ####
+      Vertices:
+        Map 5 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart_date
+                  filterExpr: (day(ds) is not null and (date = '2008-04-08')) (type: boolean)
+                  Statistics: Num rows: 2 Data size: 376 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (day(ds) is not null and (date = '2008-04-08')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                    Select Operator
+                      expressions: day(ds) (type: int)
+                      outputColumnNames: _col0
+                      Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                      Group By Operator
+                        keys: _col0 (type: int)
+                        mode: hash
+                        outputColumnNames: _col0
+                        Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                        Spark Partition Pruning Sink Operator
+                          Target column: ds (string)
+                          partition key expr: day(ds)
+#### A masked pattern was here ####
+                          Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                          target work: Map 1
+            Execution mode: vectorized
+
+  Stage: Stage-1
+    Spark
+      Edges:
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 2), Map 4 (PARTITION-LEVEL SORT, 2)
+        Reducer 3 <- Reducer 2 (GROUP, 1)
+#### A masked pattern was here ####
+      Vertices:
+        Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart
+                  filterExpr: day(ds) is not null (type: boolean)
+                  Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: day(ds) is not null (type: boolean)
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: day(ds) (type: int)
+                      sort order: +
+                      Map-reduce partition columns: day(ds) (type: int)
+                      Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+        Map 4 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart_date
+                  filterExpr: (day(ds) is not null and (date = '2008-04-08')) (type: boolean)
+                  Statistics: Num rows: 2 Data size: 376 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (day(ds) is not null and (date = '2008-04-08')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: day(ds) (type: int)
+                      sort order: +
+                      Map-reduce partition columns: day(ds) (type: int)
+                      Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+            Execution mode: vectorized
+        Reducer 2 
+            Reduce Operator Tree:
+              Join Operator
+                condition map:
+                     Inner Join 0 to 1
+                keys:
+                  0 day(ds) (type: int)
+                  1 day(ds) (type: int)
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                Group By Operator
+                  aggregations: count()
+                  mode: hash
+                  outputColumnNames: _col0
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    sort order: 
+                    Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: _col0 (type: bigint)
+        Reducer 3 
+            Reduce Operator Tree:
+              Group By Operator
+                aggregations: count(VALUE._col0)
+                mode: mergepartial
+                outputColumnNames: _col0
+                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                File Output Operator
+                  compressed: false
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  table:
+                      input format: org.apache.hadoop.mapred.TextInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+            Execution mode: vectorized
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
+PREHOOK: query: select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+PREHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+POSTHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+1000
+PREHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+POSTHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 depends on stages: Stage-1
+
+STAGE PLANS:
+  Stage: Stage-1
+    Spark
+      Edges:
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 2), Map 4 (PARTITION-LEVEL SORT, 2)
+        Reducer 3 <- Reducer 2 (GROUP, 1)
+#### A masked pattern was here ####
+      Vertices:
+        Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart
+                  filterExpr: day(ds) is not null (type: boolean)
+                  Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: day(ds) is not null (type: boolean)
+                    Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: day(ds) (type: int)
+                      sort order: +
+                      Map-reduce partition columns: day(ds) (type: int)
+                      Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+        Map 4 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart_date
+                  filterExpr: (day(ds) is not null and (date = '2008-04-08')) (type: boolean)
+                  Statistics: Num rows: 2 Data size: 376 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (day(ds) is not null and (date = '2008-04-08')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: day(ds) (type: int)
+                      sort order: +
+                      Map-reduce partition columns: day(ds) (type: int)
+                      Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+            Execution mode: vectorized
+        Reducer 2 
+            Reduce Operator Tree:
+              Join Operator
+                condition map:
+                     Inner Join 0 to 1
+                keys:
+                  0 day(ds) (type: int)
+                  1 day(ds) (type: int)
+                Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                Group By Operator
+                  aggregations: count()
+                  mode: hash
+                  outputColumnNames: _col0
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    sort order: 
+                    Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: _col0 (type: bigint)
+        Reducer 3 
+            Reduce Operator Tree:
+              Group By Operator
+                aggregations: count(VALUE._col0)
+                mode: mergepartial
+                outputColumnNames: _col0
+                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                File Output Operator
+                  compressed: false
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  table:
+                      input format: org.apache.hadoop.mapred.TextInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+            Execution mode: vectorized
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
+PREHOOK: query: select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+PREHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+POSTHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+1000
+PREHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on abs(negative(cast(concat(cast(day(srcpart.ds) as string), "0") as bigint)) + 10) = abs(negative(cast(concat(cast(day(srcpart_date.ds) as string), "0") as bigint)) + 10) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+POSTHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on abs(negative(cast(concat(cast(day(srcpart.ds) as string), "0") as bigint)) + 10) = abs(negative(cast(concat(cast(day(srcpart_date.ds) as string), "0") as bigint)) + 10) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+STAGE DEPENDENCIES:
+  Stage-2 is a root stage
+  Stage-1 depends on stages: Stage-2
+  Stage-0 depends on stages: Stage-1
+
+STAGE PLANS:
+  Stage: Stage-2
+    Spark
+#### A masked pattern was here ####
+      Vertices:
+        Map 5 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart_date
+                  filterExpr: (abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) is not null and (date = '2008-04-08')) (type: boolean)
+                  Statistics: Num rows: 2 Data size: 376 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) is not null and (date = '2008-04-08')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                    Select Operator
+                      expressions: abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) (type: bigint)
+                      outputColumnNames: _col0
+                      Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                      Group By Operator
+                        keys: _col0 (type: bigint)
+                        mode: hash
+                        outputColumnNames: _col0
+                        Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                        Spark Partition Pruning Sink Operator
+                          Target column: ds (string)
+                          partition key expr: abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10))
+#### A masked pattern was here ####
+                          Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                          target work: Map 1
+            Execution mode: vectorized
+
+  Stage: Stage-1
+    Spark
+      Edges:
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 2), Map 4 (PARTITION-LEVEL SORT, 2)
+        Reducer 3 <- Reducer 2 (GROUP, 1)
+#### A masked pattern was here ####
+      Vertices:
+        Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart
+                  filterExpr: abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) is not null (type: boolean)
+                  Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) is not null (type: boolean)
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) (type: bigint)
+                      sort order: +
+                      Map-reduce partition columns: abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) (type: bigint)
+                      Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+        Map 4 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart_date
+                  filterExpr: (abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) is not null and (date = '2008-04-08')) (type: boolean)
+                  Statistics: Num rows: 2 Data size: 376 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) is not null and (date = '2008-04-08')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) (type: bigint)
+                      sort order: +
+                      Map-reduce partition columns: abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) (type: bigint)
+                      Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+            Execution mode: vectorized
+        Reducer 2 
+            Reduce Operator Tree:
+              Join Operator
+                condition map:
+                     Inner Join 0 to 1
+                keys:
+                  0 abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) (type: bigint)
+                  1 abs(((- UDFToLong(concat(UDFToString(day(ds)), '0'))) + 10)) (type: bigint)
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                Group By Operator
+                  aggregations: count()
+                  mode: hash
+                  outputColumnNames: _col0
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    sort order: 
+                    Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: _col0 (type: bigint)
+        Reducer 3 
+            Reduce Operator Tree:
+              Group By Operator
+                aggregations: count(VALUE._col0)
+                mode: mergepartial
+                outputColumnNames: _col0
+                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                File Output Operator
+                  compressed: false
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  table:
+                      input format: org.apache.hadoop.mapred.TextInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+            Execution mode: vectorized
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
+PREHOOK: query: select count(*) from srcpart join srcpart_date on abs(negative(cast(concat(cast(day(srcpart.ds) as string), "0") as bigint)) + 10) = abs(negative(cast(concat(cast(day(srcpart_date.ds) as string), "0") as bigint)) + 10) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+PREHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*) from srcpart join srcpart_date on abs(negative(cast(concat(cast(day(srcpart.ds) as string), "0") as bigint)) + 10) = abs(negative(cast(concat(cast(day(srcpart_date.ds) as string), "0") as bigint)) + 10) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+POSTHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+1000
+PREHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on cast(day(srcpart.ds) as smallint) = cast(day(srcpart_date.ds) as decimal) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+POSTHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on cast(day(srcpart.ds) as smallint) = cast(day(srcpart_date.ds) as decimal) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+STAGE DEPENDENCIES:
+  Stage-2 is a root stage
+  Stage-1 depends on stages: Stage-2
+  Stage-0 depends on stages: Stage-1
+
+STAGE PLANS:
+  Stage: Stage-2
+    Spark
+#### A masked pattern was here ####
+      Vertices:
+        Map 5 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart_date
+                  filterExpr: (CAST( day(ds) AS decimal(10,0)) is not null and (date = '2008-04-08')) (type: boolean)
+                  Statistics: Num rows: 2 Data size: 376 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (CAST( day(ds) AS decimal(10,0)) is not null and (date = '2008-04-08')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                    Select Operator
+                      expressions: CAST( day(ds) AS decimal(10,0)) (type: decimal(10,0))
+                      outputColumnNames: _col0
+                      Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                      Group By Operator
+                        keys: _col0 (type: decimal(10,0))
+                        mode: hash
+                        outputColumnNames: _col0
+                        Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                        Spark Partition Pruning Sink Operator
+                          Target column: ds (string)
+                          partition key expr: CAST( UDFToShort(day(ds)) AS decimal(10,0))
+#### A masked pattern was here ####
+                          Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                          target work: Map 1
+            Execution mode: vectorized
+
+  Stage: Stage-1
+    Spark
+      Edges:
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 2), Map 4 (PARTITION-LEVEL SORT, 2)
+        Reducer 3 <- Reducer 2 (GROUP, 1)
+#### A masked pattern was here ####
+      Vertices:
+        Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart
+                  filterExpr: CAST( UDFToShort(day(ds)) AS decimal(10,0)) is not null (type: boolean)
+                  Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: CAST( UDFToShort(day(ds)) AS decimal(10,0)) is not null (type: boolean)
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: CAST( UDFToShort(day(ds)) AS decimal(10,0)) (type: decimal(10,0))
+                      sort order: +
+                      Map-reduce partition columns: CAST( UDFToShort(day(ds)) AS decimal(10,0)) (type: decimal(10,0))
+                      Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+        Map 4 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart_date
+                  filterExpr: (CAST( day(ds) AS decimal(10,0)) is not null and (date = '2008-04-08')) (type: boolean)
+                  Statistics: Num rows: 2 Data size: 376 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (CAST( day(ds) AS decimal(10,0)) is not null and (date = '2008-04-08')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: CAST( day(ds) AS decimal(10,0)) (type: decimal(10,0))
+                      sort order: +
+                      Map-reduce partition columns: CAST( day(ds) AS decimal(10,0)) (type: decimal(10,0))
+                      Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+            Execution mode: vectorized
+        Reducer 2 
+            Reduce Operator Tree:
+              Join Operator
+                condition map:
+                     Inner Join 0 to 1
+                keys:
+                  0 CAST( UDFToShort(day(ds)) AS decimal(10,0)) (type: decimal(10,0))
+                  1 CAST( day(ds) AS decimal(10,0)) (type: decimal(10,0))
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                Group By Operator
+                  aggregations: count()
+                  mode: hash
+                  outputColumnNames: _col0
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  Reduce Output Operator
+                    sort order: 
+                    Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                    value expressions: _col0 (type: bigint)
+        Reducer 3 
+            Reduce Operator Tree:
+              Group By Operator
+                aggregations: count(VALUE._col0)
+                mode: mergepartial
+                outputColumnNames: _col0
+                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                File Output Operator
+                  compressed: false
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  table:
+                      input format: org.apache.hadoop.mapred.TextInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+            Execution mode: vectorized
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
+PREHOOK: query: select count(*) from srcpart join srcpart_date on cast(day(srcpart.ds) as smallint) = cast(day(srcpart_date.ds) as decimal) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+PREHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*) from srcpart join srcpart_date on cast(day(srcpart.ds) as smallint) = cast(day(srcpart_date.ds) as decimal) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+POSTHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+1000
 PREHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on (srcpart.ds = srcpart_date.ds) join srcpart_hour on (srcpart.hr = srcpart_hour.hr) 
 where srcpart_date.`date` = '2008-04-08' and srcpart_hour.hour = 11
 PREHOOK: type: QUERY
@@ -510,7 +1019,7 @@ STAGE PLANS:
                     key expressions: ds (type: string)
                     sort order: +
                     Map-reduce partition columns: ds (type: string)
-                    Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
                     value expressions: hr (type: string)
         Map 5 
             Map Operator Tree:
@@ -550,12 +1059,12 @@ STAGE PLANS:
                   0 ds (type: string)
                   1 ds (type: string)
                 outputColumnNames: _col3
-                Statistics: Num rows: 2200 Data size: 23372 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                 Reduce Output Operator
                   key expressions: _col3 (type: string)
                   sort order: +
                   Map-reduce partition columns: _col3 (type: string)
-                  Statistics: Num rows: 2200 Data size: 23372 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
         Reducer 3 
             Reduce Operator Tree:
               Join Operator
@@ -564,7 +1073,7 @@ STAGE PLANS:
                 keys:
                   0 _col3 (type: string)
                   1 hr (type: string)
-                Statistics: Num rows: 2420 Data size: 25709 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 605 Data size: 6427 Basic stats: COMPLETE Column stats: NONE
                 Group By Operator
                   aggregations: count()
                   mode: hash
@@ -847,7 +1356,7 @@ STAGE PLANS:
                     key expressions: ds (type: string), hr (type: string)
                     sort order: ++
                     Map-reduce partition columns: ds (type: string), hr (type: string)
-                    Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -870,7 +1379,7 @@ STAGE PLANS:
                 keys:
                   0 ds (type: string), hr (type: string)
                   1 ds (type: string), hr (type: string)
-                Statistics: Num rows: 2200 Data size: 23372 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                 Group By Operator
                   aggregations: count()
                   mode: hash
@@ -1328,12 +1837,12 @@ STAGE PLANS:
                   Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
                     predicate: UDFToDouble(hr) is not null (type: boolean)
-                    Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
                     Reduce Output Operator
                       key expressions: UDFToDouble(hr) (type: double)
                       sort order: +
                       Map-reduce partition columns: UDFToDouble(hr) (type: double)
-                      Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -1356,7 +1865,7 @@ STAGE PLANS:
                 keys:
                   0 UDFToDouble(hr) (type: double)
                   1 UDFToDouble(UDFToInteger((hr / 2))) (type: double)
-                Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                 Group By Operator
                   aggregations: count()
                   mode: hash
@@ -1461,12 +1970,12 @@ STAGE PLANS:
                   Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
                     predicate: (hr * 2) is not null (type: boolean)
-                    Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
                     Reduce Output Operator
                       key expressions: (hr * 2) (type: double)
                       sort order: +
                       Map-reduce partition columns: (hr * 2) (type: double)
-                      Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -1489,7 +1998,7 @@ STAGE PLANS:
                 keys:
                   0 (hr * 2) (type: double)
                   1 hr (type: double)
-                Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                 Group By Operator
                   aggregations: count()
                   mode: hash
@@ -1813,12 +2322,12 @@ STAGE PLANS:
                   Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
                     predicate: UDFToString((hr * 2)) is not null (type: boolean)
-                    Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
                     Reduce Output Operator
                       key expressions: UDFToString((hr * 2)) (type: string)
                       sort order: +
                       Map-reduce partition columns: UDFToString((hr * 2)) (type: string)
-                      Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -1841,7 +2350,7 @@ STAGE PLANS:
                 keys:
                   0 UDFToString((hr * 2)) (type: string)
                   1 UDFToString(hr) (type: string)
-                Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                 Group By Operator
                   aggregations: count()
                   mode: hash
@@ -2270,7 +2779,7 @@ STAGE PLANS:
                     key expressions: ds (type: string), hr (type: string)
                     sort order: ++
                     Map-reduce partition columns: ds (type: string), hr (type: string)
-                    Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
         Map 4 
             Map Operator Tree:
                 TableScan
@@ -2294,12 +2803,12 @@ STAGE PLANS:
                   0 ds (type: string), hr (type: string)
                   1 ds (type: string), hr (type: string)
                 outputColumnNames: _col2, _col3, _col7, _col9
-                Statistics: Num rows: 2200 Data size: 23372 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                 Filter Operator
                   predicate: ((_col2 = _col7) and (_col3 = _col9)) (type: boolean)
-                  Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 137 Data size: 1455 Basic stats: COMPLETE Column stats: NONE
                   Select Operator
-                    Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 137 Data size: 1455 Basic stats: COMPLETE Column stats: NONE
                     Group By Operator
                       aggregations: count()
                       mode: hash
@@ -2714,7 +3223,7 @@ STAGE PLANS:
                     key expressions: ds (type: string)
                     sort order: +
                     Map-reduce partition columns: ds (type: string)
-                    Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 250 Data size: 2656 Basic stats: COMPLETE Column stats: NONE
         Map 5 
             Map Operator Tree:
                 TableScan
@@ -2752,12 +3261,12 @@ STAGE PLANS:
                 keys:
                   0 ds (type: string)
                   1 ds (type: string)
-                Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
                 Reduce Output Operator
                   key expressions: '11' (type: string)
                   sort order: +
                   Map-reduce partition columns: '11' (type: string)
-                  Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
         Reducer 3 
             Reduce Operator Tree:
               Join Operator
@@ -2766,7 +3275,7 @@ STAGE PLANS:
                 keys:
                   0 _col3 (type: string)
                   1 hr (type: string)
-                Statistics: Num rows: 1210 Data size: 12854 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 302 Data size: 3213 Basic stats: COMPLETE Column stats: NONE
                 Group By Operator
                   aggregations: count()
                   mode: hash
@@ -4003,6 +4512,127 @@ POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
 POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
 #### A masked pattern was here ####
 1000
+PREHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+POSTHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+STAGE DEPENDENCIES:
+  Stage-2 is a root stage
+  Stage-1 depends on stages: Stage-2
+  Stage-0 depends on stages: Stage-1
+
+STAGE PLANS:
+  Stage: Stage-2
+    Spark
+#### A masked pattern was here ####
+      Vertices:
+        Map 3 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart_date
+                  filterExpr: (day(ds) is not null and (date = '2008-04-08')) (type: boolean)
+                  Statistics: Num rows: 2 Data size: 376 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (day(ds) is not null and (date = '2008-04-08')) (type: boolean)
+                    Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                    Spark HashTable Sink Operator
+                      keys:
+                        0 day(ds) (type: int)
+                        1 day(ds) (type: int)
+                    Select Operator
+                      expressions: day(ds) (type: int)
+                      outputColumnNames: _col0
+                      Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                      Group By Operator
+                        keys: _col0 (type: int)
+                        mode: hash
+                        outputColumnNames: _col0
+                        Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                        Spark Partition Pruning Sink Operator
+                          Target column: ds (string)
+                          partition key expr: day(ds)
+#### A masked pattern was here ####
+                          Statistics: Num rows: 1 Data size: 188 Basic stats: COMPLETE Column stats: NONE
+                          target work: Map 1
+            Local Work:
+              Map Reduce Local Work
+
+  Stage: Stage-1
+    Spark
+      Edges:
+        Reducer 2 <- Map 1 (GROUP, 1)
+#### A masked pattern was here ####
+      Vertices:
+        Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: srcpart
+                  filterExpr: day(ds) is not null (type: boolean)
+                  Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: day(ds) is not null (type: boolean)
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
+                    Map Join Operator
+                      condition map:
+                           Inner Join 0 to 1
+                      keys:
+                        0 day(ds) (type: int)
+                        1 day(ds) (type: int)
+                      input vertices:
+                        1 Map 3
+                      Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
+                      Group By Operator
+                        aggregations: count()
+                        mode: hash
+                        outputColumnNames: _col0
+                        Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                        Reduce Output Operator
+                          sort order: 
+                          Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                          value expressions: _col0 (type: bigint)
+            Local Work:
+              Map Reduce Local Work
+        Reducer 2 
+            Reduce Operator Tree:
+              Group By Operator
+                aggregations: count(VALUE._col0)
+                mode: mergepartial
+                outputColumnNames: _col0
+                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                File Output Operator
+                  compressed: false
+                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+                  table:
+                      input format: org.apache.hadoop.mapred.TextInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+            Execution mode: vectorized
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
+PREHOOK: query: select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+PREHOOK: type: QUERY
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+PREHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*) from srcpart join srcpart_date on (day(srcpart.ds) = day(srcpart_date.ds)) where srcpart_date.`date` = '2008-04-08'
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+POSTHOOK: Input: default@srcpart_date
+#### A masked pattern was here ####
+1000
 PREHOOK: query: EXPLAIN select count(*) from srcpart join srcpart_date on (srcpart.ds = srcpart_date.ds) join srcpart_hour on (srcpart.hr = srcpart_hour.hr) 
 where srcpart_date.`date` = '2008-04-08' and srcpart_hour.hour = 11
 PREHOOK: type: QUERY
@@ -4100,7 +4730,7 @@ STAGE PLANS:
                     outputColumnNames: _col3
                     input vertices:
                       1 Map 3
-                    Statistics: Num rows: 2200 Data size: 23372 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                     Map Join Operator
                       condition map:
                            Inner Join 0 to 1
@@ -4109,7 +4739,7 @@ STAGE PLANS:
                         1 hr (type: string)
                       input vertices:
                         1 Map 4
-                      Statistics: Num rows: 2420 Data size: 25709 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 605 Data size: 6427 Basic stats: COMPLETE Column stats: NONE
                       Group By Operator
                         aggregations: count()
                         mode: hash
@@ -4256,7 +4886,7 @@ STAGE PLANS:
                       1 ds (type: string), hr (type: string)
                     input vertices:
                       1 Map 3
-                    Statistics: Num rows: 2200 Data size: 23372 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                     Group By Operator
                       aggregations: count()
                       mode: hash
@@ -4478,7 +5108,7 @@ STAGE PLANS:
                   Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
                     predicate: UDFToDouble(hr) is not null (type: boolean)
-                    Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
                     Map Join Operator
                       condition map:
                            Inner Join 0 to 1
@@ -4487,7 +5117,7 @@ STAGE PLANS:
                         1 UDFToDouble(UDFToInteger((hr / 2))) (type: double)
                       input vertices:
                         1 Map 3
-                      Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                       Group By Operator
                         aggregations: count()
                         mode: hash
@@ -4599,7 +5229,7 @@ STAGE PLANS:
                   Statistics: Num rows: 2000 Data size: 21248 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
                     predicate: (hr * 2) is not null (type: boolean)
-                    Statistics: Num rows: 1000 Data size: 10624 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
                     Map Join Operator
                       condition map:
                            Inner Join 0 to 1
@@ -4608,7 +5238,7 @@ STAGE PLANS:
                         1 hr (type: double)
                       input vertices:
                         1 Map 3
-                      Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 550 Data size: 5843 Basic stats: COMPLETE Column stats: NONE
                       Group By Operator
                         aggregations: count()
                         mode: hash
@@ -5173,7 +5803,7 @@ STAGE PLANS:
                       1 ds (type: string)
                     input vertices:
                       1 Map 3
-                    Statistics: Num rows: 1100 Data size: 11686 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 275 Data size: 2921 Basic stats: COMPLETE Column stats: NONE
                     Map Join Operator
                       condition map:
                            Inner Join 0 to 1
@@ -5182,7 +5812,7 @@ STAGE PLANS:
                         1 '11' (type: string)
                       input vertices:
                         1 Map 4
-                      Statistics: Num rows: 1210 Data size: 12854 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 302 Data size: 3213 Basic stats: COMPLETE Column stats: NONE
                       Group By Operator
                         aggregations: count()
                         mode: hash
@@ -5612,197 +6242,6 @@ POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
 #### A masked pattern was here ####
 2008-04-08
 2008-04-09
-PREHOOK: query: create table srcpart_orc (key int, value string) partitioned by (ds string, hr int) stored as orc
-PREHOOK: type: CREATETABLE
-PREHOOK: Output: database:default
-PREHOOK: Output: default@srcpart_orc
-POSTHOOK: query: create table srcpart_orc (key int, value string) partitioned by (ds string, hr int) stored as orc
-POSTHOOK: type: CREATETABLE
-POSTHOOK: Output: database:default
-POSTHOOK: Output: default@srcpart_orc
-PREHOOK: query: insert into table srcpart_orc partition (ds, hr) select key, value, ds, hr from srcpart
-PREHOOK: type: QUERY
-PREHOOK: Input: default@srcpart
-PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
-PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
-PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
-PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
-PREHOOK: Output: default@srcpart_orc
-POSTHOOK: query: insert into table srcpart_orc partition (ds, hr) select key, value, ds, hr from srcpart
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@srcpart
-POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
-POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
-POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
-POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
-POSTHOOK: Output: default@srcpart_orc@ds=2008-04-08/hr=11
-POSTHOOK: Output: default@srcpart_orc@ds=2008-04-08/hr=12
-POSTHOOK: Output: default@srcpart_orc@ds=2008-04-09/hr=11
-POSTHOOK: Output: default@srcpart_orc@ds=2008-04-09/hr=12
-POSTHOOK: Lineage: srcpart_orc PARTITION(ds=2008-04-08,hr=11).key EXPRESSION [(srcpart)srcpart.FieldSchema(name:key, type:string, comment:default), ]
-POSTHOOK: Lineage: srcpart_orc PARTITION(ds=2008-04-08,hr=11).value SIMPLE [(srcpart)srcpart.FieldSchema(name:value, type:string, comment:default), ]
-POSTHOOK: Lineage: srcpart_orc PARTITION(ds=2008-04-08,hr=12).key EXPRESSION [(srcpart)srcpart.FieldSchema(name:key, type:string, comment:default), ]
-POSTHOOK: Lineage: srcpart_orc PARTITION(ds=2008-04-08,hr=12).value SIMPLE [(srcpart)srcpart.FieldSchema(name:value, type:string, comment:default), ]
-POSTHOOK: Lineage: srcpart_orc PARTITION(ds=2008-04-09,hr=11).key EXPRESSION [(srcpart)srcpart.FieldSchema(name:key, type:string, comment:default), ]
-POSTHOOK: Lineage: srcpart_orc PARTITION(ds=2008-04-09,hr=11).value SIMPLE [(srcpart)srcpart.FieldSchema(name:value, type:string, comment:default), ]
-POSTHOOK: Lineage: srcpart_orc PARTITION(ds=2008-04-09,hr=12).key EXPRESSION [(srcpart)srcpart.FieldSchema(name:key, type:string, comment:default), ]
-POSTHOOK: Lineage: srcpart_orc PARTITION(ds=2008-04-09,hr=12).value SIMPLE [(srcpart)srcpart.FieldSchema(name:value, type:string, comment:default), ]
-PREHOOK: query: EXPLAIN select count(*) from srcpart_orc join srcpart_date_hour on (srcpart_orc.ds = srcpart_date_hour.ds and srcpart_orc.hr = srcpart_date_hour.hr) where srcpart_date_hour.hour = 11 and (srcpart_date_hour.`date` = '2008-04-08' or srcpart_date_hour.`date` = '2008-04-09')
-PREHOOK: type: QUERY
-POSTHOOK: query: EXPLAIN select count(*) from srcpart_orc join srcpart_date_hour on (srcpart_orc.ds = srcpart_date_hour.ds and srcpart_orc.hr = srcpart_date_hour.hr) where srcpart_date_hour.hour = 11 and (srcpart_date_hour.`date` = '2008-04-08' or srcpart_date_hour.`date` = '2008-04-09')
-POSTHOOK: type: QUERY
-STAGE DEPENDENCIES:
-  Stage-2 is a root stage
-  Stage-1 depends on stages: Stage-2
-  Stage-0 depends on stages: Stage-1
-
-STAGE PLANS:
-  Stage: Stage-2
-    Spark
-#### A masked pattern was here ####
-      Vertices:
-        Map 3 
-            Map Operator Tree:
-                TableScan
-                  alias: srcpart_date_hour
-                  filterExpr: (((ds is not null and UDFToDouble(hr) is not null) and (hour = 11)) and ((date = '2008-04-08') or (date = '2008-04-09'))) (type: boolean)
-                  Statistics: Num rows: 4 Data size: 1440 Basic stats: COMPLETE Column stats: NONE
-                  Filter Operator
-                    predicate: (((ds is not null and UDFToDouble(hr) is not null) and (hour = 11)) and ((date = '2008-04-08') or (date = '2008-04-09'))) (type: boolean)
-                    Statistics: Num rows: 1 Data size: 360 Basic stats: COMPLETE Column stats: NONE
-                    Spark HashTable Sink Operator
-                      keys:
-                        0 ds (type: string), UDFToDouble(hr) (type: double)
-                        1 ds (type: string), UDFToDouble(hr) (type: double)
-                    Select Operator
-                      expressions: ds (type: string)
-                      outputColumnNames: _col0
-                      Statistics: Num rows: 1 Data size: 360 Basic stats: COMPLETE Column stats: NONE
-                      Group By Operator
-                        keys: _col0 (type: string)
-                        mode: hash
-                        outputColumnNames: _col0
-                        Statistics: Num rows: 1 Data size: 360 Basic stats: COMPLETE Column stats: NONE
-                        Spark Partition Pruning Sink Operator
-                          Target column: ds (string)
-                          partition key expr: ds
-#### A masked pattern was here ####
-                          Statistics: Num rows: 1 Data size: 360 Basic stats: COMPLETE Column stats: NONE
-                          target work: Map 1
-                    Select Operator
-                      expressions: UDFToDouble(hr) (type: double)
-                      outputColumnNames: _col0
-                      Statistics: Num rows: 1 Data size: 360 Basic stats: COMPLETE Column stats: NONE
-                      Group By Operator
-                        keys: _col0 (type: double)
-                        mode: hash
-                        outputColumnNames: _col0
-                        Statistics: Num rows: 1 Data size: 360 Basic stats: COMPLETE Column stats: NONE
-                        Spark Partition Pruning Sink Operator
-                          Target column: hr (int)
-                          partition key expr: UDFToDouble(hr)
-#### A masked pattern was here ####
-                          Statistics: Num rows: 1 Data size: 360 Basic stats: COMPLETE Column stats: NONE
-                          target work: Map 1
-            Local Work:
-              Map Reduce Local Work
-
-  Stage: Stage-1
-    Spark
-      Edges:
-        Reducer 2 <- Map 1 (GROUP, 1)
-#### A masked pattern was here ####
-      Vertices:
-        Map 1 
-            Map Operator Tree:
-                TableScan
-                  alias: srcpart_orc
-                  filterExpr: UDFToDouble(hr) is not null (type: boolean)
-                  Statistics: Num rows: 2000 Data size: 188000 Basic stats: COMPLETE Column stats: NONE
-                  Filter Operator
-                    predicate: UDFToDouble(hr) is not null (type: boolean)
-                    Statistics: Num rows: 1000 Data size: 94000 Basic stats: COMPLETE Column stats: NONE
-                    Map Join Operator
-                      condition map:
-                           Inner Join 0 to 1
-                      keys:
-                        0 ds (type: string), UDFToDouble(hr) (type: double)
-                        1 ds (type: string), UDFToDouble(hr) (type: double)
-                      input vertices:
-                        1 Map 3
-                      Statistics: Num rows: 1100 Data size: 103400 Basic stats: COMPLETE Column stats: NONE
-                      Group By Operator
-                        aggregations: count()
-                        mode: hash
-                        outputColumnNames: _col0
-                        Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-                        Reduce Output Operator
-                          sort order: 
-                          Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-                          value expressions: _col0 (type: bigint)
-            Local Work:
-              Map Reduce Local Work
-        Reducer 2 
-            Reduce Operator Tree:
-              Group By Operator
-                aggregations: count(VALUE._col0)
-                mode: mergepartial
-                outputColumnNames: _col0
-                Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
-                  Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.TextInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-
-  Stage: Stage-0
-    Fetch Operator
-      limit: -1
-      Processor Tree:
-        ListSink
-
-PREHOOK: query: select count(*) from srcpart_orc join srcpart_date_hour on (srcpart_orc.ds = srcpart_date_hour.ds and srcpart_orc.hr = srcpart_date_hour.hr) where srcpart_date_hour.hour = 11 and (srcpart_date_hour.`date` = '2008-04-08' or srcpart_date_hour.`date` = '2008-04-09')
-PREHOOK: type: QUERY
-PREHOOK: Input: default@srcpart_date_hour
-PREHOOK: Input: default@srcpart_orc
-PREHOOK: Input: default@srcpart_orc@ds=2008-04-08/hr=11
-PREHOOK: Input: default@srcpart_orc@ds=2008-04-08/hr=12
-PREHOOK: Input: default@srcpart_orc@ds=2008-04-09/hr=11
-PREHOOK: Input: default@srcpart_orc@ds=2008-04-09/hr=12
-#### A masked pattern was here ####
-POSTHOOK: query: select count(*) from srcpart_orc join srcpart_date_hour on (srcpart_orc.ds = srcpart_date_hour.ds and srcpart_orc.hr = srcpart_date_hour.hr) where srcpart_date_hour.hour = 11 and (srcpart_date_hour.`date` = '2008-04-08' or srcpart_date_hour.`date` = '2008-04-09')
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@srcpart_date_hour
-POSTHOOK: Input: default@srcpart_orc
-POSTHOOK: Input: default@srcpart_orc@ds=2008-04-08/hr=11
-POSTHOOK: Input: default@srcpart_orc@ds=2008-04-08/hr=12
-POSTHOOK: Input: default@srcpart_orc@ds=2008-04-09/hr=11
-POSTHOOK: Input: default@srcpart_orc@ds=2008-04-09/hr=12
-#### A masked pattern was here ####
-1000
-PREHOOK: query: select count(*) from srcpart where (ds = '2008-04-08' or ds = '2008-04-09') and hr = 11
-PREHOOK: type: QUERY
-PREHOOK: Input: default@srcpart
-PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
-PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
-#### A masked pattern was here ####
-POSTHOOK: query: select count(*) from srcpart where (ds = '2008-04-08' or ds = '2008-04-09') and hr = 11
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@srcpart
-POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
-POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
-#### A masked pattern was here ####
-1000
-PREHOOK: query: drop table srcpart_orc
-PREHOOK: type: DROPTABLE
-PREHOOK: Input: default@srcpart_orc
-PREHOOK: Output: default@srcpart_orc
-POSTHOOK: query: drop table srcpart_orc
-POSTHOOK: type: DROPTABLE
-POSTHOOK: Input: default@srcpart_orc
-POSTHOOK: Output: default@srcpart_orc
 PREHOOK: query: drop table srcpart_date
 PREHOOK: type: DROPTABLE
 PREHOOK: Input: default@srcpart_date
