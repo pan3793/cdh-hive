@@ -167,7 +167,7 @@ public class TestHadoopAuthBridge23 extends TestCase {
     tokenManager.startThreads();
     tokenManager.stopThreads();
 
-    String tokenStrForm = tokenManager.getDelegationToken(clientUgi.getShortUserName());
+    String tokenStrForm = tokenManager.getDelegationToken(clientUgi.getShortUserName(), clientUgi.getShortUserName());
     Token<DelegationTokenIdentifier> t= new Token<DelegationTokenIdentifier>();
     t.decodeFromUrlString(tokenStrForm);
 

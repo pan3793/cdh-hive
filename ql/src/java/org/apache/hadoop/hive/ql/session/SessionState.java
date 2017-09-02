@@ -57,6 +57,7 @@ import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.conf.HiveConfUtil;
 import org.apache.hadoop.hive.metastore.ObjectStore;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.ql.MapRedStats;
@@ -1637,10 +1638,11 @@ public class SessionState {
 
   private void unCacheDataNucleusClassLoaders() {
     try {
-      Hive threadLocalHive = Hive.get(sessionConf);
-      if ((threadLocalHive != null) && (threadLocalHive.getMSC() != null)
-          && (threadLocalHive.getMSC().isLocalMetaStore())) {
-        if (sessionConf.getVar(ConfVars.METASTORE_RAW_STORE_IMPL).equals(ObjectStore.class.getName())) {
+      boolean isLocalMetastore =
+          HiveConfUtil.isEmbeddedMetaStore(sessionConf.getVar(HiveConf.ConfVars.METASTOREURIS));
+      if (isLocalMetastore) {
+        if (sessionConf.getVar(ConfVars.METASTORE_RAW_STORE_IMPL)
+            .equals(ObjectStore.class.getName())) {
           ObjectStore.unCacheDataNucleusClassLoaders();
         }
       }
