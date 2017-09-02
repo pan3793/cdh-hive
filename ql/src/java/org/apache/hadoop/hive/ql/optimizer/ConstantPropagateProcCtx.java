@@ -127,7 +127,7 @@ public class ConstantPropagateProcCtx implements NodeProcessorCtx {
       return constants;
     }
 
-    if (op instanceof UnionOperator) {
+    if (op instanceof UnionOperator && !rs.getSignature().isEmpty()) {
       String alias = rs.getSignature().get(0).getTabAlias();
       // find intersection
       Map<ColumnInfo, ExprNodeDesc> intersection = null;
