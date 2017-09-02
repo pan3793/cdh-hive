@@ -503,13 +503,14 @@ public class HadoopThriftAuthBridge {
         InetAddress remoteAddr = getRemoteAddress();
         ProxyUsers.authorize(ownerUgi,remoteAddr.getHostAddress(), null);
       }
-      return ownerUgi.doAs(new PrivilegedExceptionAction<String>() {
-
-        @Override
-        public String run() throws IOException {
-          return secretManager.getDelegationToken(renewer);
-        }
-      });
+      //if impersonation is turned on this called using the HiveSessionImplWithUGI
+      //using sessionProxy. so the currentUser will be the impersonated user here eg. oozie
+      //we cannot create a proxy user which represents Oozie's client user here since
+      //we cannot authenticate it using Kerberos/Digest. We trust the user which opened
+      //session using Kerberos in this case.
+      //if impersonation is turned off, the current user is Hive which can open
+      //kerberos connections to HMS if required.
+      return secretManager.getDelegationToken(owner, renewer);
     }
 
 
