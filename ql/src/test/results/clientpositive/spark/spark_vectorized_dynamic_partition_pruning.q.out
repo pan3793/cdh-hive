@@ -4385,7 +4385,7 @@ STAGE PLANS:
                           Target column: ds (string)
                           partition key expr: ds
                           Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                          target work: Map 4
+                          target work: Map 1
         Reducer 17 
             Execution mode: vectorized
             Reduce Operator Tree:
@@ -4415,7 +4415,7 @@ STAGE PLANS:
                           Target column: ds (string)
                           partition key expr: ds
                           Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                          target work: Map 4
+                          target work: Map 1
 
   Stage: Stage-1
     Spark
