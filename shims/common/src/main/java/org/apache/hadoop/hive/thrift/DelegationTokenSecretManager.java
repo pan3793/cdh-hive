@@ -72,15 +72,12 @@ public class DelegationTokenSecretManager
     return renewToken(t, user);
   }
 
-  public synchronized String getDelegationToken(final String ownerStr, final String renewer) throws IOException {
-    if(ownerStr == null) {
-      throw new RuntimeException("Delegation token owner is null");
-    }
-    Text owner = new Text(ownerStr);
+  public synchronized String getDelegationToken(String renewer) throws IOException {
+    UserGroupInformation ugi = UserGroupInformation.getCurrentUser();
+    Text owner = new Text(ugi.getUserName());
     Text realUser = null;
-    UserGroupInformation currentUgi = UserGroupInformation.getCurrentUser();
-    if (currentUgi.getUserName() != null) {
-      realUser = new Text(currentUgi.getUserName());
+    if (ugi.getRealUser() != null) {
+      realUser = new Text(ugi.getRealUser().getUserName());
     }
     DelegationTokenIdentifier ident =
       new DelegationTokenIdentifier(owner, new Text(renewer), realUser);

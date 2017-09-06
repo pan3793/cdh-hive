@@ -70,7 +70,6 @@ public class MiniHS2 extends AbstractHiveService {
   private final String serverKeytab;
   private final boolean isMetastoreRemote;
   private final boolean cleanupLocalDirOnStartup;
-  private final boolean isMetastoreSecure;
 
   public static class Builder {
     private HiveConf hiveConf = new HiveConf();
@@ -82,9 +81,6 @@ public class MiniHS2 extends AbstractHiveService {
     private boolean isHTTPTransMode = false;
     private boolean isMetastoreRemote;
     private String authType = "KERBEROS";
-    private boolean isMetastoreSecure;
-    private String metastoreServerPrincipal;
-    private String metastoreServerKeyTab;
 
     public Builder() {
     }
@@ -108,14 +104,6 @@ public class MiniHS2 extends AbstractHiveService {
 
     public Builder withRemoteMetastore() {
       this.isMetastoreRemote = true;
-      return this;
-    }
-
-    public Builder withSecureRemoteMetastore(String metastoreServerPrincipal, String metastoreServerKeyTab) {
-      this.isMetastoreRemote = true;
-      this.isMetastoreSecure = true;
-      this.metastoreServerPrincipal = metastoreServerPrincipal;
-      this.metastoreServerKeyTab = metastoreServerKeyTab;
       return this;
     }
 
@@ -148,8 +136,7 @@ public class MiniHS2 extends AbstractHiveService {
         hiveConf.setVar(ConfVars.HIVE_SERVER2_TRANSPORT_MODE, HS2_BINARY_MODE);
       }
       return new MiniHS2(hiveConf, useMiniMR, useMiniKdc, serverPrincipal, serverKeytab,
-          isMetastoreRemote, authType, cleanupLocalDirOnStartup,
-          isMetastoreSecure, metastoreServerPrincipal, metastoreServerKeyTab);
+          isMetastoreRemote, authType, cleanupLocalDirOnStartup);
     }
   }
 
@@ -186,10 +173,7 @@ public class MiniHS2 extends AbstractHiveService {
   }
 
   private MiniHS2(HiveConf hiveConf, boolean useMiniMR, boolean useMiniKdc,
-      String serverPrincipal, String serverKeytab, boolean isMetastoreRemote, String authType, boolean cleanupLocalDirOnStartup,
-      boolean isMetastoreSecure,
-      String metastoreServerPrincipal,
-      String metastoreKeyTab) throws Exception {
+      String serverPrincipal, String serverKeytab, boolean isMetastoreRemote, String authType, boolean cleanupLocalDirOnStartup) throws Exception {
     super(hiveConf, "localhost", MetaStoreUtils.findFreePort(), MetaStoreUtils.findFreePort());
     this.useMiniMR = useMiniMR;
     hiveConf.setLongVar(ConfVars.HIVE_SERVER2_MAX_START_ATTEMPTS, 3l);
@@ -199,7 +183,6 @@ public class MiniHS2 extends AbstractHiveService {
     this.serverPrincipal = serverPrincipal;
     this.serverKeytab = serverKeytab;
     this.isMetastoreRemote = isMetastoreRemote;
-    this.isMetastoreSecure = isMetastoreSecure;
     this.cleanupLocalDirOnStartup = cleanupLocalDirOnStartup;
     baseDir = getBaseDir();
     localFS = FileSystem.getLocal(hiveConf);
@@ -228,16 +211,9 @@ public class MiniHS2 extends AbstractHiveService {
       hiveConf.setVar(ConfVars.HIVE_SERVER2_KERBEROS_KEYTAB, serverKeytab);
       hiveConf.setVar(ConfVars.HIVE_SERVER2_AUTHENTICATION, authType);
     }
-
-    String metaStoreURL = "jdbc:derby:;databaseName=" + baseDir.getAbsolutePath() + File.separator
-        + "test_metastore;create=true";
-
-    if (isMetastoreSecure) {
-      hiveConf.setVar(ConfVars.METASTORE_KERBEROS_PRINCIPAL, metastoreServerPrincipal);
-      hiveConf.setVar(ConfVars.METASTORE_KERBEROS_KEYTAB_FILE, metastoreKeyTab);
-      hiveConf.setBoolVar(ConfVars.METASTORE_USE_THRIFT_SASL, true);
-    }
-
+    String metaStoreURL =
+        "jdbc:derby:;databaseName=" + baseDir.getAbsolutePath() + File.separator
+            + "test_metastore;create=true";
     fs.mkdirs(baseFsDir);
     Path wareHouseDir = new Path(baseFsDir, "warehouse");
     // Create warehouse with 777, so that user impersonation has no issues.
@@ -269,7 +245,7 @@ public class MiniHS2 extends AbstractHiveService {
   }
 
   public MiniHS2(HiveConf hiveConf, boolean useMiniMR) throws Exception {
-    this(hiveConf, useMiniMR, false, null, null, false, "KERBEROS", true, false, null, null);
+    this(hiveConf, useMiniMR, false, null, null, false, "KERBEROS", true);
   }
 
   public void start(Map<String, String> confOverlay) throws Exception {
