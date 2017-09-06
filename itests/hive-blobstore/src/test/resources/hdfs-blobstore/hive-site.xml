@@ -20,7 +20,7 @@
 <configuration>
   <property>
     <name>fs.s3a.metadatastore.impl</name>
-    <value>org.apache.hadoop.fs.s3a.s3guard.NullMetadataStore</value>
+    <value>org.apache.hadoop.fs.s3a.s3guard.DynamoDBMetadataStore</value>
   </property>
  <property>
     <name>fs.s3a.s3guard.ddb.region</name>
@@ -38,7 +38,7 @@
 
   <property>
     <name>hive.blobstore.optimizations.enabled</name>
-    <value>false</value>
+    <value>true</value>
   </property>
 
   <!-- Hive Configuration can either be stored in this file or in the hadoop configuration files  -->
