@@ -47,8 +47,8 @@ public class QFileBeeLineClient implements AutoCloseable {
     "SHOW TABLES;",
   };
   private String[] TEST_SET_LOG_COMMANDS = new String[] {
-    "set hive.in.test.short.logs=true;",
-    "set hive.in.test.remove.logs=false;",
+    "set hive.testing.short.logs=true;",
+    "set hive.testing.remove.logs=false;",
   };
   private String[] TEST_RESET_COMMANDS = new String[] {
     "set hive.testing.short.logs=false;",
