@@ -152,8 +152,8 @@ public class DBTokenStore implements DelegationTokenStore {
           break;
         case HIVESERVER2 :
           Object hiveObject = ((Class<?>)handler)
-            .getMethod("get")
-            .invoke(handler, null);
+            .getMethod("get", org.apache.hadoop.conf.Configuration.class, java.lang.Class.class)
+            .invoke(handler, conf, DBTokenStore.class);
           tokenStore = ((Class<?>)handler).getMethod("getMSC").invoke(hiveObject);
           break;
        default:
