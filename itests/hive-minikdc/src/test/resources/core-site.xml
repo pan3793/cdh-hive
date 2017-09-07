@@ -53,10 +53,29 @@
     <name>hadoop.proxyuser.superuser.hosts</name>
     <value>*</value>
   </property>
+  <!-- following proxy user settings are only part of CDH -->
+  <!-- check CDH-58912 for details -->
   <property>
     <name>hadoop.proxyuser.superuser.groups</name>
+    <value>superuser,user1</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.user1.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.user2.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.user1.groups</name>
     <value>user1</value>
   </property>
+  <property>
+    <name>hadoop.proxyuser.user2.groups</name>
+    <value>user2</value>
+  </property>
+  <!-- CDH specific settings end -->
 
   <property>
     <name>hadoop.security.authentication</name>
