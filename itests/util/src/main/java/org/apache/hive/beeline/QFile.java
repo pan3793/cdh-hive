@@ -299,6 +299,7 @@ public final class QFile {
         .addFilter("INFO  : ", "")
         .addFilter(".*/tmp/.*\n", MASK_PATTERN)
         .addFilter(".*file:.*\n", MASK_PATTERN)
+        .addFilter(".*hdfs:.*\n", MASK_PATTERN)
         .addFilter(".*file\\..*\n", MASK_PATTERN)
         .addFilter(".*CreateTime.*\n", MASK_PATTERN)
         .addFilter(".*transient_lastDdlTime.*\n", MASK_PATTERN)
