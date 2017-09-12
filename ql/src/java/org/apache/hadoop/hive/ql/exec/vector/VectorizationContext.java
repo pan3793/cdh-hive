@@ -169,7 +169,7 @@ public class VectorizationContext {
   // private final Map<String, Integer> columnMap;
   private int firstOutputColumnIndex;
 
-  public enum HiveVectorAdaptorUsageMode {
+  private enum HiveVectorAdaptorUsageMode {
     NONE,
     CHOSEN,
     ALL;

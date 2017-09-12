@@ -2,23 +2,21 @@ PREHOOK: query: drop table varchar_udf_1
 PREHOOK: type: DROPTABLE
 POSTHOOK: query: drop table varchar_udf_1
 POSTHOOK: type: DROPTABLE
-PREHOOK: query: create table varchar_udf_1 (c1 string, c2 string, c3 varchar(10), c4 varchar(20),
-     d1 string, d2 string, d3 varchar(10), d4 varchar(10)) STORED AS ORC
+PREHOOK: query: create table varchar_udf_1 (c1 string, c2 string, c3 varchar(10), c4 varchar(20)) STORED AS ORC
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@varchar_udf_1
-POSTHOOK: query: create table varchar_udf_1 (c1 string, c2 string, c3 varchar(10), c4 varchar(20),
-     d1 string, d2 string, d3 varchar(10), d4 varchar(10)) STORED AS ORC
+POSTHOOK: query: create table varchar_udf_1 (c1 string, c2 string, c3 varchar(10), c4 varchar(20)) STORED AS ORC
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@varchar_udf_1
 PREHOOK: query: insert overwrite table varchar_udf_1
-  select key, value, key, value, '2015-01-14', '2015-01-14', '2017-01-11', '2017-01-11' from src where key = '238' limit 1
+  select key, value, key, value from src where key = '238' limit 1
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 PREHOOK: Output: default@varchar_udf_1
 POSTHOOK: query: insert overwrite table varchar_udf_1
-  select key, value, key, value, '2015-01-14', '2015-01-14', '2017-01-11', '2017-01-11' from src where key = '238' limit 1
+  select key, value, key, value from src where key = '238' limit 1
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 POSTHOOK: Output: default@varchar_udf_1
@@ -26,10 +24,6 @@ POSTHOOK: Lineage: varchar_udf_1.c1 SIMPLE [(src)src.FieldSchema(name:key, type:
 POSTHOOK: Lineage: varchar_udf_1.c2 SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 POSTHOOK: Lineage: varchar_udf_1.c3 EXPRESSION [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 POSTHOOK: Lineage: varchar_udf_1.c4 EXPRESSION [(src)src.FieldSchema(name:value, type:string, comment:default), ]
-POSTHOOK: Lineage: varchar_udf_1.d1 SIMPLE []
-POSTHOOK: Lineage: varchar_udf_1.d2 SIMPLE []
-POSTHOOK: Lineage: varchar_udf_1.d3 EXPRESSION []
-POSTHOOK: Lineage: varchar_udf_1.d4 EXPRESSION []
 PREHOOK: query: explain
 select 
   concat(c1, c2),
@@ -54,17 +48,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: concat(c1, c2) (type: string), concat(c3, c4) (type: varchar(30)), (concat(c1, c2) = UDFToString(concat(c3, c4))) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -118,17 +112,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: upper(c2) (type: string), upper(c4) (type: varchar(20)), (upper(c2) = UDFToString(upper(c4))) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -182,17 +176,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: lower(c2) (type: string), lower(c4) (type: varchar(20)), (lower(c2) = UDFToString(lower(c4))) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -246,22 +240,21 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: ascii(c2) (type: int), ascii(c4) (type: int), (ascii(c2) = ascii(c4)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
 
   Stage: Stage-0
     Fetch Operator
@@ -310,22 +303,21 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: concat_ws('|', c1, c2) (type: string), concat_ws('|', c3, c4) (type: string), (concat_ws('|', c1, c2) = concat_ws('|', c3, c4)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
 
   Stage: Stage-0
     Fetch Operator
@@ -374,22 +366,21 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: decode(encode(c2,'US-ASCII'),'US-ASCII') (type: string), decode(encode(c4,'US-ASCII'),'US-ASCII') (type: string), (decode(encode(c2,'US-ASCII'),'US-ASCII') = decode(encode(c4,'US-ASCII'),'US-ASCII')) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
 
   Stage: Stage-0
     Fetch Operator
@@ -438,22 +429,21 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: instr(c2, '_') (type: int), instr(c4, '_') (type: int), (instr(c2, '_') = instr(c4, '_')) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
 
   Stage: Stage-0
     Fetch Operator
@@ -480,262 +470,6 @@ POSTHOOK: Input: default@varchar_udf_1
 4	4	true
 PREHOOK: query: explain
 select
-  replace(c1, '_', c2),
-  replace(c3, '_', c4),
-  replace(c1, '_', c2) = replace(c3, '_', c4)
-from varchar_udf_1 limit 1
-PREHOOK: type: QUERY
-POSTHOOK: query: explain
-select
-  replace(c1, '_', c2),
-  replace(c3, '_', c4),
-  replace(c1, '_', c2) = replace(c3, '_', c4)
-from varchar_udf_1 limit 1
-POSTHOOK: type: QUERY
-STAGE DEPENDENCIES:
-  Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1
-
-STAGE PLANS:
-  Stage: Stage-1
-    Map Reduce
-      Map Operator Tree:
-          TableScan
-            alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-            Select Operator
-              expressions: replace(c1, '_', c2) (type: string), replace(c3, '_', c4) (type: string), (replace(c1, '_', c2) = replace(c3, '_', c4)) (type: boolean)
-              outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-              Limit
-                Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
-
-  Stage: Stage-0
-    Fetch Operator
-      limit: 1
-      Processor Tree:
-        ListSink
-
-PREHOOK: query: select
-  replace(c1, '_', c2),
-  replace(c3, '_', c4),
-  replace(c1, '_', c2) = replace(c3, '_', c4)
-from varchar_udf_1 limit 1
-PREHOOK: type: QUERY
-PREHOOK: Input: default@varchar_udf_1
-#### A masked pattern was here ####
-POSTHOOK: query: select
-  replace(c1, '_', c2),
-  replace(c3, '_', c4),
-  replace(c1, '_', c2) = replace(c3, '_', c4)
-from varchar_udf_1 limit 1
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@varchar_udf_1
-#### A masked pattern was here ####
-238	238	true
-PREHOOK: query: explain
-select
-  reverse(c2),
-  reverse(c4),
-  reverse(c2) = reverse(c4)
-from varchar_udf_1 limit 1
-PREHOOK: type: QUERY
-POSTHOOK: query: explain
-select
-  reverse(c2),
-  reverse(c4),
-  reverse(c2) = reverse(c4)
-from varchar_udf_1 limit 1
-POSTHOOK: type: QUERY
-STAGE DEPENDENCIES:
-  Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1
-
-STAGE PLANS:
-  Stage: Stage-1
-    Map Reduce
-      Map Operator Tree:
-          TableScan
-            alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-            Select Operator
-              expressions: reverse(c2) (type: string), reverse(c4) (type: string), (reverse(c2) = reverse(c4)) (type: boolean)
-              outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-              Limit
-                Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
-
-  Stage: Stage-0
-    Fetch Operator
-      limit: 1
-      Processor Tree:
-        ListSink
-
-PREHOOK: query: select
-  reverse(c2),
-  reverse(c4),
-  reverse(c2) = reverse(c4)
-from varchar_udf_1 limit 1
-PREHOOK: type: QUERY
-PREHOOK: Input: default@varchar_udf_1
-#### A masked pattern was here ####
-POSTHOOK: query: select
-  reverse(c2),
-  reverse(c4),
-  reverse(c2) = reverse(c4)
-from varchar_udf_1 limit 1
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@varchar_udf_1
-#### A masked pattern was here ####
-832_lav	832_lav	true
-PREHOOK: query: explain
-select
-  next_day(d1, 'TU'),
-  next_day(d4, 'WE'),
-  next_day(d1, 'TU') = next_day(d4, 'WE')
-from varchar_udf_1 limit 1
-PREHOOK: type: QUERY
-POSTHOOK: query: explain
-select
-  next_day(d1, 'TU'),
-  next_day(d4, 'WE'),
-  next_day(d1, 'TU') = next_day(d4, 'WE')
-from varchar_udf_1 limit 1
-POSTHOOK: type: QUERY
-STAGE DEPENDENCIES:
-  Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1
-
-STAGE PLANS:
-  Stage: Stage-1
-    Map Reduce
-      Map Operator Tree:
-          TableScan
-            alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-            Select Operator
-              expressions: next_day(d1, 'TU') (type: string), next_day(d4, 'WE') (type: string), (next_day(d1, 'TU') = next_day(d4, 'WE')) (type: boolean)
-              outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-              Limit
-                Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
-
-  Stage: Stage-0
-    Fetch Operator
-      limit: 1
-      Processor Tree:
-        ListSink
-
-PREHOOK: query: select
-  next_day(d1, 'TU'),
-  next_day(d4, 'WE'),
-  next_day(d1, 'TU') = next_day(d4, 'WE')
-from varchar_udf_1 limit 1
-PREHOOK: type: QUERY
-PREHOOK: Input: default@varchar_udf_1
-#### A masked pattern was here ####
-POSTHOOK: query: select
-  next_day(d1, 'TU'),
-  next_day(d4, 'WE'),
-  next_day(d1, 'TU') = next_day(d4, 'WE')
-from varchar_udf_1 limit 1
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@varchar_udf_1
-#### A masked pattern was here ####
-2015-01-20	2017-01-18	false
-PREHOOK: query: explain
-select
-  months_between(d1, d3),
-  months_between(d2, d4),
-  months_between(d1, d3) = months_between(d2, d4)
-from varchar_udf_1 limit 1
-PREHOOK: type: QUERY
-POSTHOOK: query: explain
-select
-  months_between(d1, d3),
-  months_between(d2, d4),
-  months_between(d1, d3) = months_between(d2, d4)
-from varchar_udf_1 limit 1
-POSTHOOK: type: QUERY
-STAGE DEPENDENCIES:
-  Stage-1 is a root stage
-  Stage-0 depends on stages: Stage-1
-
-STAGE PLANS:
-  Stage: Stage-1
-    Map Reduce
-      Map Operator Tree:
-          TableScan
-            alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-            Select Operator
-              expressions: months_between(d1, d3) (type: double), months_between(d2, d4) (type: double), (months_between(d1, d3) = months_between(d2, d4)) (type: boolean)
-              outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-              Limit
-                Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-                File Output Operator
-                  compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
-                  table:
-                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
-                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
-                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
-
-  Stage: Stage-0
-    Fetch Operator
-      limit: 1
-      Processor Tree:
-        ListSink
-
-PREHOOK: query: select
-  months_between(d1, d3),
-  months_between(d2, d4),
-  months_between(d1, d3) = months_between(d2, d4)
-from varchar_udf_1 limit 1
-PREHOOK: type: QUERY
-PREHOOK: Input: default@varchar_udf_1
-#### A masked pattern was here ####
-POSTHOOK: query: select
-  months_between(d1, d3),
-  months_between(d2, d4),
-  months_between(d1, d3) = months_between(d2, d4)
-from varchar_udf_1 limit 1
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@varchar_udf_1
-#### A masked pattern was here ####
--23.90322581	-23.90322581	true
-PREHOOK: query: explain
-select
   length(c2),
   length(c4),
   length(c2) = length(c4)
@@ -758,17 +492,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: length(c2) (type: int), length(c4) (type: int), (length(c2) = length(c4)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -822,7 +556,7 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: COMPLETE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: COMPLETE
             Select Operator
               expressions: 5 (type: int), 5 (type: int), true (type: boolean)
               outputColumnNames: _col0, _col1, _col2
@@ -886,22 +620,21 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: lpad(c2, 15, ' ') (type: string), lpad(c4, 15, ' ') (type: string), (lpad(c2, 15, ' ') = lpad(c4, 15, ' ')) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
 
   Stage: Stage-0
     Fetch Operator
@@ -950,17 +683,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: ltrim(c2) (type: string), ltrim(c4) (type: string), (ltrim(c2) = ltrim(c4)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1014,17 +747,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: c2 regexp 'val' (type: boolean), c4 regexp 'val' (type: boolean), (c2 regexp 'val' = c4 regexp 'val') (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1078,17 +811,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: regexp_extract(c2, 'val_([0-9]+)', 1) (type: string), regexp_extract(c4, 'val_([0-9]+)', 1) (type: string), (regexp_extract(c2, 'val_([0-9]+)', 1) = regexp_extract(c4, 'val_([0-9]+)', 1)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1142,17 +875,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: regexp_replace(c2, 'val', 'replaced') (type: string), regexp_replace(c4, 'val', 'replaced') (type: string), (regexp_replace(c2, 'val', 'replaced') = regexp_replace(c4, 'val', 'replaced')) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1206,22 +939,21 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: reverse(c2) (type: string), reverse(c4) (type: string), (reverse(c2) = reverse(c4)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
 
   Stage: Stage-0
     Fetch Operator
@@ -1270,22 +1002,21 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: rpad(c2, 15, ' ') (type: string), rpad(c4, 15, ' ') (type: string), (rpad(c2, 15, ' ') = rpad(c4, 15, ' ')) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
                       serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-      Execution mode: vectorized
 
   Stage: Stage-0
     Fetch Operator
@@ -1334,17 +1065,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: rtrim(c2) (type: string), rtrim(c4) (type: string), (rtrim(c2) = rtrim(c4)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1396,7 +1127,7 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: COMPLETE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: COMPLETE
             Select Operator
               expressions: sentences('See spot run.  See jane run.') (type: array<array<string>>), sentences('See spot run.  See jane run.') (type: array<array<string>>)
               outputColumnNames: _col0, _col1
@@ -1455,17 +1186,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: split(c2, '_') (type: array<string>), split(c4, '_') (type: array<string>)
               outputColumnNames: _col0, _col1
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1514,7 +1245,7 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: COMPLETE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: COMPLETE
             Select Operator
               expressions: str_to_map('a:1,b:2,c:3',',',':') (type: map<string,string>), str_to_map('a:1,b:2,c:3',',',':') (type: map<string,string>)
               outputColumnNames: _col0, _col1
@@ -1575,17 +1306,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: substr(c2, 1, 3) (type: string), substr(c4, 1, 3) (type: string), (substr(c2, 1, 3) = substr(c4, 1, 3)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1639,17 +1370,17 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: trim(c2) (type: string), trim(c4) (type: string), (trim(c2) = trim(c4)) (type: boolean)
               outputColumnNames: _col0, _col1, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
-                Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
-                  Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+                  Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                       output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -1701,11 +1432,11 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: c2 (type: string), c4 (type: varchar(20))
               outputColumnNames: _col0, _col2
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: compute_stats(_col0, 16), compute_stats(_col2, 16)
                 mode: hash
@@ -1772,11 +1503,11 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: c2 (type: string), c4 (type: varchar(20))
               outputColumnNames: c2, c4
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: min(c2), min(c4)
                 mode: hash
@@ -1844,11 +1575,11 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: varchar_udf_1
-            Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: c2 (type: string), c4 (type: varchar(20))
               outputColumnNames: c2, c4
-              Statistics: Num rows: 1 Data size: 732 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: max(c2), max(c4)
                 mode: hash
