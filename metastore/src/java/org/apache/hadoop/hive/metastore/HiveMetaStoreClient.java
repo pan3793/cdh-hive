@@ -34,7 +34,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -240,10 +239,6 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
           );
 
         }
-        // make metastore URIS random
-        List uriList = Arrays.asList(metastoreUris);
-        Collections.shuffle(uriList);
-        metastoreUris = (URI[]) uriList.toArray();
       } catch (IllegalArgumentException e) {
         throw (e);
       } catch (Exception e) {
