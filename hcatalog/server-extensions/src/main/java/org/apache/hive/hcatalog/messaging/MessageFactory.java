@@ -37,6 +37,8 @@ import java.util.Map;
 /**
  * Abstract Factory for the construction of HCatalog message instances.
  */
+@InterfaceAudience.Public
+@InterfaceStability.Stable
 public abstract class MessageFactory {
 
   private static MessageFactory instance = null;
