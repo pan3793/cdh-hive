@@ -103,6 +103,10 @@ public abstract class SkeletonHBaseTest {
    */
   @BeforeClass
   public static void setup() {
+    // Fix needed due to dependency for hbase-mapreduce module
+    // Check CDH-59433 for details
+    System.setProperty("org.apache.hadoop.hbase.shaded.io.netty.packagePrefix",
+        "org.apache.hadoop.hbase.shaded.");
     if (!contextMap.containsKey(getContextHandle()))
       contextMap.put(getContextHandle(), new Context(getContextHandle()));
 

@@ -58,6 +58,10 @@ public class HBaseIntegrationTests {
     }
     Configuration hbaseConf = HBaseConfiguration.create();
     hbaseConf.setInt("hbase.master.info.port", -1);
+    // Fix needed due to dependency for hbase-mapreduce module
+    // Check CDH-59433 for details
+    System.setProperty("org.apache.hadoop.hbase.shaded.io.netty.packagePrefix",
+        "org.apache.hadoop.hbase.shaded.");
     utility = new HBaseTestingUtility(hbaseConf);
     utility.startMiniCluster();
     conf = new HiveConf(utility.getConfiguration(), HBaseIntegrationTests.class);

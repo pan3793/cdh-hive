@@ -94,6 +94,10 @@ public class HBaseTestSetup {
     hbaseConf.setInt("hbase.master.info.port", -1);
     hbaseConf.setInt("hbase.regionserver.port", findFreePort());
     hbaseConf.setInt("hbase.regionserver.info.port", -1);
+    // Fix needed due to dependency for hbase-mapreduce module
+    // Check CDH-59433 for details
+    System.setProperty("org.apache.hadoop.hbase.shaded.io.netty.packagePrefix",
+        "org.apache.hadoop.hbase.shaded.");
     hbaseCluster = new MiniHBaseCluster(hbaseConf, NUM_REGIONSERVERS);
     conf.set("hbase.master", hbaseCluster.getMaster().getServerName().getHostAndPort());
     hbaseConn = ConnectionFactory.createConnection(hbaseConf);
