@@ -1613,6 +1613,9 @@ public class HiveConf extends Configuration {
         "\n" +
         "If the skew information is correctly stored in the metadata, hive.optimize.skewjoin.compiletime\n" +
         "would change the query plan to take care of it, and hive.optimize.skewjoin will be a no-op."),
+    HIVE_COMBINE_EQUIVALENT_WORK_OPTIMIZATION("hive.combine.equivalent.work.optimization", true, "Whether to " +
+            "combine equivalent work objects during physical optimization.\n This optimization looks for equivalent " +
+            "work objects and combines them if they meet certain preconditions. Spark only."),
 
     // CTE
     HIVE_CTE_MATERIALIZE_THRESHOLD("hive.optimize.cte.materialize.threshold", -1,

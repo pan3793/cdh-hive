@@ -553,7 +553,11 @@ public class SparkCompiler extends TaskCompiler {
       LOG.debug("Skipping stage id rearranger");
     }
 
-    new CombineEquivalentWorkResolver().resolve(physicalCtx);
+    if (conf.getBoolVar(HiveConf.ConfVars.HIVE_COMBINE_EQUIVALENT_WORK_OPTIMIZATION)) {
+      new CombineEquivalentWorkResolver().resolve(physicalCtx);
+    } else {
+      LOG.debug("Skipping combine equivalent work optimization");
+    }
 
     PERF_LOGGER.PerfLogEnd(CLASS_NAME, PerfLogger.SPARK_OPTIMIZE_TASK_TREE);
     return;
