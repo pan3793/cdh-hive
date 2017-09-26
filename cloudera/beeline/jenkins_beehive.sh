@@ -34,6 +34,7 @@ HOSTS_LIST=($(eval echo ${CLUSTER_SHORTNAME}))
 HIVESERVER2_NODE="${HOSTS_LIST[0]}.${DOMAIN}"
 SSH_USER=jenkins
 
+cd $WORKSPACE
 # make the build tools available
 . /opt/toolchain/toolchain.sh
 echo "Note: utils.sh pulled from master branch"
@@ -76,7 +77,6 @@ DATA_DIR=/run/cloudera-scm-agent
 AUX_DIR=/tmp/aux
 
 # Apply patch
-cd $WORKSPACE
 if [[ -s patch.file ]]
 then
   git apply -3 -p0 patch.file
