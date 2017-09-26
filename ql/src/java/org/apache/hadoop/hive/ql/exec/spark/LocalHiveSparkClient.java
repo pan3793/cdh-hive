@@ -84,7 +84,7 @@ public class LocalHiveSparkClient implements HiveSparkClient {
   private LocalHiveSparkClient(SparkConf sparkConf) {
     sc = new JavaSparkContext(sparkConf);
     jobMetricsListener = new JobMetricsListener();
-    sc.sc().listenerBus().addListener(jobMetricsListener);
+    sc.sc().addSparkListener(jobMetricsListener);
   }
 
   @Override
