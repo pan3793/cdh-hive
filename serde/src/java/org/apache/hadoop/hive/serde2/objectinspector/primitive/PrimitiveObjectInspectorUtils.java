@@ -27,6 +27,8 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.hadoop.hive.common.classification.InterfaceAudience;
+import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.ql.util.TimestampUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +77,8 @@ public final class PrimitiveObjectInspectorUtils {
   /**
    * TypeEntry stores information about a Hive Primitive TypeInfo.
    */
+  @InterfaceAudience.Public
+  @InterfaceStability.Stable
   public static class PrimitiveTypeEntry implements Writable, Cloneable {
 
     /**
