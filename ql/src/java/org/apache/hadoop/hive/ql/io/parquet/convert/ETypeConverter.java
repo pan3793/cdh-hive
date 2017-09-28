@@ -22,7 +22,6 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.io.parquet.timestamp.NanoTime;
 import org.apache.hadoop.hive.ql.io.parquet.timestamp.NanoTimeUtils;
 import org.apache.hadoop.hive.serde.serdeConstants;
-import org.apache.hadoop.hive.serde2.io.DateWritable;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.hadoop.hive.serde2.io.TimestampWritable;
@@ -207,17 +206,6 @@ public enum ETypeConverter {
         }
       };
     }
-  },
-  EDATE_CONVERTER(DateWritable.class) {
-    @Override
-    PrimitiveConverter getConverter(final PrimitiveType type, final int index, final ConverterParent parent, TypeInfo hiveTypeInfo) {
-      return new PrimitiveConverter() {
-        @Override
-        public void addInt(final int value) {
-          parent.set(index, new DateWritable(value));
-        }
-      };
-    }
   };
 
   final Class<?> _type;
@@ -242,8 +230,6 @@ public enum ETypeConverter {
       return EDECIMAL_CONVERTER.getConverter(type, index, parent, hiveTypeInfo);
     } else if (OriginalType.UTF8 == type.getOriginalType()) {
       return ESTRING_CONVERTER.getConverter(type, index, parent, hiveTypeInfo);
-    } else if (OriginalType.DATE == type.getOriginalType()) {
-      return EDATE_CONVERTER.getConverter(type, index, parent, hiveTypeInfo);
     }
 
     Class<?> javaType = type.getPrimitiveTypeName().javaType;
