@@ -1,5 +1,5 @@
 PREHOOK: query: explain
-with v1 as(
+ with v1 as(
  select i_category, i_brand,
         cc_name,
         d_year, d_moy,
@@ -46,7 +46,7 @@ with v1 as(
  limit 100
 PREHOOK: type: QUERY
 POSTHOOK: query: explain
-with v1 as(
+ with v1 as(
  select i_category, i_brand,
         cc_name,
         d_year, d_moy,

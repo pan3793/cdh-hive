@@ -1,7 +1,7 @@
 set hive.mapred.mode=nonstrict;
 -- start query 1 in stream 0 using template query57.tpl and seed 2031708268
 explain
-with v1 as(
+ with v1 as(
  select i_category, i_brand,
         cc_name,
         d_year, d_moy,
@@ -48,3 +48,4 @@ with v1 as(
  limit 100;
 
 -- end query 1 in stream 0 using template query57.tpl
+-- this is an unmodified TPC-DS query

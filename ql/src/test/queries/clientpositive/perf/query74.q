@@ -1,7 +1,7 @@
 set hive.mapred.mode=nonstrict;
 -- start query 1 in stream 0 using template query74.tpl and seed 1556717815
 explain
-with year_total as (
+ with year_total as (
  select c_customer_id customer_id
        ,c_first_name customer_first_name
        ,c_last_name customer_last_name
@@ -61,3 +61,4 @@ with year_total as (
 limit 100;
 
 -- end query 1 in stream 0 using template query74.tpl
+-- this is an unmodified TPC-DS query
