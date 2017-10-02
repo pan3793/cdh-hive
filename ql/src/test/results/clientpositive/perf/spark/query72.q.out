@@ -2,8 +2,8 @@ PREHOOK: query: explain
 select  i_item_desc
       ,w_warehouse_name
       ,d1.d_week_seq
-      ,count(case when p_promo_sk is null then 1 else 0 end) no_promo
-      ,count(case when p_promo_sk is not null then 1 else 0 end) promo
+      ,sum(case when p_promo_sk is null then 1 else 0 end) no_promo
+      ,sum(case when p_promo_sk is not null then 1 else 0 end) promo
       ,count(*) total_cnt
 from catalog_sales
 join inventory on (cs_item_sk = inv_item_sk)
@@ -21,9 +21,7 @@ where d1.d_week_seq = d2.d_week_seq
   and d3.d_date > d1.d_date + 5
   and hd_buy_potential = '1001-5000'
   and d1.d_year = 2001
-  and hd_buy_potential = '1001-5000'
   and cd_marital_status = 'M'
-  and d1.d_year = 2001
 group by i_item_desc,w_warehouse_name,d1.d_week_seq
 order by total_cnt desc, i_item_desc, w_warehouse_name, d_week_seq
 limit 100
@@ -32,8 +30,8 @@ POSTHOOK: query: explain
 select  i_item_desc
       ,w_warehouse_name
       ,d1.d_week_seq
-      ,count(case when p_promo_sk is null then 1 else 0 end) no_promo
-      ,count(case when p_promo_sk is not null then 1 else 0 end) promo
+      ,sum(case when p_promo_sk is null then 1 else 0 end) no_promo
+      ,sum(case when p_promo_sk is not null then 1 else 0 end) promo
       ,count(*) total_cnt
 from catalog_sales
 join inventory on (cs_item_sk = inv_item_sk)
@@ -51,9 +49,7 @@ where d1.d_week_seq = d2.d_week_seq
   and d3.d_date > d1.d_date + 5
   and hd_buy_potential = '1001-5000'
   and d1.d_year = 2001
-  and hd_buy_potential = '1001-5000'
   and cd_marital_status = 'M'
-  and d1.d_year = 2001
 group by i_item_desc,w_warehouse_name,d1.d_week_seq
 order by total_cnt desc, i_item_desc, w_warehouse_name, d_week_seq
 limit 100
@@ -362,7 +358,7 @@ STAGE PLANS:
                     outputColumnNames: _col48, _col71, _col110, _col199
                     Statistics: Num rows: 75451677 Data size: 10217672808 Basic stats: COMPLETE Column stats: NONE
                     Group By Operator
-                      aggregations: count(CASE WHEN (_col199 is null) THEN (1) ELSE (0) END), count(CASE WHEN (_col199 is not null) THEN (1) ELSE (0) END), count()
+                      aggregations: sum(CASE WHEN (_col199 is null) THEN (1) ELSE (0) END), sum(CASE WHEN (_col199 is not null) THEN (1) ELSE (0) END), count()
                       keys: _col48 (type: string), _col71 (type: string), _col110 (type: int)
                       mode: hash
                       outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
@@ -376,7 +372,7 @@ STAGE PLANS:
         Reducer 7 
             Reduce Operator Tree:
               Group By Operator
-                aggregations: count(VALUE._col0), count(VALUE._col1), count(VALUE._col2)
+                aggregations: sum(VALUE._col0), sum(VALUE._col1), count(VALUE._col2)
                 keys: KEY._col0 (type: string), KEY._col1 (type: string), KEY._col2 (type: int)
                 mode: mergepartial
                 outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5

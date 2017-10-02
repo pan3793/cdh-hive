@@ -48,3 +48,4 @@ select
  limit 100;
 
 -- end query 1 in stream 0 using template query25.tpl
+-- this is an unmodified TPC-DS query

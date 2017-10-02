@@ -20,3 +20,4 @@ select  ca_zip
  limit 100;
 
 -- end query 1 in stream 0 using template query15.tpl
+-- this is an unmodified TPC-DS query

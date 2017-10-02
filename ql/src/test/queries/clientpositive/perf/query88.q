@@ -94,3 +94,4 @@ from
 ;
 
 -- end query 1 in stream 0 using template query88.tpl
+-- this is an unmodified TPC-DS query

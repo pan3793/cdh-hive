@@ -19,3 +19,4 @@ select  s_store_name, s_store_id,
  limit 100;
 
 -- end query 1 in stream 0 using template query43.tpl
+-- this is an unmodified TPC-DS query

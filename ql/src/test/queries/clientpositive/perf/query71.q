@@ -40,3 +40,4 @@ select i_brand_id brand_id, i_brand brand,t_hour,t_minute,
  ;
 
 -- end query 1 in stream 0 using template query71.tpl
+-- this is an unmodified TPC-DS query

@@ -25,3 +25,4 @@ from ssci full outer join csci on (ssci.customer_sk=csci.customer_sk
 limit 100;
 
 -- end query 1 in stream 0 using template query97.tpl
+-- this is an unmodified TPC-DS query

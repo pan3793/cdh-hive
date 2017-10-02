@@ -42,3 +42,4 @@ select  c_last_name
  limit 100;
 
 -- end query 1 in stream 0 using template query68.tpl
+-- this is an unmodified TPC-DS query

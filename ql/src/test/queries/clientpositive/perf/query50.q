@@ -59,3 +59,4 @@ order by s_store_name
 limit 100;
 
 -- end query 1 in stream 0 using template query50.tpl
+-- this is a modified TPC-DS query, we use ` instead of "

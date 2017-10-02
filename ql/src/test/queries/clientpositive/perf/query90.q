@@ -22,3 +22,4 @@ select  cast(amc as decimal(15,4))/cast(pmc as decimal(15,4)) am_pm_ratio
  limit 100;
 
 -- end query 1 in stream 0 using template query90.tpl
+-- this is an unmodified TPC-DS query

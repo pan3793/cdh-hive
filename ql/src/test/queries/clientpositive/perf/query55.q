@@ -14,3 +14,4 @@ select  i_brand_id brand_id, i_brand brand,
 limit 100 ;
 
 -- end query 1 in stream 0 using template query55.tpl
+-- this is an unmodified TPC-DS query

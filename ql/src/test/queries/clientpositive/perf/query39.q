@@ -54,3 +54,4 @@ order by inv1.w_warehouse_sk,inv1.i_item_sk,inv1.d_moy,inv1.mean,inv1.cov
 ;
 
 -- end query 1 in stream 0 using template query39.tpl
+-- this is an unmodified TPC-DS query
