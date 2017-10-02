@@ -1,10 +1,8 @@
-PREHOOK: query: -- small 1 part, 4 bucket & big 2 part, 2 bucket
-CREATE TABLE bucket_small (key string, value string) partitioned by (ds string) CLUSTERED BY (key) SORTED BY (key) INTO 4 BUCKETS STORED AS TEXTFILE
+PREHOOK: query: CREATE TABLE bucket_small (key string, value string) partitioned by (ds string) CLUSTERED BY (key) SORTED BY (key) INTO 4 BUCKETS STORED AS TEXTFILE
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
 PREHOOK: Output: default@bucket_small
-POSTHOOK: query: -- small 1 part, 4 bucket & big 2 part, 2 bucket
-CREATE TABLE bucket_small (key string, value string) partitioned by (ds string) CLUSTERED BY (key) SORTED BY (key) INTO 4 BUCKETS STORED AS TEXTFILE
+POSTHOOK: query: CREATE TABLE bucket_small (key string, value string) partitioned by (ds string) CLUSTERED BY (key) SORTED BY (key) INTO 4 BUCKETS STORED AS TEXTFILE
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@bucket_small
@@ -83,44 +81,10 @@ POSTHOOK: query: load data local inpath '../../data/files/srcsortbucket2outof4.t
 POSTHOOK: type: LOAD
 #### A masked pattern was here ####
 POSTHOOK: Output: default@bucket_big@ds=2008-04-09
-PREHOOK: query: -- Since the leftmost table is assumed as the big table, arrange the tables in the join accordingly
-explain extended select count(*) FROM bucket_big a JOIN bucket_small b ON a.key = b.key
+PREHOOK: query: explain extended select count(*) FROM bucket_big a JOIN bucket_small b ON a.key = b.key
 PREHOOK: type: QUERY
-POSTHOOK: query: -- Since the leftmost table is assumed as the big table, arrange the tables in the join accordingly
-explain extended select count(*) FROM bucket_big a JOIN bucket_small b ON a.key = b.key
+POSTHOOK: query: explain extended select count(*) FROM bucket_big a JOIN bucket_small b ON a.key = b.key
 POSTHOOK: type: QUERY
-ABSTRACT SYNTAX TREE:
-  
-TOK_QUERY
-   TOK_FROM
-      TOK_JOIN
-         TOK_TABREF
-            TOK_TABNAME
-               bucket_big
-            a
-         TOK_TABREF
-            TOK_TABNAME
-               bucket_small
-            b
-         =
-            .
-               TOK_TABLE_OR_COL
-                  a
-               key
-            .
-               TOK_TABLE_OR_COL
-                  b
-               key
-   TOK_INSERT
-      TOK_DESTINATION
-         TOK_DIR
-            TOK_TMP_FILE
-      TOK_SELECT
-         TOK_SELEXPR
-            TOK_FUNCTIONSTAR
-               count
-
-
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -186,8 +150,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.bucket_big
                     numFiles 2
+                    numRows 0
                     partition_columns ds
                     partition_columns.types string
+                    rawDataSize 0
                     serialization.ddl struct bucket_big { string key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -231,8 +197,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.bucket_big
                     numFiles 2
+                    numRows 0
                     partition_columns ds
                     partition_columns.types string
+                    rawDataSize 0
                     serialization.ddl struct bucket_big { string key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -317,44 +285,10 @@ POSTHOOK: Input: default@bucket_small
 POSTHOOK: Input: default@bucket_small@ds=2008-04-08
 #### A masked pattern was here ####
 38
-PREHOOK: query: -- The mapjoin should fail resulting in the sort-merge join
-explain extended select count(*) FROM bucket_big a JOIN bucket_small b ON a.key = b.key
+PREHOOK: query: explain extended select count(*) FROM bucket_big a JOIN bucket_small b ON a.key = b.key
 PREHOOK: type: QUERY
-POSTHOOK: query: -- The mapjoin should fail resulting in the sort-merge join
-explain extended select count(*) FROM bucket_big a JOIN bucket_small b ON a.key = b.key
+POSTHOOK: query: explain extended select count(*) FROM bucket_big a JOIN bucket_small b ON a.key = b.key
 POSTHOOK: type: QUERY
-ABSTRACT SYNTAX TREE:
-  
-TOK_QUERY
-   TOK_FROM
-      TOK_JOIN
-         TOK_TABREF
-            TOK_TABNAME
-               bucket_big
-            a
-         TOK_TABREF
-            TOK_TABNAME
-               bucket_small
-            b
-         =
-            .
-               TOK_TABLE_OR_COL
-                  a
-               key
-            .
-               TOK_TABLE_OR_COL
-                  b
-               key
-   TOK_INSERT
-      TOK_DESTINATION
-         TOK_DIR
-            TOK_TMP_FILE
-      TOK_SELECT
-         TOK_SELEXPR
-            TOK_FUNCTIONSTAR
-               count
-
-
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-1 depends on stages: Stage-2
@@ -410,8 +344,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.bucket_small
                     numFiles 4
+                    numRows 0
                     partition_columns ds
                     partition_columns.types string
+                    rawDataSize 0
                     serialization.ddl struct bucket_small { string key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -440,7 +376,7 @@ STAGE PLANS:
                     name: default.bucket_small
                   name: default.bucket_small
             Truncated Path -> Alias:
-              /bucket_small/ds=2008-04-08 [b]
+              /bucket_small/ds=2008-04-08 [$hdt$_1:b]
 
   Stage: Stage-1
     Spark
@@ -511,8 +447,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.bucket_big
                     numFiles 2
+                    numRows 0
                     partition_columns ds
                     partition_columns.types string
+                    rawDataSize 0
                     serialization.ddl struct bucket_big { string key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -556,8 +494,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.bucket_big
                     numFiles 2
+                    numRows 0
                     partition_columns ds
                     partition_columns.types string
+                    rawDataSize 0
                     serialization.ddl struct bucket_big { string key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -586,8 +526,8 @@ STAGE PLANS:
                     name: default.bucket_big
                   name: default.bucket_big
             Truncated Path -> Alias:
-              /bucket_big/ds=2008-04-08 [a]
-              /bucket_big/ds=2008-04-09 [a]
+              /bucket_big/ds=2008-04-08 [$hdt$_0:a]
+              /bucket_big/ds=2008-04-09 [$hdt$_0:a]
         Reducer 2 
             Needs Tagging: false
             Reduce Operator Tree:
