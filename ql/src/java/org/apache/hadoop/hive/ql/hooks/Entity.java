@@ -76,6 +76,11 @@ public class Entity implements Serializable {
   private String stringObject;
 
   /**
+   * The class name for a function
+   */
+  private String className;
+
+  /**
    * This is derived from t and p, but we need to serialize this field to make
    * sure Entity.hashCode() does not need to recursively read into t and p.
    */
@@ -141,6 +146,14 @@ public class Entity implements Serializable {
 
   public void setD(Path d) {
     this.d = d;
+  }
+
+  public String getClassName() {
+    return this.className;
+  }
+
+  public void setClassName(String className) {
+    this.className = className;
   }
 
   public String getFunctionName() {
@@ -235,15 +248,17 @@ public class Entity implements Serializable {
    * Create an entity representing a object with given name, database namespace and type
    * @param database - database namespace
    * @param strObj - object name as string
+   * @param className - function class name
    * @param type - the entity type. this constructor only supports FUNCTION type currently
    */
-  public Entity(Database database, String strObj, Type type) {
+  public Entity(Database database, String strObj, String className, Type type) {
     if (type != Type.FUNCTION) {
       throw new IllegalArgumentException("This constructor is supported only for type:"
           + Type.FUNCTION);
     }
     this.database = database;
     this.stringObject = strObj;
+    this.className = className;
     this.typ = type;
     this.complete = true;
     name = computeName();

@@ -1017,6 +1017,7 @@ public class Driver implements CommandProcessor {
       String objName = null;
       List<String> partKeys = null;
       List<String> columns = null;
+      String className = null;
       switch(privObject.getType()){
       case DATABASE:
         dbname = privObject.getDatabase().getName();
@@ -1036,6 +1037,7 @@ public class Driver implements CommandProcessor {
           dbname = privObject.getDatabase().getName();
         }
         objName = privObject.getFunctionName();
+        className = privObject.getClassName();
         break;
       case DUMMYPARTITION:
       case PARTITION:
@@ -1046,7 +1048,7 @@ public class Driver implements CommandProcessor {
       }
       HivePrivObjectActionType actionType = AuthorizationUtils.getActionType(privObject);
       HivePrivilegeObject hPrivObject = new HivePrivilegeObject(privObjType, dbname, objName,
-          partKeys, columns, actionType, null);
+          partKeys, columns, actionType, null, className);
       hivePrivobjs.add(hPrivObject);
     }
     return hivePrivobjs;
