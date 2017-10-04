@@ -14,8 +14,7 @@ CREATE TABLE parquet_mixed_partition_formats (
   cbinary string,
   m1 map<string, varchar(3)>,
   l1 array<int>,
-  st1 struct<c1:int, c2:char(1)>,
-  d date)
+  st1 struct<c1:int, c2:char(1)>)
 PARTITIONED BY (dateint int)
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '|'

@@ -20,6 +20,8 @@ package org.apache.hive.hcatalog.pig;
 
 
 import org.apache.hadoop.hive.ql.io.IOConstants;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,5 +31,26 @@ public class TestParquetHCatStorer extends AbstractHCatStorerTest {
   @Override
   String getStorageFormat() {
     return IOConstants.PARQUETFILE;
+  }
+
+  @Test
+  @Override
+  @Ignore("Disabled until Parquet supports DATE - CDH-59292")
+  public void testWriteDate() throws Exception {
+    super.testWriteSmallint();
+  }
+
+  @Test
+  @Override
+  @Ignore("Disabled until Parquet supports DATE - CDH-59292")
+  public void testWriteDate2() throws Exception {
+    super.testWriteSmallint();
+  }
+
+  @Test
+  @Override
+  @Ignore("Disabled until Parquet supports DATE - CDH-59292")
+  public void testWriteDate3() throws Exception {
+    super.testWriteSmallint();
   }
 }

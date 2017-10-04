@@ -3,9 +3,9 @@ SET hive.optimize.ppd=true;
 SET mapred.min.split.size=1000;
 SET mapred.max.split.size=5000;
 
-create table newtypestbl(c char(10), v varchar(10), d decimal(5,3), da date) stored as parquet;
+create table newtypestbl(c char(10), v varchar(10), d decimal(5,3)) stored as parquet;
 
-insert overwrite table newtypestbl select * from (select cast("apple" as char(10)), cast("bee" as varchar(10)), 0.22, cast("1970-02-20" as date) from src src1 union all select cast("hello" as char(10)), cast("world" as varchar(10)), 11.22, cast("1970-02-27" as date) from src src2 limit 10) uniontbl;
+insert overwrite table newtypestbl select * from (select cast("apple" as char(10)), cast("bee" as varchar(10)), 0.22 from src src1 union all select cast("hello" as char(10)), cast("world" as varchar(10)), 11.22 from src src2 limit 10) uniontbl;
 
 set hive.optimize.index.filter=false;
 

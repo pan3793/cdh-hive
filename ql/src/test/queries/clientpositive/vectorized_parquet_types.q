@@ -19,7 +19,6 @@ CREATE TABLE parquet_types_staging (
   m1 map<string, varchar(3)>,
   l1 array<int>,
   st1 struct<c1:int, c2:char(1)>,
-  d date,
   cdecimal decimal(4,2)
 ) ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '|'
