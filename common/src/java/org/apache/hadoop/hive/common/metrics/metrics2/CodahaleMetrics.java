@@ -44,9 +44,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.permission.FsPermission;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsScope;
 import org.apache.hadoop.hive.common.metrics.common.MetricsVariable;
@@ -57,18 +55,24 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.FileWriter;
 import java.lang.management.ManagementFactory;
-import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -78,9 +82,14 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.common.Metrics {
 
-  public static final Logger LOGGER = LoggerFactory.getLogger(CodahaleMetrics.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CodahaleMetrics.class);
 
-  public final MetricRegistry metricRegistry = new MetricRegistry();
+  private static final FileAttribute<Set<PosixFilePermission>> FILE_ATTRS =
+      PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-r--r--"));
+  // Thread name for reporter thread
+  private static final String JSON_REPORTER_THREAD_NAME = "json-metric-reporter";
+
+  private final MetricRegistry metricRegistry = new MetricRegistry();
   private final Lock timersLock = new ReentrantLock();
   private final Lock countersLock = new ReentrantLock();
   private final Lock gaugesLock = new ReentrantLock();
@@ -429,62 +438,83 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
     }
   }
 
-  class JsonFileReporter implements Closeable {
+  class JsonFileReporter implements Closeable, Runnable {
+    //
+    // Implementation notes.
+    //
+    // 1. Since only local file systems are supported, there is no need to use Hadoop
+    //    version of Path class.
+    // 2. java.nio package provides modern implementation of file and directory operations
+    //    which is better then the traditional java.io, so we are using it here.
+    //    In particular, it supports atomic creation of temporary files with specified
+    //    permissions in the specified directory. This also avoids various attacks possible
+    //    when temp file name is generated first, followed by file creation.
+    //    See http://www.oracle.com/technetwork/articles/javase/nio-139333.html for
+    //    the description of NIO API and
+    //    http://docs.oracle.com/javase/tutorial/essential/io/legacy.html for the
+    //    description of interoperability between legacy IO api vs NIO API.
+    // 3. To avoid race conditions with readers of the metrics file, the implementation
+    //    dumps metrics to a temporary file in the same directory as the actual metrics
+    //    file and then renames it to the destination. Since both are located on the same
+    //    filesystem, this rename is likely to be atomic (as long as the underlying OS
+    //    support atomic renames.
+    //
     private ObjectMapper jsonMapper = null;
-    private java.util.Timer timer = null;
+    private ScheduledExecutorService executorService;
+
+    // Location of JSON file
+    private Path path;
+    // tmpdir is the dirname(path)
+    private Path tmpDir;
+
 
     public void start() {
       this.jsonMapper = new ObjectMapper().registerModule(new MetricsModule(TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS, false));
-      this.timer = new java.util.Timer(true);
 
       long time = conf.getTimeVar(HiveConf.ConfVars.HIVE_METRICS_JSON_FILE_INTERVAL, TimeUnit.MILLISECONDS);
       final String pathString = conf.getVar(HiveConf.ConfVars.HIVE_METRICS_JSON_FILE_LOCATION);
+      path = Paths.get(pathString).toAbsolutePath();
+      LOGGER.info("Reporting metrics to {}", path);
+      // We want to use tmpDir i the same directory as the destination file to support atomic
+      // move of temp file to the destination metrics file
+      tmpDir = path.getParent();
 
-      timer.schedule(new TimerTask() {
-        @Override
-        public void run() {
-          BufferedWriter bw = null;
-          try {
-            String json = jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metricRegistry);
-            Path tmpPath = new Path(pathString + ".tmp");
-            URI tmpPathURI = tmpPath.toUri();
-            FileSystem fs = null;
-            if (tmpPathURI.getScheme() == null && tmpPathURI.getAuthority() == null) {
-              //default local
-              fs = FileSystem.getLocal(conf);
-            } else {
-              fs = FileSystem.get(tmpPathURI, conf);
-            }
-            fs.delete(tmpPath, true);
-            bw = new BufferedWriter(new OutputStreamWriter(fs.create(tmpPath, true)));
-            bw.write(json);
-            bw.close();
-            fs.setPermission(tmpPath, FsPermission.createImmutable((short) 0644));
-
-            Path path = new Path(pathString);
-            fs.rename(tmpPath, path);
-            fs.setPermission(path, FsPermission.createImmutable((short) 0644));
-          } catch (Exception e) {
-            LOGGER.warn("Error writing JSON Metrics to file", e);
-          } finally {
-            try {
-              if (bw != null) {
-                bw.close();
-              }
-            } catch (IOException e) {
-              //Ignore.
-            }
-          }
-
-
-        }
-      }, 0, time);
+      executorService = Executors.newScheduledThreadPool(1,
+          new ThreadFactoryBuilder().setNameFormat(JSON_REPORTER_THREAD_NAME).build());
+      executorService.scheduleWithFixedDelay(this, 0, time, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void close() {
-      if (timer != null) {
-        this.timer.cancel();
+      if (executorService != null) {
+        executorService.shutdown();
+        executorService = null;
+      }
+    }
+
+    @Override
+    public void run() {
+      Path tmpFile = null;
+
+      try {
+        String json = jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metricRegistry);
+        tmpFile = Files.createTempFile(tmpDir, "hmetrics", "json", FILE_ATTRS);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile.toFile()))) {
+          bw.write(json);
+        }
+        Files.move(tmpFile, path, StandardCopyOption.REPLACE_EXISTING);
+      } catch (Exception e) {
+        LOGGER.warn("Error writing JSON Metrics to file", e);
+      } finally {
+        // If something happened and we were not able to rename the temp file, attempt to remove it
+        if (tmpFile != null && tmpFile.toFile().exists()) {
+          // Attempt to delete temp file, if this fails, not much can be done about it.
+          try {
+            Files.delete(tmpFile);
+          } catch (Exception e) {
+            LOGGER.error("failed to delete yemporary metrics file {}", tmpFile, e);
+          }
+        }
       }
     }
   }
