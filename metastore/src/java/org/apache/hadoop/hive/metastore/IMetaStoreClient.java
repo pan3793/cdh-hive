@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.hive.common.ObjectPair;
-import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.ValidTxnList;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience.Public;
 import org.apache.hadoop.hive.common.classification.InterfaceStability.Evolving;
@@ -691,14 +690,6 @@ public interface IMetaStoreClient {
   void alter_table(String defaultDatabaseName, String tblName,
       Table table) throws InvalidOperationException, MetaException, TException;
 
-  /**
-   * Use alter_table_with_environmentContext instead of alter_table with cascade option
-   * passed in EnvironmentContext using {@code StatsSetupConst.CASCADE}
-   */
-  @Deprecated
-  void alter_table(String defaultDatabaseName, String tblName, Table table,
-      boolean cascade) throws InvalidOperationException, MetaException, TException;
-
   //wrapper of alter_table_with_cascade
   void alter_table_with_environmentContext(String defaultDatabaseName, String tblName, Table table,
       EnvironmentContext environmentContext) throws InvalidOperationException, MetaException,
@@ -772,26 +763,6 @@ public interface IMetaStoreClient {
   boolean dropPartition(String db_name, String tbl_name,
       String name, boolean deleteData) throws NoSuchObjectException,
       MetaException, TException;
-
-  /**
-   * updates a partition to new partition
-   *
-   * @param dbName
-   *          database of the old partition
-   * @param tblName
-   *          table name of the old partition
-   * @param newPart
-   *          new partition
-   * @throws InvalidOperationException
-   *           if the old partition does not exist
-   * @throws MetaException
-   *           if error in updating metadata
-   * @throws TException
-   *           if error in communicating with metastore server
-   */
-  void alter_partition(String dbName, String tblName, Partition newPart)
-      throws InvalidOperationException, MetaException, TException;
-
   /**
    * updates a partition to new partition
    *
@@ -827,28 +798,7 @@ public interface IMetaStoreClient {
    * @throws TException
    *           if error in communicating with metastore server
    */
-  void alter_partitions(String dbName, String tblName, List<Partition> newParts)
-      throws InvalidOperationException, MetaException, TException;
-
-  /**
-   * updates a list of partitions
-   *
-   * @param dbName
-   *          database of the old partition
-   * @param tblName
-   *          table name of the old partition
-   * @param newParts
-   *          list of partitions
-   * @param environmentContext 
-   * @throws InvalidOperationException
-   *           if the old partition does not exist
-   * @throws MetaException
-   *           if error in updating metadata
-   * @throws TException
-   *           if error in communicating with metastore server
-   */
-  void alter_partitions(String dbName, String tblName, List<Partition> newParts,
-      EnvironmentContext environmentContext)
+  void alter_partitions(String dbName, String tblName, List<Partition> newParts, EnvironmentContext environmentContext)
       throws InvalidOperationException, MetaException, TException;
 
   /**
