@@ -78,7 +78,6 @@ class ThriftHiveMetastoreIf : virtual public  ::facebook::fb303::FacebookService
   virtual void get_partitions_by_names(std::vector<Partition> & _return, const std::string& db_name, const std::string& tbl_name, const std::vector<std::string> & names) = 0;
   virtual void alter_partition(const std::string& db_name, const std::string& tbl_name, const Partition& new_part) = 0;
   virtual void alter_partitions(const std::string& db_name, const std::string& tbl_name, const std::vector<Partition> & new_parts) = 0;
-  virtual void alter_partitions_with_environment_context(const std::string& db_name, const std::string& tbl_name, const std::vector<Partition> & new_parts, const EnvironmentContext& environment_context) = 0;
   virtual void alter_partition_with_environment_context(const std::string& db_name, const std::string& tbl_name, const Partition& new_part, const EnvironmentContext& environment_context) = 0;
   virtual void rename_partition(const std::string& db_name, const std::string& tbl_name, const std::vector<std::string> & part_vals, const Partition& new_part) = 0;
   virtual bool partition_name_has_valid_characters(const std::vector<std::string> & part_vals, const bool throw_exception) = 0;
@@ -374,9 +373,6 @@ class ThriftHiveMetastoreNull : virtual public ThriftHiveMetastoreIf , virtual p
     return;
   }
   void alter_partitions(const std::string& /* db_name */, const std::string& /* tbl_name */, const std::vector<Partition> & /* new_parts */) {
-    return;
-  }
-  void alter_partitions_with_environment_context(const std::string& /* db_name */, const std::string& /* tbl_name */, const std::vector<Partition> & /* new_parts */, const EnvironmentContext& /* environment_context */) {
     return;
   }
   void alter_partition_with_environment_context(const std::string& /* db_name */, const std::string& /* tbl_name */, const Partition& /* new_part */, const EnvironmentContext& /* environment_context */) {
@@ -9539,151 +9535,6 @@ class ThriftHiveMetastore_alter_partitions_presult {
   MetaException o2;
 
   _ThriftHiveMetastore_alter_partitions_presult__isset __isset;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
-typedef struct _ThriftHiveMetastore_alter_partitions_with_environment_context_args__isset {
-  _ThriftHiveMetastore_alter_partitions_with_environment_context_args__isset() : db_name(false), tbl_name(false), new_parts(false), environment_context(false) {}
-  bool db_name;
-  bool tbl_name;
-  bool new_parts;
-  bool environment_context;
-} _ThriftHiveMetastore_alter_partitions_with_environment_context_args__isset;
-
-class ThriftHiveMetastore_alter_partitions_with_environment_context_args {
- public:
-
-  ThriftHiveMetastore_alter_partitions_with_environment_context_args() : db_name(), tbl_name() {
-  }
-
-  virtual ~ThriftHiveMetastore_alter_partitions_with_environment_context_args() throw() {}
-
-  std::string db_name;
-  std::string tbl_name;
-  std::vector<Partition>  new_parts;
-  EnvironmentContext environment_context;
-
-  _ThriftHiveMetastore_alter_partitions_with_environment_context_args__isset __isset;
-
-  void __set_db_name(const std::string& val) {
-    db_name = val;
-  }
-
-  void __set_tbl_name(const std::string& val) {
-    tbl_name = val;
-  }
-
-  void __set_new_parts(const std::vector<Partition> & val) {
-    new_parts = val;
-  }
-
-  void __set_environment_context(const EnvironmentContext& val) {
-    environment_context = val;
-  }
-
-  bool operator == (const ThriftHiveMetastore_alter_partitions_with_environment_context_args & rhs) const
-  {
-    if (!(db_name == rhs.db_name))
-      return false;
-    if (!(tbl_name == rhs.tbl_name))
-      return false;
-    if (!(new_parts == rhs.new_parts))
-      return false;
-    if (!(environment_context == rhs.environment_context))
-      return false;
-    return true;
-  }
-  bool operator != (const ThriftHiveMetastore_alter_partitions_with_environment_context_args &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const ThriftHiveMetastore_alter_partitions_with_environment_context_args & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-
-class ThriftHiveMetastore_alter_partitions_with_environment_context_pargs {
- public:
-
-
-  virtual ~ThriftHiveMetastore_alter_partitions_with_environment_context_pargs() throw() {}
-
-  const std::string* db_name;
-  const std::string* tbl_name;
-  const std::vector<Partition> * new_parts;
-  const EnvironmentContext* environment_context;
-
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _ThriftHiveMetastore_alter_partitions_with_environment_context_result__isset {
-  _ThriftHiveMetastore_alter_partitions_with_environment_context_result__isset() : o1(false), o2(false) {}
-  bool o1;
-  bool o2;
-} _ThriftHiveMetastore_alter_partitions_with_environment_context_result__isset;
-
-class ThriftHiveMetastore_alter_partitions_with_environment_context_result {
- public:
-
-  ThriftHiveMetastore_alter_partitions_with_environment_context_result() {
-  }
-
-  virtual ~ThriftHiveMetastore_alter_partitions_with_environment_context_result() throw() {}
-
-  InvalidOperationException o1;
-  MetaException o2;
-
-  _ThriftHiveMetastore_alter_partitions_with_environment_context_result__isset __isset;
-
-  void __set_o1(const InvalidOperationException& val) {
-    o1 = val;
-  }
-
-  void __set_o2(const MetaException& val) {
-    o2 = val;
-  }
-
-  bool operator == (const ThriftHiveMetastore_alter_partitions_with_environment_context_result & rhs) const
-  {
-    if (!(o1 == rhs.o1))
-      return false;
-    if (!(o2 == rhs.o2))
-      return false;
-    return true;
-  }
-  bool operator != (const ThriftHiveMetastore_alter_partitions_with_environment_context_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const ThriftHiveMetastore_alter_partitions_with_environment_context_result & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _ThriftHiveMetastore_alter_partitions_with_environment_context_presult__isset {
-  _ThriftHiveMetastore_alter_partitions_with_environment_context_presult__isset() : o1(false), o2(false) {}
-  bool o1;
-  bool o2;
-} _ThriftHiveMetastore_alter_partitions_with_environment_context_presult__isset;
-
-class ThriftHiveMetastore_alter_partitions_with_environment_context_presult {
- public:
-
-
-  virtual ~ThriftHiveMetastore_alter_partitions_with_environment_context_presult() throw() {}
-
-  InvalidOperationException o1;
-  MetaException o2;
-
-  _ThriftHiveMetastore_alter_partitions_with_environment_context_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
 
@@ -19161,9 +19012,6 @@ class ThriftHiveMetastoreClient : virtual public ThriftHiveMetastoreIf, public  
   void alter_partitions(const std::string& db_name, const std::string& tbl_name, const std::vector<Partition> & new_parts);
   void send_alter_partitions(const std::string& db_name, const std::string& tbl_name, const std::vector<Partition> & new_parts);
   void recv_alter_partitions();
-  void alter_partitions_with_environment_context(const std::string& db_name, const std::string& tbl_name, const std::vector<Partition> & new_parts, const EnvironmentContext& environment_context);
-  void send_alter_partitions_with_environment_context(const std::string& db_name, const std::string& tbl_name, const std::vector<Partition> & new_parts, const EnvironmentContext& environment_context);
-  void recv_alter_partitions_with_environment_context();
   void alter_partition_with_environment_context(const std::string& db_name, const std::string& tbl_name, const Partition& new_part, const EnvironmentContext& environment_context);
   void send_alter_partition_with_environment_context(const std::string& db_name, const std::string& tbl_name, const Partition& new_part, const EnvironmentContext& environment_context);
   void recv_alter_partition_with_environment_context();
@@ -19455,7 +19303,6 @@ class ThriftHiveMetastoreProcessor : public  ::facebook::fb303::FacebookServiceP
   void process_get_partitions_by_names(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_alter_partition(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_alter_partitions(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_alter_partitions_with_environment_context(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_alter_partition_with_environment_context(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_rename_partition(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_partition_name_has_valid_characters(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -19595,7 +19442,6 @@ class ThriftHiveMetastoreProcessor : public  ::facebook::fb303::FacebookServiceP
     processMap_["get_partitions_by_names"] = &ThriftHiveMetastoreProcessor::process_get_partitions_by_names;
     processMap_["alter_partition"] = &ThriftHiveMetastoreProcessor::process_alter_partition;
     processMap_["alter_partitions"] = &ThriftHiveMetastoreProcessor::process_alter_partitions;
-    processMap_["alter_partitions_with_environment_context"] = &ThriftHiveMetastoreProcessor::process_alter_partitions_with_environment_context;
     processMap_["alter_partition_with_environment_context"] = &ThriftHiveMetastoreProcessor::process_alter_partition_with_environment_context;
     processMap_["rename_partition"] = &ThriftHiveMetastoreProcessor::process_rename_partition;
     processMap_["partition_name_has_valid_characters"] = &ThriftHiveMetastoreProcessor::process_partition_name_has_valid_characters;
@@ -20298,15 +20144,6 @@ class ThriftHiveMetastoreMultiface : virtual public ThriftHiveMetastoreIf, publi
       ifaces_[i]->alter_partitions(db_name, tbl_name, new_parts);
     }
     ifaces_[i]->alter_partitions(db_name, tbl_name, new_parts);
-  }
-
-  void alter_partitions_with_environment_context(const std::string& db_name, const std::string& tbl_name, const std::vector<Partition> & new_parts, const EnvironmentContext& environment_context) {
-    size_t sz = ifaces_.size();
-    size_t i = 0;
-    for (; i < (sz - 1); ++i) {
-      ifaces_[i]->alter_partitions_with_environment_context(db_name, tbl_name, new_parts, environment_context);
-    }
-    ifaces_[i]->alter_partitions_with_environment_context(db_name, tbl_name, new_parts, environment_context);
   }
 
   void alter_partition_with_environment_context(const std::string& db_name, const std::string& tbl_name, const Partition& new_part, const EnvironmentContext& environment_context) {

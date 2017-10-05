@@ -285,23 +285,20 @@ public class SessionHiveMetaStoreClient extends HiveMetaStoreClient implements I
   }
 
   @Override
-  public void alter_table(String dbname, String tbl_name,
-      org.apache.hadoop.hive.metastore.api.Table new_tbl) throws InvalidOperationException,
-      MetaException, TException {
+  public void alter_table(String dbname, String tbl_name, org.apache.hadoop.hive.metastore.api.Table new_tbl,
+      boolean cascade) throws InvalidOperationException, MetaException, TException {
     org.apache.hadoop.hive.metastore.api.Table old_tbl = getTempTable(dbname, tbl_name);
     if (old_tbl != null) {
-      // actually temp table does not support partitions, cascade is not
-      // applicable here
+      //actually temp table does not support partitions, cascade is not applicable here
       alterTempTable(dbname, tbl_name, old_tbl, new_tbl, null);
       return;
     }
-    super.alter_table(dbname, tbl_name, new_tbl);
+    super.alter_table(dbname, tbl_name, new_tbl, cascade);
   }
 
   @Override
-  public void alter_table_with_environmentContext(String dbname, String tbl_name,
-      org.apache.hadoop.hive.metastore.api.Table new_tbl, EnvironmentContext envContext)
-      throws InvalidOperationException, MetaException, TException {
+  public void alter_table(String dbname, String tbl_name, org.apache.hadoop.hive.metastore.api.Table new_tbl,
+      EnvironmentContext envContext) throws InvalidOperationException, MetaException, TException {
     // First try temp table
     org.apache.hadoop.hive.metastore.api.Table old_tbl = getTempTable(dbname, tbl_name);
     if (old_tbl != null) {
@@ -310,7 +307,7 @@ public class SessionHiveMetaStoreClient extends HiveMetaStoreClient implements I
     }
 
     // Try underlying client
-    super.alter_table_with_environmentContext(dbname, tbl_name, new_tbl, envContext);
+    super.alter_table(dbname,  tbl_name,  new_tbl, envContext);
   }
 
   @Override
@@ -435,7 +432,7 @@ public class SessionHiveMetaStoreClient extends HiveMetaStoreClient implements I
 
     org.apache.hadoop.hive.metastore.api.Table newtCopy = deepCopyAndLowerCaseTable(newt);
     MetaStoreUtils.updateUnpartitionedTableStatsFast(newtCopy,
-        getWh().getFileStatusesForSD(newtCopy.getSd()), false, true, envContext);
+        getWh().getFileStatusesForSD(newtCopy.getSd()), false, true);
     Table newTable = new Table(newtCopy);
     String newDbName = newTable.getDbName();
     String newTableName = newTable.getTableName();

@@ -73,7 +73,6 @@ import org.apache.hadoop.hive.metastore.Warehouse;
 import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.Database;
-import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsInfoResponse;
 import org.apache.hadoop.hive.metastore.api.Index;
@@ -1036,7 +1035,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     tbl.getTTable().setPartitionKeys(newPartitionKeys);
 
     try {
-      db.alterTable(tabName, tbl, null);
+      db.alterTable(tabName, tbl);
     } catch (InvalidOperationException e) {
       throw new HiveException(e, ErrorMsg.GENERIC_ERROR, "Unable to alter " + tabName);
     }
@@ -1064,7 +1063,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
     if (touchDesc.getPartSpec() == null) {
       try {
-        db.alterTable(touchDesc.getTableName(), tbl, null);
+        db.alterTable(touchDesc.getTableName(), tbl);
       } catch (InvalidOperationException e) {
         throw new HiveException("Uable to update table");
       }
@@ -1076,7 +1075,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         throw new HiveException("Specified partition does not exist");
       }
       try {
-        db.alterPartition(touchDesc.getTableName(), part, null);
+        db.alterPartition(touchDesc.getTableName(), part);
       } catch (InvalidOperationException e) {
         throw new HiveException(e);
       }
@@ -1425,7 +1424,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
             authority.toString(),
             harPartitionDir.getPath()); // make in Path to ensure no slash at the end
         setArchived(p, harPath, partSpecInfo.values.size());
-        db.alterPartition(simpleDesc.getTableName(), p, null);
+        db.alterPartition(simpleDesc.getTableName(), p);
       }
     } catch (Exception e) {
       throw new HiveException("Unable to change the partition info for HAR", e);
@@ -1631,7 +1630,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     for(Partition p: partitions) {
       setUnArchived(p);
       try {
-        db.alterPartition(simpleDesc.getTableName(), p, null);
+        db.alterPartition(simpleDesc.getTableName(), p);
       } catch (InvalidOperationException e) {
         throw new HiveException(e);
       }
@@ -3402,9 +3401,9 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
     try {
       if (allPartitions == null) {
-        db.alterTable(alterTbl.getOldName(), tbl, alterTbl.getIsCascade(), alterTbl.getEnvironmentContext());
+        db.alterTable(alterTbl.getOldName(), tbl, alterTbl.getIsCascade());
       } else {
-        db.alterPartitions(tbl.getTableName(), allPartitions, alterTbl.getEnvironmentContext());
+        db.alterPartitions(tbl.getTableName(), allPartitions);
       }
     } catch (InvalidOperationException e) {
       LOG.error("alter table: " + stringifyException(e));
@@ -3563,19 +3562,11 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       }
       sd.setCols(alterTbl.getNewCols());
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDPROPS) {
-      if (part != null) {
-        part.getTPartition().getParameters().putAll(alterTbl.getProps());
-      } else {
-        tbl.getTTable().getParameters().putAll(alterTbl.getProps());
-      }
+      tbl.getTTable().getParameters().putAll(alterTbl.getProps());
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.DROPPROPS) {
       Iterator<String> keyItr = alterTbl.getProps().keySet().iterator();
       while (keyItr.hasNext()) {
-        if (part != null) {
-          part.getTPartition().getParameters().remove(keyItr.next());
-        } else {
-          tbl.getTTable().getParameters().remove(keyItr.next());
-        }
+        tbl.getTTable().getParameters().remove(keyItr.next());
       }
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDSERDEPROPS) {
       StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
@@ -4178,7 +4169,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     if (crtTbl.getReplaceMode()){
       // replace-mode creates are really alters using CreateTableDesc.
       try {
-        db.alterTable(tbl.getDbName()+"."+tbl.getTableName(),tbl,null);
+        db.alterTable(tbl.getDbName()+"."+tbl.getTableName(),tbl);
       } catch (InvalidOperationException e) {
         throw new HiveException("Unable to alter table. " + e.getMessage(), e);
       }
@@ -4364,7 +4355,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       }
       oldview.checkValidity();
       try {
-        db.alterTable(crtView.getViewName(), oldview, null);
+        db.alterTable(crtView.getViewName(), oldview);
       } catch (InvalidOperationException e) {
         throw new HiveException(e);
       }
@@ -4469,31 +4460,28 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       if (table.isPartitioned()) {
         for (Partition partition : db.getPartitions(table)) {
           locations.add(partition.getDataLocation());
-          EnvironmentContext environmentContext = new EnvironmentContext();
-          if (needToUpdateStats(partition.getParameters(), environmentContext)) {
-            db.alterPartition(table.getDbName(), table.getTableName(), partition, environmentContext);
+          if (needToUpdateStats(partition.getParameters())) {
+            db.alterPartition(table.getDbName(), table.getTableName(), partition);
           }
         }
       } else {
         locations.add(table.getPath());
-        EnvironmentContext environmentContext = new EnvironmentContext();
-        if (needToUpdateStats(table.getParameters(), environmentContext)) {
-          db.alterTable(table.getDbName()+"."+table.getTableName(), table, environmentContext);
+        if (needToUpdateStats(table.getParameters())) {
+          db.alterTable(table.getDbName()+"."+table.getTableName(), table);
         }
       }
     } else {
       for (Partition partition : db.getPartitionsByNames(table, partSpec)) {
         locations.add(partition.getDataLocation());
-        EnvironmentContext environmentContext = new EnvironmentContext();
-        if (needToUpdateStats(partition.getParameters(), environmentContext)) {
-          db.alterPartition(table.getDbName(), table.getTableName(), partition, environmentContext);
+        if (needToUpdateStats(partition.getParameters())) {
+          db.alterPartition(table.getDbName(), table.getTableName(), partition);
         }
       }
     }
     return locations;
   }
 
-  private boolean needToUpdateStats(Map<String,String> props, EnvironmentContext environmentContext) {
+  private boolean needToUpdateStats(Map<String,String> props) {
     if (null == props) {
       return false;
     }
@@ -4508,7 +4496,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     }
     //first set basic stats to true
     StatsSetupConst.setBasicStatsState(props, StatsSetupConst.TRUE);
-    environmentContext.putToProperties(StatsSetupConst.STATS_GENERATED, StatsSetupConst.TASK);
+    props.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
     //then invalidate column stats
     StatsSetupConst.clearColumnStatsState(props);
     return statsPresent;

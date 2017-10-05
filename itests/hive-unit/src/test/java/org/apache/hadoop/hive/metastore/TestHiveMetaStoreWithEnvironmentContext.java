@@ -178,7 +178,7 @@ public class TestHiveMetaStoreWithEnvironmentContext extends TestCase {
 
     Log.debug("Renaming table");
     table.setTableName(renamed);
-    msc.alter_table_with_environmentContext(dbName, tblName, table, envContext);
+    msc.alter_table(dbName, tblName, table, envContext);
     listSize++;
     assertEquals(notifyList.size(), listSize);
     AlterTableEvent alterTableEvent = (AlterTableEvent) notifyList.get(listSize-1);
@@ -187,7 +187,7 @@ public class TestHiveMetaStoreWithEnvironmentContext extends TestCase {
 
     Log.debug("Renaming table back");
     table.setTableName(tblName);
-    msc.alter_table_with_environmentContext(dbName, renamed, table, envContext);
+    msc.alter_table(dbName, renamed, table, envContext);
     listSize++;
     assertEquals(notifyList.size(), listSize);
 

@@ -35,7 +35,6 @@ import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
-import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.InvalidOperationException;
 import org.apache.hadoop.hive.ql.DriverContext;
 import org.apache.hadoop.hive.ql.QueryPlan;
@@ -175,6 +174,7 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
           parameters.put(StatsSetupConst.RAW_DATA_SIZE, String.valueOf(rawDataSize));
           parameters.put(StatsSetupConst.TOTAL_SIZE, String.valueOf(fileSize));
           parameters.put(StatsSetupConst.NUM_FILES, String.valueOf(numFiles));
+          parameters.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
 
           partUpdates.put(tPart.getSd().getLocation(), new Partition(table, tPart));
 
@@ -266,10 +266,9 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
             parameters.put(StatsSetupConst.RAW_DATA_SIZE, String.valueOf(rawDataSize));
             parameters.put(StatsSetupConst.TOTAL_SIZE, String.valueOf(fileSize));
             parameters.put(StatsSetupConst.NUM_FILES, String.valueOf(numFiles));
-            EnvironmentContext environmentContext = new EnvironmentContext();
-            environmentContext.putToProperties(StatsSetupConst.STATS_GENERATED, StatsSetupConst.TASK);
+            parameters.put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, StatsSetupConst.TRUE);
 
-            db.alterTable(tableFullName, new Table(tTable), environmentContext);
+            db.alterTable(tableFullName, new Table(tTable));
 
             String msg = "Table " + tableFullName + " stats: [" + toString(parameters) + ']';
             LOG.debug(msg);
@@ -316,10 +315,7 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
         return -1;
       } else {
         LOG.debug("Bulk updating partitions..");
-        EnvironmentContext environmentContext = new EnvironmentContext();
-        environmentContext.putToProperties(StatsSetupConst.STATS_GENERATED, StatsSetupConst.TASK);
-        db.alterPartitions(tableFullName, Lists.newArrayList(partUpdates.values()),
-            environmentContext);
+        db.alterPartitions(tableFullName, Lists.newArrayList(partUpdates.values()));
         LOG.debug("Bulk updated " + partUpdates.values().size() + " partitions.");
       }
     }

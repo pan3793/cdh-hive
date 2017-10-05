@@ -66,7 +66,7 @@ public class UpdateInputAccessTimeHook {
         case TABLE: {
           Table t = db.getTable(re.getTable().getTableName());
           t.setLastAccessTime(lastAccessTime);
-          db.alterTable(t.getDbName() + "." + t.getTableName(), t, null);
+          db.alterTable(t.getDbName() + "." + t.getTableName(), t);
           break;
         }
         case PARTITION: {
@@ -74,9 +74,9 @@ public class UpdateInputAccessTimeHook {
           Table t = db.getTable(p.getTable().getTableName());
           p = db.getPartition(t, p.getSpec(), false);
           p.setLastAccessTime(lastAccessTime);
-          db.alterPartition(t.getTableName(), p, null);
+          db.alterPartition(t.getTableName(), p);
           t.setLastAccessTime(lastAccessTime);
-          db.alterTable(t.getDbName() + "." + t.getTableName(), t, null);
+          db.alterTable(t.getDbName() + "." + t.getTableName(), t);
           break;
         }
         default:

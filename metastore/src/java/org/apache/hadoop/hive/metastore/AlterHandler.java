@@ -56,9 +56,10 @@ public interface AlterHandler extends Configurable {
    * @throws MetaException
    *           thrown if there is any other error
    */
+  @Deprecated
   void alterTable(RawStore msdb, Warehouse wh, String dbname,
-    String name, Table newTable, EnvironmentContext envContext)
-      throws InvalidOperationException, MetaException;
+      String name, Table newTable) throws InvalidOperationException,
+      MetaException;
 
   /**
    * handles alter table, the changes could be cascaded to partitions if applicable
@@ -82,7 +83,7 @@ public interface AlterHandler extends Configurable {
    *           thrown if there is any other error
    */
   void alterTable(RawStore msdb, Warehouse wh, String dbname,
-      String name, Table newTable, EnvironmentContext envContext,
+      String name, Table newTable, boolean cascade,
       HMSHandler handler) throws InvalidOperationException, MetaException;
 
   /**
@@ -110,8 +111,7 @@ public interface AlterHandler extends Configurable {
    */
   @Deprecated
   Partition alterPartition(final RawStore msdb, Warehouse wh, final String dbname,
-    final String name, final List<String> part_vals, final Partition new_part,
-    EnvironmentContext envContext)
+    final String name, final List<String> part_vals, final Partition new_part)
       throws InvalidOperationException, InvalidObjectException, AlreadyExistsException, MetaException;
 
   /**
@@ -137,8 +137,7 @@ public interface AlterHandler extends Configurable {
    * @throws MetaException
    */
   Partition alterPartition(final RawStore msdb, Warehouse wh, final String dbname,
-    final String name, final List<String> part_vals, final Partition new_part, EnvironmentContext environmentContext,
-    HMSHandler handler)
+    final String name, final List<String> part_vals, final Partition new_part, HMSHandler handler)
       throws InvalidOperationException, InvalidObjectException, AlreadyExistsException, MetaException;
 
   /**
@@ -164,8 +163,7 @@ public interface AlterHandler extends Configurable {
    */
   @Deprecated
   List<Partition> alterPartitions(final RawStore msdb, Warehouse wh,
-    final String dbname, final String name, final List<Partition> new_parts,
-    EnvironmentContext environmentContext)
+    final String dbname, final String name, final List<Partition> new_parts)
       throws InvalidOperationException, InvalidObjectException, AlreadyExistsException, MetaException;
 
   /**
@@ -191,6 +189,6 @@ public interface AlterHandler extends Configurable {
 
   List<Partition> alterPartitions(final RawStore msdb, Warehouse wh,
     final String dbname, final String name, final List<Partition> new_parts,
-    EnvironmentContext environmentContext,HMSHandler handler)
+    HMSHandler handler)
       throws InvalidOperationException, InvalidObjectException, AlreadyExistsException, MetaException;
 }

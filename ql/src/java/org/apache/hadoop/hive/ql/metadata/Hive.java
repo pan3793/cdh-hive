@@ -87,7 +87,6 @@ import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.CompactionType;
 import org.apache.hadoop.hive.metastore.api.Database;
-import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.FireEventRequest;
 import org.apache.hadoop.hive.metastore.api.FireEventRequestData;
@@ -550,12 +549,12 @@ public class Hive {
    *           if the changes in metadata is not acceptable
    * @throws TException
    */
-  public void alterTable(String tblName, Table newTbl, EnvironmentContext environmentContext)
+  public void alterTable(String tblName, Table newTbl)
       throws InvalidOperationException, HiveException {
-    alterTable(tblName, newTbl, false, environmentContext);
+    alterTable(tblName, newTbl, false);
   }
 
-  public void alterTable(String tblName, Table newTbl, boolean cascade, EnvironmentContext environmentContext)
+  public void alterTable(String tblName, Table newTbl, boolean cascade)
       throws InvalidOperationException, HiveException {
     String[] names = Utilities.getDbTableName(tblName);
     try {
@@ -564,13 +563,7 @@ public class Hive {
         newTbl.getParameters().remove(hive_metastoreConstants.DDL_TIME);
       }
       newTbl.checkValidity();
-      if (environmentContext == null) {
-        environmentContext = new EnvironmentContext();
-      }
-      if (cascade) {
-        environmentContext.putToProperties(StatsSetupConst.CASCADE, StatsSetupConst.TRUE);
-      }
-      getMSC().alter_table_with_environmentContext(names[0], names[1], newTbl.getTTable(), environmentContext);
+      getMSC().alter_table(names[0], names[1], newTbl.getTTable(), cascade);
     } catch (MetaException e) {
       throw new HiveException("Unable to alter table. " + e.getMessage(), e);
     } catch (TException e) {
@@ -617,10 +610,10 @@ public class Hive {
    *           if the changes in metadata is not acceptable
    * @throws TException
    */
-  public void alterPartition(String tblName, Partition newPart, EnvironmentContext environmentContext)
+  public void alterPartition(String tblName, Partition newPart)
       throws InvalidOperationException, HiveException {
     String[] names = Utilities.getDbTableName(tblName);
-    alterPartition(names[0], names[1], newPart, environmentContext);
+    alterPartition(names[0], names[1], newPart);
   }
 
   /**
@@ -636,7 +629,7 @@ public class Hive {
    *           if the changes in metadata is not acceptable
    * @throws TException
    */
-  public void alterPartition(String dbName, String tblName, Partition newPart, EnvironmentContext environmentContext)
+  public void alterPartition(String dbName, String tblName, Partition newPart)
       throws InvalidOperationException, HiveException {
     try {
       // Remove the DDL time so that it gets refreshed
@@ -644,7 +637,7 @@ public class Hive {
         newPart.getParameters().remove(hive_metastoreConstants.DDL_TIME);
       }
       newPart.checkValidity();
-      getMSC().alter_partition(dbName, tblName, newPart.getTPartition(), environmentContext);
+      getMSC().alter_partition(dbName, tblName, newPart.getTPartition());
 
     } catch (MetaException e) {
       throw new HiveException("Unable to alter partition. " + e.getMessage(), e);
@@ -664,7 +657,7 @@ public class Hive {
    *           if the changes in metadata is not acceptable
    * @throws TException
    */
-  public void alterPartitions(String tblName, List<Partition> newParts, EnvironmentContext environmentContext)
+  public void alterPartitions(String tblName, List<Partition> newParts)
       throws InvalidOperationException, HiveException {
     String[] names = Utilities.getDbTableName(tblName);
     List<org.apache.hadoop.hive.metastore.api.Partition> newTParts =
@@ -677,7 +670,7 @@ public class Hive {
         }
         newTParts.add(tmpPart.getTPartition());
       }
-      getMSC().alter_partitions(names[0], names[1], newTParts, environmentContext);
+      getMSC().alter_partitions(names[0], names[1], newTParts);
     } catch (MetaException e) {
       throw new HiveException("Unable to alter partition. " + e.getMessage(), e);
     } catch (TException e) {
@@ -1498,18 +1491,18 @@ public class Hive {
           /* Add list bucketing location mappings. */
           skewedInfo.setSkewedColValueLocationMaps(skewedColValueLocationMaps);
           newCreatedTpart.getSd().setSkewedInfo(skewedInfo);
-          if (!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
+          if(!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
             newTPart.getParameters().put(StatsSetupConst.COLUMN_STATS_ACCURATE, "false");
           }
-          alterPartition(tbl.getDbName(), tbl.getTableName(), new Partition(tbl, newCreatedTpart), null);
+          alterPartition(tbl.getDbName(), tbl.getTableName(), new Partition(tbl, newCreatedTpart));
           newTPart = getPartition(tbl, partSpec, true, newPartPath.toString(), inheritTableSpecs,
               newFiles);
           return new Partition(tbl, newCreatedTpart);
         }
-        if (!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
+        if(!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
           StatsSetupConst.setBasicStatsState(newTPart.getParameters(), StatsSetupConst.FALSE);
         }
-        alterPartition(tbl.getDbName(), tbl.getTableName(), new Partition(tbl, newTPart.getTPartition()), null);
+        alterPartition(tbl.getDbName(), tbl.getTableName(), new Partition(tbl, newTPart.getTPartition()));
       }
     } catch (IOException e) {
       LOG.error(StringUtils.stringifyException(e));
@@ -1777,8 +1770,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
         throw new HiveException("addFiles: filesystem error in check phase", e);
       }
     }
-    if (!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
+    if(!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
       StatsSetupConst.setBasicStatsState(tbl.getParameters(), StatsSetupConst.FALSE);
+    }  else {
+      tbl.getParameters().put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, "true");
     }
 
     //column stats will be inaccurate
@@ -1800,7 +1795,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
     if (!holdDDLTime) {
       try {
-        alterTable(tableName, tbl, null);
+        alterTable(tableName, tbl);
       } catch (InvalidOperationException e) {
         throw new HiveException(e);
       }
@@ -1846,7 +1841,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
           out.add(new Partition(tbl, outPart));
         }
       } else {
-        getMSC().alter_partitions(addPartitionDesc.getDbName(), addPartitionDesc.getTableName(), in, null);
+        getMSC().alter_partitions(addPartitionDesc.getDbName(), addPartitionDesc.getTableName(), in);
         List<String> part_names = new ArrayList<String>();
         for (org.apache.hadoop.hive.metastore.api.Partition p: in){
           part_names.add(Warehouse.makePartName(tbl.getPartitionKeys(), p.getValues()));
@@ -2057,7 +2052,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     if (!org.apache.commons.lang.StringUtils.isEmpty(tbl.getDbName())) {
       fullName = tbl.getDbName() + "." + tbl.getTableName();
     }
-    alterPartition(fullName, new Partition(tbl, tpart), null);
+    alterPartition(fullName, new Partition(tbl, tpart));
   }
 
   private void fireInsertEvent(Table tbl, Map<String, String> partitionSpec, List<Path> newFiles)
