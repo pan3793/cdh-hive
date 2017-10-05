@@ -21,8 +21,7 @@ CREATE TABLE parquet_types_staging (
   cbinary string,
   m1 map<string, varchar(3)>,
   l1 array<int>,
-  st1 struct<c1:int, c2:char(1)>,
-  d date
+  st1 struct<c1:int, c2:char(1)>
 ) ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '|'
 COLLECTION ITEMS TERMINATED BY ','
@@ -41,8 +40,7 @@ CREATE TABLE parquet_types (
   cbinary binary,
   m1 map<string, varchar(3)>,
   l1 array<int>,
-  st1 struct<c1:int, c2:char(1)>,
-  d date
+  st1 struct<c1:int, c2:char(1)>
 ) STORED AS PARQUET;
 
 LOAD DATA LOCAL INPATH '../../data/files/parquet_types.txt' OVERWRITE INTO TABLE parquet_types_staging;
@@ -51,7 +49,7 @@ SELECT * FROM parquet_types_staging;
 
 INSERT OVERWRITE TABLE parquet_types
 SELECT cint, ctinyint, csmallint, cfloat, cdouble, cstring1, t, cchar, cvarchar,
-unhex(cbinary), m1, l1, st1, d FROM parquet_types_staging;
+unhex(cbinary), m1, l1, st1 FROM parquet_types_staging;
 
 -- test types in group by
 
