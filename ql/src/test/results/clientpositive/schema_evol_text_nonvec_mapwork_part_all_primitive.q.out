@@ -2682,10 +2682,10 @@ POSTHOOK: Input: default@part_change_various_various_date@part=1
 POSTHOOK: Input: default@part_change_various_various_date@part=2
 #### A masked pattern was here ####
 insert_num	part	c1	c2	c3	c4	b
-1	1	NULL	NULL	NULL	0004-09-22	original
-2	1	NULL	NULL	NULL	2007-02-09	original
-3	1	NULL	NULL	NULL	6229-06-28	original
-4	1	NULL	NULL	NULL	2002-05-10	original
+1	1	0004-09-22	0004-09-22	0004-09-22	0004-09-22	original
+2	1	2007-02-09	2007-02-09	2007-02-09	2007-02-09	original
+3	1	6229-06-28	6229-06-28	6229-06-28	6229-06-28	original
+4	1	2002-05-10	2002-05-10	2002-05-10	2002-05-10	original
 5	2	2016-03-07	2016-03-07	2016-03-07	2016-03-07	new
 6	1	NULL	2002-05-10	2002-05-10	NULL	new
 PREHOOK: query: drop table part_change_various_various_date
