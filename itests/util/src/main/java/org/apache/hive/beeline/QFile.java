@@ -70,6 +70,7 @@ public final class QFile {
   private static final String[] COMMANDS_TO_REMOVE = {"EXPLAIN", "DESCRIBE[\\s\\n]+EXTENDED", "DESCRIBE[\\s\\n]+FORMATTED"};
 
   private String name;
+  private String databaseName;
   private File inputFile;
   private File rawOutputFile;
   private File outputFile;
@@ -80,7 +81,7 @@ public final class QFile {
   private static RegexFilterSet staticFilterSet = getStaticFilterSet();
   private static RegexFilterSet portableFilterSet = getPortableFilterSet();
   private RegexFilterSet specificFilterSet;
-  private boolean rewriteSourceTables;
+  private boolean useSharedDatabase;
   private Converter converter;
   private boolean comparePortable;
 
@@ -88,6 +89,10 @@ public final class QFile {
 
   public String getName() {
     return name;
+  }
+
+  public String getDatabaseName() {
+    return databaseName;
   }
 
   public File getInputFile() {
@@ -122,6 +127,10 @@ public final class QFile {
     return converter;
   }
 
+  public boolean isUseSharedDatabase() {
+    return useSharedDatabase;
+  }
+
   public String getDebugHint() {
     return String.format(DEBUG_HINT, inputFile, rawOutputFile, outputFile, expectedOutputFile,
         logFile, beforeExecuteLogFile, afterExecuteLogFile,
@@ -129,13 +138,13 @@ public final class QFile {
   }
 
   /**
-   * Filters the sql commands if necessary.
+   * Filters the sql commands if necessary - eg. not using the shared database.
    * @param commands The array of the sql commands before filtering
    * @return The filtered array of the sql command strings
    * @throws IOException File read error
    */
   public String[] filterCommands(String[] commands) throws IOException {
-    if (rewriteSourceTables) {
+    if (!useSharedDatabase) {
       for (int i=0; i<commands.length; i++) {
         if (USE_PATTERN.matcher(commands[i]).matches()) {
           System.err.println(String.format(USE_COMMAND_WARNING, inputFile, commands[i]));
@@ -172,8 +181,8 @@ public final class QFile {
    */
   private String revertReplaceTableNames(String source) {
     for (String table : srcTables) {
-      source = source.replaceAll("(?is)(\\s+)default\\." + table + "([\\s;\\n\\)])", "$1" + table
-          + "$2");
+      source = source.replaceAll("(?is)(?<!name:?|alias:?)(\\s+)default\\.(" + table
+          + ")([\\s;\\n\\),])", "$1$2$3");
     }
     return source;
   }
@@ -194,18 +203,28 @@ public final class QFile {
     return source;
   }
 
+  /**
+   * Filters the generated output file
+   * @throws IOException
+   */
   public void filterOutput() throws IOException {
     String output = FileUtils.readFileToString(rawOutputFile, "UTF-8");
     if (comparePortable) {
       output = portableFilterSet.filter(output);
     }
     output = staticFilterSet.filter(specificFilterSet.filter(output));
-    if (rewriteSourceTables) {
+    if (!useSharedDatabase) {
       output = sortInputOutput(revertReplaceTableNames(output));
     }
     FileUtils.writeStringToFile(outputFile, output);
   }
 
+  /**
+   * Compare the filtered file with the expected golden file
+   * @return The comparison data
+   * @throws IOException If there is a problem accessing the golden or generated file
+   * @throws InterruptedException If there is a problem running the diff command
+   */
   public QTestProcessExecResult compareResults() throws IOException, InterruptedException {
     if (!expectedOutputFile.exists()) {
       throw new IOException("Expected results file does not exist: " + expectedOutputFile);
@@ -213,6 +232,10 @@ public final class QFile {
     return executeDiff();
   }
 
+  /**
+   * Overwrite the golden file with the generated output
+   * @throws IOException If there is a problem accessing the golden or generated file
+   */
   public void overwriteResults() throws IOException {
     FileUtils.copyFile(outputFile, expectedOutputFile);
   }
@@ -312,8 +335,11 @@ public final class QFile {
         .addFilter(".*file:.*\n", MASK_PATTERN)
         .addFilter(".*hdfs:.*\n", MASK_PATTERN)
         .addFilter(".*file\\..*\n", MASK_PATTERN)
+        .addFilter(".*Location.*\n", MASK_PATTERN)
+        .addFilter(".*LOCATION '.*\n", MASK_PATTERN)
         .addFilter(".*Output:.*/data/files/.*\n", MASK_PATTERN)
         .addFilter(".*CreateTime.*\n", MASK_PATTERN)
+        .addFilter(".*last_modified_.*\n", MASK_PATTERN)
         .addFilter(".*transient_lastDdlTime.*\n", MASK_PATTERN)
         .addFilter(".*lastUpdateTime.*\n", MASK_PATTERN)
         .addFilter(".*lastAccessTime.*\n", MASK_PATTERN)
@@ -345,7 +371,7 @@ public final class QFile {
     private File queryDirectory;
     private File logDirectory;
     private File resultsDirectory;
-    private boolean rewriteSourceTables;
+    private boolean useSharedDatabase;
     private boolean comparePortable;
 
     public QFileBuilder() {
@@ -366,8 +392,8 @@ public final class QFile {
       return this;
     }
 
-    public QFileBuilder setRewriteSourceTables(boolean rewriteSourceTables) {
-      this.rewriteSourceTables = rewriteSourceTables;
+    public QFileBuilder setUseSharedDatabase(boolean useSharedDatabase) {
+      this.useSharedDatabase = useSharedDatabase;
       return this;
     }
 
@@ -379,19 +405,27 @@ public final class QFile {
     public QFile getQFile(String name) throws IOException {
       QFile result = new QFile();
       result.name = name;
+      if (!useSharedDatabase) {
+        result.databaseName = "test_db_" + name.toLowerCase();
+        result.specificFilterSet = new RegexFilterSet()
+            .addFilter("(PREHOOK|POSTHOOK): (Output|Input): database:" + result.databaseName + "\n",
+                "$1: $2: database:default\n")
+            .addFilter("(PREHOOK|POSTHOOK): (Output|Input): " + result.databaseName + "@",
+                "$1: $2: default@")
+            .addFilter("name(:?) " + result.databaseName + "\\.(.*)\n", "name$1 default.$2\n")
+            .addFilter("alias(:?) " + result.databaseName + "\\.(.*)\n", "alias$1 default.$2\n")
+            .addFilter("/" + result.databaseName + ".db/", "/");
+      } else {
+        result.databaseName = "default";
+        result.specificFilterSet = new RegexFilterSet();
+      }
       result.inputFile = new File(queryDirectory, name + ".q");
       result.rawOutputFile = new File(logDirectory, name + ".q.out.raw");
       result.outputFile = new File(logDirectory, name + ".q.out");
       result.logFile = new File(logDirectory, name + ".q.beeline");
       result.beforeExecuteLogFile = new File(logDirectory, name + ".q.beforeExecute.log");
       result.afterExecuteLogFile = new File(logDirectory, name + ".q.afterExecute.log");
-      result.rewriteSourceTables = rewriteSourceTables;
-      result.specificFilterSet = new RegexFilterSet()
-          .addFilter("(PREHOOK|POSTHOOK): (Output|Input): database:" + name + "\n",
-              "$1: $2: database:default\n")
-          .addFilter("(PREHOOK|POSTHOOK): (Output|Input): " + name + "@", "$1: $2: default@")
-          .addFilter("name(:?) " + name + "\\.(.*)\n", "name$1 default.$2\n")
-          .addFilter("/" + name + ".db/", "/");
+      result.useSharedDatabase = useSharedDatabase;
       result.converter = Converter.NONE;
       String input = FileUtils.readFileToString(result.inputFile, "UTF-8");
       if (input.contains("-- SORT_QUERY_RESULTS")) {

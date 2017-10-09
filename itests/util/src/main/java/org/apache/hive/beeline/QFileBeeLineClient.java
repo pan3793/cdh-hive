@@ -18,12 +18,18 @@
 
 package org.apache.hive.beeline;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.hadoop.hive.ql.QTestUtil;
 import org.apache.hive.beeline.ConvertedOutputFile.Converter;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * QFile test client using BeeLine. It can be used to submit a list of command strings, or a QFile.
@@ -32,6 +38,26 @@ public class QFileBeeLineClient implements AutoCloseable {
   private BeeLine beeLine;
   private PrintStream beelineOutputStream;
   private File logFile;
+  private String[] TEST_FIRST_COMMANDS = new String[] {
+    "!set outputformat tsv2",
+    "!set verbose false",
+    "!set silent true",
+    "!set showheader false",
+    "USE default;",
+    "SHOW TABLES;",
+  };
+  private String[] TEST_SET_LOG_COMMANDS = new String[] {
+    "set hive.in.test.short.logs=true;",
+    "set hive.in.test.remove.logs=false;",
+  };
+  private String[] TEST_RESET_COMMANDS = new String[] {
+    "set hive.testing.short.logs=false;",
+    "!set verbose true",
+    "!set silent false",
+    "!set showheader true",
+    "!set outputformat table",
+    "USE default;"
+  };
 
   protected QFileBeeLineClient(String jdbcUrl, String jdbcDriver, String username, String password,
       File log) throws IOException {
@@ -52,6 +78,47 @@ public class QFileBeeLineClient implements AutoCloseable {
         });
   }
 
+  private Set<String> getDatabases() throws SQLException {
+    Set<String> databases = new HashSet<String>();
+
+    DatabaseMetaData metaData = beeLine.getDatabaseMetaData();
+    // Get the databases
+    try (ResultSet schemasResultSet = metaData.getSchemas()) {
+      while (schemasResultSet.next()) {
+        databases.add(schemasResultSet.getString("TABLE_SCHEM"));
+      }
+    }
+    return databases;
+  }
+
+  private Set<String> getTables() throws SQLException {
+    Set<String> tables = new HashSet<String>();
+
+    DatabaseMetaData metaData = beeLine.getDatabaseMetaData();
+    // Get the tables in the default database
+    String[] types = new String[] {"TABLE"};
+    try (ResultSet tablesResultSet = metaData.getTables(null, "default", "%", types)) {
+      while (tablesResultSet.next()) {
+        tables.add(tablesResultSet.getString("TABLE_NAME"));
+      }
+    }
+    return tables;
+  }
+
+  private Set<String> getViews() throws SQLException {
+    Set<String> views = new HashSet<String>();
+
+    DatabaseMetaData metaData = beeLine.getDatabaseMetaData();
+    // Get the tables in the default database
+    String[] types = new String[] {"VIEW"};
+    try (ResultSet tablesResultSet = metaData.getTables(null, "default", "%", types)) {
+      while (tablesResultSet.next()) {
+        views.add(tablesResultSet.getString("TABLE_NAME"));
+      }
+    }
+    return views;
+  }
+
   public void execute(String[] commands, File resultFile, Converter converter)
       throws Exception {
     beeLine.runCommands(
@@ -69,39 +136,58 @@ public class QFileBeeLineClient implements AutoCloseable {
   }
 
   private void beforeExecute(QFile qFile) throws Exception {
-    execute(
-        new String[] {
-          "!set outputformat tsv2",
-          "!set verbose false",
-          "!set silent true",
-          "!set showheader false",
-          "USE default;",
-          "SHOW TABLES;",
-          "DROP DATABASE IF EXISTS `" + qFile.getName() + "` CASCADE;",
-          "CREATE DATABASE `" + qFile.getName() + "`;",
-          "USE `" + qFile.getName() + "`;",
-          "set hive.in.test.short.logs=true;",
-          "set hive.in.test.remove.logs=false;",
-        },
-        qFile.getBeforeExecuteLogFile(),
-        Converter.NONE);
+    String[] commands = TEST_FIRST_COMMANDS;
+
+    String[] extraCommands;
+    if (qFile.isUseSharedDatabase()) {
+      // If we are using a shared database, then remove not known databases, tables, views.
+
+      Set<String> dropCommands = new HashSet();
+      for(String database : getDatabases()) {
+        if (!database.equals("default")) {
+          dropCommands.add("DROP DATABASE `" + database + "` CASCADE;");
+        }
+      }
+
+      Set<String> srcTables = QTestUtil.getSrcTables();
+      for(String table : getTables()) {
+        if (!srcTables.contains(table)) {
+          dropCommands.add("DROP TABLE `" + table + "` PURGE;");
+        }
+      }
+
+      for(String view : getViews()) {
+        dropCommands.add("DROP VIEW `" + view + "`;");
+      }
+
+      extraCommands = dropCommands.toArray(new String[]{});
+    } else {
+      // If we are using a test specific database, then we just drop the database, and recreate
+      extraCommands = new String[] {
+        "DROP DATABASE IF EXISTS `" + qFile.getDatabaseName() + "` CASCADE;",
+        "CREATE DATABASE `" + qFile.getDatabaseName() + "`;",
+        "USE `" + qFile.getDatabaseName() + "`;"
+      };
+    }
+    commands = ArrayUtils.addAll(commands, extraCommands);
+    commands = ArrayUtils.addAll(commands, TEST_SET_LOG_COMMANDS);
+    execute(commands, qFile.getBeforeExecuteLogFile(), Converter.NONE);
     beeLine.setIsTestMode(true);
   }
 
   private void afterExecute(QFile qFile) throws Exception {
     beeLine.setIsTestMode(false);
-    execute(
-        new String[] {
-          "set hive.in.test.short.logs=false;",
-          "!set verbose true",
-          "!set silent false",
-          "!set showheader true",
-          "!set outputformat table",
-          "USE default;",
-          "DROP DATABASE IF EXISTS `" + qFile.getName() + "` CASCADE;",
-        },
-        qFile.getAfterExecuteLogFile(),
-        Converter.NONE);
+    String[] commands = TEST_RESET_COMMANDS;
+
+    if (!qFile.isUseSharedDatabase()) {
+      // If we are using a test specific database, then we just drop the database
+      String[] extraCommands = new String[] {
+          "DROP DATABASE IF EXISTS `" + qFile.getDatabaseName() + "` CASCADE;"
+      };
+      commands = ArrayUtils.addAll(commands, extraCommands);
+    }
+
+    execute(commands, qFile.getAfterExecuteLogFile(), Converter.NONE);
   }
 
   public void execute(QFile qFile) throws Exception {
