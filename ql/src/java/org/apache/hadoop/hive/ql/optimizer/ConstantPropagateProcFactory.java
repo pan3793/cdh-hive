@@ -724,7 +724,7 @@ public final class ConstantPropagateProcFactory {
           return thenExpr;
         } else if (thenVal instanceof Boolean && elseVal instanceof Boolean) {
           ExprNodeGenericFuncDesc equal = ExprNodeGenericFuncDesc.newInstance(
-              new GenericUDFOPEqual(), newExprs.subList(0, 2));
+              new GenericUDFOPEqual(), Lists.newArrayList(newExprs.subList(0, 2)));
           List<ExprNodeDesc> children = new ArrayList<>();
           children.add(equal);
           children.add(new ExprNodeConstantDesc(false));
