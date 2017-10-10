@@ -132,7 +132,7 @@ select fl_time, count(*) from flights_tiny_orc_partitioned_timestamp group by fl
 
 -- test for Parquet file format
 CREATE TABLE flights_tiny_parquet STORED AS PARQUET AS
-SELECT origin_city_name, dest_city_name, fl_date, to_utc_timestamp(fl_date, 'America/Los_Angeles') as fl_time, arr_delay, fl_num
+SELECT origin_city_name, dest_city_name, cast(fl_date as string), to_utc_timestamp(fl_date, 'America/Los_Angeles') as fl_time, arr_delay, fl_num
 FROM flights_tiny;
 
 SELECT * FROM flights_tiny_parquet;
@@ -165,7 +165,7 @@ CREATE TABLE flights_tiny_parquet_partitioned_date (
   arr_delay FLOAT,
   fl_num INT
 )
-PARTITIONED BY (fl_date DATE)
+PARTITIONED BY (fl_date STRING)
 STORED AS PARQUET;
 
 set hive.exec.dynamic.partition.mode=nonstrict;
@@ -205,7 +205,7 @@ SET hive.vectorized.execution.enabled=false;
 CREATE TABLE flights_tiny_parquet_partitioned_timestamp (
   origin_city_name STRING,
   dest_city_name STRING,
-  fl_date DATE,
+  fl_date STRING,
   arr_delay FLOAT,
   fl_num INT
 )
