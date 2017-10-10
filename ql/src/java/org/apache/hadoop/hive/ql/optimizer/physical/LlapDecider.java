@@ -46,6 +46,7 @@ import org.apache.hadoop.hive.ql.exec.Operator;
 import org.apache.hadoop.hive.ql.exec.ScriptOperator;
 import org.apache.hadoop.hive.ql.exec.SelectOperator;
 import org.apache.hadoop.hive.ql.exec.Task;
+import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.tez.TezTask;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedInputFormatInterface;
 import org.apache.hadoop.hive.ql.lib.DefaultGraphWalker;
@@ -70,6 +71,7 @@ import org.apache.hadoop.hive.ql.plan.ReduceWork;
 import org.apache.hadoop.hive.ql.plan.SelectDesc;
 import org.apache.hadoop.hive.ql.plan.Statistics;
 import org.apache.hadoop.hive.ql.plan.TezWork;
+import org.apache.hadoop.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -418,10 +420,13 @@ public class LlapDecider implements PhysicalPlanResolver {
     }
 
     private boolean checkInputsVectorized(MapWork mapWork) {
+      Collection<Class<?>> excludedInputFormats = Utilities.getClassNamesFromConfig(conf,
+          ConfVars.HIVE_VECTORIZATION_VECTORIZED_INPUT_FILE_FORMAT_EXCLUDES);
       for( PartitionDesc pd : mapWork.getPathToPartitionInfo().values()) {
         List<Class<?>> interfaceList =
           Arrays.asList(pd.getInputFileFormatClass().getInterfaces());
-        if (!interfaceList.contains(VectorizedInputFormatInterface.class)) {
+        if (!interfaceList.contains(VectorizedInputFormatInterface.class) && !excludedInputFormats
+            .contains(pd.getInputFileFormatClass())) {
           LOG.info("Input format: " + pd.getInputFileFormatClassName()
             + ", doesn't provide vectorized input");
           return false;
