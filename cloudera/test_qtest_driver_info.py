@@ -18,12 +18,13 @@ DRIVERS = (
     "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestMiniTezCliDriver.java",
     "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestNegativeCliDriver.java",
     "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestNegativeMinimrCliDriver.java",
-    "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestPerfCliDriver.java",
+    "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestTezPerfCliDriver.java",
     "../itests/qtest/src/test/java/org/apache/hadoop/hive/ql/parse/TestParseNegativeDriver.java",
     "../itests/qtest-spark/src/test/java/org/apache/hadoop/hive/cli/TestMiniSparkOnYarnCliDriver.java",
     "../itests/qtest-spark/src/test/java/org/apache/hadoop/hive/cli/TestSparkCliDriver.java",
     "../itests/qtest-spark/src/test/java/org/apache/hadoop/hive/cli/TestSparkNegativeCliDriver.java",
-    "../ql/src/test/org/apache/hadoop/hive/ql/exec/TestExecDriver.java"
+    "../itests/qtest-spark/src/test/java/org/apache/hadoop/hive/cli/TestSparkPerfCliDriver.java",
+    "../ql/src/test/org/apache/hadoop/hive/ql/exec/TestExecDriver.java",
 )
 
 DRIVER_TEST_ARGS = (
@@ -149,10 +150,9 @@ TEST_CASES = {
             "TestSparkCliDriver:skewjoinopt14.q"
         ),
     "ql/src/test/results/clientnegative/groupby3_multi_distinct.q.out":
-        (
-            "TestNegativeCliDriver:groupby3_multi_distinct.q",
-            "TestSparkNegativeCliDriver:groupby3_multi_distinct.q"
-        ),
+        [
+            "TestNegativeCliDriver:groupby3_multi_distinct.q"
+        ],
     "ql/src/test/queries/clientpositive/union34.q,contrib/src/test/queries/clientpositive/udtf_output_on_close.q,ql/src/test/queries/clientpositive/encryption_join_unencrypted_tbl.q,hbase-handler/src/test/queries/positive/hbase_bulk.q,ql/src/test/queries/clientpositive/udf_using.q,ql/src/test/queries/clientpositive/tez_union_decimal.q,ql/src/test/queries/clientnegative/create_table_failure1.q,ql/src/test/queries/clientpositive/constprog_semijoin.q,ql/src/test/queries/clientpositive/groupby_multi_single_reducer3.q":
         (
             "TestEncryptedHDFSCliDriver:encryption_join_unencrypted_tbl.q",
@@ -161,7 +161,7 @@ TEST_CASES = {
             "TestMiniSparkOnYarnCliDriver:constprog_semijoin.q",
             "TestContribCliDriver:udtf_output_on_close.q",
             "TestCliDriver:union34.q,constprog_semijoin.q,groupby_multi_single_reducer3.q",
-            "TestSparkCliDriver:groupby_multi_single_reducer3.q",
+            "TestSparkCliDriver:union34.q,groupby_multi_single_reducer3.q",
             "TestMinimrCliDriver:udf_using.q"
         ),
     "ql/src/test/queries/clientpositive/groupby2.q":
@@ -170,20 +170,18 @@ TEST_CASES = {
             "TestMinimrCliDriver:groupby2.q"
         ),
     "ql/src/test/results/clientpositive/join1.q.out":
-        (
-            "TestSparkCliDriver:join1.q",
+        [
             "TestMinimrCliDriver:join1.q"
-        ),
+        ],
     "ql/src/test/queries/clientpositive/union_remove_8.q":
         (
             "TestCliDriver:union_remove_8.q",
             "TestSparkCliDriver:union_remove_8.q"
         ),
     "ql/src/test/results/clientpositive/limit_partition_metadataonly.q.out":
-        (
-            "TestCliDriver:limit_partition_metadataonly.q",
-            "TestSparkCliDriver:limit_partition_metadataonly.q"
-        ),
+        [
+            "TestCliDriver:limit_partition_metadataonly.q"
+        ],
     "ql/src/test/queries/clientpositive/bucketmapjoin7.q":
         (
             "TestMinimrCliDriver:bucketmapjoin7.q",
@@ -191,11 +189,9 @@ TEST_CASES = {
             "TestMiniSparkOnYarnCliDriver:bucketmapjoin7.q"
         ),
     "ql/src/test/results/clientpositive/stats_counter.q.out":
-        (
-            "TestMinimrCliDriver:stats_counter.q",
-            "TestSparkCliDriver:stats_counter.q",
-            "TestMiniSparkOnYarnCliDriver:stats_counter.q"
-        ),
+        [
+            "TestMinimrCliDriver:stats_counter.q"
+        ],
     "ql/src/test/queries/clientpositive/char_join1.q":
         [
             "TestCliDriver:char_join1.q"
@@ -254,6 +250,14 @@ TEST_CASES = {
     "ql/src/test/queries/clientpositive/source.q":
         [
             "TestCliDriver:source.q"
+        ],
+    "ql/src/test/queries/clientpositive/perf/query11.q":
+        [
+            "TestSparkPerfCliDriver:query11.q"
+        ],
+    "ql/src/test/results/clientpositive/perf/spark/query4.q.out":
+        [
+            "TestSparkPerfCliDriver:query4.q"
         ],
     "ql/src/test/queries/clientnegative/udf_local_resource.q":
         [
