@@ -156,7 +156,7 @@ def get_drivers_for_qresults(config_classes, testproperties, qresults, qfile):
 # Get the name of the driver class
 def get_driver_from_config_class(config_class, testproperties, qfile, qfile_dir, class_dir):
     driver_name = ""
-    if config_class.classname not in CLASS_NAMES_TO_IGNORE and config_class.classname in DRIVER_FOR_CONFIG_CLASS and re.compile(qfile_dir).search(class_dir) is not None:
+    if config_class.classname not in CLASS_NAMES_TO_IGNORE and config_class.classname in DRIVER_FOR_CONFIG_CLASS and class_dir==qfile_dir:
         if is_qfile_include(config_class.excludes, config_class.includes, qfile, testproperties, config_class.override_query_file):
             driver_name = DRIVER_FOR_CONFIG_CLASS[config_class.classname]
 

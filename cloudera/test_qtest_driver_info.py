@@ -18,12 +18,11 @@ DRIVERS = (
     "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestMiniTezCliDriver.java",
     "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestNegativeCliDriver.java",
     "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestNegativeMinimrCliDriver.java",
-    "../itests/qtest/src/test/java/org/apache/hadoop/hive/cli/TestPerfCliDriver.java",
     "../itests/qtest/src/test/java/org/apache/hadoop/hive/ql/parse/TestParseNegativeDriver.java",
     "../itests/qtest-spark/src/test/java/org/apache/hadoop/hive/cli/TestMiniSparkOnYarnCliDriver.java",
     "../itests/qtest-spark/src/test/java/org/apache/hadoop/hive/cli/TestSparkCliDriver.java",
     "../itests/qtest-spark/src/test/java/org/apache/hadoop/hive/cli/TestSparkNegativeCliDriver.java",
-    "../ql/src/test/org/apache/hadoop/hive/ql/exec/TestExecDriver.java"
+    "../ql/src/test/org/apache/hadoop/hive/ql/exec/TestExecDriver.java",
 )
 
 DRIVER_TEST_ARGS = (
@@ -170,20 +169,18 @@ TEST_CASES = {
             "TestMinimrCliDriver:groupby2.q"
         ),
     "ql/src/test/results/clientpositive/join1.q.out":
-        (
-            "TestSparkCliDriver:join1.q",
+        [
             "TestMinimrCliDriver:join1.q"
-        ),
+        ],
     "ql/src/test/queries/clientpositive/union_remove_8.q":
         (
             "TestCliDriver:union_remove_8.q",
             "TestSparkCliDriver:union_remove_8.q"
         ),
     "ql/src/test/results/clientpositive/limit_partition_metadataonly.q.out":
-        (
-            "TestCliDriver:limit_partition_metadataonly.q",
-            "TestSparkCliDriver:limit_partition_metadataonly.q"
-        ),
+        [
+            "TestCliDriver:limit_partition_metadataonly.q"
+        ],
     "ql/src/test/queries/clientpositive/bucketmapjoin7.q":
         (
             "TestMinimrCliDriver:bucketmapjoin7.q",
@@ -191,11 +188,9 @@ TEST_CASES = {
             "TestMiniSparkOnYarnCliDriver:bucketmapjoin7.q"
         ),
     "ql/src/test/results/clientpositive/stats_counter.q.out":
-        (
-            "TestMinimrCliDriver:stats_counter.q",
-            "TestSparkCliDriver:stats_counter.q",
-            "TestMiniSparkOnYarnCliDriver:stats_counter.q"
-        ),
+        [
+            "TestMinimrCliDriver:stats_counter.q"
+        ],
     "ql/src/test/queries/clientpositive/char_join1.q":
         [
             "TestCliDriver:char_join1.q"
