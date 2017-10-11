@@ -79,16 +79,16 @@ POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 POSTHOOK: Input: default@src1
 #### A masked pattern was here ####
-213	val_213	213	val_213
-213	val_213	213	val_213
+128	val_128	128	
+128	val_128	128	
+128	val_128	128	
+146	val_146	146	val_146
+146	val_146	146	val_146
 150	val_150	150	val_150
-238	val_238	238	val_238
-238	val_238	238	val_238
-146	val_146	146	val_146
-146	val_146	146	val_146
-255	val_255	255	val_255
-255	val_255	255	val_255
-401	val_401	401	val_401
+213	val_213	213	val_213
+213	val_213	213	val_213
+224	val_224	224	
+224	val_224	224	
 PREHOOK: query: select * from srcpart where ds = "2008-04-08" limit 10
 PREHOOK: type: QUERY
 PREHOOK: Input: default@srcpart
@@ -119,13 +119,13 @@ POSTHOOK: query: select key, count(*) from src group by key limit 10
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src
 #### A masked pattern was here ####
-114	1
-111	1
-113	2
-103	2
-10	1
-100	2
-104	2
-11	1
 105	1
+113	2
+100	2
 0	3
+104	2
+103	2
+111	1
+11	1
+114	1
+10	1
