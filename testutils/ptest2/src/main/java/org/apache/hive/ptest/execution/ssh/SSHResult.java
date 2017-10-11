@@ -18,6 +18,8 @@
  */
 package org.apache.hive.ptest.execution.ssh;
 
+import org.apache.hive.ptest.execution.Constants;
+
 public class SSHResult extends AbstractSSHResult {
 
   private final String command;
@@ -31,9 +33,24 @@ public class SSHResult extends AbstractSSHResult {
   }
   @Override
   public String toString() {
-    return "SSHResult [command=" + command + ", getExitCode()="
-        + getExitCode() + ", getException()=" + getException()
-        + ", getUser()=" + getUser() + ", getHost()=" + getHost()
-        + ", getInstance()=" + getInstance() + "]";
+    StringBuilder ret = new StringBuilder("SSHResult [command=");
+    ret.append(command)
+        .append(", getExitCode()=")
+        .append(getExitCode())
+        .append(", getException()=")
+        .append(getException())
+        .append(", getUser()=")
+        .append(getUser())
+        .append(", getHost()=")
+        .append(getHost())
+        .append(", getInstance()=")
+        .append(getInstance());
+    if(getExitCode() == Constants.EXIT_CODE_UNKNOWN
+        || getExitCode() == Constants.EXIT_CODE_EXCEPTION) {
+      ret.append(", getOutput()=")
+          .append(getOutput());
+    }
+    ret.append(" ]");
+    return ret.toString();
   }
 }
