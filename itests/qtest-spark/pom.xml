@@ -444,6 +444,16 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <environmentVariables>
+            <SPARK_SCALA_VERSION>2.11</SPARK_SCALA_VERSION>
+            <SPARK_HOME>${spark.home}</SPARK_HOME>
+          </environmentVariables>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
