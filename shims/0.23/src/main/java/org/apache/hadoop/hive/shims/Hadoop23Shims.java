@@ -17,8 +17,10 @@
  */
 package org.apache.hadoop.hive.shims;
 
+import java.io.DataInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -64,6 +66,7 @@ import org.apache.hadoop.hdfs.protocol.EncryptionZone;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.protocol.HdfsLocatedFileStatus;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.ClusterStatus;
 import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapred.JobConf;
@@ -383,8 +386,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
     public MiniTezShim(Configuration conf, int numberOfTaskTrackers, String nameNode) throws IOException {
       mr = new MiniTezCluster("hive", numberOfTaskTrackers);
-      // YARN-3086 is not yet backported to CDH - Asked for backpot CDH-58325
-      // conf.setInt(YarnConfiguration.YARN_MINICLUSTER_NM_PMEM_MB, 2048);
+      conf.setInt(YarnConfiguration.YARN_MINICLUSTER_NM_PMEM_MB, 512);
       conf.setInt(YarnConfiguration.RM_SCHEDULER_MINIMUM_ALLOCATION_MB, 128);
       conf.setInt(YarnConfiguration.RM_SCHEDULER_MAXIMUM_ALLOCATION_MB, 512);
       // Overrides values from the hive/tez-site.
@@ -471,9 +473,6 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       conf.set("yarn.resourcemanager.scheduler.class", "org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler");
       // disable resource monitoring, although it should be off by default
       conf.setBoolean(YarnConfiguration.YARN_MINICLUSTER_CONTROL_RESOURCE_MONITORING, false);
-      conf.setInt(YarnConfiguration.YARN_MINICLUSTER_NM_PMEM_MB, 2048);
-      conf.setInt(YarnConfiguration.RM_SCHEDULER_MINIMUM_ALLOCATION_MB, 512);
-      conf.setInt(YarnConfiguration.RM_SCHEDULER_MAXIMUM_ALLOCATION_MB, 2048);
       configureImpersonation(conf);
       mr.init(conf);
       mr.start();
