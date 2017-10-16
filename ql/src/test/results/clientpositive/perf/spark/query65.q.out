@@ -68,7 +68,7 @@ STAGE PLANS:
         Reducer 9 <- Map 11 (PARTITION-LEVEL SORT, 398), Map 8 (PARTITION-LEVEL SORT, 398)
         Reducer 10 <- Reducer 9 (GROUP, 219)
         Reducer 3 <- Reducer 2 (GROUP PARTITION-LEVEL SORT, 219)
-        Reducer 5 <- Reducer 10 (PARTITION-LEVEL SORT, 1), Reducer 4 (PARTITION-LEVEL SORT, 1)
+        Reducer 5 <- Reducer 10 (PARTITION-LEVEL SORT, 1009), Reducer 4 (PARTITION-LEVEL SORT, 1009)
         Reducer 6 <- Reducer 5 (SORT, 1)
 #### A masked pattern was here ####
       Vertices:
