@@ -48,47 +48,22 @@ if [ "$NEW_CLUSTER" = true ]
 then
   # Create the hive safety valves
   OPTIONAL_ARGS="-is=HDFS,YARN,ZOOKEEPER,MAPREDUCE,HIVE,SPARK,SPARK_ON_YARN"
-  OPTIONAL_ARGS="${OPTIONAL_ARGS} -jsonurl http://github.mtv.cloudera.com/raw/pvary/notebook/master/hive-beeline/hive-beeline.json"
+  OPTIONAL_ARGS="${OPTIONAL_ARGS} -jsonurl http://github.mtv.cloudera.com/raw/CDH/hive/cdh5-1.1.0/cloudera/beeline/hive-beeline.json"
 
   # Setup the cluster
   cloudcat_setup
-
-  # Create beeline user 'user' and home directory
-  # Is this enough?
-  for CLUSTER_NODE in ${HOSTS_LIST[@]}; do
-    ssh -o UserKnownHostsFile=/dev/null \
-        -o StrictHostKeyChecking=no -q \
-        ${SSH_USER}@${CLUSTER_NODE}.${DOMAIN} \
-        "sudo useradd -m user"
-  done
-
-  ssh -o UserKnownHostsFile=/dev/null \
-      -o StrictHostKeyChecking=no -q \
-          ${SSH_USER}@${HIVESERVER2_NODE} << __EOF
-      sudo -u hdfs hdfs dfs -mkdir /user/user
-      sudo -u hdfs hdfs dfs -chown user:user /user/user
-__EOF
 fi
 
-BEELINE_USER=user
+BEELINE_USER=hive
 BEELINE_PASSWORD=
 
 DATA_DIR=/run/cloudera-scm-agent
-AUX_DIR=/tmp/aux
-
-# Apply patch
-if [[ -s patch.file ]]
-then
-  git apply -3 -p0 patch.file
-  echo "Patch applied"
-else
-  echo "No patch file to apply"
-fi
+AUX_DIR=/home/systest
 
 # Compiling hive
 echo "Compiling hive..."
 cd $WORKSPACE
-mvn clean install -DskipTests -Phadoop-2
+mvn clean install -DskipTests -Phadoop-2,dist
 echo "Compiling itests..."
 cd $WORKSPACE/itests
 mvn clean install -DskipTests -Phadoop-2
@@ -101,21 +76,59 @@ scp -o UserKnownHostsFile=/dev/null \
     data.tar ${SSH_USER}@${HIVESERVER2_NODE}:/tmp/
 ssh -o UserKnownHostsFile=/dev/null \
     -o StrictHostKeyChecking=no -q \
-	${SSH_USER}@${HIVESERVER2_NODE} << __EOF
+    ${SSH_USER}@${HIVESERVER2_NODE} << __EOF
     sudo su -
     mkdir -p ${DATA_DIR}
     cd ${DATA_DIR}
     tar -xf /tmp/data.tar
-    mkdir -p ${AUX_DIR}
-    chmod a+rwx ${AUX_DIR}
     chown systest:systest -R ${DATA_DIR}/data
     chmod a+rw -R ${DATA_DIR}/data
 __EOF
 
-# Upload hive-it-util-*.jar collection to the target machine
-scp -o UserKnownHostsFile=/dev/null \
-    -o StrictHostKeyChecking=no \
-    $WORKSPACE/itests/util/target/hive-it-util-*.jar ${SSH_USER}@${HIVESERVER2_NODE}:${AUX_DIR}
+
+for CLUSTER_NODE in "${HOSTS_LIST[@]}"
+do
+  # Upload hive-*.jar collection to the target machines
+  ssh -o UserKnownHostsFile=/dev/null \
+      -o StrictHostKeyChecking=no -q \
+      ${SSH_USER}@${CLUSTER_NODE} << __EOF
+      mkdir -p /tmp/hive-jars
+      sudo chmod a+rwx ${AUX_DIR}
+__EOF
+  scp -o UserKnownHostsFile=/dev/null \
+      -o StrictHostKeyChecking=no \
+      $WORKSPACE/packaging/target/apache-hive-*-bin/apache-hive-*-bin/lib/hive*jar ${SSH_USER}@${CLUSTER_NODE}:/tmp/hive-jars
+  ssh -o UserKnownHostsFile=/dev/null \
+      -o StrictHostKeyChecking=no -q \
+        ${SSH_USER}@${CLUSTER_NODE} \
+      sudo cp /tmp/hive-jars/* /opt/cloudera/parcels/CDH/jars
+
+  # Upload hive-it-util-*.jar to the target machines
+  scp -o UserKnownHostsFile=/dev/null \
+      -o StrictHostKeyChecking=no \
+      $WORKSPACE/itests/util/target/hive-it-util-*.jar ${SSH_USER}@${CLUSTER_NODE}:${AUX_DIR}
+done
+
+# Restart cluster to read aux jars
+set +e
+echo "Restarting HIVE service"
+WAIT_TIME=300
+WAIT_TIME_DECREMENT=5
+curl -X POST -u "admin:admin" -i http://${HIVESERVER2_NODE}:7180/api/v17/clusters/Cluster%201/services/HIVE-1/commands/restart
+sleep $WAIT_TIME_DECREMENT
+echo
+echo "Waiting until HIVE service is ready"
+timeout --foreground 0.5 bash -c "echo >\"/dev/tcp/${HIVESERVER2_NODE}/10000\"" >&/dev/null
+PORT_CHECK=$?
+while [ "$PORT_CHECK" -ne 0 ] && [ $WAIT_TIME -ge 0 ]
+do
+  echo "Sleeping ${WAIT_TIME_DECREMENT}s"
+  sleep 5
+  (( WAIT_TIME-=$WAIT_TIME_DECREMENT ))
+  timeout --foreground 0.5 bash -c "echo >\"/dev/tcp/${HIVESERVER2_NODE}/10000\"" >&/dev/null
+  PORT_CHECK=$?
+done
+set -e
 
 # Load the property file, so we will no which tests to run
 cd $WORKSPACE/cloudera/beeline
@@ -129,7 +142,21 @@ then
   echo "Running parallel qtests..."
   cd $WORKSPACE/itests/qtest
   set +e
-  mvn clean test -Phadoop-2 -Dtest=TestBeeLineDriver -Dtest.beeline.url="jdbc:hive2://${HIVESERVER2_NODE}:10000" -Dtest.data.dir="${DATA_DIR}/data/files" -Dtest.beeline.user="${BEELINE_USER}" -Dtest.beeline.password="${BEELINE_PASSWORD}" -Dmaven.test.redirectTestOutputToFile=true -Djunit.parallel.timeout=300 -Dqfile="${beeline_parallel}"
+  mvn clean test \
+    -Phadoop-2 \
+    -Dtest=TestBeeLineDriver \
+    -Dtest.beeline.url="jdbc:hive2://${HIVESERVER2_NODE}:10000" \
+    -Dtest.data.dir="${DATA_DIR}/data/files" \
+    -Dtest.beeline.user="${BEELINE_USER}" \
+    -Dtest.beeline.password="${BEELINE_PASSWORD}" \
+    -Dmaven.test.redirectTestOutputToFile=true \
+    -Djunit.parallel.timeout=3000 \
+    -Dtest.results.dir=ql/src/test/results/clientpositive \
+    -Dtest.init.script=q_test_init.sql \
+    -Dtest.beeline.compare.portable=true \
+    -Dtest.beeline.shared.database=false \
+    -Djunit.parallel.threads=10 \
+    -Dqfile="${beeline_parallel}"
   TEST_RESULT=$?
   set -e
   rm -rf target.parallel
@@ -142,7 +169,21 @@ if [ -n "${beeline_sequential}" ]
 then
   echo "Running sequential qtests..."
   set +e
-  mvn clean test -Phadoop-2 -Dtest=TestBeeLineDriver -Dtest.beeline.url="jdbc:hive2://${HIVESERVER2_NODE}:10000" -Dtest.data.dir="${DATA_DIR}/data/files" -Dtest.beeline.user="${BEELINE_USER}" -Dtest.beeline.password="${BEELINE_PASSWORD}" -Dmaven.test.redirectTestOutputToFile=true -Djunit.parallel.timeout=300 -Dqfile="${beeline_sequential}" -Djunit.parallel.threads=1
+  mvn clean test \
+    -Phadoop-2 \
+    -Dtest=TestBeeLineDriver \
+    -Dtest.beeline.url="jdbc:hive2://${HIVESERVER2_NODE}:10000" \
+    -Dtest.data.dir="${DATA_DIR}/data/files" \
+    -Dtest.beeline.user="${BEELINE_USER}" \
+    -Dtest.beeline.password="${BEELINE_PASSWORD}" \
+    -Dmaven.test.redirectTestOutputToFile=true \
+    -Djunit.parallel.timeout=3000 \
+    -Dtest.results.dir=ql/src/test/results/clientpositive \
+    -Dtest.init.script=q_test_init.sql \
+    -Dtest.beeline.compare.portable=true \
+    -Dtest.beeline.shared.database=true \
+    -Djunit.parallel.threads=1 \
+    -Dqfile="${beeline_sequential}"
   TEST_RESULT=$?
   rm -rf target.sequential
   mv target target.sequential
