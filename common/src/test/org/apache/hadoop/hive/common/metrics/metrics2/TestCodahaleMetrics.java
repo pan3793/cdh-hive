@@ -40,6 +40,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,12 +56,19 @@ import static org.junit.Assert.assertTrue;
 public class TestCodahaleMetrics {
 
   private static Path jsonReportFile;
-  public static MetricRegistry metricRegistry;
+  private static MetricRegistry metricRegistry;
+  private static final Path tmpDir = Paths.get(System.getProperty("java.io.tmpdir"));
 
   @BeforeClass
   public static void setUp() throws Exception {
-    jsonReportFile = Files.createTempFile("json_reporting", "tmp");
-    System.out.println(jsonReportFile.toAbsolutePath().toString());
+    // java.io.tmpdir may not exist by the time this test is executed
+    if (!tmpDir.toFile().exists()) {
+      System.out.println("Creating directory " + tmpDir);
+      Files.createDirectories(tmpDir,
+              PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxr-xr-x")));
+    }
+    jsonReportFile = Files.createTempFile("json_reporting", ".json");
+    System.out.println("Json metrics saved to " + jsonReportFile.toAbsolutePath().toString());
   }
 
   @AfterClass
@@ -115,7 +124,6 @@ public class TestCodahaleMetrics {
     int threads = 4;
     ExecutorService executorService = Executors.newFixedThreadPool(threads);
     for (int i=0; i< threads; i++) {
-      final int n = i;
       executorService.submit(new Callable<Void>() {
         @Override
         public Void call() throws Exception {
@@ -165,7 +173,7 @@ public class TestCodahaleMetrics {
     public void setValue(int gaugeVal) {
       this.gaugeVal = gaugeVal;
     }
-  };
+  }
 
   @Test
   public void testGauge() throws Exception {

@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -84,8 +85,12 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CodahaleMetrics.class);
 
+  // Permissions for metric files
   private static final FileAttribute<Set<PosixFilePermission>> FILE_ATTRS =
       PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-r--r--"));
+  // Permissions for metric directory
+  private static final FileAttribute<Set<PosixFilePermission>> DIR_ATTRS =
+      PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxr-xr-x"));
   // Thread name for reporter thread
   private static final String JSON_REPORTER_THREAD_NAME = "json-metric-reporter";
 
@@ -464,8 +469,8 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
 
     // Location of JSON file
     private Path path;
-    // tmpdir is the dirname(path)
-    private Path tmpDir;
+    // Directory where path resides
+    private Path metricsDir;
 
 
     public void start() {
@@ -475,9 +480,21 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
       final String pathString = conf.getVar(HiveConf.ConfVars.HIVE_METRICS_JSON_FILE_LOCATION);
       path = Paths.get(pathString).toAbsolutePath();
       LOGGER.info("Reporting metrics to {}", path);
-      // We want to use tmpDir i the same directory as the destination file to support atomic
+      // We want to use metricsDir i the same directory as the destination file to support atomic
       // move of temp file to the destination metrics file
-      tmpDir = path.getParent();
+      metricsDir = path.getParent();
+
+      // Create metrics directory if it is not present
+      if (!metricsDir.toFile().exists()) {
+        LOGGER.warn("Metrics directory {} does not exist, creating one", metricsDir);
+        try {
+          // createDirectories creates all non-existent parent directories
+          Files.createDirectories(metricsDir, DIR_ATTRS);
+        } catch (IOException e) {
+          LOGGER.error("Failed to create directory {}: {}", metricsDir, e.getMessage());
+          return;
+        }
+      }
 
       executorService = Executors.newScheduledThreadPool(1,
           new ThreadFactoryBuilder().setNameFormat(JSON_REPORTER_THREAD_NAME).build());
@@ -498,7 +515,7 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
 
       try {
         String json = jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metricRegistry);
-        tmpFile = Files.createTempFile(tmpDir, "hmetrics", "json", FILE_ATTRS);
+        tmpFile = Files.createTempFile(metricsDir, "hmetrics", "json", FILE_ATTRS);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile.toFile()))) {
           bw.write(json);
         }
@@ -512,7 +529,7 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
           try {
             Files.delete(tmpFile);
           } catch (Exception e) {
-            LOGGER.error("failed to delete yemporary metrics file {}", tmpFile, e);
+            LOGGER.error("failed to delete temporary metrics file {}", tmpFile, e);
           }
         }
       }
