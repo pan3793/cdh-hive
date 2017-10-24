@@ -57,8 +57,9 @@ public class HiveSparkClientFactory {
   private static final String SPARK_DEFAULT_REFERENCE_TRACKING = "false";
   private static final String SPARK_WAIT_APP_COMPLETE = "spark.yarn.submit.waitAppCompletion";
 
-  public static HiveSparkClient createHiveSparkClient(HiveConf hiveconf) throws Exception {
-    Map<String, String> sparkConf = initiateSparkConf(hiveconf);
+  public static HiveSparkClient createHiveSparkClient(HiveConf hiveconf, String sessionId) throws Exception {
+    Map<String, String> sparkConf = initiateSparkConf(hiveconf, sessionId);
+
     // Submit spark job through local spark context while spark master is local mode, otherwise submit
     // spark job through remote spark context.
     String master = sparkConf.get("spark.master");
@@ -70,7 +71,7 @@ public class HiveSparkClientFactory {
     }
   }
 
-  public static Map<String, String> initiateSparkConf(HiveConf hiveConf) {
+  public static Map<String, String> initiateSparkConf(HiveConf hiveConf, String sessionId) {
     Map<String, String> sparkConf = new HashMap<String, String>();
     HBaseConfiguration.addHbaseResources(hiveConf);
 
@@ -78,8 +79,15 @@ public class HiveSparkClientFactory {
     sparkConf.put("spark.master", SPARK_DEFAULT_MASTER);
     final String appNameKey = "spark.app.name";
     String appName = hiveConf.get(appNameKey);
+    final String sessionIdString = " (sessionId = " + sessionId + ")";
     if (appName == null) {
-      appName = SPARK_DEFAULT_APP_NAME;
+      if (sessionId == null) {
+        appName = SPARK_DEFAULT_APP_NAME;
+      } else {
+        appName = SPARK_DEFAULT_APP_NAME + sessionIdString;
+      }
+    } else {
+      appName = appName + sessionIdString;
     }
     sparkConf.put(appNameKey, appName);
     sparkConf.put("spark.serializer", SPARK_DEFAULT_SERIALIZER);

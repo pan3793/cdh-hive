@@ -133,6 +133,8 @@ import org.apache.hadoop.mapred.JobConf;
 
 public class Driver implements CommandProcessor {
 
+  public static final String MAPREDUCE_WORKFLOW_NODE_NAME = "mapreduce.workflow.node.name";
+
   static final private String CLASS_NAME = Driver.class.getName();
   static final private Log LOG = LogFactory.getLog(CLASS_NAME);
   static final private LogHelper console = new LogHelper(LOG);
@@ -2025,9 +2027,9 @@ public class Driver implements CommandProcessor {
     }
     if (tsk.isMapRedTask() && !(tsk instanceof ConditionalTask)) {
       if (noName) {
-        conf.setVar(HiveConf.ConfVars.HADOOPJOBNAME, jobname + "(" + tsk.getId() + ")");
+        conf.setVar(HiveConf.ConfVars.HADOOPJOBNAME, jobname + " (" + tsk.getId() + ")");
       }
-      conf.set("mapreduce.workflow.node.name", tsk.getId());
+      conf.set(MAPREDUCE_WORKFLOW_NODE_NAME, tsk.getId());
       Utilities.setWorkflowAdjacencies(conf, plan);
       cxt.incCurJobNo(1);
       console.printInfo("Launching Job " + cxt.getCurJobNo() + " out of " + jobs);
