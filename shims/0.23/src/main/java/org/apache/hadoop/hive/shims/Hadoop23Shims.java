@@ -1165,7 +1165,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
     }
 
     private EncryptionZone getEncryptionZoneForPath(Path path) throws IOException {
-      if (FileSystem.get(conf).exists(path)) {
+      if (path.getFileSystem(conf).exists(path)) {
         return hdfsAdmin.getEncryptionZoneForPath(path);
       } else if (!path.getParent().equals(path)) {
         return getEncryptionZoneForPath(path.getParent());
