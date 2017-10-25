@@ -312,7 +312,8 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTORE_TRY_DIRECT_SQL,
       HiveConf.ConfVars.METASTORE_TRY_DIRECT_SQL_DDL,
       HiveConf.ConfVars.METASTORE_CLIENT_SOCKET_TIMEOUT,
-      HiveConf.ConfVars.METASTORE_PARTITION_NAME_WHITELIST_PATTERN
+      HiveConf.ConfVars.METASTORE_PARTITION_NAME_WHITELIST_PATTERN,
+      HiveConf.ConfVars.METASTORE_DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES
   };
 
   static {
