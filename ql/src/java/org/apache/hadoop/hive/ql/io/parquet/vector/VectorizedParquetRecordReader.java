@@ -206,9 +206,29 @@ public class VectorizedParquetRecordReader extends ParquetRecordReaderBase
     }
     this.fileSchema = footer.getFileMetaData().getSchema();
 
+    MessageType tableSchema;
+    if (indexAccess) {
+      List<Integer> indexSequence = new ArrayList<>();
+
+      // Generates a sequence list of indexes
+      for(int i = 0; i < columnNamesList.size(); i++) {
+        indexSequence.add(i);
+      }
+
+      tableSchema = DataWritableReadSupport.getSchemaByIndex(fileSchema, columnNamesList,
+        indexSequence);
+    } else {
+      tableSchema = DataWritableReadSupport.getSchemaByName(fileSchema, columnNamesList,
+        columnTypesList);
+    }
+
     indexColumnsWanted = ColumnProjectionUtils.getReadColumnIDs(configuration);
-    requestedSchema = DataWritableReadSupport
-      .getRequestedSchema(indexAccess, columnNamesList, columnTypesList, fileSchema, configuration);
+    if (!ColumnProjectionUtils.isReadAllColumns(configuration) && !indexColumnsWanted.isEmpty()) {
+      requestedSchema =
+        DataWritableReadSupport.getSchemaByIndex(tableSchema, columnNamesList, indexColumnsWanted);
+    } else {
+      requestedSchema = fileSchema;
+    }
 
     this.reader = new ParquetFileReader(
       configuration, footer.getFileMetaData(), file, blocks, requestedSchema.getColumns());

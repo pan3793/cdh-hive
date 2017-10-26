@@ -227,79 +227,36 @@ public class DataWritableReadSupport extends ReadSupport<ArrayWritable> {
       String columnTypes = configuration.get(IOConstants.COLUMNS_TYPES);
       List<TypeInfo> columnTypesList = getColumnTypes(columnTypes);
 
-      MessageType tableSchema =
-        getRequestedSchemaForIndexAccess(indexAccess, columnNamesList, columnTypesList, fileSchema);
+      MessageType tableSchema;
+      if (indexAccess) {
+        List<Integer> indexSequence = new ArrayList<Integer>();
+
+        // Generates a sequence list of indexes
+        for(int i = 0; i < columnNamesList.size(); i++) {
+          indexSequence.add(i);
+        }
+
+        tableSchema = getSchemaByIndex(fileSchema, columnNamesList, indexSequence);
+      } else {
+
+        tableSchema = getSchemaByName(fileSchema, columnNamesList, columnTypesList);
+      }
 
       contextMetadata.put(HIVE_TABLE_AS_PARQUET_SCHEMA, tableSchema.toString());
       contextMetadata.put(PARQUET_COLUMN_INDEX_ACCESS, String.valueOf(indexAccess));
       this.hiveTypeInfo = TypeInfoFactory.getStructTypeInfo(columnNamesList, columnTypesList);
 
-      return new ReadContext(getRequestedPrunedSchema(columnNamesList, tableSchema, configuration),
-        contextMetadata);
+      List<Integer> indexColumnsWanted = ColumnProjectionUtils.getReadColumnIDs(configuration);
+      if (!ColumnProjectionUtils.isReadAllColumns(configuration) && !indexColumnsWanted.isEmpty()) {
+        MessageType requestedSchemaByUser =
+            getSchemaByIndex(tableSchema, columnNamesList, indexColumnsWanted);
+        return new ReadContext(requestedSchemaByUser, contextMetadata);
+      } else {
+        return new ReadContext(tableSchema, contextMetadata);
+      }
     } else {
       contextMetadata.put(HIVE_TABLE_AS_PARQUET_SCHEMA, fileSchema.toString());
       return new ReadContext(fileSchema, contextMetadata);
-    }
-  }
-
-  /**
-   * It's used for vectorized code path.
-   * @param indexAccess
-   * @param columnNamesList
-   * @param columnTypesList
-   * @param fileSchema
-   * @param configuration
-   * @return
-   */
-  public static MessageType getRequestedSchema(
-    boolean indexAccess,
-    List<String> columnNamesList,
-    List<TypeInfo> columnTypesList,
-    MessageType fileSchema,
-    Configuration configuration) {
-    MessageType tableSchema =
-      getRequestedSchemaForIndexAccess(indexAccess, columnNamesList, columnTypesList, fileSchema);
-
-    List<Integer> indexColumnsWanted = ColumnProjectionUtils.getReadColumnIDs(configuration);
-    //TODO Duplicated code for init method since vectorization reader path doesn't support Nested
-    // column pruning so far. See HIVE-15156
-    if (!ColumnProjectionUtils.isReadAllColumns(configuration) && !indexColumnsWanted.isEmpty()) {
-      return DataWritableReadSupport
-        .getSchemaByIndex(tableSchema, columnNamesList, indexColumnsWanted);
-    } else {
-      return fileSchema;
-    }
-  }
-
-  private static MessageType getRequestedSchemaForIndexAccess(
-    boolean indexAccess,
-    List<String> columnNamesList,
-    List<TypeInfo> columnTypesList,
-    MessageType fileSchema) {
-    if (indexAccess) {
-      List<Integer> indexSequence = new ArrayList<Integer>();
-
-      // Generates a sequence list of indexes
-      for (int i = 0; i < columnNamesList.size(); i++) {
-        indexSequence.add(i);
-      }
-
-      return getSchemaByIndex(fileSchema, columnNamesList, indexSequence);
-    } else {
-      return getSchemaByName(fileSchema, columnNamesList, columnTypesList);
-    }
-  }
-
-  private static MessageType getRequestedPrunedSchema(
-    List<String> columnNamesList,
-    MessageType fileSchema,
-    Configuration configuration) {
-    Set<String> groupPaths = ColumnProjectionUtils.getNestedColumnPaths(configuration);
-    List<Integer> indexColumnsWanted = ColumnProjectionUtils.getReadColumnIDs(configuration);
-    if (!ColumnProjectionUtils.isReadAllColumns(configuration) && !indexColumnsWanted.isEmpty()) {
-      return getProjectedSchema(fileSchema, columnNamesList, indexColumnsWanted, groupPaths);
-    } else {
-      return fileSchema;
     }
   }
 
