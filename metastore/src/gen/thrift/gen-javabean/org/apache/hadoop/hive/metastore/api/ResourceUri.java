@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ResourceUri implements org.apache.thrift.TBase<ResourceUri, ResourceUri._Fields>, java.io.Serializable, Cloneable {
+@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class ResourceUri implements org.apache.thrift.TBase<ResourceUri, ResourceUri._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ResourceUri");
 
   private static final org.apache.thrift.protocol.TField RESOURCE_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("resourceType", org.apache.thrift.protocol.TType.I32, (short)1);

@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class hive_metastoreConstants {
+@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class hive_metastoreConstants {
 
   public static final String DDL_TIME = "transient_lastDdlTime";
 

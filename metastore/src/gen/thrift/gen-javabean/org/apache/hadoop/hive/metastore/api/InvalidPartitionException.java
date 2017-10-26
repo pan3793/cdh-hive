@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InvalidPartitionException extends TException implements org.apache.thrift.TBase<InvalidPartitionException, InvalidPartitionException._Fields>, java.io.Serializable, Cloneable {
+@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class InvalidPartitionException extends TException implements org.apache.thrift.TBase<InvalidPartitionException, InvalidPartitionException._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("InvalidPartitionException");
 
   private static final org.apache.thrift.protocol.TField MESSAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("message", org.apache.thrift.protocol.TType.STRING, (short)1);

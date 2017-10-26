@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HiveObjectPrivilege implements org.apache.thrift.TBase<HiveObjectPrivilege, HiveObjectPrivilege._Fields>, java.io.Serializable, Cloneable {
+@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class HiveObjectPrivilege implements org.apache.thrift.TBase<HiveObjectPrivilege, HiveObjectPrivilege._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("HiveObjectPrivilege");
 
   private static final org.apache.thrift.protocol.TField HIVE_OBJECT_FIELD_DESC = new org.apache.thrift.protocol.TField("hiveObject", org.apache.thrift.protocol.TType.STRUCT, (short)1);

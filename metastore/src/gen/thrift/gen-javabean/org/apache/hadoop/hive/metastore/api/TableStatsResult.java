@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TableStatsResult implements org.apache.thrift.TBase<TableStatsResult, TableStatsResult._Fields>, java.io.Serializable, Cloneable {
+@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class TableStatsResult implements org.apache.thrift.TBase<TableStatsResult, TableStatsResult._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TableStatsResult");
 
   private static final org.apache.thrift.protocol.TField TABLE_STATS_FIELD_DESC = new org.apache.thrift.protocol.TField("tableStats", org.apache.thrift.protocol.TType.LIST, (short)1);

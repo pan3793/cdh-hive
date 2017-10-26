@@ -31,9 +31,9 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TCLIService {
+@org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public class TCLIService {
 
-  public interface Iface {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public interface Iface {
 
     public TOpenSessionResp OpenSession(TOpenSessionReq req) throws org.apache.thrift.TException;
 
@@ -75,7 +75,7 @@ public class TCLIService {
 
   }
 
-  public interface AsyncIface {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public interface AsyncIface {
 
     public void OpenSession(TOpenSessionReq req, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.OpenSession_call> resultHandler) throws org.apache.thrift.TException;
 
@@ -117,8 +117,8 @@ public class TCLIService {
 
   }
 
-  public static class Client extends org.apache.thrift.TServiceClient implements Iface {
-    public static class Factory implements org.apache.thrift.TServiceClientFactory<Client> {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class Client extends org.apache.thrift.TServiceClient implements Iface {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class Factory implements org.apache.thrift.TServiceClientFactory<Client> {
       public Factory() {}
       public Client getClient(org.apache.thrift.protocol.TProtocol prot) {
         return new Client(prot);
@@ -575,8 +575,8 @@ public class TCLIService {
     }
 
   }
-  public static class AsyncClient extends org.apache.thrift.async.TAsyncClient implements AsyncIface {
-    public static class Factory implements org.apache.thrift.async.TAsyncClientFactory<AsyncClient> {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class AsyncClient extends org.apache.thrift.async.TAsyncClient implements AsyncIface {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class Factory implements org.apache.thrift.async.TAsyncClientFactory<AsyncClient> {
       private org.apache.thrift.async.TAsyncClientManager clientManager;
       private org.apache.thrift.protocol.TProtocolFactory protocolFactory;
       public Factory(org.apache.thrift.async.TAsyncClientManager clientManager, org.apache.thrift.protocol.TProtocolFactory protocolFactory) {
@@ -599,7 +599,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class OpenSession_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class OpenSession_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TOpenSessionReq req;
       public OpenSession_call(TOpenSessionReq req, org.apache.thrift.async.AsyncMethodCallback<OpenSession_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -631,7 +631,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class CloseSession_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CloseSession_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TCloseSessionReq req;
       public CloseSession_call(TCloseSessionReq req, org.apache.thrift.async.AsyncMethodCallback<CloseSession_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -663,7 +663,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetInfo_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetInfo_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetInfoReq req;
       public GetInfo_call(TGetInfoReq req, org.apache.thrift.async.AsyncMethodCallback<GetInfo_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -695,7 +695,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class ExecuteStatement_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class ExecuteStatement_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TExecuteStatementReq req;
       public ExecuteStatement_call(TExecuteStatementReq req, org.apache.thrift.async.AsyncMethodCallback<ExecuteStatement_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -727,7 +727,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetTypeInfo_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTypeInfo_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetTypeInfoReq req;
       public GetTypeInfo_call(TGetTypeInfoReq req, org.apache.thrift.async.AsyncMethodCallback<GetTypeInfo_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -759,7 +759,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetCatalogs_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetCatalogs_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetCatalogsReq req;
       public GetCatalogs_call(TGetCatalogsReq req, org.apache.thrift.async.AsyncMethodCallback<GetCatalogs_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -791,7 +791,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetSchemas_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetSchemas_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetSchemasReq req;
       public GetSchemas_call(TGetSchemasReq req, org.apache.thrift.async.AsyncMethodCallback<GetSchemas_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -823,7 +823,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetTables_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTables_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetTablesReq req;
       public GetTables_call(TGetTablesReq req, org.apache.thrift.async.AsyncMethodCallback<GetTables_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -855,7 +855,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetTableTypes_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTableTypes_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetTableTypesReq req;
       public GetTableTypes_call(TGetTableTypesReq req, org.apache.thrift.async.AsyncMethodCallback<GetTableTypes_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -887,7 +887,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetColumns_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetColumns_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetColumnsReq req;
       public GetColumns_call(TGetColumnsReq req, org.apache.thrift.async.AsyncMethodCallback<GetColumns_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -919,7 +919,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetFunctions_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetFunctions_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetFunctionsReq req;
       public GetFunctions_call(TGetFunctionsReq req, org.apache.thrift.async.AsyncMethodCallback<GetFunctions_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -951,7 +951,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetOperationStatus_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetOperationStatus_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetOperationStatusReq req;
       public GetOperationStatus_call(TGetOperationStatusReq req, org.apache.thrift.async.AsyncMethodCallback<GetOperationStatus_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -983,7 +983,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class CancelOperation_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CancelOperation_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TCancelOperationReq req;
       public CancelOperation_call(TCancelOperationReq req, org.apache.thrift.async.AsyncMethodCallback<CancelOperation_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -1015,7 +1015,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class CloseOperation_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CloseOperation_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TCloseOperationReq req;
       public CloseOperation_call(TCloseOperationReq req, org.apache.thrift.async.AsyncMethodCallback<CloseOperation_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -1047,7 +1047,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetResultSetMetadata_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetResultSetMetadata_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetResultSetMetadataReq req;
       public GetResultSetMetadata_call(TGetResultSetMetadataReq req, org.apache.thrift.async.AsyncMethodCallback<GetResultSetMetadata_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -1079,7 +1079,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class FetchResults_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class FetchResults_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TFetchResultsReq req;
       public FetchResults_call(TFetchResultsReq req, org.apache.thrift.async.AsyncMethodCallback<FetchResults_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -1111,7 +1111,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class GetDelegationToken_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetDelegationToken_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TGetDelegationTokenReq req;
       public GetDelegationToken_call(TGetDelegationTokenReq req, org.apache.thrift.async.AsyncMethodCallback<GetDelegationToken_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -1143,7 +1143,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class CancelDelegationToken_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CancelDelegationToken_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TCancelDelegationTokenReq req;
       public CancelDelegationToken_call(TCancelDelegationTokenReq req, org.apache.thrift.async.AsyncMethodCallback<CancelDelegationToken_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -1175,7 +1175,7 @@ public class TCLIService {
       ___manager.call(method_call);
     }
 
-    public static class RenewDelegationToken_call extends org.apache.thrift.async.TAsyncMethodCall {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class RenewDelegationToken_call extends org.apache.thrift.async.TAsyncMethodCall {
       private TRenewDelegationTokenReq req;
       public RenewDelegationToken_call(TRenewDelegationTokenReq req, org.apache.thrift.async.AsyncMethodCallback<RenewDelegationToken_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
@@ -1202,7 +1202,7 @@ public class TCLIService {
 
   }
 
-  public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(Processor.class.getName());
     public Processor(I iface) {
       super(iface, getProcessMap(new HashMap<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
@@ -1235,7 +1235,7 @@ public class TCLIService {
       return processMap;
     }
 
-    public static class OpenSession<I extends Iface> extends org.apache.thrift.ProcessFunction<I, OpenSession_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class OpenSession<I extends Iface> extends org.apache.thrift.ProcessFunction<I, OpenSession_args> {
       public OpenSession() {
         super("OpenSession");
       }
@@ -1255,7 +1255,7 @@ public class TCLIService {
       }
     }
 
-    public static class CloseSession<I extends Iface> extends org.apache.thrift.ProcessFunction<I, CloseSession_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CloseSession<I extends Iface> extends org.apache.thrift.ProcessFunction<I, CloseSession_args> {
       public CloseSession() {
         super("CloseSession");
       }
@@ -1275,7 +1275,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetInfo_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetInfo_args> {
       public GetInfo() {
         super("GetInfo");
       }
@@ -1295,7 +1295,7 @@ public class TCLIService {
       }
     }
 
-    public static class ExecuteStatement<I extends Iface> extends org.apache.thrift.ProcessFunction<I, ExecuteStatement_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class ExecuteStatement<I extends Iface> extends org.apache.thrift.ProcessFunction<I, ExecuteStatement_args> {
       public ExecuteStatement() {
         super("ExecuteStatement");
       }
@@ -1315,7 +1315,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetTypeInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetTypeInfo_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTypeInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetTypeInfo_args> {
       public GetTypeInfo() {
         super("GetTypeInfo");
       }
@@ -1335,7 +1335,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetCatalogs<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetCatalogs_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetCatalogs<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetCatalogs_args> {
       public GetCatalogs() {
         super("GetCatalogs");
       }
@@ -1355,7 +1355,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetSchemas<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetSchemas_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetSchemas<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetSchemas_args> {
       public GetSchemas() {
         super("GetSchemas");
       }
@@ -1375,7 +1375,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetTables<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetTables_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTables<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetTables_args> {
       public GetTables() {
         super("GetTables");
       }
@@ -1395,7 +1395,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetTableTypes<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetTableTypes_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTableTypes<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetTableTypes_args> {
       public GetTableTypes() {
         super("GetTableTypes");
       }
@@ -1415,7 +1415,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetColumns<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetColumns_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetColumns<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetColumns_args> {
       public GetColumns() {
         super("GetColumns");
       }
@@ -1435,7 +1435,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetFunctions<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetFunctions_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetFunctions<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetFunctions_args> {
       public GetFunctions() {
         super("GetFunctions");
       }
@@ -1455,7 +1455,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetOperationStatus<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetOperationStatus_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetOperationStatus<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetOperationStatus_args> {
       public GetOperationStatus() {
         super("GetOperationStatus");
       }
@@ -1475,7 +1475,7 @@ public class TCLIService {
       }
     }
 
-    public static class CancelOperation<I extends Iface> extends org.apache.thrift.ProcessFunction<I, CancelOperation_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CancelOperation<I extends Iface> extends org.apache.thrift.ProcessFunction<I, CancelOperation_args> {
       public CancelOperation() {
         super("CancelOperation");
       }
@@ -1495,7 +1495,7 @@ public class TCLIService {
       }
     }
 
-    public static class CloseOperation<I extends Iface> extends org.apache.thrift.ProcessFunction<I, CloseOperation_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CloseOperation<I extends Iface> extends org.apache.thrift.ProcessFunction<I, CloseOperation_args> {
       public CloseOperation() {
         super("CloseOperation");
       }
@@ -1515,7 +1515,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetResultSetMetadata<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetResultSetMetadata_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetResultSetMetadata<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetResultSetMetadata_args> {
       public GetResultSetMetadata() {
         super("GetResultSetMetadata");
       }
@@ -1535,7 +1535,7 @@ public class TCLIService {
       }
     }
 
-    public static class FetchResults<I extends Iface> extends org.apache.thrift.ProcessFunction<I, FetchResults_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class FetchResults<I extends Iface> extends org.apache.thrift.ProcessFunction<I, FetchResults_args> {
       public FetchResults() {
         super("FetchResults");
       }
@@ -1555,7 +1555,7 @@ public class TCLIService {
       }
     }
 
-    public static class GetDelegationToken<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetDelegationToken_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetDelegationToken<I extends Iface> extends org.apache.thrift.ProcessFunction<I, GetDelegationToken_args> {
       public GetDelegationToken() {
         super("GetDelegationToken");
       }
@@ -1575,7 +1575,7 @@ public class TCLIService {
       }
     }
 
-    public static class CancelDelegationToken<I extends Iface> extends org.apache.thrift.ProcessFunction<I, CancelDelegationToken_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CancelDelegationToken<I extends Iface> extends org.apache.thrift.ProcessFunction<I, CancelDelegationToken_args> {
       public CancelDelegationToken() {
         super("CancelDelegationToken");
       }
@@ -1595,7 +1595,7 @@ public class TCLIService {
       }
     }
 
-    public static class RenewDelegationToken<I extends Iface> extends org.apache.thrift.ProcessFunction<I, RenewDelegationToken_args> {
+    @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class RenewDelegationToken<I extends Iface> extends org.apache.thrift.ProcessFunction<I, RenewDelegationToken_args> {
       public RenewDelegationToken() {
         super("RenewDelegationToken");
       }
@@ -1617,7 +1617,7 @@ public class TCLIService {
 
   }
 
-  public static class OpenSession_args implements org.apache.thrift.TBase<OpenSession_args, OpenSession_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class OpenSession_args implements org.apache.thrift.TBase<OpenSession_args, OpenSession_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("OpenSession_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -1980,7 +1980,7 @@ public class TCLIService {
 
   }
 
-  public static class OpenSession_result implements org.apache.thrift.TBase<OpenSession_result, OpenSession_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class OpenSession_result implements org.apache.thrift.TBase<OpenSession_result, OpenSession_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("OpenSession_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -2343,7 +2343,7 @@ public class TCLIService {
 
   }
 
-  public static class CloseSession_args implements org.apache.thrift.TBase<CloseSession_args, CloseSession_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CloseSession_args implements org.apache.thrift.TBase<CloseSession_args, CloseSession_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CloseSession_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -2706,7 +2706,7 @@ public class TCLIService {
 
   }
 
-  public static class CloseSession_result implements org.apache.thrift.TBase<CloseSession_result, CloseSession_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CloseSession_result implements org.apache.thrift.TBase<CloseSession_result, CloseSession_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CloseSession_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -3069,7 +3069,7 @@ public class TCLIService {
 
   }
 
-  public static class GetInfo_args implements org.apache.thrift.TBase<GetInfo_args, GetInfo_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetInfo_args implements org.apache.thrift.TBase<GetInfo_args, GetInfo_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetInfo_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -3432,7 +3432,7 @@ public class TCLIService {
 
   }
 
-  public static class GetInfo_result implements org.apache.thrift.TBase<GetInfo_result, GetInfo_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetInfo_result implements org.apache.thrift.TBase<GetInfo_result, GetInfo_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetInfo_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -3795,7 +3795,7 @@ public class TCLIService {
 
   }
 
-  public static class ExecuteStatement_args implements org.apache.thrift.TBase<ExecuteStatement_args, ExecuteStatement_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class ExecuteStatement_args implements org.apache.thrift.TBase<ExecuteStatement_args, ExecuteStatement_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ExecuteStatement_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -4158,7 +4158,7 @@ public class TCLIService {
 
   }
 
-  public static class ExecuteStatement_result implements org.apache.thrift.TBase<ExecuteStatement_result, ExecuteStatement_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class ExecuteStatement_result implements org.apache.thrift.TBase<ExecuteStatement_result, ExecuteStatement_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ExecuteStatement_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -4521,7 +4521,7 @@ public class TCLIService {
 
   }
 
-  public static class GetTypeInfo_args implements org.apache.thrift.TBase<GetTypeInfo_args, GetTypeInfo_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTypeInfo_args implements org.apache.thrift.TBase<GetTypeInfo_args, GetTypeInfo_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetTypeInfo_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -4884,7 +4884,7 @@ public class TCLIService {
 
   }
 
-  public static class GetTypeInfo_result implements org.apache.thrift.TBase<GetTypeInfo_result, GetTypeInfo_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTypeInfo_result implements org.apache.thrift.TBase<GetTypeInfo_result, GetTypeInfo_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetTypeInfo_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -5247,7 +5247,7 @@ public class TCLIService {
 
   }
 
-  public static class GetCatalogs_args implements org.apache.thrift.TBase<GetCatalogs_args, GetCatalogs_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetCatalogs_args implements org.apache.thrift.TBase<GetCatalogs_args, GetCatalogs_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetCatalogs_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -5610,7 +5610,7 @@ public class TCLIService {
 
   }
 
-  public static class GetCatalogs_result implements org.apache.thrift.TBase<GetCatalogs_result, GetCatalogs_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetCatalogs_result implements org.apache.thrift.TBase<GetCatalogs_result, GetCatalogs_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetCatalogs_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -5973,7 +5973,7 @@ public class TCLIService {
 
   }
 
-  public static class GetSchemas_args implements org.apache.thrift.TBase<GetSchemas_args, GetSchemas_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetSchemas_args implements org.apache.thrift.TBase<GetSchemas_args, GetSchemas_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetSchemas_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -6336,7 +6336,7 @@ public class TCLIService {
 
   }
 
-  public static class GetSchemas_result implements org.apache.thrift.TBase<GetSchemas_result, GetSchemas_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetSchemas_result implements org.apache.thrift.TBase<GetSchemas_result, GetSchemas_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetSchemas_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -6699,7 +6699,7 @@ public class TCLIService {
 
   }
 
-  public static class GetTables_args implements org.apache.thrift.TBase<GetTables_args, GetTables_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTables_args implements org.apache.thrift.TBase<GetTables_args, GetTables_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetTables_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -7062,7 +7062,7 @@ public class TCLIService {
 
   }
 
-  public static class GetTables_result implements org.apache.thrift.TBase<GetTables_result, GetTables_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTables_result implements org.apache.thrift.TBase<GetTables_result, GetTables_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetTables_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -7425,7 +7425,7 @@ public class TCLIService {
 
   }
 
-  public static class GetTableTypes_args implements org.apache.thrift.TBase<GetTableTypes_args, GetTableTypes_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTableTypes_args implements org.apache.thrift.TBase<GetTableTypes_args, GetTableTypes_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetTableTypes_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -7788,7 +7788,7 @@ public class TCLIService {
 
   }
 
-  public static class GetTableTypes_result implements org.apache.thrift.TBase<GetTableTypes_result, GetTableTypes_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetTableTypes_result implements org.apache.thrift.TBase<GetTableTypes_result, GetTableTypes_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetTableTypes_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -8151,7 +8151,7 @@ public class TCLIService {
 
   }
 
-  public static class GetColumns_args implements org.apache.thrift.TBase<GetColumns_args, GetColumns_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetColumns_args implements org.apache.thrift.TBase<GetColumns_args, GetColumns_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetColumns_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -8514,7 +8514,7 @@ public class TCLIService {
 
   }
 
-  public static class GetColumns_result implements org.apache.thrift.TBase<GetColumns_result, GetColumns_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetColumns_result implements org.apache.thrift.TBase<GetColumns_result, GetColumns_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetColumns_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -8877,7 +8877,7 @@ public class TCLIService {
 
   }
 
-  public static class GetFunctions_args implements org.apache.thrift.TBase<GetFunctions_args, GetFunctions_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetFunctions_args implements org.apache.thrift.TBase<GetFunctions_args, GetFunctions_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetFunctions_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -9240,7 +9240,7 @@ public class TCLIService {
 
   }
 
-  public static class GetFunctions_result implements org.apache.thrift.TBase<GetFunctions_result, GetFunctions_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetFunctions_result implements org.apache.thrift.TBase<GetFunctions_result, GetFunctions_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetFunctions_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -9603,7 +9603,7 @@ public class TCLIService {
 
   }
 
-  public static class GetOperationStatus_args implements org.apache.thrift.TBase<GetOperationStatus_args, GetOperationStatus_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetOperationStatus_args implements org.apache.thrift.TBase<GetOperationStatus_args, GetOperationStatus_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetOperationStatus_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -9966,7 +9966,7 @@ public class TCLIService {
 
   }
 
-  public static class GetOperationStatus_result implements org.apache.thrift.TBase<GetOperationStatus_result, GetOperationStatus_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetOperationStatus_result implements org.apache.thrift.TBase<GetOperationStatus_result, GetOperationStatus_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetOperationStatus_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -10329,7 +10329,7 @@ public class TCLIService {
 
   }
 
-  public static class CancelOperation_args implements org.apache.thrift.TBase<CancelOperation_args, CancelOperation_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CancelOperation_args implements org.apache.thrift.TBase<CancelOperation_args, CancelOperation_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CancelOperation_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -10692,7 +10692,7 @@ public class TCLIService {
 
   }
 
-  public static class CancelOperation_result implements org.apache.thrift.TBase<CancelOperation_result, CancelOperation_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CancelOperation_result implements org.apache.thrift.TBase<CancelOperation_result, CancelOperation_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CancelOperation_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -11055,7 +11055,7 @@ public class TCLIService {
 
   }
 
-  public static class CloseOperation_args implements org.apache.thrift.TBase<CloseOperation_args, CloseOperation_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CloseOperation_args implements org.apache.thrift.TBase<CloseOperation_args, CloseOperation_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CloseOperation_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -11418,7 +11418,7 @@ public class TCLIService {
 
   }
 
-  public static class CloseOperation_result implements org.apache.thrift.TBase<CloseOperation_result, CloseOperation_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CloseOperation_result implements org.apache.thrift.TBase<CloseOperation_result, CloseOperation_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CloseOperation_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -11781,7 +11781,7 @@ public class TCLIService {
 
   }
 
-  public static class GetResultSetMetadata_args implements org.apache.thrift.TBase<GetResultSetMetadata_args, GetResultSetMetadata_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetResultSetMetadata_args implements org.apache.thrift.TBase<GetResultSetMetadata_args, GetResultSetMetadata_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetResultSetMetadata_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -12144,7 +12144,7 @@ public class TCLIService {
 
   }
 
-  public static class GetResultSetMetadata_result implements org.apache.thrift.TBase<GetResultSetMetadata_result, GetResultSetMetadata_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetResultSetMetadata_result implements org.apache.thrift.TBase<GetResultSetMetadata_result, GetResultSetMetadata_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetResultSetMetadata_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -12507,7 +12507,7 @@ public class TCLIService {
 
   }
 
-  public static class FetchResults_args implements org.apache.thrift.TBase<FetchResults_args, FetchResults_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class FetchResults_args implements org.apache.thrift.TBase<FetchResults_args, FetchResults_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("FetchResults_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -12870,7 +12870,7 @@ public class TCLIService {
 
   }
 
-  public static class FetchResults_result implements org.apache.thrift.TBase<FetchResults_result, FetchResults_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class FetchResults_result implements org.apache.thrift.TBase<FetchResults_result, FetchResults_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("FetchResults_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -13233,7 +13233,7 @@ public class TCLIService {
 
   }
 
-  public static class GetDelegationToken_args implements org.apache.thrift.TBase<GetDelegationToken_args, GetDelegationToken_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetDelegationToken_args implements org.apache.thrift.TBase<GetDelegationToken_args, GetDelegationToken_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetDelegationToken_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -13596,7 +13596,7 @@ public class TCLIService {
 
   }
 
-  public static class GetDelegationToken_result implements org.apache.thrift.TBase<GetDelegationToken_result, GetDelegationToken_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class GetDelegationToken_result implements org.apache.thrift.TBase<GetDelegationToken_result, GetDelegationToken_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetDelegationToken_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -13959,7 +13959,7 @@ public class TCLIService {
 
   }
 
-  public static class CancelDelegationToken_args implements org.apache.thrift.TBase<CancelDelegationToken_args, CancelDelegationToken_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CancelDelegationToken_args implements org.apache.thrift.TBase<CancelDelegationToken_args, CancelDelegationToken_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CancelDelegationToken_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -14322,7 +14322,7 @@ public class TCLIService {
 
   }
 
-  public static class CancelDelegationToken_result implements org.apache.thrift.TBase<CancelDelegationToken_result, CancelDelegationToken_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class CancelDelegationToken_result implements org.apache.thrift.TBase<CancelDelegationToken_result, CancelDelegationToken_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CancelDelegationToken_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -14685,7 +14685,7 @@ public class TCLIService {
 
   }
 
-  public static class RenewDelegationToken_args implements org.apache.thrift.TBase<RenewDelegationToken_args, RenewDelegationToken_args._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class RenewDelegationToken_args implements org.apache.thrift.TBase<RenewDelegationToken_args, RenewDelegationToken_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("RenewDelegationToken_args");
 
     private static final org.apache.thrift.protocol.TField REQ_FIELD_DESC = new org.apache.thrift.protocol.TField("req", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -15048,7 +15048,7 @@ public class TCLIService {
 
   }
 
-  public static class RenewDelegationToken_result implements org.apache.thrift.TBase<RenewDelegationToken_result, RenewDelegationToken_result._Fields>, java.io.Serializable, Cloneable   {
+  @org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class RenewDelegationToken_result implements org.apache.thrift.TBase<RenewDelegationToken_result, RenewDelegationToken_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("RenewDelegationToken_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);

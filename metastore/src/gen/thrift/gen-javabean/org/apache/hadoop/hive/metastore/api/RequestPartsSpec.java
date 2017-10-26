@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RequestPartsSpec extends org.apache.thrift.TUnion<RequestPartsSpec, RequestPartsSpec._Fields> {
+@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class RequestPartsSpec extends org.apache.thrift.TUnion<RequestPartsSpec, RequestPartsSpec._Fields> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("RequestPartsSpec");
   private static final org.apache.thrift.protocol.TField NAMES_FIELD_DESC = new org.apache.thrift.protocol.TField("names", org.apache.thrift.protocol.TType.LIST, (short)1);
   private static final org.apache.thrift.protocol.TField EXPRS_FIELD_DESC = new org.apache.thrift.protocol.TField("exprs", org.apache.thrift.protocol.TType.LIST, (short)2);

@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ShowCompactResponse implements org.apache.thrift.TBase<ShowCompactResponse, ShowCompactResponse._Fields>, java.io.Serializable, Cloneable {
+@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class ShowCompactResponse implements org.apache.thrift.TBase<ShowCompactResponse, ShowCompactResponse._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ShowCompactResponse");
 
   private static final org.apache.thrift.protocol.TField COMPACTS_FIELD_DESC = new org.apache.thrift.protocol.TField("compacts", org.apache.thrift.protocol.TType.LIST, (short)1);

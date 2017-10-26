@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GrantRevokePrivilegeResponse implements org.apache.thrift.TBase<GrantRevokePrivilegeResponse, GrantRevokePrivilegeResponse._Fields>, java.io.Serializable, Cloneable {
+@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class GrantRevokePrivilegeResponse implements org.apache.thrift.TBase<GrantRevokePrivilegeResponse, GrantRevokePrivilegeResponse._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GrantRevokePrivilegeResponse");
 
   private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)1);

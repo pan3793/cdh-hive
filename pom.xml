@@ -35,6 +35,7 @@
     <module>accumulo-handler</module>
     <module>ant</module>
     <module>beeline</module>
+    <module>classification</module>
     <module>cli</module>
     <module>common</module>
     <module>contrib</module>
