@@ -7,7 +7,7 @@ set -ex
 
 ACTIONS="clean setup"
 AUTO_PAUSE="None"
-JAVA_VERSION="7"
+JAVA_VERSION="8"
 HDFS="basic"
 KERBEROS="NONE"
 SSL="false"
@@ -18,7 +18,7 @@ PARCELS="true"
 CLOUDCAT_PROVISION="true"
 DOMAIN="vpc.cloudera.com"
 CLOUDCAT_EXPIRATION_DAYS="1"
-JAVA7_BUILD=TRUE
+JAVA8_BUILD=TRUE
 if [ -z "$CLUSTER" ]
 then
   CLUSTER_SHORTNAME="hive-beeline-test-""${RANDOM}""-{1..4}"
@@ -113,7 +113,7 @@ done
 set +e
 echo "Restarting HIVE service"
 WAIT_TIME=300
-WAIT_TIME_DECREMENT=5
+WAIT_TIME_DECREMENT=25
 curl -X POST -u "admin:admin" -i http://${HIVESERVER2_NODE}:7180/api/v17/clusters/Cluster%201/services/HIVE-1/commands/restart
 sleep $WAIT_TIME_DECREMENT
 echo
