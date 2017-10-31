@@ -108,7 +108,7 @@ Table:              	partitioned1
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"COLUMN_STATS\":{\"a\":\"true\",\"b\":\"true\",\"c\":\"true\",\"d\":\"true\"},\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
 	numRows             	4                   
 	rawDataSize         	40                  
@@ -151,7 +151,7 @@ Table:              	partitioned1
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"COLUMN_STATS\":{\"a\":\"true\",\"b\":\"true\",\"c\":\"true\",\"d\":\"true\"},\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
 	numRows             	4                   
 	rawDataSize         	56                  
@@ -309,7 +309,7 @@ Table:              	partitioned1
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"COLUMN_STATS\":{\"a\":\"true\",\"b\":\"true\",\"c\":\"true\",\"d\":\"true\"},\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
 	numRows             	4                   
 	rawDataSize         	384                 
@@ -352,7 +352,7 @@ Table:              	partitioned1
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"COLUMN_STATS\":{\"a\":\"true\",\"b\":\"true\",\"c\":\"true\",\"d\":\"true\"},\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
 	numRows             	4                   
 	rawDataSize         	732                 

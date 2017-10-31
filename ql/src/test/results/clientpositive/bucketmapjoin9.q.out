@@ -148,6 +148,7 @@ STAGE PLANS:
                   partition values:
                     part 1
                   properties:
+                    COLUMN_STATS_ACCURATE true
                     bucket_count 3
                     bucket_field_name key
                     columns key,value
@@ -156,8 +157,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.srcbucket_mapjoin_part_2
                     numFiles 3
+                    numRows 0
                     partition_columns part
                     partition_columns.types string
+                    rawDataSize 0
                     serialization.ddl struct srcbucket_mapjoin_part_2 { i32 key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -243,6 +246,7 @@ STAGE PLANS:
             partition values:
               part 1
             properties:
+              COLUMN_STATS_ACCURATE true
               bucket_count 2
               bucket_field_name key
               columns key,value
@@ -251,8 +255,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
               name default.srcbucket_mapjoin_part_1
               numFiles 2
+              numRows 0
               partition_columns part
               partition_columns.types string
+              rawDataSize 0
               serialization.ddl struct srcbucket_mapjoin_part_1 { i32 key, string value}
               serialization.format 1
               serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -456,6 +462,7 @@ STAGE PLANS:
                   partition values:
                     part 1
                   properties:
+                    COLUMN_STATS_ACCURATE true
                     bucket_count 2
                     bucket_field_name value
                     columns key,value
@@ -464,8 +471,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
                     name default.srcbucket_mapjoin_part_2
                     numFiles 2
+                    numRows 0
                     partition_columns part
                     partition_columns.types string
+                    rawDataSize 0
                     serialization.ddl struct srcbucket_mapjoin_part_2 { i32 key, string value}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
@@ -551,6 +560,7 @@ STAGE PLANS:
             partition values:
               part 1
             properties:
+              COLUMN_STATS_ACCURATE true
               bucket_count 2
               bucket_field_name key
               columns key,value
@@ -559,8 +569,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
               name default.srcbucket_mapjoin_part_1
               numFiles 2
+              numRows 0
               partition_columns part
               partition_columns.types string
+              rawDataSize 0
               serialization.ddl struct srcbucket_mapjoin_part_1 { i32 key, string value}
               serialization.format 1
               serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe

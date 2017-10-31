@@ -185,7 +185,7 @@ STAGE PLANS:
             partition values:
               value 2010-04-21 09:45:00
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key
               columns.comments 
@@ -230,7 +230,7 @@ STAGE PLANS:
             partition values:
               value val_0
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key
               columns.comments 
@@ -275,7 +275,7 @@ STAGE PLANS:
             partition values:
               value val_2
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key
               columns.comments 
@@ -320,7 +320,7 @@ STAGE PLANS:
             partition values:
               value val_4
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key
               columns.comments 
@@ -365,7 +365,7 @@ STAGE PLANS:
             partition values:
               value val_5
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key
               columns.comments 
@@ -410,7 +410,7 @@ STAGE PLANS:
             partition values:
               value val_8
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key
               columns.comments 
@@ -455,7 +455,7 @@ STAGE PLANS:
             partition values:
               value val_9
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key
               columns.comments 
@@ -500,7 +500,7 @@ STAGE PLANS:
             partition values:
               value |
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key
               columns.comments 

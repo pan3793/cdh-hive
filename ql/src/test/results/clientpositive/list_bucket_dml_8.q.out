@@ -123,7 +123,7 @@ STAGE PLANS:
               ds 2008-04-08
               hr 11
             properties:
-              COLUMN_STATS_ACCURATE {"COLUMN_STATS":{"key":"true","value":"true"},"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key,value
               columns.comments 'default','default'
@@ -169,7 +169,7 @@ STAGE PLANS:
               ds 2008-04-08
               hr 12
             properties:
-              COLUMN_STATS_ACCURATE {"COLUMN_STATS":{"key":"true","value":"true"},"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key,value
               columns.comments 'default','default'
@@ -293,7 +293,7 @@ Table:              	list_bucketing_dynamic_part
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	2                   
 	numRows             	16                  
 	rawDataSize         	136                 
@@ -338,7 +338,7 @@ Table:              	list_bucketing_dynamic_part
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	6                   
 	numRows             	984                 
 	rawDataSize         	9488                
@@ -393,7 +393,10 @@ Table:              	list_bucketing_dynamic_part
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	3                   
+	numRows             	0                   
+	rawDataSize         	0                   
 	totalSize           	10586               
 #### A masked pattern was here ####
 	 	 
@@ -485,7 +488,7 @@ STAGE PLANS:
               ds 2008-04-08
               hr a1
             properties:
-              COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key,value
               columns.comments 
@@ -529,6 +532,7 @@ STAGE PLANS:
               ds 2008-04-08
               hr b1
             properties:
+              COLUMN_STATS_ACCURATE true
               bucket_count -1
               columns key,value
               columns.comments 
@@ -536,8 +540,10 @@ STAGE PLANS:
 #### A masked pattern was here ####
               name default.list_bucketing_dynamic_part
               numFiles 3
+              numRows 0
               partition_columns ds/hr
               partition_columns.types string:string
+              rawDataSize 0
               serialization.ddl struct list_bucketing_dynamic_part { string key, string value}
               serialization.format 1
               serialization.lib org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe

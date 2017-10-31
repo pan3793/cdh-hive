@@ -95,8 +95,10 @@ Table:              	analyze_srcpart
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
+	numRows             	-1                  
+	rawDataSize         	-1                  
 	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
@@ -135,8 +137,10 @@ Table:              	analyze_srcpart
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
+	numRows             	-1                  
+	rawDataSize         	-1                  
 	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
@@ -175,7 +179,10 @@ Table:              	analyze_srcpart
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	COLUMN_STATS_ACCURATE	false               
 	numFiles            	1                   
+	numRows             	-1                  
+	rawDataSize         	-1                  
 	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
@@ -214,7 +221,10 @@ Table:              	analyze_srcpart
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	COLUMN_STATS_ACCURATE	false               
 	numFiles            	1                   
+	numRows             	-1                  
+	rawDataSize         	-1                  
 	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
@@ -363,8 +373,10 @@ Table:              	analyze_srcpart_partial
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
+	numRows             	-1                  
+	rawDataSize         	-1                  
 	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
@@ -403,8 +415,10 @@ Table:              	analyze_srcpart_partial
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
+	numRows             	-1                  
+	rawDataSize         	-1                  
 	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
@@ -443,7 +457,10 @@ Table:              	analyze_srcpart_partial
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	COLUMN_STATS_ACCURATE	false               
 	numFiles            	1                   
+	numRows             	-1                  
+	rawDataSize         	-1                  
 	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 
@@ -482,7 +499,10 @@ Table:              	analyze_srcpart_partial
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	COLUMN_STATS_ACCURATE	false               
 	numFiles            	1                   
+	numRows             	-1                  
+	rawDataSize         	-1                  
 	totalSize           	5812                
 #### A masked pattern was here ####
 	 	 

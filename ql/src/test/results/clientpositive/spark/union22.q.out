@@ -258,7 +258,7 @@ STAGE PLANS:
                   partition values:
                     ds 1
                   properties:
-                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+                    COLUMN_STATS_ACCURATE true
                     bucket_count -1
                     columns k0,k1,k2,k3,k4,k5
                     columns.comments 
@@ -356,7 +356,7 @@ STAGE PLANS:
                   partition values:
                     ds 1
                   properties:
-                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+                    COLUMN_STATS_ACCURATE true
                     bucket_count -1
                     columns k0,k1,k2,k3,k4,k5
                     columns.comments 
@@ -467,7 +467,7 @@ STAGE PLANS:
                   partition values:
                     ds 1
                   properties:
-                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+                    COLUMN_STATS_ACCURATE true
                     bucket_count -1
                     columns k1,k2,k3,k4
                     columns.comments 

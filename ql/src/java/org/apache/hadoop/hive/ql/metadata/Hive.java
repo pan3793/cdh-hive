@@ -533,7 +533,7 @@ public class Hive {
     tbl.setNumBuckets(bucketCount);
     tbl.setBucketCols(bucketCols);
     if (parameters != null) {
-      tbl.setParameters(parameters);
+      tbl.setParamters(parameters);
     }
     createTable(tbl);
   }
@@ -1477,8 +1477,6 @@ public class Hive {
       boolean forceCreate = (!holdDDLTime) ? true : false;
       newTPart = getPartition(tbl, partSpec, forceCreate, newPartPath.toString(),
           inheritTableSpecs, newFiles);
-      //column stats will be inaccurate
-      StatsSetupConst.clearColumnStatsState(newTPart.getParameters());
 
       // recreate the partition if it existed before
       if (!holdDDLTime) {
@@ -1500,9 +1498,9 @@ public class Hive {
           return new Partition(tbl, newCreatedTpart);
         }
         if(!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
-          StatsSetupConst.setBasicStatsState(newTPart.getParameters(), StatsSetupConst.FALSE);
+          newTPart.getParameters().put(StatsSetupConst.COLUMN_STATS_ACCURATE, "false");
+          alterPartition(tbl.getDbName(), tbl.getTableName(), new Partition(tbl, newTPart.getTPartition()));
         }
-        alterPartition(tbl.getDbName(), tbl.getTableName(), new Partition(tbl, newTPart.getTPartition()));
       }
     } catch (IOException e) {
       LOG.error(StringUtils.stringifyException(e));
@@ -1651,7 +1649,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @param isAcid true if this is an ACID operation
    * @return partition map details (PartitionSpec and Partition)
    * @throws HiveException
-   * @throws JSONException 
+   * @throws JSONException
    */
   public Map<Map<String, String>, Partition> loadDynamicPartitions(Path loadPath,
       String tableName, Map<String, String> partSpec, final boolean replace,
@@ -1771,13 +1769,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
       }
     }
     if(!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
-      StatsSetupConst.setBasicStatsState(tbl.getParameters(), StatsSetupConst.FALSE);
+      tbl.getParameters().put(StatsSetupConst.COLUMN_STATS_ACCURATE, "false");
     }  else {
       tbl.getParameters().put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK, "true");
     }
-
-    //column stats will be inaccurate
-    StatsSetupConst.clearColumnStatsState(tbl.getParameters());
 
     try {
       if (isSkewedStoreAsSubdir) {
@@ -2048,6 +2043,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
       throw new HiveException("new partition path should not be null or empty.");
     }
     tpart.getSd().setLocation(partPath);
+    tpart.getParameters().put(StatsSetupConst.STATS_GENERATED_VIA_STATS_TASK,"true");
     String fullName = tbl.getTableName();
     if (!org.apache.commons.lang.StringUtils.isEmpty(tbl.getDbName())) {
       fullName = tbl.getDbName() + "." + tbl.getTableName();

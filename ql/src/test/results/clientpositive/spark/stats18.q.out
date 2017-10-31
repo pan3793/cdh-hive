@@ -41,7 +41,7 @@ Table:              	stats_part
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	1                   
 	numRows             	500                 
 	rawDataSize         	5312                
@@ -91,7 +91,10 @@ Table:              	stats_part
 Protect Mode:       	None                	 
 #### A masked pattern was here ####
 Partition Parameters:	 	 
+	COLUMN_STATS_ACCURATE	true                
 	numFiles            	2                   
+	numRows             	0                   
+	rawDataSize         	0                   
 	totalSize           	7170                
 #### A masked pattern was here ####
 	 	 
