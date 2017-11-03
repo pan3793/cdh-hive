@@ -38,7 +38,7 @@
 
   <property>
     <name>hive.blobstore.optimizations.enabled</name>
-    <value>true</value>
+    <value>false</value>
   </property>
 
   <!-- Hive Configuration can either be stored in this file or in the hadoop configuration files  -->
