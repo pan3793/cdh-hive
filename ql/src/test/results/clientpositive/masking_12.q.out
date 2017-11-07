@@ -36,6 +36,8 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: masking_test
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: (((key % 2) = 0) and (key < 10)) (type: boolean)
@@ -114,9 +116,11 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: masking_test_subq
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
-              predicate: UDFToDouble(key) is not null (type: boolean)
+              predicate: key is not null (type: boolean)
               Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
               Select Operator
                 expressions: key (type: int), value (type: string), UDFToDouble(key) (type: double), UDFToDouble(key) (type: double)
@@ -132,7 +136,7 @@ STAGE PLANS:
             alias: src
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
-              predicate: UDFToDouble(key) is not null (type: boolean)
+              predicate: key is not null (type: boolean)
               Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
               Select Operator
                 expressions: UDFToDouble(key) (type: double), UDFToDouble(key) (type: double)
@@ -236,6 +240,8 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: masking_test
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: (((key % 2) = 0) and (key < 10) and (key > 6)) (type: boolean)
@@ -287,6 +293,8 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: masking_test
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: (((key % 2) = 0) and (key < 10)) (type: boolean)
@@ -303,6 +311,8 @@ STAGE PLANS:
                   value expressions: _col1 (type: string)
           TableScan
             alias: masking_test
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: (((key % 2) = 0) and (key < 10) and (key > 6) and ((UDFToInteger((UDFToDouble(key) / 2.0)) % 2) = 0) and (UDFToInteger((UDFToDouble(key) / 2.0)) < 10)) (type: boolean)
