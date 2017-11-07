@@ -519,7 +519,12 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile.toFile()))) {
           bw.write(json);
         }
-        Files.move(tmpFile, path, StandardCopyOption.REPLACE_EXISTING);
+        try {
+          Files.move(tmpFile, path, StandardCopyOption.ATOMIC_MOVE);
+        } catch (Exception e) {
+          LOGGER.error("Unable to rename temp file {} to {}", tmpFile, path);
+          LOGGER.error("Exception during rename", e);
+        }
       } catch (Exception e) {
         LOGGER.warn("Error writing JSON Metrics to file", e);
       } finally {
