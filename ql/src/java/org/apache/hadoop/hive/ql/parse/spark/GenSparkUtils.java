@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -447,17 +448,28 @@ public class GenSparkUtils {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T> T getChildOperator(Operator<?> op, Class<T> klazz) throws SemanticException {
-    if (klazz.isInstance(op)) {
-      return (T) op;
-    }
-    List<Operator<?>> childOperators = op.getChildOperators();
-    for (Operator<?> childOp : childOperators) {
-      T result = getChildOperator(childOp, klazz);
-      if (result != null) {
-        return result;
+  public static <T> T getChildOperator(Operator<?> root, Class<T> klazz) throws SemanticException {
+    if (root == null) return null;
+
+    HashSet<Operator<?>> visited = new HashSet<Operator<?>>();
+    Stack<Operator<?>> stack = new Stack<Operator<?>>();
+    stack.push(root);
+    visited.add(root);
+
+    while (!stack.isEmpty()) {
+      Operator<?> op = stack.pop();
+      if (klazz.isInstance(op)) {
+        return (T) op;
+      }
+      List<Operator<?>> childOperators = op.getChildOperators();
+      for (Operator<?> childOp : childOperators) {
+        if (!visited.contains(childOp)) {
+          stack.push(childOp);
+          visited.add(childOp);
+        }
       }
     }
+
     return null;
   }
 
