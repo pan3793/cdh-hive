@@ -46,7 +46,7 @@ STAGE PLANS:
         Map 4 
             Map Operator Tree:
                 TableScan
-                  alias: v3
+                  alias: v1
                   Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
                     predicate: csmallint is not null (type: boolean)
@@ -80,7 +80,7 @@ STAGE PLANS:
         Map 1 
             Map Operator Tree:
                 TableScan
-                  alias: v2
+                  alias: v1
                   Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                   Filter Operator
                     predicate: ctinyint is not null (type: boolean)
