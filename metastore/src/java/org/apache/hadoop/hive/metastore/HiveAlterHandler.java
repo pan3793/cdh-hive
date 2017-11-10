@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -237,23 +238,36 @@ public class HiveAlterHandler implements AlterHandler {
 
         // also the location field in partition
         List<Partition> parts = msdb.getPartitions(dbname, name, -1);
-        for (Partition part : parts) {
-          String oldPartLoc = part.getSd().getLocation();
-          if (oldPartLoc.contains(oldTblLocPath)) {
-            URI oldUri = new Path(oldPartLoc).toUri();
-            String newPath = oldUri.getPath().replace(oldTblLocPath, newTblLocPath);
-            Path newPartLocPath = new Path(oldUri.getScheme(), oldUri.getAuthority(), newPath);
-            altps.add(ObjectPair.create(part, part.getSd().getLocation()));
-            part.getSd().setLocation(newPartLocPath.toString());
-            String oldPartName = Warehouse.makePartName(oldt.getPartitionKeys(), part.getValues());
-            try {
-              //existing partition column stats is no longer valid, remove them
-              msdb.deletePartitionColumnStatistics(dbname, name, oldPartName, part.getValues(), null);
-            } catch (InvalidInputException iie) {
-              throw new InvalidOperationException("Unable to update partition stats in table rename." + iie);
+        int partsToProcess = parts.size();
+        int partitionBatchSize = HiveConf.getIntVar(hiveConf,
+                HiveConf.ConfVars.METASTORE_BATCH_RETRIEVE_MAX);
+        int batchStart = 0;
+        while (partsToProcess > 0) {
+          int batchEnd = Math.min(batchStart + partitionBatchSize, parts.size());
+          List<Partition> partBatch = parts.subList(batchStart, batchEnd);
+          partsToProcess -= partBatch.size();
+          batchStart += partBatch.size();
+          List<List<String>> partValues = new LinkedList<>();
+
+          for (Partition part : partBatch) {
+            String oldPartLoc = part.getSd().getLocation();
+            if (oldPartLoc.contains(oldTblLocPath)) {
+              URI oldUri = new Path(oldPartLoc).toUri();
+              String newPath = oldUri.getPath().replace(oldTblLocPath, newTblLocPath);
+              Path newPartLocPath = new Path(oldUri.getScheme(), oldUri.getAuthority(), newPath);
+              altps.add(ObjectPair.create(part, part.getSd().getLocation()));
+              part.getSd().setLocation(newPartLocPath.toString());
+              String oldPartName = Warehouse.makePartName(oldt.getPartitionKeys(), part.getValues());
+              try {
+                //existing partition column stats is no longer valid, remove them
+                msdb.deletePartitionColumnStatistics(dbname, name, oldPartName, part.getValues(), null);
+              } catch (InvalidInputException iie) {
+                throw new InvalidOperationException("Unable to update partition stats in table rename." + iie);
+              }
+              partValues.add(part.getValues());
             }
-            msdb.alterPartition(dbname, name, part.getValues(), part);
           }
+          msdb.alterPartitions(dbname, name, partValues, partBatch);
         }
       } else if (MetaStoreUtils.requireCalStats(handler.getConf(), null, null, newt, environmentContext) &&
         (newt.getPartitionKeysSize() == 0)) {
