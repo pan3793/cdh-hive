@@ -208,21 +208,21 @@ STAGE PLANS:
                     Statistics: Num rows: 95831279 Data size: 8454263257 Basic stats: COMPLETE Column stats: NONE
                     Group By Operator
                       aggregations: sum(COALESCE((_col13 * _col10),0))
-                      keys: _col101 (type: string), _col99 (type: string), _col97 (type: string), _col110 (type: string), _col32 (type: int), _col36 (type: int), _col34 (type: int), _col58 (type: string), '0' (type: string)
+                      keys: _col101 (type: string), _col99 (type: string), _col97 (type: string), _col110 (type: string), _col32 (type: int), _col36 (type: int), _col34 (type: int), _col58 (type: string), 0 (type: int)
                       mode: hash
                       outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6, _col7, _col8, _col9
                       Statistics: Num rows: 862481511 Data size: 76088369313 Basic stats: COMPLETE Column stats: NONE
                       Reduce Output Operator
-                        key expressions: _col0 (type: string), _col1 (type: string), _col2 (type: string), _col3 (type: string), _col4 (type: int), _col5 (type: int), _col6 (type: int), _col7 (type: string), _col8 (type: string)
+                        key expressions: _col0 (type: string), _col1 (type: string), _col2 (type: string), _col3 (type: string), _col4 (type: int), _col5 (type: int), _col6 (type: int), _col7 (type: string), _col8 (type: int)
                         sort order: +++++++++
-                        Map-reduce partition columns: _col0 (type: string), _col1 (type: string), _col2 (type: string), _col3 (type: string), _col4 (type: int), _col5 (type: int), _col6 (type: int), _col7 (type: string), _col8 (type: string)
+                        Map-reduce partition columns: _col0 (type: string), _col1 (type: string), _col2 (type: string), _col3 (type: string), _col4 (type: int), _col5 (type: int), _col6 (type: int), _col7 (type: string), _col8 (type: int)
                         Statistics: Num rows: 862481511 Data size: 76088369313 Basic stats: COMPLETE Column stats: NONE
                         value expressions: _col9 (type: decimal(28,2))
         Reducer 4 
             Reduce Operator Tree:
               Group By Operator
                 aggregations: sum(VALUE._col0)
-                keys: KEY._col0 (type: string), KEY._col1 (type: string), KEY._col2 (type: string), KEY._col3 (type: string), KEY._col4 (type: int), KEY._col5 (type: int), KEY._col6 (type: int), KEY._col7 (type: string), KEY._col8 (type: string)
+                keys: KEY._col0 (type: string), KEY._col1 (type: string), KEY._col2 (type: string), KEY._col3 (type: string), KEY._col4 (type: int), KEY._col5 (type: int), KEY._col6 (type: int), KEY._col7 (type: string), KEY._col8 (type: int)
                 mode: mergepartial
                 outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6, _col7, _col9
                 Statistics: Num rows: 431240755 Data size: 38044184612 Basic stats: COMPLETE Column stats: NONE
