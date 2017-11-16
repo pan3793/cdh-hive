@@ -9,10 +9,8 @@ select  i_product_name
        from inventory
            ,date_dim
            ,item
-           ,warehouse
        where inv_date_sk=d_date_sk
               and inv_item_sk=i_item_sk
-              and inv_warehouse_sk = w_warehouse_sk
               and d_month_seq between 1212 and 1212 + 11
        group by rollup(i_product_name
                        ,i_brand
@@ -22,3 +20,4 @@ order by qoh, i_product_name, i_brand, i_class, i_category
 limit 100;
 
 -- end query 1 in stream 0 using template query22.tpl
+-- this is an unmodified TPC-DS query

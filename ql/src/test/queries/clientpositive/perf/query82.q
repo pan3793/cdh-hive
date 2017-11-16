@@ -17,3 +17,4 @@ select  i_item_id
  limit 100;
 
 -- end query 1 in stream 0 using template query82.tpl
+-- this is an unmodified TPC-DS query
