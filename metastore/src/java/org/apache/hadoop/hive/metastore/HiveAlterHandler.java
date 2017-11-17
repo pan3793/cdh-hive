@@ -67,6 +67,10 @@ public class HiveAlterHandler implements AlterHandler {
   private static final Logger LOG = LoggerFactory.getLogger(HiveAlterHandler.class
       .getName());
 
+  // hiveConf, getConf and setConf are in this class because AlterHandler extends Configurable.
+  // Always use the configuration from HMS Handler.  Making AlterHandler not extend Configurable
+  // is not in the scope of the fix for HIVE-17942.
+
   @Override
   public Configuration getConf() {
     return hiveConf;
@@ -97,7 +101,7 @@ public class HiveAlterHandler implements AlterHandler {
       throw new InvalidOperationException("New table is invalid: " + newt);
     }
 
-    if (!MetaStoreUtils.validateName(newt.getTableName(), hiveConf)) {
+    if (!MetaStoreUtils.validateName(newt.getTableName(), handler.getConf())) {
       throw new InvalidOperationException(newt.getTableName()
           + " is not a valid object name");
     }
@@ -146,7 +150,7 @@ public class HiveAlterHandler implements AlterHandler {
       // can be altered to change the column types.  The column type compatibility checks should
       // be done only for non-views.
       if (HiveConf
-          .getBoolVar(hiveConf, HiveConf.ConfVars.METASTORE_DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES,
+          .getBoolVar(handler.getConf(), HiveConf.ConfVars.METASTORE_DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES,
               false) && !oldt.getTableType().equals(TableType.VIRTUAL_VIEW.toString())) {
         // Throws InvalidOperationException if the new column types are not
         // compatible with the current column types.
@@ -251,7 +255,7 @@ public class HiveAlterHandler implements AlterHandler {
             msdb.alterPartition(dbname, name, part.getValues(), part);
           }
         }
-      } else if (MetaStoreUtils.requireCalStats(hiveConf, null, null, newt, environmentContext) &&
+      } else if (MetaStoreUtils.requireCalStats(handler.getConf(), null, null, newt, environmentContext) &&
         (newt.getPartitionKeysSize() == 0)) {
           Database db = msdb.getDatabase(newt.getDbName());
           // Update table stats. For partitioned table, we update stats in
@@ -390,7 +394,7 @@ public class HiveAlterHandler implements AlterHandler {
       try {
         msdb.openTransaction();
         oldPart = msdb.getPartition(dbname, name, new_part.getValues());
-        if (MetaStoreUtils.requireCalStats(hiveConf, oldPart, new_part, tbl, environmentContext)) {
+        if (MetaStoreUtils.requireCalStats(handler.getConf(), oldPart, new_part, tbl, environmentContext)) {
           MetaStoreUtils.updatePartitionStatsFast(new_part, wh, false, true, environmentContext);
         }
 
@@ -496,7 +500,7 @@ public class HiveAlterHandler implements AlterHandler {
           }
 
           new_part.getSd().setLocation(newPartLoc);
-          if (MetaStoreUtils.requireCalStats(hiveConf, oldPart, new_part, tbl, environmentContext)) {
+          if (MetaStoreUtils.requireCalStats(handler.getConf(), oldPart, new_part, tbl, environmentContext)) {
             MetaStoreUtils.updatePartitionStatsFast(new_part, wh, false, true, environmentContext);
           }
 
@@ -614,7 +618,7 @@ public class HiveAlterHandler implements AlterHandler {
         oldParts.add(oldTmpPart);
         partValsList.add(tmpPart.getValues());
 
-        if (MetaStoreUtils.requireCalStats(hiveConf, oldTmpPart, tmpPart, tbl, environmentContext)) {
+        if (MetaStoreUtils.requireCalStats(handler.getConf(), oldTmpPart, tmpPart, tbl, environmentContext)) {
           MetaStoreUtils.updatePartitionStatsFast(tmpPart, wh, false, true, environmentContext);
         }
         updatePartColumnStats(msdb, dbname, name, oldTmpPart.getValues(), tmpPart);
