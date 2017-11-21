@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.hive</groupId>
     <artifactId>hive-it-custom-udfs</artifactId>
-    <version>1.1.0-cdh5.12.2-SNAPSHOT</version>
+    <version>1.1.0-cdh5.12.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
