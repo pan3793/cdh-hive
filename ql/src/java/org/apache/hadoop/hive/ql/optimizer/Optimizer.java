@@ -228,6 +228,11 @@ public class Optimizer {
     if (HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.HIVEFETCHTASKAGGR)) {
       transformations.add(new SimpleFetchAggregation());
     }
+
+    if (HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.HIVE_OPTIMIZE_TABLE_PROPERTIES_FROM_SERDE)) {
+      transformations.add(new TablePropertyEnrichmentOptimizer());
+    }
+
   }
 
   /**
