@@ -61,6 +61,8 @@ import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hive.jdbc.miniHS2.MiniHS2;
+import org.apache.hive.service.cli.HiveSQLException;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -487,6 +489,17 @@ public class TestJdbcWithMiniHS2 {
     while (res.next()) {
       String resultValues[] = res.getString(1).split("=");
       assertEquals(resultValues[1], expectedValue);
+    }
+  }
+
+  // Test that jdbc does not allow shell commands starting with "!".
+  @Test
+  public void testBangCommand() throws Exception {
+    try (Statement stmt = conTestDb.createStatement()) {
+      stmt.execute("!ls --l");
+      fail("statement should fail, allowing this would be bad security");
+    } catch (HiveSQLException e) {
+      assertTrue(e.getMessage().contains("cannot recognize input near '!'"));
     }
   }
 
