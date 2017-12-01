@@ -65,7 +65,9 @@ public class HiveVarcharWritable extends HiveBaseCharWritable
 
   public void enforceMaxLength(int maxLength) {
     // Might be possible to truncate the existing Text value, for now just do something simple.
-    set(getHiveVarchar(), maxLength);
+    if (getCharacterLength() > maxLength) {
+      set(value.toString(), maxLength);
+    }
   }
 
   @Override
