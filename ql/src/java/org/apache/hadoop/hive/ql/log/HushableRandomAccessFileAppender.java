@@ -176,7 +176,8 @@ public final class HushableRandomAccessFileAppender extends
       layout = PatternLayout.createDefaultLayout();
     }
     final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-        fileName, isAppend, isFlush, bufferSize, advertiseURI, layout, config);
+        fileName, isAppend, isFlush, bufferSize, advertiseURI, layout, config
+    );
     if (manager == null) {
       return null;
     }
