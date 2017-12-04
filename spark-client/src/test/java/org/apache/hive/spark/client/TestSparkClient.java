@@ -280,6 +280,9 @@ public class TestSparkClient {
         client.stop();
       }
       SparkClientFactory.stop();
+      // Wait for the RemoteDriver and remote JavaSparkContext to shutdown, without re-factoring the code there is no
+      // way to check when they are both shutdown, so we just trying sleeping for a few seconds instead.
+      Thread.sleep(5000);
     }
   }
 
