@@ -6,8 +6,8 @@ POSTHOOK: query: create table t1 (c1 int)
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
 POSTHOOK: Output: default@t1
-hive.metastore.disallow.incompatible.col.type.changes=true
-metaconf:hive.metastore.disallow.incompatible.col.type.changes=true
+hive.metastore.disallow.incompatible.col.type.changes=false
+metaconf:hive.metastore.disallow.incompatible.col.type.changes=false
 hive.metastore.disallow.incompatible.col.type.changes=false
 metaconf:hive.metastore.disallow.incompatible.col.type.changes=true
 PREHOOK: query: alter table t1 change column c1 c1 smallint

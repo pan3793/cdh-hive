@@ -4,6 +4,9 @@ SET hive.exec.schema.evolution=true;
 -- TypeIntoUtils.implicitConvertible conversions.
 create table src_orc (key smallint, val string) stored as orc;
 desc src_orc;
+
+set metaconf:hive.metastore.disallow.incompatible.col.type.changes=true;
+
 alter table src_orc change key key smallint;
 desc src_orc;
 alter table src_orc change key key int;
