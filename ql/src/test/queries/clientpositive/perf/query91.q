@@ -28,6 +28,9 @@ and     ( (cd_marital_status       = 'M' and cd_education_status     = 'Unknown'
 and     hd_buy_potential like '0-500%'
 and     ca_gmt_offset           = -7
 group by cc_call_center_id,cc_name,cc_manager,cd_marital_status,cd_education_status
-order by sum(cr_net_loss) desc;
+order by Returns_Loss desc;
 
 -- end query 1 in stream 0 using template query91.tpl
+-- this query has been modified so that it is ordered by Returns_Loss intead of sum(cr_net_loss); functionally, the
+-- query is exactlyt the same; this is necessary because CDH Hive  does not support ordering by unselected columns;
+-- upstream Hive has this feature (HIVE-15160), but it is CBO specific

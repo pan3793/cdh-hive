@@ -5,10 +5,11 @@ select  i_item_desc
        ,i_category 
        ,i_class 
        ,i_current_price
+       ,i_item_id
        ,sum(cs_ext_sales_price) as itemrevenue 
        ,sum(cs_ext_sales_price)*100/sum(sum(cs_ext_sales_price)) over
            (partition by i_class) as revenueratio
- from	catalog_sales
+ from catalog_sales
      ,item 
      ,date_dim
  where cs_item_sk = i_item_sk 
@@ -29,3 +30,5 @@ select  i_item_desc
 limit 100;
 
 -- end query 1 in stream 0 using template query20.tpl
+-- this query has been modified so that i_item_id is included in the select clause; this is necessary because CDH Hive
+-- does not support ordering by unselected columns; upstream Hive has this feature (HIVE-15160), but it is CBO specific

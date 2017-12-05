@@ -4,7 +4,7 @@ explain
 select  dt.d_year
  	,item.i_category_id
  	,item.i_category
- 	,sum(ss_ext_sales_price)
+ 	,sum(ss_ext_sales_price) as s
  from 	date_dim dt
  	,store_sales
  	,item
@@ -16,9 +16,12 @@ select  dt.d_year
  group by 	dt.d_year
  		,item.i_category_id
  		,item.i_category
- order by       sum(ss_ext_sales_price) desc,dt.d_year
+ order by       s desc,dt.d_year
  		,item.i_category_id
  		,item.i_category
 limit 100 ;
 
 -- end query 1 in stream 0 using template query42.tpl
+-- this query has been modified so that sum(ss_ext_sales_price) has an alias and the query is ordered on this alias;
+-- functionally, the query is exactly the same. This is necessary because CDH Hive does not support ordering by
+-- unselected columns; upstream Hive has this feature (HIVE-15160), but it is CBO specific

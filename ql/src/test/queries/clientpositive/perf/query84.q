@@ -2,7 +2,7 @@ set hive.mapred.mode=nonstrict;
 -- start query 1 in stream 0 using template query84.tpl and seed 1819994127
 explain
 select  c_customer_id as customer_id
-       ,c_last_name || ', ' || c_first_name as customername
+       , coalesce(c_last_name,'') || ', ' || coalesce(c_first_name,'') as customername
  from customer
      ,customer_address
      ,customer_demographics
@@ -17,7 +17,10 @@ select  c_customer_id as customer_id
    and cd_demo_sk = c_current_cdemo_sk
    and hd_demo_sk = c_current_hdemo_sk
    and sr_cdemo_sk = cd_demo_sk
- order by c_customer_id
+ order by customer_id
  limit 100;
 
 -- end query 1 in stream 0 using template query84.tpl
+-- this query has been modified so that query is ordered by customer_id instead of c_customer_id; functionally, this is
+-- ordering by the same column. The change is necessary because Hive does not support ordering by unselected columns;
+-- upstream Hive has this feature (HIVE-15160), but it is CBO specific

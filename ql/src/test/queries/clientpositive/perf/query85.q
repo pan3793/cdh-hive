@@ -1,10 +1,10 @@
 set hive.mapred.mode=nonstrict;
 -- start query 1 in stream 0 using template query85.tpl and seed 622697896
 explain
-select  substr(r_reason_desc,1,20)
-       ,avg(ws_quantity)
-       ,avg(wr_refunded_cash)
-       ,avg(wr_fee)
+select  substr(r_reason_desc,1,20) as r
+       ,avg(ws_quantity) wq
+       ,avg(wr_refunded_cash) ref
+       ,avg(wr_fee) fee
  from web_sales, web_returns, web_page, customer_demographics cd1,
       customer_demographics cd2, customer_address, date_dim, reason 
  where ws_web_page_sk = wp_web_page_sk
@@ -77,10 +77,13 @@ select  substr(r_reason_desc,1,20)
     )
    )
 group by r_reason_desc
-order by substr(r_reason_desc,1,20)
-        ,avg(ws_quantity)
-        ,avg(wr_refunded_cash)
-        ,avg(wr_fee)
+order by r
+        ,wq
+        ,ref
+        ,fee
 limit 100;
 
 -- end query 1 in stream 0 using template query85.tpl
+-- this query has been modified so that each selected value has an alias and the query is ordered on each of these
+-- aliases; functionally, the query is exactly the same. This is necessary because CDH Hive does not support ordering by
+-- unselected columns; upstream Hive has this feature (HIVE-15160), but it is CBO specific
