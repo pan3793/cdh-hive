@@ -1997,7 +1997,9 @@ public class HiveConf extends Configuration {
         + ",fs.s3n.awsSecretAccessKey"
         + ",fs.s3a.access.key"
         + ",fs.s3a.secret.key"
-        + ",fs.s3a.proxy.password",
+        + ",fs.s3a.proxy.password"
+        + ",dfs.adls.oauth2.credential"
+        + ",fs.adl.oauth2.credential",
         "Comma separated list of configuration options which should not be read by normal user like passwords"),
     HIVE_SERVER2_JOB_CREDENTIAL_PROVIDER_PATH("hive.server2.job.credential.provider.path", "",
         "If set, this configuration property should provide a comma-separated list of URLs that indicates the type and " +
