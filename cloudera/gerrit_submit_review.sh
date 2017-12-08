@@ -24,7 +24,7 @@ if [ -z "$BRANCH" ]; then
 fi
 
 if [ -n "$REVIEWERS" ]; then
-  git push gerrit HEAD:refs/for/$BRANCH%$REVIEWERS
+  git push cauldron HEAD:refs/for/$BRANCH%$REVIEWERS
 else
-  git push gerrit HEAD:refs/for/$BRANCH
+  git push cauldron HEAD:refs/for/$BRANCH
 fi
