@@ -32,9 +32,6 @@ export JAVA7_BUILD="1"
 mkdir -p $HIVE_PTEST_DIR
 cd $HIVE_PTEST_DIR
 
-rm -f parent_buildinfo
-wget http://unittest.jenkins.cloudera.com/job/CDH5-Unit-Tests-Aggregate/lastBuild/artifact/parent_buildinfo
-
 cat > buildinfo << EOF
 Job: $JOB_NAME
 Build ID: $BUILD_ID
