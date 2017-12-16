@@ -631,4 +631,8 @@ public abstract class Task<T extends Serializable> implements Serializable, Node
   }
 
 
+  public QueryState getQueryState() {
+    return queryState;
+  }
+
 }

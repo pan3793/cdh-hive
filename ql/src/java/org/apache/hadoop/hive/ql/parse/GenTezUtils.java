@@ -367,7 +367,8 @@ public class GenTezUtils {
       LOG.info("using CombineHiveInputformat for the merge job");
       GenMapRedUtils.createMRWorkForMergingFiles(fileSink, finalName,
           context.dependencyTask, context.moveTask,
-          hconf, context.currentTask);
+          hconf, context.currentTask,
+          parseContext.getQueryState().getLineageState());
     }
 
     FetchTask fetchTask = parseContext.getFetchTask();

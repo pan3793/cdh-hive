@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.plan.HiveOperation;
+import org.apache.hadoop.hive.ql.session.LineageState;
 
 /**
  * The class to store query level info such as queryId. Multiple queries can run
@@ -41,12 +42,26 @@ public class QueryState {
    */
   private HiveOperation commandType;
 
+  /**
+   * Per-query Lineage state to track what happens in the query
+   */
+  private LineageState lineageState = new LineageState();
+
   public QueryState(HiveConf conf) {
     this(conf, null, false);
   }
 
+  public QueryState(HiveConf conf, LineageState lineage) {
+    this(conf, null, false, lineage);
+  }
+
   public QueryState(HiveConf conf, Map<String, String> confOverlay, boolean runAsync) {
+    this(conf, confOverlay, runAsync, new LineageState());
+  }
+
+  public QueryState(HiveConf conf, Map<String, String> confOverlay, boolean runAsync, LineageState lineage) {
     this.queryConf = createConf(conf, confOverlay, runAsync);
+    this.lineageState = lineage;
   }
 
   /**
@@ -110,5 +125,13 @@ public class QueryState {
 
   public HiveConf getConf() {
     return queryConf;
+  }
+
+  public LineageState getLineageState() {
+    return lineageState;
+  }
+
+  public void setLineageState(LineageState lineageState) {
+    this.lineageState = lineageState;
   }
 }

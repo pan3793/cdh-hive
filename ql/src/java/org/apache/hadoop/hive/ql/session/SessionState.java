@@ -222,11 +222,6 @@ public class SessionState {
    */
   private Map<URI, HadoopShims.HdfsEncryptionShim> hdfsEncryptionShims = Maps.newHashMap();
 
-  /**
-   * Lineage state.
-   */
-  LineageState ls;
-
   private final String userName;
 
   /**
@@ -279,15 +274,6 @@ public class SessionState {
   private final ResourceDownloader resourceDownloader;
 
   private List<String> forwardedAddresses;
-
-  /**
-   * Get the lineage state stored in this session.
-   *
-   * @return LineageState
-   */
-  public LineageState getLineageState() {
-    return ls;
-  }
 
   public HiveConf getConf() {
     return sessionConf;
@@ -373,7 +359,6 @@ public class SessionState {
       LOG.debug("SessionState user: " + userName);
     }
     isSilent = conf.getBoolVar(HiveConf.ConfVars.HIVESESSIONSILENT);
-    ls = new LineageState();
     resourceMaps = new ResourceMaps();
     // Must be deterministic order map for consistent q-test output across Java versions
     overriddenConfigurations = new LinkedHashMap<String, String>();
