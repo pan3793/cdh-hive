@@ -479,7 +479,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
               if (SessionState.get() != null &&
                   work.getLoadTableWork().getWriteType() != AcidUtils.Operation.DELETE &&
                   work.getLoadTableWork().getWriteType() != AcidUtils.Operation.UPDATE) {
-                SessionState.get().getLineageState().setLineage(tbd.getSourcePath(), dc,
+                queryState.getLineageState().setLineage(tbd.getSourcePath(), dc,
                     table.getCols());
               }
               LOG.info("\tLoading partition " + entry.getKey());
@@ -511,7 +511,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
             }
          }
         }
-        if (SessionState.get() != null && dc != null) {
+        if (dc != null) {
           // If we are doing an update or a delete the number of columns in the table will not
           // match the number of columns in the file sink.  For update there will be one too many
           // (because of the ROW__ID), and in the case of the delete there will be just the
@@ -529,7 +529,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
               tableCols = table.getCols();
               break;
           }
-          SessionState.get().getLineageState().setLineage(tbd.getSourcePath(), dc, tableCols);
+          queryState.getLineageState().setLineage(tbd.getSourcePath(), dc, tableCols);
         }
         releaseLocks(tbd);
       }

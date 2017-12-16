@@ -38,7 +38,6 @@ public class MoveWork implements Serializable {
   private LoadTableDesc loadTableWork;
   private LoadFileDesc loadFileWork;
   private LoadMultiFilesDesc loadMultiFilesWork;
-
   private boolean checkFileFormat;
   private boolean srcLocal;
 

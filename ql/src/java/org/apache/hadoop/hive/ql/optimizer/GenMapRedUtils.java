@@ -1228,6 +1228,7 @@ public final class GenMapRedUtils {
    * @param mvTasks
    * @param conf
    * @param currTask
+   * @param lineageState
    * @throws SemanticException
 
    * create a Map-only merge job using CombineHiveInputFormat for all partitions with
@@ -1256,10 +1257,11 @@ public final class GenMapRedUtils {
    *          directories.
    *
    */
-  public static void createMRWorkForMergingFiles (FileSinkOperator fsInput,
-   Path finalName, DependencyCollectionTask dependencyTask,
-   List<Task<MoveWork>> mvTasks, HiveConf conf,
-   Task<? extends Serializable> currTask) throws SemanticException {
+  public static void createMRWorkForMergingFiles(FileSinkOperator fsInput,
+      Path finalName, DependencyCollectionTask dependencyTask,
+      List<Task<MoveWork>> mvTasks, HiveConf conf,
+      Task<? extends Serializable> currTask, LineageState lineageState)
+      throws SemanticException {
 
     //
     // 1. create the operator tree
@@ -1353,7 +1355,7 @@ public final class GenMapRedUtils {
     // know if merge MR2 will be triggered at execution time
     Task<MoveWork> mvTask = GenMapRedUtils.findMoveTask(mvTasks, fsOutput);
     ConditionalTask cndTsk = GenMapRedUtils.createCondTask(conf, currTask, dummyMv, work,
-        fsInputDesc.getFinalDirName(), finalName, mvTask, dependencyTask);
+        fsInputDesc.getFinalDirName(), finalName, mvTask, dependencyTask, lineageState);
 
     // keep the dynamic partition context in conditional task resolver context
     ConditionalResolverMergeFilesCtx mrCtx =
@@ -1673,15 +1675,16 @@ public final class GenMapRedUtils {
    *
    * @param condInputPath A path that the ConditionalTask uses as input for its sub-tasks.
    * @param linkedMoveWork A MoveWork that the ConditionalTask uses to link to its sub-tasks.
+   * @param lineageState A LineageState used to track what changes.
    * @return A new MoveWork that has the Conditional input path as source and the linkedMoveWork as target.
    */
   @VisibleForTesting
-  protected static MoveWork mergeMovePaths(Path condInputPath, MoveWork linkedMoveWork) {
+  protected static MoveWork mergeMovePaths(Path condInputPath, MoveWork linkedMoveWork,
+      LineageState lineageState) {
     MoveWork newWork = new MoveWork(linkedMoveWork);
     LoadFileDesc fileDesc = null;
     LoadTableDesc tableDesc = null;
 
-    LineageState lineageState = SessionState.get().getLineageState();
     if (linkedMoveWork.getLoadFileWork() != null) {
       fileDesc = new LoadFileDesc(linkedMoveWork.getLoadFileWork());
       fileDesc.setSourcePath(condInputPath);
@@ -1719,18 +1722,21 @@ public final class GenMapRedUtils {
    *          a MoveTask that may be linked to the conditional sub-tasks
    * @param dependencyTask
    *          a dependency task that may be linked to the conditional sub-tasks
+   * @param lineageState
+   *          to track activity
    * @return The conditional task
    */
   private static ConditionalTask createCondTask(HiveConf conf,
       Task<? extends Serializable> currTask, MoveWork dummyMoveWork, Serializable mergeWork,
-      Path condInputPath, Path condOutputPath, Task<MoveWork> moveTaskToLink, DependencyCollectionTask dependencyTask) {
+      Path condInputPath, Path condOutputPath, Task<MoveWork> moveTaskToLink, DependencyCollectionTask dependencyTask,
+      LineageState lineageState) {
 
     boolean shouldMergeMovePaths = (moveTaskToLink != null && dependencyTask == null
         && shouldMergeMovePaths(conf, condInputPath, condOutputPath, moveTaskToLink.getWork()));
 
     MoveWork workForMoveOnlyTask;
     if (shouldMergeMovePaths) {
-      workForMoveOnlyTask = mergeMovePaths(condInputPath, moveTaskToLink.getWork());
+      workForMoveOnlyTask = mergeMovePaths(condInputPath, moveTaskToLink.getWork(), lineageState);
     } else {
       workForMoveOnlyTask = dummyMoveWork;
     }

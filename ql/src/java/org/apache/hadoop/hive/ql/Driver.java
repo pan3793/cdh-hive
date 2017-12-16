@@ -109,6 +109,7 @@ import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObje
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.HivePrivObjectActionType;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.HivePrivilegeObjectType;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzContext;
+import org.apache.hadoop.hive.ql.session.LineageState;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.session.SessionState.LogHelper;
 import org.apache.hadoop.hive.serde2.ByteStream;
@@ -358,8 +359,27 @@ public class Driver implements CommandProcessor {
     this(new QueryState(conf), null);
   }
 
+  // Pass lineageState when a driver instantiates another Driver to run
+  // or compile another query
+  public Driver(HiveConf conf, LineageState lineageState) {
+    this(new QueryState(conf, lineageState), null);
+  }
+
+  // Pass lineageState when a driver instantiates another Driver to run
+  // or compile another query
+  public Driver(HiveConf conf, Context ctx, LineageState lineageState) {
+    this(new QueryState(conf, lineageState), null, null);
+    this.ctx = ctx;
+  }
+
   public Driver(HiveConf conf, String userName) {
     this(new QueryState(conf), userName, null);
+  }
+
+  // Pass lineageState when a driver instantiates another Driver to run
+  // or compile another query
+  public Driver(HiveConf conf, String userName, LineageState lineageState) {
+    this(new QueryState(conf, lineageState), userName, null);
   }
 
   public Driver(QueryState queryState, String userName) {
@@ -1229,9 +1249,6 @@ public class Driver implements CommandProcessor {
   private void releaseResources() {
     releasePlan();
     releaseDriverContext();
-    if (SessionState.get() != null) {
-      SessionState.get().getLineageState().clear();
-    }
   }
 
   @Override
@@ -1929,7 +1946,7 @@ public class Driver implements CommandProcessor {
           perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.POST_HOOK + peh.getClass().getName());
 
           ((PostExecute) peh).run(SessionState.get(), plan.getInputs(), plan.getOutputs(),
-              (SessionState.get() != null ? SessionState.get().getLineageState().getLineageInfo()
+              (SessionState.get() != null ? queryState.getLineageState().getLineageInfo()
                   : null), Utils.getUGI());
 
           perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.POST_HOOK + peh.getClass().getName());
@@ -2319,9 +2336,6 @@ public class Driver implements CommandProcessor {
     releaseFetchTask();
     releaseResStream();
     releaseContext();
-    if (SessionState.get() != null) {
-      SessionState.get().getLineageState().clear();
-    }
     if(destroyed) {
       if (!hiveLocks.isEmpty()) {
         try {
@@ -2355,9 +2369,6 @@ public class Driver implements CommandProcessor {
     } finally {
       lDrvState.stateLock.unlock();
       LockedDriverState.removeLockedDriverState();
-    }
-    if (SessionState.get() != null) {
-      SessionState.get().getLineageState().clear();
     }
     return 0;
   }
@@ -2420,5 +2431,9 @@ public class Driver implements CommandProcessor {
     // propagating queryState into those existing fields, or resetting them.
     releaseResources();
     this.queryState = new QueryState(queryState.getConf());
+  }
+
+  public QueryState getQueryState() {
+    return queryState;
   }
 }

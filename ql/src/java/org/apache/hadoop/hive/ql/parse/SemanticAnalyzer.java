@@ -7125,8 +7125,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     Operator output = putOpInsertMap(OperatorFactory.getAndMakeChild(
         fileSinkDesc, fsRS, input), inputRR);
 
-    if (ltd != null && SessionState.get() != null) {
-      SessionState.get().getLineageState()
+    if (ltd != null) {
+      queryState.getLineageState()
           .mapDirToFop(ltd.getSourcePath(), (FileSinkOperator) output);
     } else if ( queryState.getCommandType().equals(HiveOperation.CREATETABLE_AS_SELECT.getOperationName())) {
 
@@ -7139,7 +7139,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         throw new SemanticException(e);
       }
 
-      SessionState.get().getLineageState()
+      queryState.getLineageState()
               .mapDirToFop(tlocation, (FileSinkOperator) output);
     }
 

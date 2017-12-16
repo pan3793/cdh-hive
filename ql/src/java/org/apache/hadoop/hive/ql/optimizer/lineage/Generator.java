@@ -46,7 +46,6 @@ import org.apache.hadoop.hive.ql.optimizer.Transform;
 import org.apache.hadoop.hive.ql.optimizer.lineage.LineageCtx.Index;
 import org.apache.hadoop.hive.ql.parse.ParseContext;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
-import org.apache.hadoop.hive.ql.session.SessionState;
 
 /**
  * This class generates the lineage information for the columns
@@ -61,8 +60,10 @@ public class Generator extends Transform {
   @Override
   public ParseContext transform(ParseContext pctx) throws SemanticException {
 
-    Index index = SessionState.get() != null ?
-      SessionState.get().getLineageState().getIndex() : new Index();
+    Index index = pctx.getQueryState().getLineageState().getIndex();
+    if (index == null) {
+      index = new Index();
+    }
 
     // Create the lineage context
     LineageCtx lCtx = new LineageCtx(pctx, index);

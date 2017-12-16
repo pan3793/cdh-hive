@@ -4157,8 +4157,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       if ( crtTbl.isCTAS()) {
         Table createdTable = db.getTable(tbl.getDbName(), tbl.getTableName());
         DataContainer dc = new DataContainer(createdTable.getTTable());
-        SessionState.get().getLineageState().setLineage(
-                createdTable.getPath(), dc, createdTable.getCols()
+        queryState.getLineageState().setLineage(
+            createdTable.getPath(), dc, createdTable.getCols()
         );
       }
     }
