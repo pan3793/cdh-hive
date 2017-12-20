@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.ql.exec.spark.status.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.hive.ql.ErrorMsg;
 import org.apache.hadoop.hive.ql.exec.spark.Statistic.SparkStatistics;
 import org.apache.hadoop.hive.ql.exec.spark.Statistic.SparkStatisticsBuilder;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
@@ -53,11 +54,13 @@ public class RemoteSparkJobStatus implements SparkJobStatus {
   private static final Log LOG = LogFactory.getLog(RemoteSparkJobStatus.class.getName());
   private final SparkClient sparkClient;
   private final JobHandle<Serializable> jobHandle;
+  private Throwable error;
   private final transient long sparkClientTimeoutInSeconds;
 
   public RemoteSparkJobStatus(SparkClient sparkClient, JobHandle<Serializable> jobHandle, long timeoutInSeconds) {
     this.sparkClient = sparkClient;
     this.jobHandle = jobHandle;
+    this.error = null;
     this.sparkClientTimeoutInSeconds = timeoutInSeconds;
   }
 
@@ -140,7 +143,15 @@ public class RemoteSparkJobStatus implements SparkJobStatus {
 
   @Override
   public Throwable getError() {
+    if (error != null) {
+      return error;
+    }
     return jobHandle.getError();
+  }
+
+  @Override
+  public void setError(Throwable e) {
+    this.error = e;
   }
 
   /**
@@ -163,7 +174,8 @@ public class RemoteSparkJobStatus implements SparkJobStatus {
       return getJobInfo.get(sparkClientTimeoutInSeconds, TimeUnit.SECONDS);
     } catch (Exception e) {
       LOG.warn("Failed to get job info.", e);
-      throw new HiveException(e);
+      throw new HiveException(e, ErrorMsg.SPARK_GET_JOB_INFO_TIMEOUT,
+          Long.toString(sparkClientTimeoutInSeconds));
     }
   }
 

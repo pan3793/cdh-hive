@@ -29,12 +29,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.hive.common.StatsSetupConst;
+import com.google.common.base.Throwables;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.Warehouse;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.DriverContext;
+import org.apache.hadoop.hive.ql.ErrorMsg;
 import org.apache.hadoop.hive.ql.QueryPlan;
 import org.apache.hadoop.hive.ql.exec.FileSinkOperator;
 import org.apache.hadoop.hive.ql.exec.JoinOperator;
@@ -51,7 +53,6 @@ import org.apache.hadoop.hive.ql.exec.spark.Statistic.SparkStatistics;
 import org.apache.hadoop.hive.ql.exec.spark.session.SparkSession;
 import org.apache.hadoop.hive.ql.exec.spark.session.SparkSessionManager;
 import org.apache.hadoop.hive.ql.exec.spark.session.SparkSessionManagerImpl;
-import org.apache.hadoop.hive.ql.exec.spark.status.LocalSparkJobMonitor;
 import org.apache.hadoop.hive.ql.exec.spark.status.SparkJobRef;
 import org.apache.hadoop.hive.ql.exec.spark.status.SparkJobStatus;
 import org.apache.hadoop.hive.ql.history.HiveHistory.Keys;
@@ -75,6 +76,7 @@ import org.apache.hadoop.util.StringUtils;
 import org.apache.hive.spark.counter.SparkCounters;
 
 import com.google.common.collect.Lists;
+import org.apache.spark.SparkException;
 
 public class SparkTask extends Task<SparkWork> {
   private static final String CLASS_NAME = SparkTask.class.getName();
@@ -110,6 +112,7 @@ public class SparkTask extends Task<SparkWork> {
       addToHistory(jobRef);
       rc = jobRef.monitorJob();
       SparkJobStatus sparkJobStatus = jobRef.getSparkJobStatus();
+      getSparkJobInfo(sparkJobStatus, rc);
       if (rc == 0) {
         sparkCounters = sparkJobStatus.getCounter();
         // for RSC, we should get the counters after job has finished
@@ -133,7 +136,13 @@ public class SparkTask extends Task<SparkWork> {
       // org.apache.commons.lang.StringUtils
       console.printError(msg, "\n" + org.apache.hadoop.util.StringUtils.stringifyException(e));
       LOG.error(msg, e);
-      rc = 1;
+      setException(e);
+      if (e instanceof HiveException) {
+        HiveException he = (HiveException) e;
+        rc = he.getCanonicalErrorMsg().getErrorCode();
+      } else {
+        rc = 1;
+      }
     } finally {
       Utilities.clearWork(conf);
       if (sparkSession != null && sparkSessionManager != null) {
@@ -426,5 +435,37 @@ public class SparkTask extends Task<SparkWork> {
     }
 
     return counters;
+  }
+
+  private void getSparkJobInfo(SparkJobStatus sparkJobStatus, int rc) {
+    try {
+      if (rc != 0) {
+        Throwable error = sparkJobStatus.getError();
+        if (error != null) {
+          HiveException he;
+          if (isOOMError(error)) {
+            he = new HiveException(error, ErrorMsg.SPARK_RUNTIME_OOM);
+          } else {
+            he = new HiveException(error, ErrorMsg.SPARK_JOB_RUNTIME_ERROR);
+          }
+          setException(he);
+        }
+      }
+    } catch (Exception e) {
+      LOG.error("Failed to get Spark job information", e);
+    }
+  }
+
+  private boolean isOOMError(Throwable error) {
+    while (error != null) {
+      if (error instanceof OutOfMemoryError) {
+        return true;
+      } else if (error instanceof SparkException) {
+        String sts = Throwables.getStackTraceAsString(error);
+        return sts.contains("Container killed by YARN for exceeding memory limits");
+      }
+      error = error.getCause();
+    }
+    return false;
   }
 }
