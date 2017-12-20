@@ -450,7 +450,9 @@ public enum ErrorMsg {
     "Oldest available base: {2}", true),
   LOCK_ACQUIRE_CANCELLED(10330, "Query was cancelled while acquiring locks on the underlying objects. "),
   HIVE_GROUPING_FUNCTION_EXPR_NOT_IN_GROUPBY(10409, "Expression in GROUPING function not present in GROUP BY"),
+
   //========================== 20000 range starts here ========================//
+
   SCRIPT_INIT_ERROR(20000, "Unable to initialize custom script."),
   SCRIPT_IO_ERROR(20001, "An error occurred while reading or writing to your custom script. "
       + "It may have crashed with an error."),
@@ -472,10 +474,15 @@ public enum ErrorMsg {
   FILE_NOT_FOUND(20012, "File not found: {0}", "64000", true),
   WRONG_FILE_FORMAT(20013, "Wrong file format. Please check the file's format.", "64000", true),
 
+  SPARK_CREATE_CLIENT_INVALID_QUEUE(20014, "Spark job is submitted to an invalid queue: {0}."
+      + " Please fix and try again.", true),
+  SPARK_RUNTIME_OOM(20015, "Spark job failed because of out of memory."),
+
   // An exception from runtime that will show the full stack to client
   UNRESOLVED_RT_EXCEPTION(29999, "Runtime Error: {0}", "58004", true),
 
   //========================== 30000 range starts here ========================//
+
   STATSPUBLISHER_NOT_OBTAINED(30000, "StatsPublisher cannot be obtained. " +
     "There was a error to retrieve the StatsPublisher, and retrying " +
     "might help. If you dont want the query to fail because accurate statistics " +
@@ -517,7 +524,6 @@ public enum ErrorMsg {
       "to fail because of this, set hive.stats.atomic=false", true),
   STATS_SKIPPING_BY_ERROR(30017, "Skipping stats aggregation by error {0}", true),
 
-
   INVALID_FILE_FORMAT_IN_LOAD(30019, "The file that you are trying to load does not match the" +
       " file format of the destination table."),
 
@@ -528,7 +534,36 @@ public enum ErrorMsg {
           "are set.  Table schema information is required to read ACID tables"),
   ACID_TABLES_MUST_BE_READ_WITH_ACID_READER(30021, "An ORC ACID reader required to read ACID tables"),
   ACID_TABLES_MUST_BE_READ_WITH_HIVEINPUTFORMAT(30022, "Must use HiveInputFormat to read ACID tables " +
-          "(set hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat)")
+          "(set hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat)"),
+
+  SPARK_GET_JOB_INFO_TIMEOUT(30036,
+      "Spark job timed out after {0} seconds while getting job info", true),
+  SPARK_JOB_MONITOR_TIMEOUT(30037, "Job hasn't been submitted after {0}s." +
+      " Aborting it.\nPossible reasons include network issues, " +
+      "errors in remote driver or the cluster has no available resources, etc.\n" +
+      "Please check YARN or Spark driver's logs for further information.\n" +
+      "The timeout is controlled by " + HiveConf.ConfVars.SPARK_JOB_MONITOR_TIMEOUT + ".", true),
+
+  // Various errors when creating Spark client
+  SPARK_CREATE_CLIENT_TIMEOUT(30038,
+      "Timed out while creating Spark client for session {0}.", true),
+  SPARK_CREATE_CLIENT_QUEUE_FULL(30039,
+      "Failed to create Spark client because job queue is full: {0}.", true),
+  SPARK_CREATE_CLIENT_INTERRUPTED(30040,
+      "Interrupted while creating Spark client for session {0}", true),
+  SPARK_CREATE_CLIENT_ERROR(30041,
+      "Failed to create Spark client for Spark session {0}", true),
+  SPARK_CREATE_CLIENT_INVALID_RESOURCE_REQUEST(30042,
+      "Failed to create Spark client due to invalid resource request: {0}", true),
+  SPARK_CREATE_CLIENT_CLOSED_SESSION(30043,
+      "Cannot create Spark client on a closed session {0}", true),
+
+  SPARK_JOB_INTERRUPTED(30044, "Spark job was interrupted while executing"),
+
+  //========================== 40000 range starts here ========================//
+
+  SPARK_JOB_RUNTIME_ERROR(40001,
+      "Spark job failed during runtime. Please check stacktrace for the root cause.")
   ;
 
   private int errorCode;
