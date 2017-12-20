@@ -3139,9 +3139,10 @@ public class HiveConf extends Configuration {
         "Truncated to " + LOG_PREFIX_LENGTH + " characters. Defaults to use auto-generated session id."),
 
 
+    // If a parameter is added to the restricted list, add a test in TestRestrictedList.Java
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list",
         "hive.security.authenticator.manager,hive.security.authorization.manager,hive.users.in.admin.role," +
-        "hive.server2.xsrf.filter.enabled",
+        "hive.server2.xsrf.filter.enabled," +
             "hive.spark.client.connect.timeout," +
             "hive.spark.client.server.connect.timeout," +
             "hive.spark.client.channel.log.level," +
@@ -3149,7 +3150,9 @@ public class HiveConf extends Configuration {
             "hive.spark.client.rpc.threads," +
             "hive.spark.client.secret.bits," +
             "hive.spark.client.rpc.server.address," +
-            "hive.spark.client.rpc.server.port",
+            "hive.spark.client.rpc.server.port," +
+            "hadoop.bin.path," +
+            "yarn.bin.path",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
         METASTOREPWD.varname + "," + HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname
@@ -4222,6 +4225,10 @@ public class HiveConf extends Configuration {
 
   public static void setHiveSiteLocation(URL location) {
     hiveSiteURL = location;
+  }
+
+  public static void setHivemetastoreSiteUrl(URL location) {
+    hivemetastoreSiteUrl = location;
   }
 
   public static URL getHiveSiteLocation() {
