@@ -55,7 +55,6 @@ public class MiniHiveKdc {
 
   private final MiniKdc miniKdc;
   private final File workDir;
-  private final Configuration conf;
   private final Map<String, String> userPrincipals =
       new HashMap<String, String>();
   private final Properties kdcConf = MiniKdc.createConf();
@@ -79,16 +78,15 @@ public class MiniHiveKdc {
     }
   }
 
-  public static MiniHiveKdc getMiniHiveKdc (Configuration conf) throws Exception {
-    return new MiniHiveKdc(conf);
+  public static MiniHiveKdc getMiniHiveKdc () throws Exception {
+    return new MiniHiveKdc();
   }
 
-  public MiniHiveKdc(Configuration conf)
+  public MiniHiveKdc()
       throws Exception {
     File baseDir =  Files.createTempDir();
     baseDir.deleteOnExit();
     workDir = new File (baseDir, "HiveMiniKdc");
-    this.conf = conf;
 
     /**
      *  Hadoop security classes read the default realm via static initialization,

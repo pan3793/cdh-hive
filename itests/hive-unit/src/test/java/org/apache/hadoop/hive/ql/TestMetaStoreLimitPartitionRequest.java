@@ -67,6 +67,7 @@ public class TestMetaStoreLimitPartitionRequest {
     conf = new HiveConf();
     DriverManager.setLoginTimeout(0);
 
+    conf.set("test.tmp.dir", System.getProperty("test.tmp.dir")); // To workaround CDH-62093: hadoop doesn't replace system properties for security reason
     conf.setBoolVar(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY, false);
     conf.setIntVar(HiveConf.ConfVars.METASTORE_LIMIT_PARTITION_REQUEST, PARTITION_REQUEST_LIMIT);
     conf.setBoolVar(HiveConf.ConfVars.METASTORE_INTEGER_JDO_PUSHDOWN, true);

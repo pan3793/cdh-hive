@@ -37,6 +37,7 @@ public class TestEmbeddedThriftBinaryCLIService extends CLIServiceTest {
   public static void setUpBeforeClass() throws Exception {
     service = new EmbeddedThriftBinaryCLIService();
     HiveConf conf = new HiveConf();
+    conf.set("test.tmp.dir", System.getProperty("test.tmp.dir")); // To workaround CDH-62093: hadoop doesn't replace system properties for security reason
     conf.setBoolean("datanucleus.schema.autoCreateTables", true);
     conf.setVar(HiveConf.ConfVars.HIVEMAPREDMODE, "nonstrict");
     service.init(conf);

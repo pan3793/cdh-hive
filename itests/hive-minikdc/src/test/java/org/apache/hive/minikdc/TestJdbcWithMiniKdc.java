@@ -64,12 +64,13 @@ public class TestJdbcWithMiniKdc {
 
   @BeforeClass
   public static void beforeTest() throws Exception {
+    miniHiveKdc = MiniHiveKdc.getMiniHiveKdc();
+
     Class.forName(MiniHS2.getJdbcDriverName());
     confOverlay.put(ConfVars.HIVE_SERVER2_SESSION_HOOK.varname,
         SessionHookTest.class.getName());
 
     HiveConf hiveConf = new HiveConf();
-    miniHiveKdc = MiniHiveKdc.getMiniHiveKdc(hiveConf);
     miniHS2 = MiniHiveKdc.getMiniHS2WithKerb(miniHiveKdc, hiveConf);
     miniHS2.start(confOverlay);
   }

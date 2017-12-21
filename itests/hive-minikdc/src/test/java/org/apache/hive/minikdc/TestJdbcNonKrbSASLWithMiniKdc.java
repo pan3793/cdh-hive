@@ -52,13 +52,14 @@ public class TestJdbcNonKrbSASLWithMiniKdc extends TestJdbcWithMiniKdc{
 
   @BeforeClass
   public static void beforeTest() throws Exception {
+    miniHiveKdc = MiniHiveKdc.getMiniHiveKdc();
+
     Class.forName(MiniHS2.getJdbcDriverName());
     confOverlay.put(ConfVars.HIVE_SERVER2_SESSION_HOOK.varname,
         SessionHookTest.class.getName());
     confOverlay.put(ConfVars.HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS.varname,
         CustomAuthenticator.class.getName());
     HiveConf hiveConf = new HiveConf();
-    miniHiveKdc = MiniHiveKdc.getMiniHiveKdc(hiveConf);
     miniHS2 = MiniHiveKdc.getMiniHS2WithKerbWithRemoteHMS(miniHiveKdc, hiveConf, "CUSTOM");
     miniHS2.start(confOverlay);
   }

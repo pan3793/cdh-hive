@@ -189,6 +189,7 @@ public class TestJdbcWithMiniHS2 {
   }
 
   private static void startMiniHS2(HiveConf conf, boolean httpMode) throws Exception {
+    conf.set("test.tmp.dir", tmpDir); // To workaround CDH-62093: hadoop doesn't replace system properties for security reason
     conf.setBoolVar(ConfVars.HIVE_SUPPORT_CONCURRENCY, false);
     conf.setBoolVar(ConfVars.HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
     MiniHS2.Builder builder = new MiniHS2.Builder().withConf(conf).cleanupLocalDirOnStartup(false);
