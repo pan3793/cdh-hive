@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.junit.After;
@@ -37,7 +36,6 @@ public class TestMiniHiveKdc {
 
   private static File baseDir;
   private MiniHiveKdc miniHiveKdc;
-  private HiveConf hiveConf;
 
   @BeforeClass
   public static void beforeTest() throws Exception {
@@ -47,8 +45,7 @@ public class TestMiniHiveKdc {
 
   @Before
   public void setUp() throws Exception {
-    hiveConf = new HiveConf();
-    miniHiveKdc = MiniHiveKdc.getMiniHiveKdc(hiveConf);
+    miniHiveKdc = MiniHiveKdc.getMiniHiveKdc();
   }
 
   @After
