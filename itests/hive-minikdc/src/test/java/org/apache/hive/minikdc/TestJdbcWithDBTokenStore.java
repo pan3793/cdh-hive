@@ -32,13 +32,15 @@ public class TestJdbcWithDBTokenStore extends TestJdbcWithMiniKdc{
 
   @BeforeClass
   public static void beforeTest() throws Exception {
+    miniHiveKdc = MiniHiveKdc.getMiniHiveKdc();
+
     Class.forName(MiniHS2.getJdbcDriverName());
     confOverlay.put(ConfVars.HIVE_SERVER2_SESSION_HOOK.varname,
         SessionHookTest.class.getName());
 
     HiveConf hiveConf = new HiveConf();
     hiveConf.setVar(ConfVars.METASTORE_CLUSTER_DELEGATION_TOKEN_STORE_CLS, "org.apache.hadoop.hive.thrift.DBTokenStore");
-    miniHiveKdc = MiniHiveKdc.getMiniHiveKdc(hiveConf);
+
     miniHS2 = MiniHiveKdc.getMiniHS2WithKerbWithRemoteHMSWithKerb(miniHiveKdc, hiveConf);
     miniHS2.start(confOverlay);
     String metastorePrincipal = miniHS2.getConfProperty(ConfVars.METASTORE_KERBEROS_PRINCIPAL.varname);
