@@ -23,8 +23,9 @@ import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hive.cli.CliSessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
-import org.apache.hadoop.hive.ql.Driver;
 import org.apache.hadoop.hive.ql.WindowsPathUtil;
+import org.apache.hadoop.hive.ql.DriverFactory;
+import org.apache.hadoop.hive.ql.IDriver;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.util.Shell;
 import org.apache.hive.hcatalog.common.HCatUtil;
@@ -51,7 +52,7 @@ public class HCatBaseTest {
   protected static final String TEST_WAREHOUSE_DIR = TEST_DATA_DIR + "/warehouse";
 
   protected HiveConf hiveConf = null;
-  protected Driver driver = null;
+  protected IDriver driver = null;
   protected HiveMetaStoreClient client = null;
 
   @BeforeClass
@@ -68,7 +69,7 @@ public class HCatBaseTest {
   public void setUp() throws Exception {
     if (driver == null) {
       setUpHiveConf();
-      driver = new Driver(hiveConf);
+      driver = DriverFactory.newDriver(hiveConf);
       client = new HiveMetaStoreClient(hiveConf);
       SessionState.start(new CliSessionState(hiveConf));
     }

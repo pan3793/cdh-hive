@@ -20,8 +20,6 @@ package org.apache.hadoop.hive.metastore;
 
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
@@ -30,6 +28,8 @@ import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
+import junit.framework.TestCase;
+
 
 public class TestMetaStoreAuthorization extends TestCase {
   protected HiveConf conf = new HiveConf();

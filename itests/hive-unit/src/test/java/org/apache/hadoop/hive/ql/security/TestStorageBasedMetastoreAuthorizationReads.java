@@ -23,6 +23,7 @@ import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.ql.CommandNeedRetryException;
 import org.apache.hadoop.hive.ql.Driver;
+import org.apache.hadoop.hive.ql.IDriver;
 import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -117,7 +118,7 @@ public class TestStorageBasedMetastoreAuthorizationReads extends StorageBasedMet
 
   }
 
-  private void testCmd(Driver driver, String cmd, boolean isSuccess)
+  private void testCmd(IDriver driver, String cmd, boolean isSuccess)
       throws CommandNeedRetryException {
     CommandProcessorResponse resp = driver.run(cmd);
     Assert.assertEquals(isSuccess, resp.getResponseCode() == 0);

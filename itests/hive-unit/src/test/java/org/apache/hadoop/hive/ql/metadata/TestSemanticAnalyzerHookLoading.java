@@ -26,6 +26,8 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hadoop.hive.ql.Driver;
+import org.apache.hadoop.hive.ql.DriverFactory;
+import org.apache.hadoop.hive.ql.IDriver;
 import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse;
 import org.apache.hadoop.hive.ql.session.SessionState;
 
@@ -37,7 +39,7 @@ public class TestSemanticAnalyzerHookLoading extends TestCase {
     conf.set(ConfVars.SEMANTIC_ANALYZER_HOOK.varname, DummySemanticAnalyzerHook.class.getName());
     conf.set(ConfVars.HIVE_SUPPORT_CONCURRENCY.varname, "false");
     SessionState.start(conf);
-    Driver driver = new Driver(conf);
+    IDriver driver = DriverFactory.newDriver(conf);
 
     driver.run("drop table testDL");
     CommandProcessorResponse resp = driver.run("create table testDL (a int) as select * from tbl2");

@@ -57,7 +57,7 @@ public class TestAcidOnTez {
   @Rule
   public TestName testName = new TestName();
   private HiveConf hiveConf;
-  private Driver d;
+  private IDriver d;
   private static enum Table {
     ACIDTBL("acidTbl"),
     ACIDTBLPART("acidTblPart"),
@@ -97,7 +97,7 @@ public class TestAcidOnTez {
       throw new RuntimeException("Could not create " + TEST_WAREHOUSE_DIR);
     }
     SessionState.start(new SessionState(hiveConf));
-    d = new Driver(hiveConf);
+    d = DriverFactory.newDriver(hiveConf);
     dropTables();
     runStatementOnDriver("create table " + Table.ACIDTBL + "(a int, b int) clustered by (a) into " + BUCKET_COUNT + " buckets stored as orc TBLPROPERTIES ('transactional'='true')");
     runStatementOnDriver("create table " + Table.ACIDTBLPART + "(a int, b int) partitioned by (p string) clustered by (a) into " + BUCKET_COUNT + " buckets stored as orc TBLPROPERTIES ('transactional'='true')");
@@ -244,7 +244,7 @@ public class TestAcidOnTez {
    */
   private List<String> runStatementOnDriver(String stmt, HiveConf conf)
       throws Exception {
-    Driver driver = new Driver(conf);
+    IDriver driver = DriverFactory.newDriver(conf);
     CommandProcessorResponse cpr = driver.run(stmt);
     if(cpr.getResponseCode() != 0) {
       throw new RuntimeException(stmt + " failed: " + cpr);

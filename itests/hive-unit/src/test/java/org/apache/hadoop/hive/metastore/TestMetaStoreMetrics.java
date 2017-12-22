@@ -23,7 +23,8 @@ import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.Driver;
+import org.apache.hadoop.hive.ql.DriverFactory;
+import org.apache.hadoop.hive.ql.IDriver;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,8 +37,8 @@ public class TestMetaStoreMetrics {
 
 
   private static HiveConf hiveConf;
-  private static Driver driver;
   private static CodahaleMetrics metrics;
+  private static IDriver driver;
 
   @BeforeClass
   public static void before() throws Exception {
@@ -58,7 +59,7 @@ public class TestMetaStoreMetrics {
 
     //Increments one HMS connection (Hive.get())
     SessionState.start(new CliSessionState(hiveConf));
-    driver = new Driver(hiveConf);
+    driver = DriverFactory.newDriver(hiveConf);
   }
 
 
