@@ -71,7 +71,8 @@ public class TableScanDesc extends AbstractOperatorDesc {
   private String tmpStatsDir;
 
   private ExprNodeGenericFuncDesc filterExpr;
-  private transient Serializable filterObject;
+  private Serializable filterObject;
+
 
   // Both neededColumnIDs and neededColumns should never be null.
   // When neededColumnIDs is an empty list,
