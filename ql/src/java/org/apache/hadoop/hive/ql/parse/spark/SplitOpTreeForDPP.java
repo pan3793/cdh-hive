@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import com.google.common.base.Preconditions;
+
 import org.apache.hadoop.hive.ql.exec.MapJoinOperator;
 import org.apache.hadoop.hive.ql.exec.Operator;
 import org.apache.hadoop.hive.ql.exec.ReduceSinkOperator;
@@ -36,7 +38,6 @@ import org.apache.hadoop.hive.ql.lib.NodeProcessor;
 import org.apache.hadoop.hive.ql.lib.NodeProcessorCtx;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 
-import org.apache.hadoop.hbase.shaded.com.google.common.base.Preconditions;
 
 /**
  * This processor triggers on SparkPartitionPruningSinkOperator. For a operator tree like
