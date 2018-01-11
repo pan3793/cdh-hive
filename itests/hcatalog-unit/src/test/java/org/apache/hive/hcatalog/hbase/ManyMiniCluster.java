@@ -23,11 +23,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HConstants;
+import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.apache.hadoop.hbase.MiniHBaseCluster;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.zookeeper.MiniZooKeeperCluster;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
@@ -53,11 +52,11 @@ public class ManyMiniCluster {
   private JobConf jobConf;
 
   //HBase stuff
+  private HBaseTestingUtility util;
+  private static final int NUM_REGIONSERVERS = 1;
   private boolean miniHBaseClusterEnabled;
   private MiniHBaseCluster hbaseCluster;
-  private String hbaseRoot;
   private Configuration hbaseConf;
-  private String hbaseDir;
 
   //ZK Stuff
   private boolean miniZookeeperClusterEnabled;
@@ -96,12 +95,14 @@ public class ManyMiniCluster {
     miniHBaseClusterEnabled = b.miniHBaseClusterEnabled;
     miniHiveMetastoreEnabled = b.miniHiveMetastoreEnabled;
     miniZookeeperClusterEnabled = b.miniZookeeperClusterEnabled;
+    util = new HBaseTestingUtility(hbaseConf);
   }
 
   protected synchronized void start() {
     try {
       if (!started) {
         FileUtil.fullyDelete(workDir);
+        dfsCluster = util.startMiniDFSCluster(NUM_REGIONSERVERS);
         if (miniMRClusterEnabled) {
           setupMRCluster();
         }
@@ -245,31 +246,14 @@ public class ManyMiniCluster {
   }
 
   private void setupHBaseCluster() {
-    final int numRegionServers = 1;
     Connection connection = null;
     Table table = null;
 
     try {
-      hbaseDir = new File(workDir, "hbase").getCanonicalPath();
-      hbaseDir = hbaseDir.replaceAll("\\\\", "/");
-      hbaseRoot = "file:///" + hbaseDir;
-
-      if (hbaseConf == null)
-        hbaseConf = HBaseConfiguration.create();
-
-      hbaseConf.set("hbase.rootdir", hbaseRoot);
-      hbaseConf.set("hbase.master", "local");
-      hbaseConf.setInt(HConstants.ZOOKEEPER_CLIENT_PORT, zookeeperPort);
-      hbaseConf.set(HConstants.ZOOKEEPER_QUORUM, "127.0.0.1");
-      hbaseConf.setInt("hbase.master.port", findFreePort());
-      hbaseConf.setInt("hbase.master.info.port", -1);
-      hbaseConf.setInt("hbase.regionserver.port", findFreePort());
-      hbaseConf.setInt("hbase.regionserver.info.port", -1);
-
-      hbaseCluster = new MiniHBaseCluster(hbaseConf, numRegionServers);
-      hbaseConf.set("hbase.master", hbaseCluster.getMaster().getServerName().getHostAndPort());
+      util.getConfiguration().set("hbase.zookeeper.property.clientPort", Integer.toString(zookeeperPort));
+      hbaseCluster = util.startMiniHBaseCluster(1, NUM_REGIONSERVERS);
+      connection = util.getConnection();
       //opening the META table ensures that cluster is running
-      connection = ConnectionFactory.createConnection(hbaseConf);
       table = connection.getTable(TableName.META_TABLE_NAME);
     } catch (Exception e) {
       throw new IllegalStateException("Failed to setup HBase Cluster", e);

@@ -37,7 +37,6 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -196,9 +195,8 @@ public abstract class SkeletonHBaseTest {
     public void start() {
       if (usageCount++ == 0) {
         ManyMiniCluster.Builder b = ManyMiniCluster.create(new File(testDir));
-        if (testConf != null) {
-          b.hbaseConf(HBaseConfiguration.create(testConf));
-        }
+        b.hbaseConf(testConf == null ? HBaseConfiguration.create() : HBaseConfiguration.create(testConf));
+
         cluster = b.build();
         cluster.start();
         this.hbaseConf = cluster.getHBaseConf();

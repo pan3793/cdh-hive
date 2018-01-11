@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Connection;
@@ -227,7 +228,7 @@ public class HBaseStorageHandler extends DefaultStorageHandler
                 .HIVE_HBASE_SNAPSHOT_RESTORE_DIR);
           }
 
-          HBaseTableSnapshotInputFormatUtil.configureJob(hbaseConf, snapshotName, new Path(restoreDir));
+          HBaseTableSnapshotInputFormatUtil.configureJob(hbaseConf, snapshotName, FileSystem.get(hbaseConf).makeQualified(new Path(restoreDir)));
           // copy over configs touched by above method
           jobProperties.put(HBASE_SNAPSHOT_NAME_KEY, hbaseConf.get(HBASE_SNAPSHOT_NAME_KEY));
           if (hbaseConf.get(HBASE_SNAPSHOT_TABLE_DIR_KEY, null) != null) {

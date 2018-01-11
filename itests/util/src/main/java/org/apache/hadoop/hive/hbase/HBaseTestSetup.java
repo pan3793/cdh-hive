@@ -19,22 +19,24 @@
 package org.apache.hadoop.hive.hbase;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.MiniHBaseCluster;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.hbase.util.FSUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.zookeeper.Watcher;
@@ -46,8 +48,8 @@ import org.apache.zookeeper.Watcher;
 public class HBaseTestSetup {
 
   private MiniHBaseCluster hbaseCluster;
+  private HBaseTestingUtility util;
   private int zooKeeperPort;
-  private String hbaseRoot;
   private Connection hbaseConn;
 
   private static final int NUM_REGIONSERVERS = 1;
@@ -60,9 +62,11 @@ public class HBaseTestSetup {
 
     setUpFixtures(conf);
 
-    conf.set("hbase.rootdir", hbaseRoot);
-    conf.set("hbase.master", hbaseCluster.getMaster().getServerName().getHostAndPort());
-    conf.set("hbase.zookeeper.property.clientPort", Integer.toString(zooKeeperPort));
+    // Set some properties since HiveConf gets recreated for the new query
+    Path hbaseRoot = util.getDefaultRootDirPath();
+    conf.set(HConstants.HBASE_DIR, hbaseRoot.toUri().toString());
+    FSUtils.setFsDefault(conf, new Path(util.getTestFileSystem().getUri()));
+
     String auxJars = conf.getAuxJars();
     auxJars = (StringUtils.isBlank(auxJars) ? "" : (auxJars + ",")) + "file://"
       + new JobConf(conf, HBaseConfiguration.class).getJar();
@@ -76,31 +80,23 @@ public class HBaseTestSetup {
      * QTestUtil already starts it.
      */
     int zkPort = conf.getInt("hive.zookeeper.client.port", -1);
+    conf.set(HConstants.ZOOKEEPER_CLIENT_PORT, Integer.toString(zkPort));
     if ((zkPort == zooKeeperPort) && (hbaseCluster != null)) {
       return;
     }
     zooKeeperPort = zkPort;
-    String tmpdir =  System.getProperty("test.tmp.dir");
     this.tearDown();
-    conf.set("hbase.master", "local");
 
-    hbaseRoot = "file:///" + tmpdir + "/hbase";
-    conf.set("hbase.rootdir", hbaseRoot);
-
-    conf.set("hbase.zookeeper.property.clientPort",
-      Integer.toString(zooKeeperPort));
-    Configuration hbaseConf = HBaseConfiguration.create(conf);
-    hbaseConf.setInt("hbase.master.port", findFreePort());
-    hbaseConf.setInt("hbase.master.info.port", -1);
-    hbaseConf.setInt("hbase.regionserver.port", findFreePort());
-    hbaseConf.setInt("hbase.regionserver.info.port", -1);
     // Fix needed due to dependency for hbase-mapreduce module
     // Check CDH-59433 for details
     System.setProperty("org.apache.hadoop.hbase.shaded.io.netty.packagePrefix",
         "org.apache.hadoop.hbase.shaded.");
-    hbaseCluster = new MiniHBaseCluster(hbaseConf, NUM_REGIONSERVERS);
-    conf.set("hbase.master", hbaseCluster.getMaster().getServerName().getHostAndPort());
-    hbaseConn = ConnectionFactory.createConnection(hbaseConf);
+
+    Configuration hbaseConf = HBaseConfiguration.create(conf);
+    util = new HBaseTestingUtility(hbaseConf);
+    util.startMiniDFSCluster(1);
+    hbaseCluster = util.startMiniHBaseCluster(1, NUM_REGIONSERVERS);
+    hbaseConn = util.getConnection();
 
     // opening the META table ensures that cluster is running
     Table meta = null;
@@ -161,20 +157,10 @@ public class HBaseTestSetup {
     }
   }
 
-  private static int findFreePort() throws IOException {
-    ServerSocket server = new ServerSocket(0);
-    int port = server.getLocalPort();
-    server.close();
-    return port;
-  }
-
   public void tearDown() throws Exception {
-    if (hbaseConn != null) {
-      hbaseConn.close();
-      hbaseConn = null;
-    }
-    if (hbaseCluster != null) {
-      hbaseCluster.shutdown();
+    if (util != null) {
+      util.shutdownMiniHBaseCluster();
+      util.shutdownMiniDFSCluster();
       hbaseCluster = null;
     }
   }

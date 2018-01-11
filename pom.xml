@@ -129,7 +129,7 @@
     <commons-httpclient.version>${cdh.commons-httpclient.version}</commons-httpclient.version>
     <commons-io.version>2.4</commons-io.version>
     <commons-lang.version>${cdh.commons-lang.version}</commons-lang.version>
-    <commons-lang3.version>3.2</commons-lang3.version>
+    <commons-lang3.version>3.3</commons-lang3.version>
     <commons-pool.version>1.5.4</commons-pool.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <derby.version>${cdh.derby.version}</derby.version>
