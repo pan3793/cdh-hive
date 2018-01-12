@@ -277,17 +277,17 @@
                   <replacements>
                     <replacement>
                       <token>public class</token>
-                      <value>@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public class</value>
+                      <value>@org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public class</value>
                       <unescape>true</unescape>
                     </replacement>
                     <replacement>
                       <token>public static class</token>
-                      <value>@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public static class</value>
+                      <value>@org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public static class</value>
                       <unescape>true</unescape>
                     </replacement>
                     <replacement>
                       <token>public interface</token>
-                      <value>@org.apache.hadoop.classification.InterfaceAudience.Public @org.apache.hadoop.classification.InterfaceStability.Stable public interface</value>
+                      <value>@org.apache.hadoop.hive.common.classification.InterfaceAudience.Public @org.apache.hadoop.hive.common.classification.InterfaceStability.Stable public interface</value>
                       <unescape>true</unescape>
                     </replacement>
                   </replacements>
