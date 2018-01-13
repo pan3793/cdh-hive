@@ -65,7 +65,6 @@ public class HBaseTestSetup {
     // Set some properties since HiveConf gets recreated for the new query
     Path hbaseRoot = util.getDefaultRootDirPath();
     conf.set(HConstants.HBASE_DIR, hbaseRoot.toUri().toString());
-    FSUtils.setFsDefault(conf, new Path(util.getTestFileSystem().getUri()));
 
     String auxJars = conf.getAuxJars();
     auxJars = (StringUtils.isBlank(auxJars) ? "" : (auxJars + ",")) + "file://"
