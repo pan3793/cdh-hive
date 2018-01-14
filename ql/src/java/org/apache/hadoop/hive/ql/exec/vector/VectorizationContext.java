@@ -178,9 +178,13 @@ public class VectorizationContext {
   }
 
   private HiveVectorAdaptorUsageMode hiveVectorAdaptorUsageMode;
+  //when set to true use the overflow checked vector expressions
+  private boolean useCheckedVectorExpressions;
 
   private void setHiveConfVars(HiveConf hiveConf) {
     hiveVectorAdaptorUsageMode = HiveVectorAdaptorUsageMode.getHiveConfValue(hiveConf);
+    useCheckedVectorExpressions =
+        HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.HIVE_VECTORIZATION_USE_CHECKED_EXPRESSIONS);
   }
 
   private void copyHiveConfVars(VectorizationContext vContextEnvironment) {
@@ -1115,7 +1119,9 @@ public class VectorizationContext {
     if (v1 != null) {
       expr.setChildExpressions(new VectorExpression [] {v1});
     }
+
     expr.setOutputTypeInfo(identityTypeInfo);
+
     return expr;
   }
 
@@ -1182,7 +1188,8 @@ public class VectorizationContext {
       }
     }
     VectorExpressionDescriptor.Descriptor descriptor = builder.build();
-    Class<?> vclass = this.vMap.getVectorExpressionClass(udfClass, descriptor);
+    Class<?> vclass =
+        this.vMap.getVectorExpressionClass(udfClass, descriptor, useCheckedVectorExpressions);
     if (vclass == null) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("No vector udf found for "+udfClass.getSimpleName() + ", descriptor: "+descriptor);

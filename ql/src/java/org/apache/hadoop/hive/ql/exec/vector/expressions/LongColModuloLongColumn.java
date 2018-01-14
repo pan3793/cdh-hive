@@ -34,7 +34,7 @@ public class LongColModuloLongColumn extends VectorExpression {
 
   private int colNum1;
   private int colNum2;
-  private int outputColumn;
+  protected int outputColumn;
 
   public LongColModuloLongColumn(int colNum1, int colNum2, int outputColumn) {
     this.colNum1 = colNum1;

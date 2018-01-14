@@ -145,6 +145,17 @@ public abstract class VectorExpression implements Serializable {
     return null;
   }
 
+  /**
+   * A vector expression which implements a checked execution to account for overflow handling
+   * should override this method and return true. In such a case Vectorizer will use Checked
+   * variation of the vector expression to process data
+   * @return true if vector expression implements a Checked variation of vector expression
+   */
+  public boolean supportsCheckedExecution() {
+    // default is false
+    return false;
+  }
+
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder();
