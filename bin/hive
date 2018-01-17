@@ -110,8 +110,14 @@ if [ ! -f ${HIVE_LIB}/hive-cli-*.jar ]; then
   exit 3;
 fi
 
+LOG_JAR_CLASSPATH="";
+
 for f in ${HIVE_LIB}/*.jar; do
-  CLASSPATH=${CLASSPATH}:$f;
+  if [[ $f == *"log4j"* ]]; then
+    LOG_JAR_CLASSPATH=${LOG_JAR_CLASSPATH}:$f;
+  else
+    CLASSPATH=${CLASSPATH}:$f;
+  fi
 done
 
 # add Spark jars to the classpath
@@ -322,6 +328,9 @@ if [ -f "${HIVE_CONF_DIR}/parquet-logging.properties" ]; then
 else
   export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Dlog4j.configurationFile=hive-log4j2.properties -Djava.util.logging.config.file=$bin/../conf/parquet-logging.properties "
 fi
+
+CLASSPATH="${CLASSPATH}:${LOG_JAR_CLASSPATH}"
+export HADOOP_CLASSPATH="${HADOOP_CLASSPATH}:${LOG_JAR_CLASSPATH}"
 
 if [ "$TORUN" = "" ] ; then
   echo "Service $SERVICE not found"
