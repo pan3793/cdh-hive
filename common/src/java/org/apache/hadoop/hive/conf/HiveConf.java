@@ -2105,7 +2105,7 @@ public class HiveConf extends Configuration {
         "If the property is not set, then logging will be initialized using hive-exec-log4j2.properties found on the classpath.\n" +
         "If the property is set, the value must be a valid URI (java.net.URI, e.g. \"file:///tmp/my-logging.xml\"), \n" +
         "which you can then extract a URL from and pass to PropertyConfigurator.configure(URL)."),
-    HIVE_ASYNC_LOG_ENABLED("hive.async.log.enabled", true,
+    HIVE_ASYNC_LOG_ENABLED("hive.async.log.enabled", false,
         "Whether to enable Log4j2's asynchronous logging. Asynchronous logging can give\n" +
         " significant performance improvement as logging will be handled in separate thread\n" +
         " that uses LMAX disruptor queue for buffering log messages.\n" +
