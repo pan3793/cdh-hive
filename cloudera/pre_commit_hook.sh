@@ -74,7 +74,7 @@ mvn clean install -Dmaven.repo.local="$MVN_REPO_LOCAL" -DskipTests
 # Execute .q tests that were modified in the patch
 tests_modified=`get_qtests_to_execute`
 if [ -n "$tests_modified" ]; then
-  driver_classes=`find .. -name Test*Driver.java | paste -s -d"," -`
+  driver_classes=`find .. -name Test*Driver.java | grep -Evi "llap|tez" | paste -s -d"," -`
   tests=`python ../cloudera/qtest-driver-info.py --hadoopVersion "hadoop-23" --properties ../itests/src/test/resources/testconfiguration.properties --cliConfigsPath ../itests/util/src/main/java/org/apache/hadoop/hive/cli/control/CliConfigs.java --paths $tests_modified --driverClassPaths $driver_classes`
   for t in $tests
   do
