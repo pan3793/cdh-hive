@@ -64,7 +64,7 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: alltypesparquet
-            Statistics: Num rows: 12288 Data size: 593707 Basic stats: COMPLETE Column stats: NONE
+            Statistics: Num rows: 12288 Data size: 593751 Basic stats: COMPLETE Column stats: NONE
             TableScan Vectorization:
                 native: true
                 projectedOutputColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
@@ -74,7 +74,7 @@ STAGE PLANS:
                   native: true
                   predicateExpression: FilterExprOrExpr(children: FilterExprAndExpr(children: FilterDoubleColLessEqualDoubleColumn(col 12, col 4)(children: CastLongToFloatViaLongToDouble(col 2) -> 12:double) -> boolean, FilterDoubleScalarNotEqualDoubleColumn(val 79.553, col 12)(children: CastLongToDouble(col 3) -> 12:double) -> boolean, FilterDoubleColEqualDoubleScalar(col 12, val -29071.0)(children: CastTimestampToDouble(col 9) -> 12:double) -> boolean) -> boolean, FilterExprAndExpr(children: FilterDoubleColGreaterDoubleColumn(col 12, col 5)(children: CastLongToDouble(col 3) -> 12:double) -> boolean, FilterDoubleScalarLessEqualDoubleColumn(val 79.553, col 12)(children: CastLongToDouble(col 1) -> 12:double) -> boolean, FilterTimestampColGreaterTimestampColumn(col 8, col 9) -> boolean) -> boolean) -> boolean
               predicate: (((UDFToFloat(cint) <= cfloat) and (79.553 <> UDFToDouble(cbigint)) and (UDFToDouble(ctimestamp2) = -29071.0)) or ((UDFToDouble(cbigint) > cdouble) and (79.553 <= UDFToDouble(csmallint)) and (ctimestamp1 > ctimestamp2))) (type: boolean)
-              Statistics: Num rows: 2503 Data size: 120934 Basic stats: COMPLETE Column stats: NONE
+              Statistics: Num rows: 2503 Data size: 120943 Basic stats: COMPLETE Column stats: NONE
               Select Operator
                 expressions: ctinyint (type: tinyint), csmallint (type: smallint), cint (type: int), cfloat (type: float)
                 outputColumnNames: ctinyint, csmallint, cint, cfloat
@@ -82,7 +82,7 @@ STAGE PLANS:
                     className: VectorSelectOperator
                     native: true
                     projectedOutputColumns: [0, 1, 2, 4]
-                Statistics: Num rows: 2503 Data size: 120934 Basic stats: COMPLETE Column stats: NONE
+                Statistics: Num rows: 2503 Data size: 120943 Basic stats: COMPLETE Column stats: NONE
                 Group By Operator
                   aggregations: stddev_samp(csmallint), stddev_pop(ctinyint), stddev_samp(cfloat), sum(cfloat), avg(cint), stddev_pop(cint)
                   Group By Vectorization:

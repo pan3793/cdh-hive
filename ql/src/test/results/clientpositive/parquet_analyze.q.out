@@ -94,7 +94,7 @@ Table Parameters:
 	numFiles            	1                   
 	numRows             	100                 
 	rawDataSize         	700                 
-	totalSize           	6690                
+	totalSize           	6681                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -141,8 +141,8 @@ Table Parameters:
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
 	numFiles            	1                   
 	numRows             	100                 
-	rawDataSize         	5952                
-	totalSize           	6690                
+	rawDataSize         	5936                
+	totalSize           	6681                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
