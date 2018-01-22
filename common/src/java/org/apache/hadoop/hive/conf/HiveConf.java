@@ -2726,7 +2726,7 @@ public class HiveConf extends Configuration {
         "  none: default(past) behavior. Implies only alphaNumeric and underscore are valid characters in identifiers.\n" +
         "  column: implies column names can contain any character."
     ),
-    HIVE_SUPPORT_SPECICAL_CHARACTERS_IN_TABLE_NAMES("hive.support.special.characters.tablename", true,
+    HIVE_SUPPORT_SPECICAL_CHARACTERS_IN_TABLE_NAMES("hive.support.special.characters.tablename", false,
         "This flag should be set to true to enable support for special characters in table names.\n"
         + "When it is set to false, only [a-zA-Z_0-9]+ are supported.\n"
         + "The only supported special character right now is '/'. This flag applies only to quoted table names.\n"
