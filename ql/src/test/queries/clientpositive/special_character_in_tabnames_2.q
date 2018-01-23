@@ -1,3 +1,4 @@
+set hive.support.special.characters.tablename=true;
 set hive.cbo.enable=true;
 
 -- try the query without indexing, with manual indexing, and with automatic indexing

@@ -1,3 +1,4 @@
+set hive.support.special.characters.tablename=true;
 set hive.cbo.enable=true;
 set hive.exec.check.crossproducts=false;
 set hive.stats.fetch.column.stats=true;

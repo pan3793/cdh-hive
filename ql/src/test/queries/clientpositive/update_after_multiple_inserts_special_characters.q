@@ -1,3 +1,4 @@
+set hive.support.special.characters.tablename=true;
 set hive.mapred.mode=nonstrict;
 set hive.exec.dynamic.partition.mode=nonstrict;
 set hive.support.concurrency=true;
