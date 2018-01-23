@@ -11,6 +11,7 @@ SOURCE upgrade-2.0.0-to-2.1.0.mysql.sql;
 SOURCE 039-HIVE-12274.mysql.sql;
 SOURCE 047-HIVE-18202.mysql.sql;
 SOURCE 018-HIVE-6757.mysql.sql;
+SOURCE 049-HIVE-18489.mysql.sql;
 
 UPDATE VERSION SET SCHEMA_VERSION='2.1.1', SCHEMA_VERSION_V2='2.1.1-cdh6.0.0', VERSION_COMMENT='Hive release version 2.1.1 for CDH 6.0.0' where VER_ID=1;
 SELECT 'Finished upgrading MetaStore schema from 1.1.0 to 2.1.1' AS ' ';
