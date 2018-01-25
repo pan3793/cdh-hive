@@ -9,7 +9,6 @@ SELECT 'Upgrading MetaStore schema from 1.1.0 to 2.1.1';
 
 -- Apply incremental schema changes to the 2.1.0 schema
 \i 038-HIVE-12274.postgres.sql;
-\i 046-HIVE-18202.postgres.sql;
 \i 018-HIVE-6757.postgres.sql;
 \i 048-HIVE-18489.postgres.sql;
 

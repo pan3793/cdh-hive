@@ -9,7 +9,6 @@ SOURCE upgrade-2.0.0-to-2.1.0.mysql.sql;
 
 -- Apply incremental schema changes to the 2.1.0 schema
 SOURCE 039-HIVE-12274.mysql.sql;
-SOURCE 047-HIVE-18202.mysql.sql;
 SOURCE 018-HIVE-6757.mysql.sql;
 SOURCE 049-HIVE-18489.mysql.sql;
 

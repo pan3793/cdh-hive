@@ -9,7 +9,6 @@ RUN 'upgrade-2.0.0-to-2.1.0.derby.sql';
 
 -- Apply incremental schema changes to the 2.1.0 schema
 RUN '039-HIVE-12274.derby.sql';
-RUN '047-HIVE-18202.derby.sql';
 RUN '018-HIVE-6757.derby.sql';
 RUN '049-HIVE-18489.derby.sql';
 

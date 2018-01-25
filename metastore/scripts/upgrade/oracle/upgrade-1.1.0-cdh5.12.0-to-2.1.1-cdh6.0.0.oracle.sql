@@ -9,7 +9,6 @@ SELECT 'Upgrading MetaStore schema from 1.1.0 to 2.1.1' AS Status from dual;
 
 -- Apply incremental schema changes to the 2.1.0 schema
 @039-HIVE-12274.oracle.sql;
-@047-HIVE-18202-oracle.sql;
 @018-HIVE-6757.oracle.sql;
 @049-HIVE-18489.oracle.sql;
 

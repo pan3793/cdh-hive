@@ -11,7 +11,6 @@ SELECT 'Upgrading MetaStore schema from 1.1.0 to 2.1.1' AS MESSAGE;
 
 -- Apply incremental schema changes to the 2.1.0 schema
 :r 024-HIVE-12274.mssql.sql
-:r 032-HIVE-18202.mssql.sql
 :r 018-HIVE-6757.mssql.sql
 :r 034-HIVE-18489.mssql.sql
 
