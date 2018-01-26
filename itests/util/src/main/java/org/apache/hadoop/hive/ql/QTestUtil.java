@@ -199,7 +199,6 @@ public class QTestUtil {
   private MiniLlapCluster llapCluster = null;
   private String hadoopVer = null;
   private QTestSetup setup = null;
-  private TezSessionState tezSessionState = null;
   private SparkSession sparkSession = null;
   private boolean isSessionStateStarted = false;
   private static final String javaVersion = getJavaVersion();
