@@ -18,7 +18,6 @@
 
 package org.apache.hadoop.hive.metastore.minihms;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -62,16 +61,24 @@ public abstract class AbstractMetaStoreService {
 
   /**
    * Starts the service with adding extra configuration to the default ones. Be aware, as the
-   * current MetaStore does not implement clean shutdown, starting MetaStoreService is possible
-   * only once per test.
+   * current MetaStore does not implement clean shutdown, starting MetaStoreService is possible only
+   * once per test.
    *
-   * @param confOverlay The extra parameters which should be set before starting the service
+   * @param metastoreOverlay The extra metastore parameters which should be set before starting the
+   *          service
+   * @param configurationOverlay The extra other parameters which should be set before starting the
+   *          service
    * @throws Exception if any Exception occurs
    */
-  public void start(Map<HiveConf.ConfVars, String> confOverlay) throws Exception {
-    // Set confOverlay parameters
-    for (Map.Entry<HiveConf.ConfVars, String> entry : confOverlay.entrySet()) {
+  public void start(Map<HiveConf.ConfVars, String> metastoreOverlay,
+                    Map<String, String> configurationOverlay) throws Exception {
+    // Set metastoreOverlay parameters
+    for (Map.Entry<HiveConf.ConfVars, String> entry : metastoreOverlay.entrySet()) {
       HiveConf.setVar(configuration, entry.getKey(), entry.getValue());
+    }
+    // Set other configurationOverlay parameters
+    for (Map.Entry<String, String> entry : configurationOverlay.entrySet()) {
+      configuration.set(entry.getKey(), entry.getValue());
     }
     // Start the service
     start();
