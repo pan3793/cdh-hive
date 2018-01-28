@@ -279,9 +279,11 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
 
         }
         // make metastore URIS random
-        List uriList = Arrays.asList(metastoreUris);
-        Collections.shuffle(uriList);
-        metastoreUris = (URI[]) uriList.toArray();
+        if (HiveConf.getVar(conf, ConfVars.METASTORESELECTION).equalsIgnoreCase("RANDOM")) {
+          List uriList = Arrays.asList(metastoreUris);
+          Collections.shuffle(uriList);
+          metastoreUris = (URI[]) uriList.toArray();
+        }
       } catch (IllegalArgumentException e) {
         throw (e);
       } catch (Exception e) {
@@ -381,10 +383,12 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
           " at the client level.");
     } else {
       close();
-      // Swap the first element of the metastoreUris[] with a random element from the rest
-      // of the array. Rationale being that this method will generally be called when the default
-      // connection has died and the default connection is likely to be the first array element.
-      promoteRandomMetaStoreURI();
+      if (HiveConf.getVar(conf, ConfVars.METASTORESELECTION).equalsIgnoreCase("RANDOM")) {
+        // Swap the first element of the metastoreUris[] with a random element from the rest
+        // of the array. Rationale being that this method will generally be called when the default
+        // connection has died and the default connection is likely to be the first array element.
+        promoteRandomMetaStoreURI();
+      }
       open();
     }
   }
