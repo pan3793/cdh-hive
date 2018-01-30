@@ -1174,7 +1174,7 @@ public class HiveConf extends Configuration {
 
     // default serde for rcfile
     HIVEDEFAULTRCFILESERDE("hive.default.rcfile.serde",
-        "org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe",
+        "org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe",
         "The default SerDe Hive will use for the RCFile format"),
 
     HIVEDEFAULTSERDE("hive.default.serde",
