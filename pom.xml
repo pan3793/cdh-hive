@@ -174,7 +174,6 @@
     <opencsv.version>2.3</opencsv.version>
     <mockito-all.version>${cdh.mockito.version}</mockito-all.version>
     <mina.version>${cdh.mina.version}</mina.version>
-    <spark.netty.version>4.0.29.Final</spark.netty.version>
     <netty.version>${cdh.io.netty-all.version}</netty.version>
     <parquet.version>${cdh.apache-parquet.version}</parquet.version>
     <pig.version>${cdh.pig.version}</pig.version>

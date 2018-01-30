@@ -48,7 +48,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
-      <version>${spark.netty.version}</version>
+      <version>${netty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
