@@ -109,8 +109,9 @@ public class HCatBaseTest {
    *                      debugging easier
    */
   public static PigServer createPigServer(boolean stopOnFailure) throws ExecException {
+    Properties p = new Properties();
+    p.put("pig.temp.dir", new File(System.getProperty("test.tmp.dir"), "pig-tmp"));
     if(stopOnFailure) {
-      Properties p = new Properties();
       p.put("stop.on.failure", Boolean.TRUE.toString());
       return new PigServer(ExecType.LOCAL, p);
     }
