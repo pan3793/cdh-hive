@@ -79,6 +79,7 @@ public class TestMultiSessionsHS2WithLocalClusterSpark {
     conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer");
     conf.set("spark.master", "local-cluster[2,2,1024]");
     conf.set("spark.deploy.defaultCores", "2");
+    conf.set("hive.spark.client.connect.timeout", "30000ms");
     return conf;
   }
 

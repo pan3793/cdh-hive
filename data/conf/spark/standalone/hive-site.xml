@@ -261,4 +261,9 @@
   <description>Internal marker for test. Used for masking env-dependent values</description>
 </property>
 
+<property>
+  <name>hive.spark.client.connect.timeout</name>
+  <value>30000ms</value>
+</property>
+
 </configuration>
