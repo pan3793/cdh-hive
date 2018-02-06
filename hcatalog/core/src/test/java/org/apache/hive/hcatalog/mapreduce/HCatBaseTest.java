@@ -110,11 +110,12 @@ public class HCatBaseTest {
    */
   public static PigServer createPigServer(boolean stopOnFailure) throws ExecException {
     Properties p = new Properties();
-    p.put("pig.temp.dir", new File(System.getProperty("test.tmp.dir"), "pig-tmp"));
+    p.setProperty("pig.temp.dir",
+            new File(System.getProperty("test.tmp.dir"), "pig-tmp").toString());
     if(stopOnFailure) {
       p.put("stop.on.failure", Boolean.TRUE.toString());
       return new PigServer(ExecType.LOCAL, p);
     }
-    return new PigServer(ExecType.LOCAL);
+    return new PigServer(ExecType.LOCAL, p);
   }
 }
