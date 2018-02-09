@@ -117,6 +117,7 @@ public class SparkTask extends Task<SparkWork> {
       perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.SPARK_SUBMIT_JOB);
 
       if (driverContext.isShutdown()) {
+        LOG.warn("Killing Spark job");
         killJob();
         throw new HiveException("Operation is cancelled.");
       }
@@ -331,7 +332,7 @@ public class SparkTask extends Task<SparkWork> {
       try {
         jobRef.cancelJob();
       } catch (Exception e) {
-        LOG.warn("failed to kill job", e);
+        LOG.warn("Failed to kill Spark job", e);
       }
     }
   }
@@ -417,6 +418,7 @@ public class SparkTask extends Task<SparkWork> {
           if ((error instanceof InterruptedException) ||
               (error instanceof HiveException &&
               error.getCause() instanceof InterruptedException)) {
+            LOG.info("Killing Spark job since query was interrupted");
             killJob();
           }
           HiveException he;
