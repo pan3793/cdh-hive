@@ -53,6 +53,7 @@ import org.apache.hadoop.hive.ql.CommandNeedRetryException;
 import org.apache.hadoop.hive.ql.Context;
 import org.apache.hadoop.hive.ql.Driver;
 import org.apache.hadoop.hive.ql.QueryPlan;
+import org.apache.hadoop.hive.ql.QueryState;
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.Task;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
@@ -217,7 +218,7 @@ public class GenericUDTFGetSplits extends GenericUDTF {
       throw new HiveException(e);
     }
 
-    Driver driver = new Driver(conf);
+    Driver driver = new Driver(new QueryState.Builder().withHiveConf(conf).nonIsolated().build(), null, null);
     CommandProcessorResponse cpr;
 
     LOG.info("setting fetch.task.conversion to none and query file format to \""

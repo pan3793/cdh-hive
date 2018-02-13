@@ -84,6 +84,7 @@ import static org.junit.Assume.assumeTrue;
 
 @RunWith(Parameterized.class)
 public class TestHCatLoaderEncryption {
+
   private static final AtomicInteger salt = new AtomicInteger(new Random().nextInt());
   private static final Logger LOG = LoggerFactory.getLogger(TestHCatLoaderEncryption.class);
   private final String TEST_DATA_DIR = HCatUtil.makePathASafeFileName(System.getProperty
@@ -185,11 +186,11 @@ public class TestHCatLoaderEncryption {
       WindowsPathUtil.convertPathsFromWindowsToHdfs(hiveConf);
     }
 
-    driver = DriverFactory.newDriver(hiveConf);
-
     initEncryptionShim(hiveConf);
     String encryptedTablePath =  TEST_WAREHOUSE_DIR + "/encryptedTable";
     SessionState.start(new CliSessionState(hiveConf));
+
+    driver = DriverFactory.newDriver(hiveConf);
 
     SessionState.get().out = System.out;
 

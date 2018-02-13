@@ -102,6 +102,7 @@ import org.apache.hadoop.hive.metastore.events.ListenerEvent;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage.EventType;
 import org.apache.hadoop.hive.ql.DriverFactory;
 import org.apache.hadoop.hive.ql.IDriver;
+import org.apache.hadoop.hive.ql.QueryState;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.hcatalog.common.HCatConstants;
 import org.apache.hive.hcatalog.data.Pair;
@@ -254,7 +255,7 @@ public class TestDbNotificationListener {
         "org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactory");
     SessionState.start(new CliSessionState(conf));
     msClient = new HiveMetaStoreClient(conf);
-    driver = DriverFactory.newDriver(conf);
+    driver = DriverFactory.newDriver(new QueryState.Builder().withGenerateNewQueryId(true).nonIsolated().withHiveConf(conf).build(), null, null);
     md = MessageFactory.getInstance().getDeserializer();
   }
 

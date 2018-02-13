@@ -37,6 +37,7 @@ import org.apache.hadoop.hive.metastore.txn.TxnDbUtil;
 import org.apache.hadoop.hive.ql.Context;
 import org.apache.hadoop.hive.ql.Driver;
 import org.apache.hadoop.hive.ql.ErrorMsg;
+import org.apache.hadoop.hive.ql.QueryState;
 import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.junit.Before;
@@ -81,7 +82,7 @@ public class TestDbTxnManager2 {
   public void setUp() throws Exception {
     SessionState.start(conf);
     ctx = new Context(conf);
-    driver = new Driver(conf);
+    driver = new Driver(new QueryState.Builder().withHiveConf(conf).nonIsolated().build(), null);
     driver.init();
     TxnDbUtil.cleanDb();
     TxnDbUtil.prepDb();

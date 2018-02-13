@@ -108,7 +108,7 @@ public class TestTxnCommands {
       throw new RuntimeException("Could not create " + TEST_WAREHOUSE_DIR);
     }
     SessionState.start(new SessionState(hiveConf));
-    d = new Driver(hiveConf);
+    d = new Driver(new QueryState.Builder().withHiveConf(hiveConf).nonIsolated().build(), null);
     dropTables();
     runStatementOnDriver("create table " + Table.ACIDTBL + "(a int, b int) clustered by (a) into " + BUCKET_COUNT + " buckets stored as orc TBLPROPERTIES ('transactional'='true')");
     runStatementOnDriver("create table " + Table.NONACIDORCTBL + "(a int, b int) clustered by (a) into " + BUCKET_COUNT + " buckets stored as orc TBLPROPERTIES ('transactional'='false')");

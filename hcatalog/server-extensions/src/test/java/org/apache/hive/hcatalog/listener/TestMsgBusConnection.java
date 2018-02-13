@@ -39,6 +39,7 @@ import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
 import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.ql.DriverFactory;
 import org.apache.hadoop.hive.ql.IDriver;
+import org.apache.hadoop.hive.ql.QueryState;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.hcatalog.common.HCatConstants;
 import org.apache.hive.hcatalog.messaging.HCatEventMessage;
@@ -75,7 +76,7 @@ public class TestMsgBusConnection extends TestCase {
     "org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactory");
     hiveConf.set(HCatConstants.HCAT_MSGBUS_TOPIC_PREFIX, "planetlab.hcat");
     SessionState.start(new CliSessionState(hiveConf));
-    driver = DriverFactory.newDriver(hiveConf);
+    driver = DriverFactory.newDriver(new QueryState.Builder().withGenerateNewQueryId(true).nonIsolated().withHiveConf(hiveConf).build(), null, null);
   }
 
   private void connectClient() throws JMSException {

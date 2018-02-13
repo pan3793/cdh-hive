@@ -20,7 +20,6 @@ package org.apache.hadoop.hive.ql;
 
 import java.sql.Timestamp;
 import java.util.Map;
-
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.plan.HiveOperation;
@@ -160,7 +159,7 @@ public class QueryState {
    */
   public static class Builder {
     private Map<String, String> confOverlay = null;
-    private boolean runAsync = false;
+    private boolean isolated = true;
     private boolean generateNewQueryId = false;
     private HiveConf hiveConf = null;
     private LineageState lineageState = null;
@@ -172,17 +171,6 @@ public class QueryState {
     }
 
     /**
-     * Set this to true if the configuration should be detached from the original config. If not
-     * set the default value is false.
-     * @param runAsync If the configuration should be detached
-     * @return The builder
-     */
-    public Builder withRunAsync(boolean runAsync) {
-      this.runAsync = runAsync;
-      return this;
-    }
-
-    /**
      * Set this if there are specific configuration values which should be added to the original
      * config. If at least one value is set, then the configuration will be detached from the
      * original one.
@@ -191,6 +179,16 @@ public class QueryState {
      */
     public Builder withConfOverlay(Map<String, String> confOverlay) {
       this.confOverlay = confOverlay;
+      return this;
+    }
+
+    /**
+     * Disable configuration isolation.
+     *
+     * For internal use / testing purposes only.
+     */
+    public Builder nonIsolated() {
+      isolated = false;
       return this;
     }
 
@@ -236,14 +234,17 @@ public class QueryState {
      * @return The generated QueryState object
      */
     public QueryState build() {
-      HiveConf queryConf = hiveConf;
+      HiveConf queryConf;
 
-      if (queryConf == null) {
-        // Generate a new conf if necessary
-        queryConf = new HiveConf();
-      } else if (runAsync || (confOverlay != null && !confOverlay.isEmpty())) {
-        // Detach the original conf if necessary
-        queryConf = new HiveConf(queryConf);
+      if (isolated) {
+        // isolate query conf
+        if (hiveConf == null) {
+          queryConf = new HiveConf();
+        } else {
+          queryConf = new HiveConf(hiveConf);
+        }
+      } else {
+        queryConf = hiveConf;
       }
 
       // Set the specific parameters if needed
@@ -260,7 +261,13 @@ public class QueryState {
 
       // Generate the new queryId if needed
       if (generateNewQueryId) {
-        queryConf.setVar(HiveConf.ConfVars.HIVEQUERYID, QueryPlan.makeQueryId());
+        String queryId = QueryPlan.makeQueryId();
+        queryConf.setVar(HiveConf.ConfVars.HIVEQUERYID, queryId);
+        // FIXME: druid storage handler relies on query.id to maintain some staging directories
+        // expose queryid to session level
+        if (hiveConf != null) {
+          hiveConf.setVar(HiveConf.ConfVars.HIVEQUERYID, queryId);
+        }
       }
 
       QueryState queryState = new QueryState(queryConf);

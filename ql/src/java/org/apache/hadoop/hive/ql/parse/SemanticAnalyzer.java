@@ -7238,6 +7238,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     backwards incompatible.
     */
     conf.set(AcidUtils.CONF_ACID_KEY, "true");
+    SessionState.get().getConf().set(AcidUtils.CONF_ACID_KEY, "true");
 
     if (table.getNumBuckets() < 1) {
       throw new SemanticException(ErrorMsg.ACID_OP_ON_NONACID_TABLE, table.getTableName());
@@ -7245,9 +7246,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     if (table.getSortCols() != null && table.getSortCols().size() > 0) {
       throw new SemanticException(ErrorMsg.ACID_NO_SORTED_BUCKETS, table.getTableName());
     }
-
-
-
   }
 
   /**

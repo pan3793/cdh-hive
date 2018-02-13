@@ -412,5 +412,4 @@ public class SetProcessor implements CommandProcessor {
 
     return sch;
   }
-
 }

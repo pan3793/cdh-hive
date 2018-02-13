@@ -190,7 +190,7 @@ public class CliDriver {
         }
       } catch (SQLException e) {
         console.printError("Failed processing command " + tokens[0] + " " + e.getLocalizedMessage(),
-          org.apache.hadoop.util.StringUtils.stringifyException(e));
+            org.apache.hadoop.util.StringUtils.stringifyException(e));
         ret = 1;
       }
     }
@@ -411,11 +411,9 @@ public class CliDriver {
         lastRet = ret;
         boolean ignoreErrors = HiveConf.getBoolVar(conf, HiveConf.ConfVars.CLIIGNOREERRORS);
         if (ret != 0 && !ignoreErrors) {
-          CommandProcessorFactory.clean((HiveConf) conf);
           return ret;
         }
       }
-      CommandProcessorFactory.clean((HiveConf) conf);
       return lastRet;
     } finally {
       // Once we are done processing the line, restore the old handler

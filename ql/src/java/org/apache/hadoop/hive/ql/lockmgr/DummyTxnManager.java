@@ -50,6 +50,8 @@ class DummyTxnManager extends HiveTxnManagerImpl {
 
   private HiveLockManager lockMgr;
 
+  private HiveLockManagerCtx lockManagerCtx;
+
   @Override
   public long openTxn(String user) throws LockException {
     // No-op
@@ -84,7 +86,8 @@ class DummyTxnManager extends HiveTxnManagerImpl {
           LOG.info("Creating lock manager of type " + lockMgrName);
           lockMgr = (HiveLockManager)ReflectionUtils.newInstance(
               conf.getClassByName(lockMgrName), conf);
-          lockMgr.setContext(new HiveLockManagerCtx(conf));
+          lockManagerCtx = new HiveLockManagerCtx(conf);
+          lockMgr.setContext(lockManagerCtx);
         } catch (Exception e) {
           // set hiveLockMgr to null just in case this invalid manager got set to
           // next query's ctx.
@@ -106,6 +109,7 @@ class DummyTxnManager extends HiveTxnManagerImpl {
     }
     // Force a re-read of the configuration file.  This is done because
     // different queries in the session may be using the same lock manager.
+    lockManagerCtx.setConf(conf);
     lockMgr.refresh();
     return lockMgr;
   }
@@ -122,7 +126,9 @@ class DummyTxnManager extends HiveTxnManagerImpl {
 
     // If the lock manager is still null, then it means we aren't using a
     // lock manager
-    if (lockMgr == null) return;
+    if (lockMgr == null) {
+      return;
+    }
 
     List<HiveLockObj> lockObjects = new ArrayList<HiveLockObj>();
 
@@ -237,6 +243,7 @@ class DummyTxnManager extends HiveTxnManagerImpl {
   }
 
 
+  @Override
   protected void destruct() {
     if (lockMgr != null) {
       try {
