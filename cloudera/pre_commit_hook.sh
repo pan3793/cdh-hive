@@ -31,6 +31,9 @@ fi
 
 export PATH=${JAVA_HOME}/bin:${PATH}
 
+# activate mvn-gbn wrapper
+mv "$(which mvn-gbn-wrapper)" "$(dirname "$(which mvn-gbn-wrapper)")/mvn"
+
 # WORKSPACE is an environment variable created by Jenkins, and it is the directory where the build is executed.
 # If not set, then default to $HOME
 MVN_REPO_LOCAL=`readlink -f ${WORKSPACE:-$HOME}`/.m2/repository
