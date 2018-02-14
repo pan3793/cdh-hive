@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.metastore.client;
 import java.util.List;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.Index;
 import org.apache.hadoop.hive.metastore.api.MetaException;
@@ -361,13 +362,17 @@ public class TestGetListIndexes extends MetaStoreClientTest {
   // Helper methods
 
   private Table createTable(String dbName, String tableName) throws Exception {
-    Table table = buildTable(dbName, tableName);
+    Table table = buildTable(dbName, tableName, null);
     client.createTable(table);
     return table;
   }
 
-  private Table buildTable(String dbName, String tableName) throws Exception {
-    Table table = new TableBuilder()
+  private Table buildIndexTable(String dbName, String tableName) throws Exception {
+    return buildTable(dbName, tableName, TableType.INDEX_TABLE);
+  }
+
+  private Table buildTable(String dbName, String tableName, TableType tableType) throws Exception {
+    TableBuilder tableBuilder = new TableBuilder()
         .setDbName(dbName)
         .setTableName(tableName)
         .addCol("id", "int", "test col id")
@@ -376,9 +381,13 @@ public class TestGetListIndexes extends MetaStoreClientTest {
         .setSerdeName(tableName)
         .setStoredAsSubDirectories(false)
         .addSerdeParam("testSerdeParamKey", "testSerdeParamValue")
-        .setLocation(metaStore.getWarehouseRoot() + "/" + tableName)
-        .build();
-    return table;
+        .setLocation(metaStore.getWarehouseRoot() + "/" + tableName);
+
+    if (tableType != null){
+      tableBuilder.setType(tableType.name());
+    }
+
+    return tableBuilder.build();
   }
 
   private Index createIndex(Table origTable, String indexName) throws Exception {
@@ -387,7 +396,7 @@ public class TestGetListIndexes extends MetaStoreClientTest {
     String origTableName = origTable.getTableName();
     String indexTableName = origTableName + "__" + indexName + "__";
     Index index = buildIndex(dbName, origTableName, indexName, indexTableName);
-    client.createIndex(index, buildTable(dbName, indexTableName));
+    client.createIndex(index, buildTable(dbName, indexTableName, TableType.INDEX_TABLE));
     return client.getIndex(dbName, origTableName, indexName);
   }
 
