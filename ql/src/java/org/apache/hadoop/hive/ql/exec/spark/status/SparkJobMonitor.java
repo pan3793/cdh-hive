@@ -83,7 +83,7 @@ abstract class SparkJobMonitor {
     monitorTimeoutInterval = hiveConf.getTimeVar(
         HiveConf.ConfVars.SPARK_JOB_MONITOR_TIMEOUT, TimeUnit.SECONDS);
     inPlaceUpdate = InPlaceUpdates.inPlaceEligible(hiveConf);
-    console = SessionState.getConsole();
+    console = new SessionState.LogHelper(LOG);
     out = SessionState.LogHelper.getInfoStream();
   }
 
