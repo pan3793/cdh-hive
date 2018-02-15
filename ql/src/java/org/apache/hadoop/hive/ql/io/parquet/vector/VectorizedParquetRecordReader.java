@@ -1,9 +1,13 @@
-/**
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,9 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.hadoop.hive.ql.io.parquet.vector;
 
-import com.google.common.annotations.VisibleForTesting;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx;
@@ -40,6 +51,7 @@ import org.apache.parquet.hadoop.metadata.BlockMetaData;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.InvalidSchemaException;
 import org.apache.parquet.schema.MessageType;
+import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -316,6 +328,19 @@ public class VectorizedParquetRecordReader extends ParquetRecordReaderBase
     return res;
   }
 
+  // TODO support only non nested case
+  private PrimitiveType getElementType(Type type) {
+    if (type.isPrimitive()) {
+      return type.asPrimitiveType();
+    }
+    if (type.asGroupType().getFields().size() > 1) {
+      throw new RuntimeException(
+          "Current Parquet Vectorization reader doesn't support nested type");
+    }
+    return type.asGroupType().getFields().get(0).asGroupType().getFields().get(0)
+        .asPrimitiveType();
+  }
+
   // Build VectorizedParquetColumnReader via Hive typeInfo and Parquet schema
   private VectorizedColumnReader buildVectorizedParquetReader(
     TypeInfo typeInfo,
@@ -331,9 +356,13 @@ public class VectorizedParquetRecordReader extends ParquetRecordReaderBase
       if (columnDescriptors == null || columnDescriptors.isEmpty()) {
         throw new RuntimeException(
           "Failed to find related Parquet column descriptor with type " + type);
-      } else {
+      }
+      if (fileSchema.getColumns().contains(descriptors.get(0))) {
         return new VectorizedPrimitiveColumnReader(descriptors.get(0),
-          pages.getPageReader(descriptors.get(0)), skipTimestampConversion, type);
+          pages.getPageReader(descriptors.get(0)), skipTimestampConversion, type, typeInfo);
+      } else {
+        // Support for schema evolution
+        return new VectorizedDummyColumnReader();
       }
     case STRUCT:
       StructTypeInfo structTypeInfo = (StructTypeInfo) typeInfo;

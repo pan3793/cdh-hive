@@ -1,9 +1,9 @@
-/**
+/*
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,11 +26,14 @@ import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.DoubleColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.StructColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx;
 import org.apache.hadoop.hive.ql.io.IOConstants;
 import org.apache.hadoop.hive.ql.io.parquet.read.DataWritableReadSupport;
 import org.apache.hadoop.hive.ql.io.parquet.serde.ArrayWritableObjectInspector;
+import org.apache.hadoop.hive.ql.io.parquet.timestamp.NanoTime;
+import org.apache.hadoop.hive.ql.io.parquet.timestamp.NanoTimeUtils;
 import org.apache.hadoop.hive.ql.io.parquet.vector.VectorizedParquetRecordReader;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.plan.MapWork;
@@ -42,8 +45,8 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.FileSplit;
-import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.example.data.simple.SimpleGroupFactory;
@@ -53,9 +56,10 @@ import org.apache.parquet.hadoop.example.GroupReadSupport;
 import org.apache.parquet.hadoop.example.GroupWriteSupport;
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.schema.MessageType;
+
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
@@ -127,73 +131,66 @@ public class VectorizedColumnReaderTestBase {
   protected static ParquetWriter<Group> initWriterFromFile() throws IOException {
     GroupWriteSupport.setSchema(schema, conf);
     return new ParquetWriter<>(
-      file,
-      new GroupWriteSupport(),
-      GZIP, 1024 * 1024, 1024, 1024 * 1024,
-      true, false, PARQUET_1_0, conf);
+        file,
+        new GroupWriteSupport(),
+        GZIP, 1024 * 1024, 1024, 1024 * 1024,
+        true, false, PARQUET_1_0, conf);
   }
 
   protected static int getIntValue(
-    boolean isDictionaryEncoding,
-    int index) {
+      boolean isDictionaryEncoding,
+      int index) {
     return isDictionaryEncoding ? index % UNIQUE_NUM : index;
   }
 
   protected static double getDoubleValue(
-    boolean isDictionaryEncoding,
-    int index) {
+      boolean isDictionaryEncoding,
+      int index) {
     return isDictionaryEncoding ? index % UNIQUE_NUM : index;
   }
 
   protected static long getLongValue(
-    boolean isDictionaryEncoding,
-    int index) {
+      boolean isDictionaryEncoding,
+      int index) {
     return isDictionaryEncoding ? (long) 2 * index % UNIQUE_NUM : (long) 2 * index;
   }
 
   protected static float getFloatValue(
-    boolean isDictionaryEncoding,
-    int index) {
+      boolean isDictionaryEncoding,
+      int index) {
     return (float) (isDictionaryEncoding ? index % UNIQUE_NUM * 2.0 : index * 2.0);
   }
 
   protected static boolean getBooleanValue(
-    float index) {
+      float index) {
     return (index % 2 == 0);
   }
 
-  protected static String getTimestampStr(int index) {
-    String s = String.valueOf(index);
-    int l = 4 - s.length();
-    for (int i = 0; i < l; i++) {
-      s = "0" + s;
-    }
-    return "99999999" + s;
+  protected static NanoTime getNanoTime(int index) {
+    return NanoTimeUtils.getNanoTime(new Timestamp(index), false);
   }
 
   protected static HiveDecimal getDecimal(
-    boolean isDictionaryEncoding,
-    int index) {
+      boolean isDictionaryEncoding,
+      int index) {
     int decimalVal = index % 100;
-    String decimalStr = (decimalVal < 10) ? "0" + String.valueOf(decimalVal) : String.valueOf
-      (decimalVal);
+    String decimalStr = (decimalVal < 10) ? "0" + String.valueOf(decimalVal) : String
+        .valueOf(decimalVal);
     int intVal = (isDictionaryEncoding) ? index % UNIQUE_NUM : index / 100;
-    String d = String.valueOf(intVal) + decimalStr;
-    BigInteger bi = new BigInteger(d);
-    BigDecimal bd = new BigDecimal(bi);
-    return HiveDecimal.create(bd);
+    String d = String.valueOf(intVal) + "." + decimalStr;
+    return HiveDecimal.create(d);
   }
 
   protected static Binary getTimestamp(
-    boolean isDictionaryEncoding,
-    int index) {
-    String s = isDictionaryEncoding ? getTimestampStr(index % UNIQUE_NUM) : getTimestampStr(index);
-    return Binary.fromReusedByteArray(s.getBytes());
+      boolean isDictionaryEncoding,
+      int index) {
+    NanoTime s = isDictionaryEncoding ? getNanoTime(index % UNIQUE_NUM) : getNanoTime(index);
+    return s.toBinary();
   }
 
   protected static String getStr(
-    boolean isDictionaryEncoding,
-    int index) {
+      boolean isDictionaryEncoding,
+      int index) {
     int binaryLen = isDictionaryEncoding ? index % UNIQUE_NUM : index;
     String v = "";
     while (binaryLen > 0) {
@@ -205,8 +202,8 @@ public class VectorizedColumnReaderTestBase {
   }
 
   protected static Binary getBinaryValue(
-    boolean isDictionaryEncoding,
-    int index) {
+      boolean isDictionaryEncoding,
+      int index) {
     return Binary.fromString(getStr(isDictionaryEncoding, index));
   }
 
@@ -215,20 +212,20 @@ public class VectorizedColumnReaderTestBase {
   }
 
   public static VectorizedParquetRecordReader createTestParquetReader(String schemaString, Configuration conf)
-    throws IOException, InterruptedException, HiveException {
+      throws IOException, InterruptedException, HiveException {
     conf.set(PARQUET_READ_SCHEMA, schemaString);
     HiveConf.setBoolVar(conf, HiveConf.ConfVars.HIVE_VECTORIZATION_ENABLED, true);
     HiveConf.setVar(conf, HiveConf.ConfVars.PLAN, "//tmp");
     Job vectorJob = new Job(conf, "read vector");
     ParquetInputFormat.setInputPaths(vectorJob, file);
     initialVectorizedRowBatchCtx(conf);
-    return new VectorizedParquetRecordReader(getFileSplit(vectorJob),new JobConf(conf));
+    return new VectorizedParquetRecordReader(getFileSplit(vectorJob), new JobConf(conf));
   }
 
   protected static FileSplit getFileSplit(Job vectorJob) throws IOException, InterruptedException {
     ParquetInputFormat parquetInputFormat = new ParquetInputFormat(GroupReadSupport.class);
     InputSplit split = (InputSplit) parquetInputFormat.getSplits(vectorJob).get(0);
-    FileSplit fsplit = new FileSplit(file,0L,split.getLength(),split.getLocations());
+    FileSplit fsplit = new FileSplit(file, 0L, split.getLength(), split.getLocations());
     return fsplit;
   }
 
@@ -245,13 +242,13 @@ public class VectorizedColumnReaderTestBase {
       boolean booleanVal = getBooleanValue(i);
       Binary binary = getBinaryValue(isDictionaryEncoding, i);
       Group group = f.newGroup()
-        .append("int32_field", intVal)
-        .append("int64_field", longVal)
-        .append("int96_field", timeStamp)
-        .append("double_field", doubleVal)
-        .append("float_field", floatVal)
-        .append("boolean_field", booleanVal)
-        .append("flba_field", "abc");
+          .append("int32_field", intVal)
+          .append("int64_field", longVal)
+          .append("int96_field", timeStamp)
+          .append("double_field", doubleVal)
+          .append("float_field", floatVal)
+          .append("boolean_field", booleanVal)
+          .append("flba_field", "abc");
 
       if (!isNull) {
         group.append("some_null_field", "x");
@@ -267,8 +264,8 @@ public class VectorizedColumnReaderTestBase {
       group.append("value", Binary.fromConstantByteArray(w.getInternalStorage()));
 
       group.addGroup("struct_field")
-        .append("a", intVal)
-        .append("b", doubleVal);
+          .append("a", intVal)
+          .append("b", doubleVal);
 
       Group g = group.addGroup("nested_struct_field");
 
@@ -319,14 +316,154 @@ public class VectorizedColumnReaderTestBase {
     return new ArrayWritableObjectInspector((StructTypeInfo) rowTypeInfo);
   }
 
-  protected void intRead(boolean isDictionaryEncoding) throws InterruptedException, HiveException, IOException {
-    Configuration conf = new Configuration();
-    conf.set(IOConstants.COLUMNS,"int32_field");
-    conf.set(IOConstants.COLUMNS_TYPES,"int");
+  protected void timestampRead(boolean isDictionaryEncoding) throws InterruptedException,
+      HiveException, IOException {
+    conf.set(IOConstants.COLUMNS, "int96_field");
+    conf.set(IOConstants.COLUMNS_TYPES, "timestamp");
+    conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    VectorizedParquetRecordReader reader = createTestParquetReader("message test { required " +
+        "int96 int96_field;}", conf);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int c = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        TimestampColumnVector vector = (TimestampColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.nanos.length; i++) {
+          if (c == nElements) {
+            break;
+          }
+          Timestamp expected = isDictionaryEncoding ? new Timestamp(c % UNIQUE_NUM) : new Timestamp(c);
+          assertEquals("Not the same time at " + c, expected.getTime(), vector.getTime(i));
+          assertEquals("Not the same nano at " + c, expected.getNanos(), vector.getNanos(i));
+          assertFalse(vector.isNull[i]);
+          c++;
+        }
+      }
+      assertEquals(nElements, c);
+    } finally {
+      reader.close();
+    }
+  }
+
+  protected void stringReadTimestamp(boolean isDictionaryEncoding) throws InterruptedException,
+      HiveException, IOException {
+    conf.set(IOConstants.COLUMNS, "int96_field");
+    conf.set(IOConstants.COLUMNS_TYPES, "string");
+    conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    VectorizedParquetRecordReader reader = createTestParquetReader("message test { required " +
+        "int96 int96_field;}", conf);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int c = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        BytesColumnVector vector = (BytesColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.vector.length; i++) {
+          if (c == nElements) {
+            break;
+          }
+
+          Timestamp expected = isDictionaryEncoding ? new Timestamp(c % UNIQUE_NUM) : new Timestamp(
+              c);
+          String actual = new String(Arrays
+              .copyOfRange(vector.vector[i], vector.start[i], vector.start[i] + vector.length[i]));
+          assertEquals("Not the same time at " + c, expected.toString(), actual);
+
+          assertFalse(vector.isNull[i]);
+          c++;
+        }
+      }
+      assertEquals(nElements, c);
+    } finally {
+      reader.close();
+    }
+  }
+
+  protected void floatReadInt(boolean isDictionaryEncoding) throws InterruptedException,
+      HiveException, IOException {
+    conf.set(IOConstants.COLUMNS, "int32_field");
+    conf.set(IOConstants.COLUMNS_TYPES, "float");
+    conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    VectorizedParquetRecordReader reader = createTestParquetReader("message test { required int32" +
+        " int32_field;}", conf);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int c = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        DoubleColumnVector vector = (DoubleColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.vector.length; i++) {
+          if (c == nElements) {
+            break;
+          }
+          assertEquals("Failed at " + c, getIntValue(isDictionaryEncoding, c), vector.vector[i], 0);
+          assertFalse(vector.isNull[i]);
+          c++;
+        }
+      }
+      assertEquals(nElements, c);
+    } finally {
+      reader.close();
+    }
+  }
+
+  protected void doubleReadInt(boolean isDictionaryEncoding) throws InterruptedException,
+      HiveException, IOException {
+    conf.set(IOConstants.COLUMNS, "int32_field");
+    conf.set(IOConstants.COLUMNS_TYPES, "double");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     VectorizedParquetRecordReader reader =
-      createTestParquetReader("message test { required int32 int32_field;}", conf);
+        createTestParquetReader("message test { required int32 int32_field;}", conf);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int c = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        DoubleColumnVector vector = (DoubleColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.vector.length; i++) {
+          if (c == nElements) {
+            break;
+          }
+          assertEquals("Failed at " + c, getIntValue(isDictionaryEncoding, c), vector.vector[i], 0);
+          assertFalse(vector.isNull[i]);
+          c++;
+        }
+      }
+      assertEquals(nElements, c);
+    } finally {
+      reader.close();
+    }
+  }
+
+  protected void longReadInt(boolean isDictionaryEncoding) throws InterruptedException,
+      HiveException, IOException {
+    Configuration c = new Configuration();
+    c.set(IOConstants.COLUMNS, "int32_field");
+    c.set(IOConstants.COLUMNS_TYPES, "bigint");
+    c.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    c.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    intRead(isDictionaryEncoding, c);
+  }
+
+  protected void intRead(boolean isDictionaryEncoding) throws InterruptedException,
+      HiveException, IOException {
+    Configuration c = new Configuration();
+    c.set(IOConstants.COLUMNS, "int32_field");
+    c.set(IOConstants.COLUMNS_TYPES, "int");
+    c.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    c.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    intRead(isDictionaryEncoding, c);
+  }
+
+  private void intRead(boolean isDictionaryEncoding, Configuration conf) throws
+      InterruptedException, HiveException, IOException {
+    VectorizedParquetRecordReader reader =
+        createTestParquetReader("message test { required int32 int32_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
     try {
       int c = 0;
@@ -334,7 +471,7 @@ public class VectorizedColumnReaderTestBase {
         LongColumnVector vector = (LongColumnVector) previous.cols[0];
         assertTrue(vector.noNulls);
         for (int i = 0; i < vector.vector.length; i++) {
-          if(c == nElements){
+          if (c == nElements) {
             break;
           }
           assertEquals("Failed at " + c, getIntValue(isDictionaryEncoding, c), vector.vector[i]);
@@ -348,14 +485,78 @@ public class VectorizedColumnReaderTestBase {
     }
   }
 
-  protected void longRead(boolean isDictionaryEncoding) throws Exception {
-    Configuration conf = new Configuration();
-    conf.set(IOConstants.COLUMNS, "int64_field");
-    conf.set(IOConstants.COLUMNS_TYPES, "bigint");
-    conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
-    conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+  protected void floatReadLong(boolean isDictionaryEncoding) throws Exception {
+    Configuration c = new Configuration();
+    c.set(IOConstants.COLUMNS, "int64_field");
+    c.set(IOConstants.COLUMNS_TYPES, "float");
+    c.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    c.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     VectorizedParquetRecordReader reader =
-      createTestParquetReader("message test { required int64 int64_field;}", conf);
+        createTestParquetReader("message test { required int64 int64_field;}", c);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int count = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        DoubleColumnVector vector = (DoubleColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.vector.length; i++) {
+          if (count == nElements) {
+            break;
+          }
+          assertEquals("Failed at " + count, getLongValue(isDictionaryEncoding, count), vector
+              .vector[i], 0);
+          assertFalse(vector.isNull[i]);
+          count++;
+        }
+      }
+      assertEquals(nElements, count);
+    } finally {
+      reader.close();
+    }
+  }
+
+  protected void doubleReadLong(boolean isDictionaryEncoding) throws Exception {
+    Configuration c = new Configuration();
+    c.set(IOConstants.COLUMNS, "int64_field");
+    c.set(IOConstants.COLUMNS_TYPES, "double");
+    c.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    c.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    VectorizedParquetRecordReader reader =
+        createTestParquetReader("message test { required int64 int64_field;}", c);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int count = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        DoubleColumnVector vector = (DoubleColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.vector.length; i++) {
+          if (count == nElements) {
+            break;
+          }
+          assertEquals("Failed at " + count, getLongValue(isDictionaryEncoding, count),
+              vector.vector[i], 0);
+          assertFalse(vector.isNull[i]);
+          count++;
+        }
+      }
+      assertEquals(nElements, count);
+    } finally {
+      reader.close();
+    }
+  }
+
+  protected void longRead(boolean isDictionaryEncoding) throws Exception {
+    Configuration c = new Configuration();
+    c.set(IOConstants.COLUMNS, "int64_field");
+    c.set(IOConstants.COLUMNS_TYPES, "bigint");
+    c.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    c.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    longRead(isDictionaryEncoding, c);
+  }
+
+  private void longRead(boolean isDictionaryEncoding, Configuration conf) throws Exception {
+    VectorizedParquetRecordReader reader =
+        createTestParquetReader("message test { required int64 int64_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
     try {
       int c = 0;
@@ -378,13 +579,49 @@ public class VectorizedColumnReaderTestBase {
   }
 
   protected void doubleRead(boolean isDictionaryEncoding) throws Exception {
-    Configuration conf = new Configuration();
-    conf.set(IOConstants.COLUMNS, "double_field");
-    conf.set(IOConstants.COLUMNS_TYPES, "double");
-    conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
-    conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    Configuration c = new Configuration();
+    c.set(IOConstants.COLUMNS, "double_field");
+    c.set(IOConstants.COLUMNS_TYPES, "double");
+    c.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    c.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    doubleRead(isDictionaryEncoding, c);
+  }
+
+  protected void stringReadDouble(boolean isDictionaryEncoding) throws Exception {
+    Configuration readerConf = new Configuration();
+    readerConf.set(IOConstants.COLUMNS, "double_field");
+    readerConf.set(IOConstants.COLUMNS_TYPES, "string");
+    readerConf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    readerConf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     VectorizedParquetRecordReader reader =
-      createTestParquetReader("message test { required double double_field;}", conf);
+        createTestParquetReader("message test { required double double_field;}", readerConf);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int c = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        BytesColumnVector vector = (BytesColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.vector.length; i++) {
+          if (c == nElements) {
+            break;
+          }
+          String actual = new String(Arrays.copyOfRange(vector.vector[i], vector.start[i], vector
+              .start[i] + vector.length[i]));
+          assertEquals("Failed at " + c, String.valueOf(getDoubleValue(isDictionaryEncoding, c)),
+              actual);
+          assertFalse(vector.isNull[i]);
+          c++;
+        }
+      }
+      assertEquals(nElements, c);
+    } finally {
+      reader.close();
+    }
+  }
+
+  private void doubleRead(boolean isDictionaryEncoding, Configuration conf) throws Exception {
+    VectorizedParquetRecordReader reader =
+        createTestParquetReader("message test { required double double_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
     try {
       int c = 0;
@@ -396,7 +633,7 @@ public class VectorizedColumnReaderTestBase {
             break;
           }
           assertEquals("Failed at " + c, getDoubleValue(isDictionaryEncoding, c), vector.vector[i],
-            0);
+              0);
           assertFalse(vector.isNull[i]);
           c++;
         }
@@ -408,13 +645,26 @@ public class VectorizedColumnReaderTestBase {
   }
 
   protected void floatRead(boolean isDictionaryEncoding) throws Exception {
-    Configuration conf = new Configuration();
-    conf.set(IOConstants.COLUMNS, "float_field");
-    conf.set(IOConstants.COLUMNS_TYPES, "float");
-    conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
-    conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    Configuration c = new Configuration();
+    c.set(IOConstants.COLUMNS, "float_field");
+    c.set(IOConstants.COLUMNS_TYPES, "float");
+    c.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    c.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    floatRead(isDictionaryEncoding, c);
+  }
+
+  protected void doubleReadFloat(boolean isDictionaryEncoding) throws Exception {
+    Configuration c = new Configuration();
+    c.set(IOConstants.COLUMNS, "float_field");
+    c.set(IOConstants.COLUMNS_TYPES, "double");
+    c.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    c.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    floatRead(isDictionaryEncoding, c);
+  }
+
+  private void floatRead(boolean isDictionaryEncoding, Configuration conf) throws Exception {
     VectorizedParquetRecordReader reader =
-      createTestParquetReader("message test { required float float_field;}", conf);
+        createTestParquetReader("message test { required float float_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
     try {
       int c = 0;
@@ -426,7 +676,7 @@ public class VectorizedColumnReaderTestBase {
             break;
           }
           assertEquals("Failed at " + c, getFloatValue(isDictionaryEncoding, c), vector.vector[i],
-            0);
+              0);
           assertFalse(vector.isNull[i]);
           c++;
         }
@@ -444,7 +694,7 @@ public class VectorizedColumnReaderTestBase {
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     VectorizedParquetRecordReader reader =
-      createTestParquetReader("message test { required boolean boolean_field;}", conf);
+        createTestParquetReader("message test { required boolean boolean_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
     try {
       int c = 0;
@@ -466,6 +716,38 @@ public class VectorizedColumnReaderTestBase {
     }
   }
 
+  protected void stringReadBoolean() throws Exception {
+    Configuration conf = new Configuration();
+    conf.set(IOConstants.COLUMNS, "boolean_field");
+    conf.set(IOConstants.COLUMNS_TYPES, "string");
+    conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    VectorizedParquetRecordReader reader =
+        createTestParquetReader("message test { required boolean boolean_field;}", conf);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int c = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        BytesColumnVector vector = (BytesColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.vector.length; i++) {
+          if (c == nElements) {
+            break;
+          }
+
+          String actual = new String(Arrays.copyOfRange(vector.vector[i], vector.start[i], vector
+              .start[i] + vector.length[i]));
+          assertEquals("Failed at " + c, String.valueOf(getBooleanValue(c)), actual);
+          assertFalse(vector.isNull[i]);
+          c++;
+        }
+      }
+      assertEquals(nElements, c);
+    } finally {
+      reader.close();
+    }
+  }
+
   protected void binaryRead(boolean isDictionaryEncoding) throws Exception {
     Configuration conf = new Configuration();
     conf.set(IOConstants.COLUMNS, "binary_field_some_null");
@@ -473,7 +755,7 @@ public class VectorizedColumnReaderTestBase {
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     VectorizedParquetRecordReader reader =
-      createTestParquetReader("message test { required binary binary_field_some_null;}", conf);
+        createTestParquetReader("message test { required binary binary_field_some_null;}", conf);
     VectorizedRowBatch previous = reader.createValue();
     int c = 0;
     try {
@@ -488,7 +770,7 @@ public class VectorizedColumnReaderTestBase {
           assertEquals("Null assert failed at " + c, isNull(c), vector.isNull[i]);
           if (!vector.isNull[i]) {
             actual = new String(ArrayUtils
-              .subarray(vector.vector[i], vector.start[i], vector.start[i] + vector.length[i]));
+                .subarray(vector.vector[i], vector.start[i], vector.start[i] + vector.length[i]));
             assertEquals("failed at " + c, getStr(isDictionaryEncoding, c), actual);
           } else {
             noNull = false;
@@ -511,11 +793,11 @@ public class VectorizedColumnReaderTestBase {
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     String schema = "message hive_schema {\n"
-      + "group struct_field {\n"
-      + "  optional int32 a;\n"
-      + "  optional double b;\n"
-      + "}\n"
-      + "}\n";
+        + "group struct_field {\n"
+        + "  optional int32 a;\n"
+        + "  optional double b;\n"
+        + "}\n"
+        + "}\n";
     VectorizedParquetRecordReader reader = createTestParquetReader(schema, conf);
     VectorizedRowBatch previous = reader.createValue();
     int c = 0;
@@ -549,13 +831,13 @@ public class VectorizedColumnReaderTestBase {
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     String schema = "message hive_schema {\n"
-      + "group nested_struct_field {\n"
-      + "  optional group nsf {\n"
-      + "    optional int32 c;\n"
-      + "    optional int32 d;\n"
-      + "  }"
-      + "optional double e;\n"
-      + "}\n";
+        + "group nested_struct_field {\n"
+        + "  optional group nsf {\n"
+        + "    optional int32 c;\n"
+        + "    optional int32 d;\n"
+        + "  }"
+        + "optional double e;\n"
+        + "}\n";
     VectorizedParquetRecordReader reader = createTestParquetReader(schema, conf);
     VectorizedRowBatch previous = reader.createValue();
     int c = 0;
@@ -592,11 +874,11 @@ public class VectorizedColumnReaderTestBase {
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     String schema = "message hive_schema {\n"
-      + "group nested_struct_field {\n"
-      + "  optional group nsf {\n"
-      + "    optional int32 c;\n"
-      + "  }"
-      + "}\n";
+        + "group nested_struct_field {\n"
+        + "  optional group nsf {\n"
+        + "    optional int32 c;\n"
+        + "  }"
+        + "}\n";
     VectorizedParquetRecordReader reader = createTestParquetReader(schema, conf);
     VectorizedRowBatch previous = reader.createValue();
     int c = 0;
@@ -629,10 +911,10 @@ public class VectorizedColumnReaderTestBase {
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     String schema = "message hive_schema {\n"
-      + "group struct_field_some_null {\n"
-      + "  optional int32 f;\n"
-      + "  optional double g;\n"
-      + "}\n";
+        + "group struct_field_some_null {\n"
+        + "  optional int32 f;\n"
+        + "  optional double g;\n"
+        + "}\n";
     VectorizedParquetRecordReader reader = createTestParquetReader(schema, conf);
     VectorizedRowBatch previous = reader.createValue();
     int c = 0;
@@ -667,14 +949,48 @@ public class VectorizedColumnReaderTestBase {
     }
   }
 
-  protected void decimalRead(boolean isDictionaryEncoding) throws Exception {
+  protected void stringReadDecimal(boolean isDictionaryEncoding) throws Exception {
     Configuration conf = new Configuration();
     conf.set(IOConstants.COLUMNS, "value");
-    conf.set(IOConstants.COLUMNS_TYPES, "decimal(5,2)");
+    conf.set(IOConstants.COLUMNS_TYPES, "string");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
     VectorizedParquetRecordReader reader =
-      createTestParquetReader("message hive_schema { required value (DECIMAL(5,2));}", conf);
+        createTestParquetReader("message hive_schema { required value (DECIMAL(5,2));}", conf);
+    VectorizedRowBatch previous = reader.createValue();
+    try {
+      int c = 0;
+      while (reader.next(NullWritable.get(), previous)) {
+        BytesColumnVector vector = (BytesColumnVector) previous.cols[0];
+        assertTrue(vector.noNulls);
+        for (int i = 0; i < vector.vector.length; i++) {
+          if (c == nElements) {
+            break;
+          }
+
+          String actual = new String(Arrays.copyOfRange(vector.vector[i], vector.start[i], vector
+              .start[i] + vector.length[i]));
+          assertEquals("Check failed at pos " + c, getDecimal(isDictionaryEncoding, c).toString(),
+              actual);
+
+          assertFalse(vector.isNull[i]);
+          c++;
+        }
+      }
+      assertEquals(nElements, c);
+    } finally {
+      reader.close();
+    }
+  }
+
+  protected void decimalRead(boolean isDictionaryEncoding) throws Exception {
+    Configuration readerConf = new Configuration();
+    readerConf.set(IOConstants.COLUMNS, "value");
+    readerConf.set(IOConstants.COLUMNS_TYPES, "decimal(5,2)");
+    readerConf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
+    readerConf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    VectorizedParquetRecordReader reader =
+        createTestParquetReader("message hive_schema { required value (DECIMAL(5,2));}", readerConf);
     VectorizedRowBatch previous = reader.createValue();
     try {
       int c = 0;
@@ -686,7 +1002,8 @@ public class VectorizedColumnReaderTestBase {
             break;
           }
           assertEquals("Check failed at pos " + c, getDecimal(isDictionaryEncoding, c),
-            vector.vector[i].getHiveDecimal());
+              vector.vector[i].getHiveDecimal());
+
           assertFalse(vector.isNull[i]);
           c++;
         }
