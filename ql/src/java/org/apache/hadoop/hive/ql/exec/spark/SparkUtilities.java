@@ -19,8 +19,11 @@ package org.apache.hadoop.hive.ql.exec.spark;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -192,5 +195,12 @@ public class SparkUtilities {
     }
     //remove currTask from childTasks
     currTask.removeFromChildrenTasks();
+  }
+
+  public static String reverseDNSLookupURL(String url) throws UnknownHostException {
+    // Run a reverse DNS lookup on the URL
+    URI uri = URI.create(url);
+    InetAddress address = InetAddress.getByName(uri.getHost());
+    return uri.getScheme() + "://" + address.getCanonicalHostName() + ":" + uri.getPort();
   }
 }
