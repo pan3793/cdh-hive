@@ -126,6 +126,17 @@ public abstract class VectorExpression implements Serializable {
     }
   }
 
+  protected String getColumnParamString(int typeNum, int columnNum) {
+    return "col " + columnNum + ":" + getParamTypeString(typeNum);
+  }
+
+  protected String getParamTypeString(int typeNum) {
+    if (inputTypes == null) {
+      return "<input types is null>";
+    }
+    return inputTypes[typeNum].toString();
+  }
+
   /**
    * Set more detailed types to distinguish certain types that is represented in same
    * {@link org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor.ArgumentType}s. For example, date and

@@ -149,6 +149,71 @@ POSTHOOK: query: insert into HIVE_14349 values('XYZa'), ('badXYZa')
 POSTHOOK: type: QUERY
 POSTHOOK: Output: default@hive_14349
 POSTHOOK: Lineage: hive_14349.a SIMPLE [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
+PREHOOK: query: explain vectorization expression
+select * from HIVE_14349 where a LIKE 'XYZ%a%'
+PREHOOK: type: QUERY
+POSTHOOK: query: explain vectorization expression
+select * from HIVE_14349 where a LIKE 'XYZ%a%'
+POSTHOOK: type: QUERY
+PLAN VECTORIZATION:
+  enabled: true
+  enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
+
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 depends on stages: Stage-1
+
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Map Operator Tree:
+          TableScan
+            alias: hive_14349
+            Statistics: Num rows: 2 Data size: 231 Basic stats: COMPLETE Column stats: NONE
+            TableScan Vectorization:
+                native: true
+                projectedOutputColumns: [0]
+            Filter Operator
+              Filter Vectorization:
+                  className: VectorFilterOperator
+                  native: true
+                  predicateExpression: FilterStringColLikeStringScalar(col 0, pattern XYZ%a%)
+              predicate: (a like 'XYZ%a%') (type: boolean)
+              Statistics: Num rows: 1 Data size: 115 Basic stats: COMPLETE Column stats: NONE
+              Select Operator
+                expressions: a (type: string)
+                outputColumnNames: _col0
+                Select Vectorization:
+                    className: VectorSelectOperator
+                    native: true
+                    projectedOutputColumns: [0]
+                Statistics: Num rows: 1 Data size: 115 Basic stats: COMPLETE Column stats: NONE
+                File Output Operator
+                  compressed: false
+                  File Sink Vectorization:
+                      className: VectorFileSinkOperator
+                      native: false
+                  Statistics: Num rows: 1 Data size: 115 Basic stats: COMPLETE Column stats: NONE
+                  table:
+                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
+                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+      Execution mode: vectorized
+      Map Vectorization:
+          enabled: true
+          enabledConditionsMet: hive.vectorized.use.vectorized.input.format IS true
+          groupByVectorOutput: true
+          inputFileFormats: org.apache.hadoop.hive.ql.io.orc.OrcInputFormat
+          allNative: false
+          usesVectorUDFAdaptor: false
+          vectorized: true
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
 PREHOOK: query: select * from HIVE_14349 where a LIKE 'XYZ%a%'
 PREHOOK: type: QUERY
 PREHOOK: Input: default@hive_14349
@@ -165,6 +230,71 @@ POSTHOOK: query: insert into HIVE_14349 values ('XYZab'), ('XYZabBAD'), ('badXYZ
 POSTHOOK: type: QUERY
 POSTHOOK: Output: default@hive_14349
 POSTHOOK: Lineage: hive_14349.a SIMPLE [(values__tmp__table__2)values__tmp__table__2.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
+PREHOOK: query: explain vectorization expression
+select * from HIVE_14349 where a LIKE 'XYZ%a_'
+PREHOOK: type: QUERY
+POSTHOOK: query: explain vectorization expression
+select * from HIVE_14349 where a LIKE 'XYZ%a_'
+POSTHOOK: type: QUERY
+PLAN VECTORIZATION:
+  enabled: true
+  enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
+
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 depends on stages: Stage-1
+
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Map Operator Tree:
+          TableScan
+            alias: hive_14349
+            Statistics: Num rows: 4 Data size: 479 Basic stats: COMPLETE Column stats: NONE
+            TableScan Vectorization:
+                native: true
+                projectedOutputColumns: [0]
+            Filter Operator
+              Filter Vectorization:
+                  className: VectorFilterOperator
+                  native: true
+                  predicateExpression: FilterStringColLikeStringScalar(col 0, pattern XYZ%a_)
+              predicate: (a like 'XYZ%a_') (type: boolean)
+              Statistics: Num rows: 2 Data size: 239 Basic stats: COMPLETE Column stats: NONE
+              Select Operator
+                expressions: a (type: string)
+                outputColumnNames: _col0
+                Select Vectorization:
+                    className: VectorSelectOperator
+                    native: true
+                    projectedOutputColumns: [0]
+                Statistics: Num rows: 2 Data size: 239 Basic stats: COMPLETE Column stats: NONE
+                File Output Operator
+                  compressed: false
+                  File Sink Vectorization:
+                      className: VectorFileSinkOperator
+                      native: false
+                  Statistics: Num rows: 2 Data size: 239 Basic stats: COMPLETE Column stats: NONE
+                  table:
+                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
+                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+      Execution mode: vectorized
+      Map Vectorization:
+          enabled: true
+          enabledConditionsMet: hive.vectorized.use.vectorized.input.format IS true
+          groupByVectorOutput: true
+          inputFileFormats: org.apache.hadoop.hive.ql.io.orc.OrcInputFormat
+          allNative: false
+          usesVectorUDFAdaptor: false
+          vectorized: true
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
 PREHOOK: query: select * from HIVE_14349 where a LIKE 'XYZ%a_'
 PREHOOK: type: QUERY
 PREHOOK: Input: default@hive_14349

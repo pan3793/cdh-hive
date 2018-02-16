@@ -18,12 +18,24 @@ STORED AS ORC;
 
 INSERT OVERWRITE TABLE DECIMAL_UDF2 SELECT * FROM DECIMAL_UDF2_txt;
 
+-- Add a single NULL row that will come from ORC as isRepeated.
+insert into DECIMAL_UDF2 values (NULL, NULL);
+
 EXPLAIN VECTORIZATION EXPRESSION
 SELECT acos(key), asin(key), atan(key), cos(key), sin(key), tan(key), radians(key)
 FROM DECIMAL_UDF2 WHERE key = 10;
 
 SELECT acos(key), asin(key), atan(key), cos(key), sin(key), tan(key), radians(key)
 FROM DECIMAL_UDF2 WHERE key = 10;
+
+EXPLAIN VECTORIZATION EXPRESSION
+SELECT SUM(HASH(*))
+FROM (SELECT acos(key), asin(key), atan(key), cos(key), sin(key), tan(key), radians(key)
+FROM DECIMAL_UDF2) q;
+
+SELECT SUM(HASH(*))
+FROM (SELECT acos(key), asin(key), atan(key), cos(key), sin(key), tan(key), radians(key)
+FROM DECIMAL_UDF2) q;
 
 EXPLAIN VECTORIZATION EXPRESSION
 SELECT
@@ -37,6 +49,13 @@ SELECT
   log(key), log(key, key), log(key, value), log(value, key),
   log10(key), sqrt(key)
 FROM DECIMAL_UDF2 WHERE key = 10;
+
+SELECT SUM(HASH(*))
+FROM (SELECT
+  exp(key), ln(key),
+  log(key), log(key, key), log(key, value), log(value, key),
+  log10(key), sqrt(key)
+FROM DECIMAL_UDF2) q;
 
 DROP TABLE IF EXISTS DECIMAL_UDF2_txt;
 DROP TABLE IF EXISTS DECIMAL_UDF2;

@@ -1162,7 +1162,6 @@ public class Vectorizer implements PhysicalPlanResolver {
     }
 
     private void setReduceWorkExplainConditions(ReduceWork reduceWork) {
-
       reduceWork.setVectorizationExamined(true);
 
       reduceWork.setReduceVectorizationEnabled(isReduceVectorizationEnabled);

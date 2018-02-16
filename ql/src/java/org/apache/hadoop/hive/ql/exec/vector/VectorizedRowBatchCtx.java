@@ -261,7 +261,6 @@ public class VectorizedRowBatchCtx {
             lcv.isRepeating = true;
           } else {
             lcv.fill((Boolean) value == true ? 1 : 0);
-            lcv.isNull[0] = false;
           }
         }
         break;
@@ -274,7 +273,6 @@ public class VectorizedRowBatchCtx {
             lcv.isRepeating = true;
           } else {
             lcv.fill((Byte) value);
-            lcv.isNull[0] = false;
           }
         }
         break;
@@ -287,7 +285,6 @@ public class VectorizedRowBatchCtx {
             lcv.isRepeating = true;
           } else {
             lcv.fill((Short) value);
-            lcv.isNull[0] = false;
           }
         }
         break;
@@ -300,7 +297,6 @@ public class VectorizedRowBatchCtx {
             lcv.isRepeating = true;
           } else {
             lcv.fill((Integer) value);
-            lcv.isNull[0] = false;
           }
         }
         break;
@@ -313,7 +309,6 @@ public class VectorizedRowBatchCtx {
             lcv.isRepeating = true;
           } else {
             lcv.fill((Long) value);
-            lcv.isNull[0] = false;
           }
         }
         break;
@@ -326,7 +321,6 @@ public class VectorizedRowBatchCtx {
             lcv.isRepeating = true;
           } else {
             lcv.fill(DateWritable.dateToDays((Date) value));
-            lcv.isNull[0] = false;
           }
         }
         break;
@@ -339,7 +333,6 @@ public class VectorizedRowBatchCtx {
             lcv.isRepeating = true;
           } else {
             lcv.fill((Timestamp) value);
-            lcv.isNull[0] = false;
           }
         }
         break;
@@ -352,7 +345,6 @@ public class VectorizedRowBatchCtx {
             lcv.isRepeating = true;
           } else {
             lcv.fill(((HiveIntervalYearMonth) value).getTotalMonths());
-            lcv.isNull[0] = false;
           }
         }
 
@@ -364,7 +356,6 @@ public class VectorizedRowBatchCtx {
             icv.isRepeating = true;
           } else {
             icv.fill(((HiveIntervalDayTime) value));
-            icv.isNull[0] = false;
           }
         }
 
@@ -376,7 +367,6 @@ public class VectorizedRowBatchCtx {
             dcv.isRepeating = true;
           } else {
             dcv.fill((Float) value);
-            dcv.isNull[0] = false;
           }
         }
         break;
@@ -389,7 +379,6 @@ public class VectorizedRowBatchCtx {
             dcv.isRepeating = true;
           } else {
             dcv.fill((Double) value);
-            dcv.isNull[0] = false;
           }
         }
         break;
@@ -401,10 +390,7 @@ public class VectorizedRowBatchCtx {
             dv.isNull[0] = true;
             dv.isRepeating = true;
           } else {
-            HiveDecimal hd = (HiveDecimal) value;
-            dv.set(0, hd);
-            dv.isRepeating = true;
-            dv.isNull[0] = false;
+            dv.fill((HiveDecimal) value);
           }
         }
         break;
@@ -418,7 +404,6 @@ public class VectorizedRowBatchCtx {
               bcv.isRepeating = true;
             } else {
               bcv.fill(bytes);
-              bcv.isNull[0] = false;
             }
           }
           break;
@@ -433,8 +418,7 @@ public class VectorizedRowBatchCtx {
             bcv.isNull[0] = true;
             bcv.isRepeating = true;
           } else {
-            bcv.setVal(0, sVal.getBytes());
-            bcv.isRepeating = true;
+            bcv.fill(sVal.getBytes());
           }
         }
         break;

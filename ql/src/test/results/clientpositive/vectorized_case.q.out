@@ -1,4 +1,4 @@
-PREHOOK: query: explain vectorization expression
+PREHOOK: query: explain vectorization detail
 select 
   csmallint,
   case 
@@ -16,7 +16,7 @@ where csmallint = 418
 or csmallint = 12205
 or csmallint = 10583
 PREHOOK: type: QUERY
-POSTHOOK: query: explain vectorization expression
+POSTHOOK: query: explain vectorization detail
 select 
   csmallint,
   case 
@@ -87,6 +87,12 @@ STAGE PLANS:
           allNative: false
           usesVectorUDFAdaptor: true
           vectorized: true
+          rowBatchContext:
+              dataColumnCount: 12
+              includeColumns: [1]
+              dataColumns: ctinyint:tinyint, csmallint:smallint, cint:int, cbigint:bigint, cfloat:float, cdouble:double, cstring1:string, cstring2:string, ctimestamp1:timestamp, ctimestamp2:timestamp, cboolean1:boolean, cboolean2:boolean
+              partitionColumnCount: 0
+              scratchColumnTypeNames: bigint, bigint, String, String
 
   Stage: Stage-0
     Fetch Operator
@@ -136,7 +142,7 @@ POSTHOOK: Input: default@alltypesorc
 10583	c	c
 418	a	a
 12205	b	b
-PREHOOK: query: explain vectorization expression
+PREHOOK: query: explain vectorization detail
 select 
   csmallint,
   case 
@@ -154,7 +160,7 @@ where csmallint = 418
 or csmallint = 12205
 or csmallint = 10583
 PREHOOK: type: QUERY
-POSTHOOK: query: explain vectorization expression
+POSTHOOK: query: explain vectorization detail
 select 
   csmallint,
   case 
@@ -225,6 +231,12 @@ STAGE PLANS:
           allNative: false
           usesVectorUDFAdaptor: true
           vectorized: true
+          rowBatchContext:
+              dataColumnCount: 12
+              includeColumns: [1]
+              dataColumns: ctinyint:tinyint, csmallint:smallint, cint:int, cbigint:bigint, cfloat:float, cdouble:double, cstring1:string, cstring2:string, ctimestamp1:timestamp, ctimestamp2:timestamp, cboolean1:boolean, cboolean2:boolean
+              partitionColumnCount: 0
+              scratchColumnTypeNames: bigint, bigint, String, String
 
   Stage: Stage-0
     Fetch Operator
@@ -232,3 +244,227 @@ STAGE PLANS:
       Processor Tree:
         ListSink
 
+PREHOOK: query: select count(*), sum(a.ceven)
+from (
+select
+  case when cint % 2 = 0 then 1 else 0 end as ceven
+from alltypesorc) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*), sum(a.ceven)
+from (
+select
+  case when cint % 2 = 0 then 1 else 0 end as ceven
+from alltypesorc) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+12288	4086
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then 1 else 0 end) = 0) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then 1 else 0 end) = 0) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+8202
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then 1 else 0 end) = 0 AND cint is NOT NULL) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then 1 else 0 end) = 0 AND cint is NOT NULL) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+5087
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then 1 else 0 end) = 1) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then 1 else 0 end) = 1) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+4086
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then 1 else 0 end) = 1 AND cint is NOT NULL) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then 1 else 0 end) = 1 AND cint is NOT NULL) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+4086
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where cint is null) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then 1 else 0 end) as ceven
+from alltypesorc
+where cint is null) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+3115
+PREHOOK: query: select count(*), sum(a.ceven)
+from (
+select
+  case when cint % 2 = 0 then cint else 0 end as ceven
+from alltypesorc) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*), sum(a.ceven)
+from (
+select
+  case when cint % 2 = 0 then cint else 0 end as ceven
+from alltypesorc) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+12288	248718130534
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then cint else 0 end) = 0) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then cint else 0 end) = 0) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+8202
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then cint else 0 end) = 0 AND cint is NOT NULL) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then cint else 0 end) = 0 AND cint is NOT NULL) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+5087
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then cint else 0 end) = cint) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then cint else 0 end) = cint) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+4086
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then cint else 0 end) = cint AND cint is NOT NULL) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where (case when cint % 2 = 0 then cint else 0 end) = cint AND cint is NOT NULL) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+4086
+PREHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where cint is null) a
+PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+POSTHOOK: query: select count(*)
+from (
+select
+  (case when cint % 2 = 0 then cint else 0 end) as ceven
+from alltypesorc
+where cint is null) a
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
+3115

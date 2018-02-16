@@ -23,6 +23,7 @@ import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor.Descriptor;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.io.DateWritable;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
@@ -69,13 +70,13 @@ public class DecimalColumnInList extends VectorExpression implements IDecimalInE
       }
     }
 
-    DecimalColumnVector inputColVector = (DecimalColumnVector) batch.cols[inputCol];
+    DecimalColumnVector inputColumnVector = (DecimalColumnVector) batch.cols[inputCol];
     LongColumnVector outputColVector = (LongColumnVector) batch.cols[outputColumn];
     int[] sel = batch.selected;
-    boolean[] nullPos = inputColVector.isNull;
-    boolean[] outNulls = outputColVector.isNull;
+    boolean[] inputIsNull = inputColumnVector.isNull;
+    boolean[] outputIsNull = outputColVector.isNull;
     int n = batch.size;
-    HiveDecimalWritable[] vector = inputColVector.vector;
+    HiveDecimalWritable[] vector = inputColumnVector.vector;
     long[] outputVector = outputColVector.vector;
 
     // return immediately if batch is empty
@@ -83,49 +84,68 @@ public class DecimalColumnInList extends VectorExpression implements IDecimalInE
       return;
     }
 
+    // We do not need to do a column reset since we are carefully changing the output.
     outputColVector.isRepeating = false;
-    outputColVector.noNulls = inputColVector.noNulls;
-    if (inputColVector.noNulls) {
-      if (inputColVector.isRepeating) {
 
-        // All must be selected otherwise size would be zero
-        // Repeating property will not change.
+    if (inputColumnVector.isRepeating) {
+      if (inputColumnVector.noNulls || !inputIsNull[0]) {
+        outputIsNull[0] = false;
         outputVector[0] = inSet.contains(vector[0].getHiveDecimal()) ? 1 : 0;
-        outputColVector.isRepeating = true;
-      } else if (batch.selectedInUse) {
-        for(int j = 0; j != n; j++) {
-          int i = sel[j];
-          outputVector[i] = inSet.contains(vector[i].getHiveDecimal()) ? 1 : 0;
-        }
       } else {
-        for(int i = 0; i != n; i++) {
-          outputVector[i] = inSet.contains(vector[i].getHiveDecimal()) ? 1 : 0;
-        }
+        outputIsNull[0] = true;
+        outputColVector.noNulls = false;
       }
-    } else {
-      if (inputColVector.isRepeating) {
+      outputColVector.isRepeating = true;
+      return;
+    }
 
-        //All must be selected otherwise size would be zero
-        //Repeating property will not change.
-        if (!nullPos[0]) {
-          outputVector[0] = inSet.contains(vector[0].getHiveDecimal()) ? 1 : 0;
-          outNulls[0] = false;
+    if (inputColumnVector.noNulls) {
+      if (batch.selectedInUse) {
+
+        // CONSIDER: For large n, fill n or all of isNull array and use the tighter ELSE loop.
+
+        if (!outputColVector.noNulls) {
+          for(int j = 0; j != n; j++) {
+           final int i = sel[j];
+           // Set isNull before call in case it changes it mind.
+           outputIsNull[i] = false;
+           outputVector[i] = inSet.contains(vector[i].getHiveDecimal()) ? 1 : 0;
+         }
         } else {
-          outNulls[0] = true;
-        }
-        outputColVector.isRepeating = true;
-      } else if (batch.selectedInUse) {
-        for(int j = 0; j != n; j++) {
-          int i = sel[j];
-          outNulls[i] = nullPos[i];
-          if (!nullPos[i]) {
+          for(int j = 0; j != n; j++) {
+            final int i = sel[j];
             outputVector[i] = inSet.contains(vector[i].getHiveDecimal()) ? 1 : 0;
           }
         }
       } else {
-        System.arraycopy(nullPos, 0, outNulls, 0, n);
+        if (!outputColVector.noNulls) {
+
+          // Assume it is almost always a performance win to fill all of isNull so we can
+          // safely reset noNulls.
+          Arrays.fill(outputIsNull, false);
+          outputColVector.noNulls = true;
+        }
         for(int i = 0; i != n; i++) {
-          if (!nullPos[i]) {
+          outputVector[i] = inSet.contains(vector[i].getHiveDecimal()) ? 1 : 0;
+        }
+      }
+    } else /* there are NULLs in the inputColVector */ {
+
+      // Carefully handle NULLs...
+      outputColVector.noNulls = false;
+
+      if (batch.selectedInUse) {
+        for(int j = 0; j != n; j++) {
+          int i = sel[j];
+          outputIsNull[i] = inputIsNull[i];
+          if (!inputIsNull[i]) {
+            outputVector[i] = inSet.contains(vector[i].getHiveDecimal()) ? 1 : 0;
+          }
+        }
+      } else {
+        System.arraycopy(inputIsNull, 0, outputIsNull, 0, n);
+        for(int i = 0; i != n; i++) {
+          if (!inputIsNull[i]) {
             outputVector[i] = inSet.contains(vector[i].getHiveDecimal()) ? 1 : 0;
           }
         }

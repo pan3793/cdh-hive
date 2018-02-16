@@ -381,6 +381,7 @@ public final class VectorExpressionWriterFactory {
    * if the wrong vector column is used.
    */
   private static abstract class VectorExpressionWriterDecimal extends VectorExpressionWriterBase {
+
     @Override
     public Object writeValue(ColumnVector column, int row) throws HiveException {
       DecimalColumnVector dcv = (DecimalColumnVector) column;

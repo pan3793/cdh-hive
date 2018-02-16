@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
+import java.util.Arrays;
+
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.ColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
@@ -55,6 +57,7 @@ public class StringGroupConcatColCol extends VectorExpression {
     BytesColumnVector inV1 = (BytesColumnVector) batch.cols[colNum1];
     BytesColumnVector inV2 = (BytesColumnVector) batch.cols[colNum2];
     BytesColumnVector outV = (BytesColumnVector) batch.cols[outputColumn];
+    boolean[] outputIsNull = outV.isNull;
     int[] sel = batch.selected;
     int n = batch.size;
     byte[][] vector1 = inV1.vector;
@@ -79,7 +82,7 @@ public class StringGroupConcatColCol extends VectorExpression {
 
     if (inV1.noNulls && !inV2.noNulls) {
 
-      // propagate nulls
+      // Carefully handle NULLs...
 
       /* We'll assume that there *may* be nulls in the input if !noNulls is true
        * for an input vector. This is to be more forgiving of errors in loading
@@ -87,6 +90,7 @@ public class StringGroupConcatColCol extends VectorExpression {
        * isNull[0] is set if !noNulls and isRepeating are true for the vector.
        */
       outV.noNulls = false;
+
       if (inV2.isRepeating) {
         if (inV2.isNull[0]) {
 
@@ -319,8 +323,9 @@ public class StringGroupConcatColCol extends VectorExpression {
       }
     } else {      // there are no nulls in either input vector
 
-      // propagate null information
-      outV.noNulls = true;
+      /*
+       * Do careful maintenance of the outputColVector.noNulls flag.
+       */
 
       // perform data operation
       if (inV1.isRepeating && inV2.isRepeating) {
@@ -328,13 +333,16 @@ public class StringGroupConcatColCol extends VectorExpression {
         // All must be selected otherwise size would be zero. Repeating property will not change.
         outV.setConcat(0, vector1[0], start1[0], len1[0], vector2[0], start2[0], len2[0]);
         outV.isRepeating = true;
+        outputIsNull[0] = false;
       } else if (inV1.isRepeating) {
         if (batch.selectedInUse) {
           for(int j = 0; j != n; j++) {
             int i = sel[j];
+            outputIsNull[i] = false;
             outV.setConcat(i, vector1[0], start1[0], len1[0], vector2[i], start2[i], len2[i]);
           }
         } else {
+          Arrays.fill(outputIsNull, 0, n, false);
           for(int i = 0; i != n; i++) {
             outV.setConcat(i, vector1[0], start1[0], len1[0], vector2[i], start2[i], len2[i]);
           }
@@ -343,9 +351,11 @@ public class StringGroupConcatColCol extends VectorExpression {
         if (batch.selectedInUse) {
           for(int j = 0; j != n; j++) {
             int i = sel[j];
+            outputIsNull[i] = false;
             outV.setConcat(i, vector1[i], start1[i], len1[i], vector2[0], start2[0], len2[0]);
           }
         } else {
+          Arrays.fill(outputIsNull, 0, n, false);
           for(int i = 0; i != n; i++) {
             outV.setConcat(i, vector1[i], start1[i], len1[i], vector2[0], start2[0], len2[0]);
           }
@@ -354,9 +364,11 @@ public class StringGroupConcatColCol extends VectorExpression {
         if (batch.selectedInUse) {
           for(int j=0; j != n; j++) {
             int i = sel[j];
+            outputIsNull[i] = false;
             outV.setConcat(i, vector1[i], start1[i], len1[i], vector2[i], start2[i], len2[i]);
           }
         } else {
+          Arrays.fill(outputIsNull, 0, n, false);
           for(int i = 0; i != n; i++) {
             outV.setConcat(i, vector1[i], start1[i], len1[i], vector2[i], start2[i], len2[i]);
           }

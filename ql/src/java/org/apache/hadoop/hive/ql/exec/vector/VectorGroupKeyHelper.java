@@ -126,7 +126,7 @@ public class VectorGroupKeyHelper extends VectorColumnSetInfo {
       TimestampColumnVector inputColumnVector = (TimestampColumnVector) inputBatch.cols[keyIndex];
       TimestampColumnVector outputColumnVector = (TimestampColumnVector) outputBatch.cols[keyIndex];
       if (inputColumnVector.noNulls || !inputColumnVector.isNull[0]) {
-
+        outputColumnVector.isNull[outputBatch.size] = false;
         outputColumnVector.setElement(outputBatch.size, 0, inputColumnVector);
       } else {
         outputColumnVector.noNulls = false;
@@ -138,7 +138,7 @@ public class VectorGroupKeyHelper extends VectorColumnSetInfo {
       IntervalDayTimeColumnVector inputColumnVector = (IntervalDayTimeColumnVector) inputBatch.cols[keyIndex];
       IntervalDayTimeColumnVector outputColumnVector = (IntervalDayTimeColumnVector) outputBatch.cols[keyIndex];
       if (inputColumnVector.noNulls || !inputColumnVector.isNull[0]) {
-
+        outputColumnVector.isNull[outputBatch.size] = false;
         outputColumnVector.setElement(outputBatch.size, 0, inputColumnVector);
       } else {
         outputColumnVector.noNulls = false;
