@@ -1,11 +1,15 @@
 set hive.explain.user=false;
 set hive.fetch.task.conversion=none;
+set hive.stats.column.autogather=true;
 
 CREATE TABLE decimal_vgby STORED AS ORC AS 
     SELECT cdouble, CAST (((cdouble*22.1)/37) AS DECIMAL(20,10)) AS cdecimal1, 
     CAST (((cdouble*9.3)/13) AS DECIMAL(23,14)) AS cdecimal2,
     cint
     FROM alltypesorc;
+  
+-- Add a single NULL row that will come from ORC as isRepeated.
+insert into decimal_vgby values (NULL, NULL, NULL, NULL);
 
 SET hive.vectorized.execution.enabled=true;
 

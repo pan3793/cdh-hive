@@ -3,6 +3,8 @@ set hive.explain.user=false;
 SET hive.vectorized.execution.enabled=true;
 set hive.fetch.task.conversion=minimal;
 
+-- SORT_QUERY_RESULTS
+
 DROP TABLE IF EXISTS DECIMAL_UDF_txt;
 DROP TABLE IF EXISTS DECIMAL_UDF;
 
@@ -17,6 +19,10 @@ CREATE TABLE DECIMAL_UDF (key decimal(20,10), value int)
 STORED AS ORC;
 
 INSERT OVERWRITE TABLE DECIMAL_UDF SELECT * FROM DECIMAL_UDF_txt;
+
+-- Add a single NULL row that will come from ORC as isRepeated.
+insert into DECIMAL_UDF values (NULL, NULL);
+
 
 -- addition
 EXPLAIN SELECT key + key FROM DECIMAL_UDF;
@@ -61,11 +67,14 @@ EXPLAIN SELECT key * '2.0' FROM DECIMAL_UDF;
 SELECT key * '2.0' FROM DECIMAL_UDF;
 
 -- division
-EXPLAIN SELECT key / 0 FROM DECIMAL_UDF limit 1;
-SELECT key / 0 FROM DECIMAL_UDF limit 1;
+EXPLAIN VECTORIZATION DETAIL
+SELECT key / 0 FROM DECIMAL_UDF;
+SELECT key / 0 FROM DECIMAL_UDF;
 
-EXPLAIN SELECT key / NULL FROM DECIMAL_UDF limit 1;
-SELECT key / NULL FROM DECIMAL_UDF limit 1;
+-- Output not stable.
+-- EXPLAIN VECTORIZATION DETAIL
+-- SELECT key / NULL FROM DECIMAL_UDF;
+-- SELECT key / NULL FROM DECIMAL_UDF;
 
 EXPLAIN SELECT key / key FROM DECIMAL_UDF WHERE key is not null and key <> 0;
 SELECT key / key FROM DECIMAL_UDF WHERE key is not null and key <> 0;

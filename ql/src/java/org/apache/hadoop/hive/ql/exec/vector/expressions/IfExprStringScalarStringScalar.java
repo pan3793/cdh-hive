@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
+import java.util.Arrays;
+
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
@@ -60,8 +62,11 @@ public class IfExprStringScalarStringScalar extends VectorExpression {
     LongColumnVector arg1ColVector = (LongColumnVector) batch.cols[arg1Column];
     BytesColumnVector outputColVector = (BytesColumnVector) batch.cols[outputColumn];
     int[] sel = batch.selected;
-    outputColVector.noNulls = true; // output must be a scalar and neither one is null
-    outputColVector.isRepeating = false; // may override later
+    boolean[] outputIsNull = outputColVector.isNull;
+
+    // We do not need to do a column reset since we are carefully changing the output.
+    outputColVector.isRepeating = false;
+
     int n = batch.size;
     long[] vector1 = arg1ColVector.vector;
 
@@ -73,11 +78,12 @@ public class IfExprStringScalarStringScalar extends VectorExpression {
     outputColVector.initBuffer();
 
     if (arg1ColVector.isRepeating) {
-      if (vector1[0] == 1) {
-        outputColVector.fill(arg2Scalar);
+      if ((arg1ColVector.noNulls || !arg1ColVector.isNull[0]) && vector1[0] == 1) {
+        outputColVector.setRef(0, arg2Scalar, 0, arg2Scalar.length);
       } else {
-        outputColVector.fill(arg3Scalar);
+        outputColVector.setRef(0, arg3Scalar, 0, arg3Scalar.length);
       }
+      outputColVector.isRepeating = true;
       return;
     }
 
@@ -85,6 +91,7 @@ public class IfExprStringScalarStringScalar extends VectorExpression {
       if (batch.selectedInUse) {
         for(int j = 0; j != n; j++) {
           int i = sel[j];
+          outputIsNull[i] = false;
           if (vector1[i] == 1) {
             outputColVector.setRef(i, arg2Scalar, 0, arg2Scalar.length);
           } else {
@@ -92,6 +99,7 @@ public class IfExprStringScalarStringScalar extends VectorExpression {
           }
         }
       } else {
+        Arrays.fill(outputIsNull, 0, n, false);
         for(int i = 0; i != n; i++) {
           if (vector1[i] == 1) {
             outputColVector.setRef(i, arg2Scalar, 0, arg2Scalar.length);
@@ -104,6 +112,7 @@ public class IfExprStringScalarStringScalar extends VectorExpression {
       if (batch.selectedInUse) {
         for(int j = 0; j != n; j++) {
           int i = sel[j];
+          outputIsNull[i] = false;
           if (!arg1ColVector.isNull[i] && vector1[i] == 1) {
             outputColVector.setRef(i, arg2Scalar, 0, arg2Scalar.length);
           } else {
@@ -111,6 +120,7 @@ public class IfExprStringScalarStringScalar extends VectorExpression {
           }
         }
       } else {
+        Arrays.fill(outputIsNull, 0, n, false);
         for(int i = 0; i != n; i++) {
           if (!arg1ColVector.isNull[i] && vector1[i] == 1) {
             outputColVector.setRef(i, arg2Scalar, 0, arg2Scalar.length);

@@ -313,7 +313,7 @@ public class <ClassName> extends VectorAggregateExpression {
         <ValueType>[] vector = inputVector.vector;
         
         if (inputVector.isRepeating) {
-          if (inputVector.noNulls &&
+          if ((inputVector.noNulls || !inputVector.isNull[0]) &&
             (myagg.isNull || (vector[0] <OperatorSymbol> myagg.value))) {
             myagg.isNull = false;
             myagg.value = vector[0];

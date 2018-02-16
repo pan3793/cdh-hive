@@ -2770,8 +2770,31 @@ public class GenVectorCode extends Task {
     templateString = templateString.replaceAll("<ClassName>", className);
     templateString = templateString.replaceAll("<BaseClassName>", baseClassName);
     templateString = templateString.replaceAll("<VectorExprArgType>", operandType);
+
+    String vectorExpressionParametersBody = getDTIScalarColumnDisplayBody(operandType);
+    templateString = templateString
+        .replaceAll("<VectorExpressionParametersBody>", vectorExpressionParametersBody);
+
     writeFile(templateFile.lastModified(), expressionOutputDirectory, expressionClassesDirectory,
         className, templateString);
+  }
+
+  private String getDTIScalarColumnDisplayBody(String type) {
+    if (type.equals("date")) {
+      return "Date dt = new Date(0);" + "    dt.setTime(DateWritable.daysToMillis((int) value));\n"
+          + "    return  \"date \" + dt.toString() + \", \" + getColumnParamString(0, colNum);";
+    } else {
+      return "    return super.vectorExpressionParameters();";
+    }
+  }
+
+  private String getDTIColumnScalarDisplayBody(String type) {
+    if (type.equals("date")) {
+      return "Date dt = new Date(0);" + "    dt.setTime(DateWritable.daysToMillis((int) value));\n"
+          + "    return getColumnParamString(0, colNum) + \", date \" + dt.toString();";
+    } else {
+      return "    return super.vectorExpressionParameters();";
+    }
   }
 
   private void generateFilterDTIScalarCompareColumn(String[] tdesc) throws Exception {
@@ -2802,6 +2825,11 @@ public class GenVectorCode extends Task {
     templateString = templateString.replaceAll("<ClassName>", className);
     templateString = templateString.replaceAll("<BaseClassName>", baseClassName);
     templateString = templateString.replaceAll("<VectorExprArgType>", operandType);
+
+    String vectorExpressionParametersBody = getDTIColumnScalarDisplayBody(operandType);
+    templateString = templateString
+        .replaceAll("<VectorExpressionParametersBody>", vectorExpressionParametersBody);
+
     writeFile(templateFile.lastModified(), expressionOutputDirectory, expressionClassesDirectory,
         className, templateString);
   }

@@ -3757,7 +3757,6 @@ public class TestVectorStringExpressions {
     expr.evaluate(batch);
     Assert.assertEquals(4, batch.size);
     outVector = ((LongColumnVector) batch.cols[3]).vector;
-    Assert.assertFalse(batch.cols[3].noNulls);
     Assert.assertFalse(batch.cols[3].isNull[0]);
     Assert.assertEquals(1, outVector[0]);
     Assert.assertFalse(batch.cols[3].isNull[1]);
@@ -3821,7 +3820,6 @@ public class TestVectorStringExpressions {
     expr.evaluate(batch);
     outVector = ((LongColumnVector) batch.cols[3]).vector;
     Assert.assertEquals(4, batch.size);
-    Assert.assertFalse(batch.cols[3].noNulls);
     Assert.assertFalse(batch.cols[3].isNull[0]);
     Assert.assertEquals(1, outVector[0]);
     Assert.assertFalse(batch.cols[3].isNull[1]);
@@ -4064,7 +4062,6 @@ public class TestVectorStringExpressions {
         outCol.start[0], outCol.length[0]);
     Assert.assertEquals(0, cmp);
     Assert.assertTrue(outCol.isRepeating);
-    Assert.assertFalse(outCol.noNulls);
 
     // no nulls, is repeating
     batch = makeStringBatchMixedCase();
@@ -4124,7 +4121,6 @@ public class TestVectorStringExpressions {
     expr.evaluate(batch);
     outCol = (LongColumnVector) batch.cols[1];
     Assert.assertTrue(outCol.isRepeating);
-    Assert.assertFalse(outCol.noNulls);
     Assert.assertEquals(7, outCol.vector[0]); // length of "mixedUp"
 
     // no nulls, is repeating
@@ -4476,7 +4472,6 @@ public class TestVectorStringExpressions {
         outCol.start[0], outCol.length[0]);
     Assert.assertEquals(0, cmp);
     Assert.assertTrue(outCol.isRepeating);
-    Assert.assertFalse(outCol.noNulls);
 
     // no nulls, is repeating
     batch = makeStringBatch();
@@ -4539,7 +4534,6 @@ public class TestVectorStringExpressions {
         outCol.start[0], outCol.length[0]);
     Assert.assertEquals(0, cmp);
     Assert.assertTrue(outCol.isRepeating);
-    Assert.assertFalse(outCol.noNulls);
 
     // no nulls, is repeating
     batch = makeStringBatch();
@@ -4602,7 +4596,6 @@ public class TestVectorStringExpressions {
         outCol.start[0], outCol.length[0]);
     Assert.assertEquals(0, cmp);
     Assert.assertTrue(outCol.isRepeating);
-    Assert.assertFalse(outCol.noNulls);
 
     // no nulls, is repeating
     batch = makeStringBatch();
@@ -4665,7 +4658,6 @@ public class TestVectorStringExpressions {
         outCol.start[0], outCol.length[0]);
     Assert.assertEquals(0, cmp);
     Assert.assertTrue(outCol.isRepeating);
-    Assert.assertFalse(outCol.noNulls);
 
     // no nulls, is repeating
     batch = makeStringBatch();
@@ -4728,7 +4720,6 @@ public class TestVectorStringExpressions {
         outCol.start[0], outCol.length[0]);
     Assert.assertEquals(0, cmp);
     Assert.assertTrue(outCol.isRepeating);
-    Assert.assertFalse(outCol.noNulls);
 
     // no nulls, is repeating
     batch = makeStringBatch();
@@ -4791,7 +4782,6 @@ public class TestVectorStringExpressions {
         outCol.start[0], outCol.length[0]);
     Assert.assertEquals(0, cmp);
     Assert.assertTrue(outCol.isRepeating);
-    Assert.assertFalse(outCol.noNulls);
 
     // no nulls, is repeating
     batch = makeStringBatch();
@@ -4913,7 +4903,6 @@ public class TestVectorStringExpressions {
     batch.cols[0].noNulls = true;
     expr.evaluate(batch);
     Assert.assertEquals(false, outCol.isRepeating);
-    Assert.assertEquals(true,  outCol.noNulls);
     cmp = StringExpr.compare(red, 0, red.length, outCol.vector[2],
         outCol.start[2], outCol.length[2]);
     Assert.assertEquals(0, cmp);
@@ -5005,7 +4994,6 @@ public class TestVectorStringExpressions {
     expr.evaluate(batch);
     outCol = (BytesColumnVector) batch.cols[1];
     Assert.assertEquals(3, batch.size);
-    Assert.assertTrue(outCol.noNulls);
     Assert.assertFalse(outCol.isRepeating);
     Assert.assertEquals(0,
     StringExpr.compare(
@@ -5033,7 +5021,6 @@ public class TestVectorStringExpressions {
     expr = new StringSubstrColStart(0, 1, 1);
     expr.evaluate(batch);
     Assert.assertEquals(3, batch.size);
-    Assert.assertTrue(outCol.noNulls);
     Assert.assertFalse(outCol.isRepeating);
 
     Assert.assertEquals(0,
@@ -5118,7 +5105,6 @@ public class TestVectorStringExpressions {
     expr.evaluate(batch);
     outCol = (BytesColumnVector) batch.cols[1];
     Assert.assertFalse(outV.isRepeating);
-    Assert.assertTrue(outV.noNulls);
     Assert.assertEquals(0,
     StringExpr.compare(
             // 3nd char starts from index 3 and total length should be 7 bytes as max is 10
@@ -5143,7 +5129,6 @@ public class TestVectorStringExpressions {
     expr = new StringSubstrColStart(0, 2, 1);
     expr.evaluate(batch);
     Assert.assertFalse(outV.isRepeating);
-    Assert.assertTrue(outV.noNulls);
     Assert.assertEquals(0,
     StringExpr.compare(
             // the result is the last 1 character, which occupies 4 bytes
@@ -5180,7 +5165,6 @@ public class TestVectorStringExpressions {
     expr.evaluate(batch);
     BytesColumnVector outCol = (BytesColumnVector) batch.cols[1];
     Assert.assertEquals(3, batch.size);
-    Assert.assertTrue(outCol.noNulls);
     Assert.assertFalse(outCol.isRepeating);
     byte[] expected = "string".getBytes("UTF-8");
     Assert.assertEquals(0,
@@ -5208,7 +5192,6 @@ public class TestVectorStringExpressions {
     expr = new StringSubstrColStartLen(0, -6, 6, 1);
     expr.evaluate(batch);
     outCol = (BytesColumnVector) batch.cols[1];
-    Assert.assertTrue(outCol.noNulls);
     Assert.assertFalse(outCol.isRepeating);
     Assert.assertEquals(3, batch.size);
 
@@ -5240,7 +5223,6 @@ public class TestVectorStringExpressions {
     outCol = (BytesColumnVector) batch.cols[1];
     expr.evaluate(batch);
     Assert.assertEquals(3, batch.size);
-    Assert.assertTrue(outCol.noNulls);
     Assert.assertFalse(outCol.isRepeating);
     Assert.assertEquals(0,
         StringExpr.compare(
@@ -5270,7 +5252,6 @@ public class TestVectorStringExpressions {
     outCol = (BytesColumnVector) batch.cols[1];
     expr.evaluate(batch);
     Assert.assertEquals(3, batch.size);
-    Assert.assertTrue(outCol.noNulls);
     Assert.assertFalse(outCol.isRepeating);
     Assert.assertEquals(0,
     StringExpr.compare(
@@ -5300,7 +5281,6 @@ public class TestVectorStringExpressions {
     expr.evaluate(batch);
     outCol = (BytesColumnVector) batch.cols[1];
     Assert.assertEquals(3, batch.size);
-    Assert.assertTrue(outCol.noNulls);
     Assert.assertFalse(outCol.isRepeating);
     Assert.assertEquals(0,
     StringExpr.compare(
@@ -5381,7 +5361,6 @@ public class TestVectorStringExpressions {
     expr.evaluate(batch);
     Assert.assertEquals(1, batch.size);
     Assert.assertFalse(outV.isRepeating);
-    Assert.assertTrue(outV.noNulls);
     Assert.assertEquals(0,
     StringExpr.compare(
             // 3rd char starts at index 3, and with length 2 it is covering the rest of the array.
@@ -5405,7 +5384,6 @@ public class TestVectorStringExpressions {
     outCol = (BytesColumnVector) batch.cols[1];
     Assert.assertEquals(1, batch.size);
     Assert.assertFalse(outV.isRepeating);
-    Assert.assertTrue(outV.noNulls);
     Assert.assertEquals(0,
     StringExpr.compare(
             // 2nd substring index refers to the 6th index (last char in the array)
