@@ -25,11 +25,11 @@ POSTHOOK: query: insert into test_alter values ('1'), ('2'), ('3')
 POSTHOOK: type: QUERY
 POSTHOOK: Output: default@test_alter
 POSTHOOK: Lineage: test_alter.id SIMPLE [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -44,11 +44,11 @@ POSTHOOK: query: alter table test_alter add columns (newCol string)
 POSTHOOK: type: ALTERTABLE_ADDCOLS
 POSTHOOK: Input: default@test_alter
 POSTHOOK: Output: default@test_alter
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -63,11 +63,11 @@ POSTHOOK: type: QUERY
 POSTHOOK: Output: default@test_alter
 POSTHOOK: Lineage: test_alter.id SIMPLE [(values__tmp__table__2)values__tmp__table__2.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 POSTHOOK: Lineage: test_alter.newcol SIMPLE [(values__tmp__table__2)values__tmp__table__2.FieldSchema(name:tmp_values_col2, type:string, comment:), ]
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -83,11 +83,11 @@ POSTHOOK: query: alter table test_alter replace columns (id string)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter
 POSTHOOK: Output: default@test_alter
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -103,11 +103,11 @@ POSTHOOK: query: alter table test_alter replace columns (id string, id2 string)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter
 POSTHOOK: Output: default@test_alter
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -123,11 +123,11 @@ POSTHOOK: type: QUERY
 POSTHOOK: Output: default@test_alter
 POSTHOOK: Lineage: test_alter.id SIMPLE [(values__tmp__table__3)values__tmp__table__3.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 POSTHOOK: Lineage: test_alter.id2 SIMPLE [(values__tmp__table__3)values__tmp__table__3.FieldSchema(name:tmp_values_col2, type:string, comment:), ]
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -144,11 +144,11 @@ POSTHOOK: query: alter table test_alter replace columns (id string, id2 string)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter
 POSTHOOK: Output: default@test_alter
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -165,11 +165,11 @@ POSTHOOK: query: alter table test_alter replace columns (id char(10), id2 string
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter
 POSTHOOK: Output: default@test_alter
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -194,11 +194,11 @@ POSTHOOK: query: alter table test_alter replace columns (id varchar(10), id2 str
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter
 POSTHOOK: Output: default@test_alter
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
@@ -223,19 +223,19 @@ POSTHOOK: query: alter table test_alter replace columns (idv varchar(10), id2 st
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter
 POSTHOOK: Output: default@test_alter
-PREHOOK: query: select * from test_alter
+PREHOOK: query: select * from test_alter order by idv
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter
+POSTHOOK: query: select * from test_alter order by idv
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-NULL	NULL
-NULL	NULL
-NULL	NULL
-NULL	NULL
 NULL	100
+NULL	NULL
+NULL	NULL
+NULL	NULL
+NULL	NULL
 PREHOOK: query: create table test_alter2 (id int) stored as parquet
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
@@ -259,11 +259,11 @@ POSTHOOK: query: alter table test_alter2 replace columns (id bigint)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter2
 POSTHOOK: Output: default@test_alter2
-PREHOOK: query: select * from test_alter2
+PREHOOK: query: select * from test_alter2 order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter2
+POSTHOOK: query: select * from test_alter2 order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
@@ -299,11 +299,11 @@ POSTHOOK: query: alter table test_alter2 replace columns (id double)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter2
 POSTHOOK: Output: default@test_alter2
-PREHOOK: query: select * from test_alter2
+PREHOOK: query: select * from test_alter2 order by id
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter2
+POSTHOOK: query: select * from test_alter2 order by id
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
@@ -331,11 +331,11 @@ POSTHOOK: query: insert into test_alter2 values ('2018-01-01 13:14:15.123456'), 
 POSTHOOK: type: QUERY
 POSTHOOK: Output: default@test_alter2
 POSTHOOK: Lineage: test_alter2.ts EXPRESSION [(values__tmp__table__6)values__tmp__table__6.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
-PREHOOK: query: select * from test_alter2
+PREHOOK: query: select * from test_alter2 order by ts
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter2
+POSTHOOK: query: select * from test_alter2 order by ts
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
@@ -350,11 +350,11 @@ POSTHOOK: query: alter table test_alter2 replace columns (ts string)
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter2
 POSTHOOK: Output: default@test_alter2
-PREHOOK: query: select * from test_alter2
+PREHOOK: query: select * from test_alter2 order by ts
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter2
+POSTHOOK: query: select * from test_alter2 order by ts
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
@@ -384,11 +384,11 @@ POSTHOOK: query: insert into test_alter2 values ('2018-01-01 13:14:15.123456'), 
 POSTHOOK: type: QUERY
 POSTHOOK: Output: default@test_alter2
 POSTHOOK: Lineage: test_alter2.ts EXPRESSION [(values__tmp__table__7)values__tmp__table__7.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
-PREHOOK: query: select * from test_alter2
+PREHOOK: query: select * from test_alter2 order by ts
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter2
+POSTHOOK: query: select * from test_alter2 order by ts
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
@@ -403,11 +403,11 @@ POSTHOOK: query: alter table test_alter2 replace columns (ts varchar(19))
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter2
 POSTHOOK: Output: default@test_alter2
-PREHOOK: query: select * from test_alter2
+PREHOOK: query: select * from test_alter2 order by ts
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter2
+POSTHOOK: query: select * from test_alter2 order by ts
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
@@ -437,11 +437,11 @@ POSTHOOK: query: insert into test_alter2 values ('2018-01-01 13:14:15.123456'), 
 POSTHOOK: type: QUERY
 POSTHOOK: Output: default@test_alter2
 POSTHOOK: Lineage: test_alter2.ts EXPRESSION [(values__tmp__table__8)values__tmp__table__8.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
-PREHOOK: query: select * from test_alter2
+PREHOOK: query: select * from test_alter2 order by ts
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter2
+POSTHOOK: query: select * from test_alter2 order by ts
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
@@ -456,11 +456,11 @@ POSTHOOK: query: alter table test_alter2 replace columns (ts char(25))
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter2
 POSTHOOK: Output: default@test_alter2
-PREHOOK: query: select * from test_alter2
+PREHOOK: query: select * from test_alter2 order by ts
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter2
+POSTHOOK: query: select * from test_alter2 order by ts
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter2
 #### A masked pattern was here ####
@@ -493,11 +493,11 @@ POSTHOOK: query: alter table test_alter3 replace columns (id1 smallint, id2 int,
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter3
 POSTHOOK: Output: default@test_alter3
-PREHOOK: query: select id1, id2, id3 from test_alter3
+PREHOOK: query: select id1, id2, id3 from test_alter3 order by id1
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter3
 #### A masked pattern was here ####
-POSTHOOK: query: select id1, id2, id3 from test_alter3
+POSTHOOK: query: select id1, id2, id3 from test_alter3 order by id1
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter3
 #### A masked pattern was here ####
