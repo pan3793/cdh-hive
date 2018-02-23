@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
@@ -48,7 +47,6 @@ import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,12 +59,7 @@ import com.google.common.collect.Lists;
  * Tests for creating partitions from partition spec.
  */
 @RunWith(Parameterized.class)
-public class TestAddPartitionsFromPartSpec {
-
-  // Needed until there is no junit release with @BeforeParam, @AfterParam (junit 4.13)
-  // https://github.com/junit-team/junit4/commit/1bf8438b65858565dbb64736bfe13aae9cfc1b5a
-  // Then we should remove our own copy
-  private static Set<AbstractMetaStoreService> metaStoreServices = null;
+public class TestAddPartitionsFromPartSpec extends MetaStoreClientTest {
   private AbstractMetaStoreService metaStore;
   private IMetaStoreClient client;
 
@@ -81,29 +74,8 @@ public class TestAddPartitionsFromPartSpec {
   private static final int DEFAULT_CREATE_TIME = 123456;
   private static final short MAX = -1;
 
-  @Parameterized.Parameters(name = "{0}")
-  public static List<Object[]> getMetaStoreToTest() throws Exception {
-    metaStoreServices = new HashSet<AbstractMetaStoreService>();
-    List<Object[]> result = MetaStoreFactoryForTests.getMetaStores();
-    for(Object[] test: result) {
-      metaStoreServices.add((AbstractMetaStoreService)test[1]);
-    }
-    return result;
-  }
-  public TestAddPartitionsFromPartSpec(String name, AbstractMetaStoreService metaStore)
-      throws Exception {
+  public TestAddPartitionsFromPartSpec(String name, AbstractMetaStoreService metaStore) {
     this.metaStore = metaStore;
-    this.metaStore.start();
-  }
-
-  // Needed until there is no junit release with @BeforeParam, @AfterParam (junit 4.13)
-  // https://github.com/junit-team/junit4/commit/1bf8438b65858565dbb64736bfe13aae9cfc1b5a
-  // Then we should move this to @AfterParam
-  @AfterClass
-  public static void stopMetaStores() throws Exception {
-    for(AbstractMetaStoreService metaStoreService : metaStoreServices) {
-      metaStoreService.stop();
-    }
   }
 
   @Before
