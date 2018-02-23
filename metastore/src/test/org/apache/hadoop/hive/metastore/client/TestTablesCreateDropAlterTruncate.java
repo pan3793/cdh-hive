@@ -41,9 +41,9 @@ import org.apache.hadoop.hive.metastore.minihms.AbstractMetaStoreService;
 import org.apache.thrift.protocol.TProtocolException;
 import org.apache.thrift.transport.TTransportException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,19 +52,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Test class for IMetaStoreClient API. Testing the Table related functions for metadata
  * manipulation, like creating, dropping and altering tables.
  */
 @RunWith(Parameterized.class)
-public class TestTablesCreateDropAlterTruncate {
-  // Needed until there is no junit release with @BeforeParam, @AfterParam (junit 4.13)
-  // https://github.com/junit-team/junit4/commit/1bf8438b65858565dbb64736bfe13aae9cfc1b5a
-  // Then we should remove our own copy
-  private static Set<AbstractMetaStoreService> metaStoreServices = null;
+public class TestTablesCreateDropAlterTruncate extends MetaStoreClientTest {
   private static final String DEFAULT_DATABASE = "default";
   private static final String OTHER_DATABASE = "dummy";
   private final AbstractMetaStoreService metaStore;
@@ -73,34 +67,19 @@ public class TestTablesCreateDropAlterTruncate {
   private Table partitionedTable = null;
   private Table externalTable = null;
 
-  @Parameterized.Parameters(name = "{0}")
-  public static List<Object[]> getMetaStoreToTest() throws Exception {
-    List<Object[]> result = MetaStoreFactoryForTests.getMetaStores();
-    metaStoreServices = result.stream()
-        .map(test -> (AbstractMetaStoreService)test[1])
-        .collect(Collectors.toSet());
-    return result;
+  public TestTablesCreateDropAlterTruncate(String name, AbstractMetaStoreService metaStore) {
+    this.metaStore = metaStore;
   }
 
-  public TestTablesCreateDropAlterTruncate(String name, AbstractMetaStoreService metaStore) throws Exception {
-    this.metaStore = metaStore;
+  @BeforeClass
+  public static void startMetaStores() {
     Map<HiveConf.ConfVars, String> msConf = new HashMap<HiveConf.ConfVars, String>();
     // Enable trash, so it can be tested
     Map<String, String> extraConf = new HashMap<String, String>();
     extraConf.put("fs.trash.checkpoint.interval", "30");  // FS_TRASH_CHECKPOINT_INTERVAL_KEY
     extraConf.put("fs.trash.interval", "30");             // FS_TRASH_INTERVAL_KEY (hadoop-2)
 
-    this.metaStore.start(msConf, extraConf);
-  }
-
-  // Needed until there is no junit release with @BeforeParam, @AfterParam (junit 4.13)
-  // https://github.com/junit-team/junit4/commit/1bf8438b65858565dbb64736bfe13aae9cfc1b5a
-  // Then we should move this to @AfterParam
-  @AfterClass
-  public static void stopMetaStores() throws Exception {
-    for(AbstractMetaStoreService metaStoreService : metaStoreServices) {
-      metaStoreService.stop();
-    }
+    startMetaStores(msConf, extraConf);
   }
 
   @Before
