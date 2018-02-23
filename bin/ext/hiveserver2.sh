@@ -38,6 +38,7 @@ hiveserver2() {
     done
   fi
 
+  export HADOOP_OPTS="$HIVESERVER2_HADOOP_OPTS $HADOOP_OPTS"
   exec $HADOOP jar $JAR $CLASS $HIVE_OPTS "$@"
 }
 
