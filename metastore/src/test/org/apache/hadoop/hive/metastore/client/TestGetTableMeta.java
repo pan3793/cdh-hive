@@ -37,7 +37,6 @@ import org.apache.thrift.TException;
 import com.google.common.collect.Lists;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,12 +49,7 @@ import static org.junit.Assert.assertTrue;
  * API tests for HMS client's getTableMeta method.
  */
 @RunWith(Parameterized.class)
-public class TestGetTableMeta {
-
-  // Needed until there is no junit release with @BeforeParam, @AfterParam (junit 4.13)
-  // https://github.com/junit-team/junit4/commit/1bf8438b65858565dbb64736bfe13aae9cfc1b5a
-  // Then we should remove our own copy
-  private static Set<AbstractMetaStoreService> metaStoreServices = null;
+public class TestGetTableMeta extends MetaStoreClientTest {
   private AbstractMetaStoreService metaStore;
   private IMetaStoreClient client;
 
@@ -64,30 +58,8 @@ public class TestGetTableMeta {
 
   private List<TableMeta> expectedMetas = null;
 
-
-  @Parameterized.Parameters(name = "{0}")
-  public static List<Object[]> getMetaStoreToTest() throws Exception {
-    metaStoreServices = new HashSet<AbstractMetaStoreService>();
-    List<Object[]> result = MetaStoreFactoryForTests.getMetaStores();
-    for(Object[] test: result) {
-      metaStoreServices.add((AbstractMetaStoreService)test[1]);
-    }
-    return result;
-  }
-
-  public TestGetTableMeta(String name, AbstractMetaStoreService metaStore) throws Exception {
+  public TestGetTableMeta(String name, AbstractMetaStoreService metaStore) {
     this.metaStore = metaStore;
-    this.metaStore.start();
-  }
-
-  // Needed until there is no junit release with @BeforeParam, @AfterParam (junit 4.13)
-  // https://github.com/junit-team/junit4/commit/1bf8438b65858565dbb64736bfe13aae9cfc1b5a
-  // Then we should move this to @AfterParam
-  @AfterClass
-  public static void stopMetaStores() throws Exception {
-    for(AbstractMetaStoreService metaStoreService : metaStoreServices) {
-      metaStoreService.stop();
-    }
   }
 
   @Before
