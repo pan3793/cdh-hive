@@ -46,7 +46,7 @@ select * from test_alter order by id;
 -- change columntype and column name
 alter table test_alter replace columns (id string, id2 string);
 alter table test_alter replace columns (idv varchar(10), id2 string);
-select * from test_alter order by idv;
+select * from test_alter order by id2;
 
 -- test int to long type conversion
 create table test_alter2 (id int) stored as parquet;

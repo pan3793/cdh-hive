@@ -223,19 +223,19 @@ POSTHOOK: query: alter table test_alter replace columns (idv varchar(10), id2 st
 POSTHOOK: type: ALTERTABLE_REPLACECOLS
 POSTHOOK: Input: default@test_alter
 POSTHOOK: Output: default@test_alter
-PREHOOK: query: select * from test_alter order by idv
+PREHOOK: query: select * from test_alter order by id2
 PREHOOK: type: QUERY
 PREHOOK: Input: default@test_alter
 #### A masked pattern was here ####
-POSTHOOK: query: select * from test_alter order by idv
+POSTHOOK: query: select * from test_alter order by id2
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@test_alter
 #### A masked pattern was here ####
+NULL	NULL
+NULL	NULL
+NULL	NULL
+NULL	NULL
 NULL	100
-NULL	NULL
-NULL	NULL
-NULL	NULL
-NULL	NULL
 PREHOOK: query: create table test_alter2 (id int) stored as parquet
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
