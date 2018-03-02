@@ -21,6 +21,7 @@ package org.apache.hadoop.hive.ql.exec.vector;
 import java.io.IOException;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.io.DataOutputBuffer;
 
 /**
@@ -35,7 +36,8 @@ public class VectorGroupKeyHelper extends VectorColumnSetInfo {
   void init(VectorExpression[] keyExpressions) throws HiveException {
     // Inspect the output type of each key expression.
     for(int i=0; i < keyExpressions.length; ++i) {
-      addKey(keyExpressions[i].getOutputType());
+      TypeInfo typeInfo = keyExpressions[i].getOutputTypeInfo();
+      addKey(keyExpressions[i].getOutputTypeInfo().getTypeName());
     }
     finishAdding();
   }

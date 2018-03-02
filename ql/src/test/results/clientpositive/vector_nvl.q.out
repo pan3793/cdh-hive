@@ -30,7 +30,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNull(col 5) -> boolean
+                  predicateExpression: SelectColumnIsNull(col 5)
               predicate: cdouble is null (type: boolean)
               Statistics: Num rows: 6144 Data size: 1320982 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -131,7 +131,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [4, 13]
-                  selectExpressions: VectorCoalesce(columns [4, 12])(children: col 4, ConstantVectorExpression(val 1.0) -> 12:double) -> 13:float
+                  selectExpressions: VectorCoalesce(columns [4, 12])(children: col 4, ConstantVectorExpression(val 1.0) -> 12:float) -> 13:float
               Statistics: Num rows: 12288 Data size: 2641964 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 10
@@ -220,7 +220,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [12]
-                  selectExpressions: ConstantVectorExpression(val 10) -> 12:long
+                  selectExpressions: ConstantVectorExpression(val 10) -> 12:int
               Statistics: Num rows: 12288 Data size: 49152 Basic stats: COMPLETE Column stats: COMPLETE
               Limit
                 Number of rows: 10

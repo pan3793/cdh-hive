@@ -51,7 +51,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 4)(children: CastDecimalToBoolean(col 2) -> 4:long) -> boolean, SelectColumnIsNotNull(col 4)(children: CastDecimalToBoolean(col 3) -> 4:long) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 4)(children: CastDecimalToBoolean(col 2) -> 4:boolean), SelectColumnIsNotNull(col 4)(children: CastDecimalToBoolean(col 3) -> 4:boolean))
               predicate: (cdecimal1 is not null and cdecimal2 is not null) (type: boolean)
               Statistics: Num rows: 6102 Data size: 1440072 Basic stats: COMPLETE Column stats: NONE
               Group By Operator

@@ -442,7 +442,7 @@ public class TestVectorizationContext {
 
     VectorExpression ve = vc.getVectorExpression(exprDesc, VectorExpressionDescriptor.Mode.PROJECTION);
 
-    assertTrue(ve.getOutputType().equalsIgnoreCase("double"));
+    assertTrue(ve.getOutputTypeInfo().equals(TypeInfoFactory.doubleTypeInfo));
   }
 
   @Test
@@ -912,6 +912,7 @@ public class TestVectorizationContext {
     children.add(constDesc);
 
     colEqualScalar.setChildren(children);
+    colEqualScalar.setTypeInfo(TypeInfoFactory.booleanTypeInfo);
 
     List<String> columns = new ArrayList<String>();
     columns.add("a");

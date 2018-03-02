@@ -21,6 +21,7 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * This is a superclass for unary string functions that operate directly on the
@@ -129,11 +130,6 @@ abstract public class StringUnaryUDFDirect extends VectorExpression {
 
   public void setInputColumn(int inputColumn) {
     this.inputColumn = inputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "String";
   }
 
   public String vectorExpressionParameters() {

@@ -18,7 +18,6 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
-import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
@@ -36,12 +35,10 @@ public abstract class FuncTimestampToLong extends VectorExpression {
   public FuncTimestampToLong(int inputColumn, int outputColumn) {
     this.inputColumn = inputColumn;
     this.outputColumn = outputColumn;
-    this.outputType = "long";
   }
 
   public FuncTimestampToLong() {
     super();
-    this.outputType = "long";
   }
 
   abstract protected void func(LongColumnVector outV, TimestampColumnVector inV, int i);

@@ -65,7 +65,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterExprOrExpr(children: FilterExprAndExpr(children: SelectColumnIsNotNull(col 11) -> boolean, FilterStringColLikeStringScalar(col 6, pattern %b%) -> boolean) -> boolean, FilterExprAndExpr(children: FilterDoubleColEqualDoubleColumn(col 12, col 5)(children: CastLongToDouble(col 0) -> 12:double) -> boolean, SelectColumnIsNotNull(col 9) -> boolean, FilterStringColLikeStringScalar(col 7, pattern a) -> boolean) -> boolean) -> boolean
+                        predicateExpression: FilterExprOrExpr(children: FilterExprAndExpr(children: SelectColumnIsNotNull(col 11), FilterStringColLikeStringScalar(col 6, pattern %b%)), FilterExprAndExpr(children: FilterDoubleColEqualDoubleColumn(col 12, col 5)(children: CastLongToDouble(col 0) -> 12:double), SelectColumnIsNotNull(col 9), FilterStringColLikeStringScalar(col 7, pattern a)))
                     predicate: ((cboolean2 is not null and (cstring1 like '%b%')) or ((UDFToDouble(ctinyint) = cdouble) and ctimestamp2 is not null and (cstring2 like 'a'))) (type: boolean)
                     Statistics: Num rows: 9216 Data size: 110592 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -143,7 +143,7 @@ STAGE PLANS:
                       className: VectorSelectOperator
                       native: true
                       projectedOutputColumns: [0, 5, 1, 9, 6, 2, 10, 7, 3, 4, 11, 14]
-                      selectExpressions: LongColMultiplyLongScalar(col 0, val -75)(children: col 0) -> 5:long, DoubleColDivideDoubleColumn(col 7, col 8)(children: CastLongToDouble(col 6)(children: LongColMultiplyLongScalar(col 0, val -75)(children: col 0) -> 6:long) -> 7:double, CastLongToDouble(col 1) -> 8:double) -> 9:double, LongScalarMultiplyLongColumn(val 6981, col 0)(children: col 0) -> 6:long, LongColUnaryMinus(col 2) -> 10:long, DoubleScalarModuloDoubleColumn(val 197.0, col 12)(children: DoubleColDivideDoubleColumn(col 7, col 8)(children: CastLongToDouble(col 11)(children: LongColMultiplyLongScalar(col 0, val -75)(children: col 0) -> 11:long) -> 7:double, CastLongToDouble(col 1) -> 8:double) -> 12:double) -> 7:double, LongColUnaryMinus(col 4) -> 11:long, LongColAddLongColumn(col 13, col 4)(children: LongColUnaryMinus(col 4) -> 13:long) -> 14:long
+                      selectExpressions: LongColMultiplyLongScalar(col 0, val -75)(children: col 0) -> 5:int, DoubleColDivideDoubleColumn(col 7, col 8)(children: CastLongToDouble(col 6)(children: LongColMultiplyLongScalar(col 0, val -75)(children: col 0) -> 6:int) -> 7:double, CastLongToDouble(col 1) -> 8:double) -> 9:double, LongScalarMultiplyLongColumn(val 6981, col 0)(children: col 0) -> 6:int, LongColUnaryMinus(col 2) -> 10:smallint, DoubleScalarModuloDoubleColumn(val 197.0, col 12)(children: DoubleColDivideDoubleColumn(col 7, col 8)(children: CastLongToDouble(col 11)(children: LongColMultiplyLongScalar(col 0, val -75)(children: col 0) -> 11:int) -> 7:double, CastLongToDouble(col 1) -> 8:double) -> 12:double) -> 7:double, LongColUnaryMinus(col 4) -> 11:tinyint, LongColAddLongColumn(col 13, col 4)(children: LongColUnaryMinus(col 4) -> 13:tinyint) -> 14:tinyint
                   Statistics: Num rows: 1 Data size: 28 Basic stats: COMPLETE Column stats: NONE
                   File Output Operator
                     compressed: false

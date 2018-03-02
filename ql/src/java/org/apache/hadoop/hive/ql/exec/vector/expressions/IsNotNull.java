@@ -21,6 +21,7 @@ import org.apache.hadoop.hive.ql.exec.vector.ColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * This expression evaluates to true if the given input columns is not null.
@@ -87,11 +88,6 @@ public class IsNotNull extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   public int getColNum() {

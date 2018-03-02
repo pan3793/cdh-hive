@@ -150,7 +150,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 10]
-                  selectExpressions: VectorUDFAdaptor(hex(cbinary)) -> 11:String
+                  selectExpressions: VectorUDFAdaptor(hex(cbinary)) -> 11:string
               Statistics: Num rows: 22 Data size: 242 Basic stats: COMPLETE Column stats: NONE
               File Output Operator
                 compressed: false
@@ -241,7 +241,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [7, 11, 8, 12, 10, 13]
-                  selectExpressions: StringLength(col 7) -> 11:Long, StringLength(col 8) -> 12:Long, FuncSignDecimalToLong(col 10) -> 13:long
+                  selectExpressions: StringLength(col 7) -> 11:int, StringLength(col 8) -> 12:int, FuncSignDecimalToLong(col 10) -> 13:int
               Statistics: Num rows: 22 Data size: 242 Basic stats: COMPLETE Column stats: NONE
               File Output Operator
                 compressed: false
@@ -530,7 +530,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 10]
-                  selectExpressions: VectorUDFAdaptor(hex(cbinary)) -> 11:String
+                  selectExpressions: VectorUDFAdaptor(hex(cbinary)) -> 11:string
               Statistics: Num rows: 22 Data size: 242 Basic stats: COMPLETE Column stats: NONE
               File Output Operator
                 compressed: false
@@ -621,7 +621,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [7, 11, 8, 12, 10, 13]
-                  selectExpressions: StringLength(col 7) -> 11:Long, StringLength(col 8) -> 12:Long, FuncSignDecimalToLong(col 10) -> 13:long
+                  selectExpressions: StringLength(col 7) -> 11:int, StringLength(col 8) -> 12:int, FuncSignDecimalToLong(col 10) -> 13:int
               Statistics: Num rows: 22 Data size: 242 Basic stats: COMPLETE Column stats: NONE
               File Output Operator
                 compressed: false

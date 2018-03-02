@@ -23,6 +23,7 @@ import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor.Descriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -149,12 +150,6 @@ public class FilterDecimalColumnInList extends VectorExpression implements IDeci
         }
       }
     }
-  }
-
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   @Override

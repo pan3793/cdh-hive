@@ -174,7 +174,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 1) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 1)
               predicate: c2 is not null (type: boolean)
               Statistics: Num rows: 3 Data size: 294 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -305,7 +305,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 1) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 1)
               predicate: c2 is not null (type: boolean)
               Statistics: Num rows: 3 Data size: 324 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -438,7 +438,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 1) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 1)
               predicate: c2 is not null (type: boolean)
               Statistics: Num rows: 3 Data size: 294 Basic stats: COMPLETE Column stats: NONE
               Select Operator

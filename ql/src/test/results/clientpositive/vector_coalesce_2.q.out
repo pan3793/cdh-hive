@@ -198,7 +198,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [1, 4]
-                  selectExpressions: VectorUDFAdaptor(UDFToInteger(COALESCE(str1,0)))(children: VectorCoalesce(columns [0, 2])(children: col 0, ConstantVectorExpression(val 0) -> 2:string) -> 3:string) -> 4:Long
+                  selectExpressions: VectorUDFAdaptor(UDFToInteger(COALESCE(str1,0)))(children: VectorCoalesce(columns [0, 2])(children: col 0, ConstantVectorExpression(val 0) -> 2:string) -> 3:string) -> 4:int
               Statistics: Num rows: 4 Data size: 510 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: sum(_col1)

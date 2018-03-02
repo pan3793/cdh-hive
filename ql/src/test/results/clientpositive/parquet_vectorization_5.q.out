@@ -60,7 +60,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprOrExpr(children: FilterExprAndExpr(children: SelectColumnIsNotNull(col 11) -> boolean, FilterStringColLikeStringScalar(col 6, pattern %b%) -> boolean) -> boolean, FilterExprAndExpr(children: FilterDoubleColEqualDoubleColumn(col 12, col 5)(children: CastLongToDouble(col 0) -> 12:double) -> boolean, SelectColumnIsNotNull(col 9) -> boolean, FilterStringColLikeStringScalar(col 7, pattern a) -> boolean) -> boolean) -> boolean
+                  predicateExpression: FilterExprOrExpr(children: FilterExprAndExpr(children: SelectColumnIsNotNull(col 11), FilterStringColLikeStringScalar(col 6, pattern %b%)), FilterExprAndExpr(children: FilterDoubleColEqualDoubleColumn(col 12, col 5)(children: CastLongToDouble(col 0) -> 12:double), SelectColumnIsNotNull(col 9), FilterStringColLikeStringScalar(col 7, pattern a)))
               predicate: ((cboolean2 is not null and (cstring1 like '%b%')) or ((UDFToDouble(ctinyint) = cdouble) and ctimestamp2 is not null and (cstring2 like 'a'))) (type: boolean)
               Statistics: Num rows: 9216 Data size: 445313 Basic stats: COMPLETE Column stats: NONE
               Select Operator

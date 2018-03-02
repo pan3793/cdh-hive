@@ -23,6 +23,7 @@ import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 public class VectorElt extends VectorExpression {
 
@@ -114,8 +115,8 @@ public class VectorElt extends VectorExpression {
   }
 
   @Override
-  public String getOutputType() {
-    return outputType;
+  public TypeInfo getOutputTypeInfo() {
+    return outputTypeInfo;
   }
 
   public int [] getInputColumns() {

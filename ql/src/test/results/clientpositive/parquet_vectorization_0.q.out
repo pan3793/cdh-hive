@@ -1392,7 +1392,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprOrExpr(children: FilterStringColLikeStringScalar(col 7, pattern %b%) -> boolean, FilterDoubleScalarNotEqualDoubleColumn(val 79.553, col 12)(children: CastLongToDouble(col 2) -> 12:double) -> boolean, FilterDoubleColLessDoubleColumn(col 12, col 5)(children: CastLongToDouble(col 3) -> 12:double) -> boolean, FilterExprAndExpr(children: FilterLongColGreaterEqualLongColumn(col 0, col 1)(children: col 0) -> boolean, FilterLongColEqualLongScalar(col 11, val 1) -> boolean, FilterLongScalarEqualLongColumn(val 3569, col 0)(children: col 0) -> boolean) -> boolean) -> boolean
+                  predicateExpression: FilterExprOrExpr(children: FilterStringColLikeStringScalar(col 7, pattern %b%), FilterDoubleScalarNotEqualDoubleColumn(val 79.553, col 12)(children: CastLongToDouble(col 2) -> 12:double), FilterDoubleColLessDoubleColumn(col 12, col 5)(children: CastLongToDouble(col 3) -> 12:double), FilterExprAndExpr(children: FilterLongColGreaterEqualLongColumn(col 0, col 1)(children: col 0), FilterLongColEqualLongScalar(col 11, val 1), FilterLongScalarEqualLongColumn(val 3569, col 0)(children: col 0)))
               predicate: ((cstring2 like '%b%') or (79.553 <> UDFToDouble(cint)) or (UDFToDouble(cbigint) < cdouble) or ((UDFToShort(ctinyint) >= csmallint) and (cboolean2 = 1) and (3569 = UDFToInteger(ctinyint)))) (type: boolean)
               Statistics: Num rows: 12288 Data size: 593751 Basic stats: COMPLETE Column stats: NONE
               Select Operator

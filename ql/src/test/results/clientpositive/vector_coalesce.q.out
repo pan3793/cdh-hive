@@ -28,12 +28,12 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNull(col 5) -> boolean
+                  predicateExpression: SelectColumnIsNull(col 5)
                 Select Vectorization:
                     className: VectorSelectOperator
                     native: true
                     projectedOutputColumns: [6, 2, 4, 1, 16]
-                    selectExpressions: VectorCoalesce(columns [12, 6, 13, 14, 15])(children: ConstantVectorExpression(val null) -> 12:string, col 6, CastLongToString(col 2) -> 13:String, VectorUDFAdaptor(null(cfloat)) -> 14:String, CastLongToString(col 1) -> 15:String) -> 16:string
+                    selectExpressions: VectorCoalesce(columns [12, 6, 13, 14, 15])(children: ConstantVectorExpression(val null) -> 12:string, col 6, CastLongToString(col 2) -> 13:string, VectorUDFAdaptor(null(cfloat)) -> 14:string, CastLongToString(col 1) -> 15:string) -> 16:string
                   Reduce Sink Vectorization:
                       className: VectorReduceSinkOperator
                       native: false
@@ -113,7 +113,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNull(col 0)
                 Select Vectorization:
                     className: VectorSelectOperator
                     native: true
@@ -198,7 +198,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNull(col 4) -> boolean, SelectColumnIsNull(col 3) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNull(col 4), SelectColumnIsNull(col 3))
                 Select Vectorization:
                     className: VectorSelectOperator
                     native: true
@@ -282,7 +282,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprOrExpr(children: SelectColumnIsNotNull(col 8) -> boolean, SelectColumnIsNotNull(col 9) -> boolean) -> boolean
+                  predicateExpression: FilterExprOrExpr(children: SelectColumnIsNotNull(col 8), SelectColumnIsNotNull(col 9))
                 Select Vectorization:
                     className: VectorSelectOperator
                     native: true
@@ -367,7 +367,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNull(col 4) -> boolean, SelectColumnIsNull(col 3) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNull(col 4), SelectColumnIsNull(col 3))
                 Select Vectorization:
                     className: VectorSelectOperator
                     native: true
@@ -449,7 +449,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNull(col 3) -> boolean
+                  predicateExpression: SelectColumnIsNull(col 3)
                 Select Vectorization:
                     className: VectorSelectOperator
                     native: true

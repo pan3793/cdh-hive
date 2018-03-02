@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Evaluate AND of two boolean columns and store result in the output boolean column.
@@ -286,11 +287,6 @@ public class ColAndCol extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   public int getColNum1() {

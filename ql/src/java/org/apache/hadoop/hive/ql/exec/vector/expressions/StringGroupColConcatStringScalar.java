@@ -18,11 +18,10 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
-import java.nio.charset.StandardCharsets;
-
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Vectorized instruction to concatenate a string column to a scalar and put
@@ -123,11 +122,6 @@ public class StringGroupColConcatStringScalar extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "String_Family";
   }
 
   public int getColNum() {

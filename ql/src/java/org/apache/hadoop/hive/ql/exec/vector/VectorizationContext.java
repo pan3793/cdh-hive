@@ -92,14 +92,12 @@ import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.*;
 import org.apache.hadoop.hive.ql.exec.vector.udf.VectorUDFAdaptor;
 import org.apache.hadoop.hive.ql.exec.vector.udf.VectorUDFArgDesc;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
-import org.apache.hadoop.hive.ql.optimizer.physical.Vectorizer;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.AggregationDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeColumnDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeConstantDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
-import org.apache.hadoop.hive.ql.plan.GroupByDesc;
 import org.apache.hadoop.hive.ql.udf.SettableUDF;
 import org.apache.hadoop.hive.ql.udf.UDFConv;
 import org.apache.hadoop.hive.ql.udf.UDFFromUnixTime;
@@ -137,8 +135,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.util.StringUtils;
-import org.apache.hive.common.util.DateUtils;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -479,7 +475,7 @@ public class VectorizationContext {
 
             // Ok, try the UDF.
             castToBooleanExpr = getVectorExpressionForUdf(null, UDFToBoolean.class, exprAsList,
-                VectorExpressionDescriptor.Mode.PROJECTION, null);
+                VectorExpressionDescriptor.Mode.PROJECTION, TypeInfoFactory.booleanTypeInfo);
             if (castToBooleanExpr == null) {
               throw new HiveException("Cannot vectorize converting expression " +
                   exprDesc.getExprString() + " to boolean");
@@ -490,7 +486,9 @@ public class VectorizationContext {
         }
         break;
       case PROJECTION:
-        expr = new IdentityExpression(columnNum, exprDesc.getTypeString());
+        expr = new IdentityExpression(columnNum);
+        TypeInfo identityTypeInfo = exprDesc.getTypeInfo();
+        expr.setOutputTypeInfo(identityTypeInfo);
         break;
     }
     return expr;
@@ -1044,48 +1042,48 @@ public class VectorizationContext {
       outCol = ocm.allocateOutputColumn(typeName);
     }
     if (constantValue == null) {
-      return new ConstantVectorExpression(outCol, typeName, true);
+      return new ConstantVectorExpression(outCol, typeInfo, true);
     }
 
     // Boolean is special case.
     if (typeName.equalsIgnoreCase("boolean")) {
       if (mode == VectorExpressionDescriptor.Mode.FILTER) {
         if (((Boolean) constantValue).booleanValue()) {
-          return new FilterConstantBooleanVectorExpression(1);
+          return new FilterConstantBooleanVectorExpression(1, typeInfo);
         } else {
-          return new FilterConstantBooleanVectorExpression(0);
+          return new FilterConstantBooleanVectorExpression(0, typeInfo);
         }
       } else {
         if (((Boolean) constantValue).booleanValue()) {
-          return new ConstantVectorExpression(outCol, 1);
+          return new ConstantVectorExpression(outCol, 1, typeInfo);
         } else {
-          return new ConstantVectorExpression(outCol, 0);
+          return new ConstantVectorExpression(outCol, 0, typeInfo);
         }
       }
     }
 
     switch (vectorArgType) {
     case INT_FAMILY:
-      return new ConstantVectorExpression(outCol, ((Number) constantValue).longValue());
+      return new ConstantVectorExpression(outCol, ((Number) constantValue).longValue(), typeInfo);
     case DATE:
-      return new ConstantVectorExpression(outCol, DateWritable.dateToDays((Date) constantValue));
+      return new ConstantVectorExpression(outCol, DateWritable.dateToDays((Date) constantValue), typeInfo);
     case TIMESTAMP:
-      return new ConstantVectorExpression(outCol, (Timestamp) constantValue);
+      return new ConstantVectorExpression(outCol, (Timestamp) constantValue, typeInfo);
     case INTERVAL_YEAR_MONTH:
       return new ConstantVectorExpression(outCol,
-          ((HiveIntervalYearMonth) constantValue).getTotalMonths());
+          ((HiveIntervalYearMonth) constantValue).getTotalMonths(), typeInfo);
     case INTERVAL_DAY_TIME:
-      return new ConstantVectorExpression(outCol, (HiveIntervalDayTime) constantValue);
+      return new ConstantVectorExpression(outCol, (HiveIntervalDayTime) constantValue, typeInfo);
     case FLOAT_FAMILY:
-      return new ConstantVectorExpression(outCol, ((Number) constantValue).doubleValue());
+      return new ConstantVectorExpression(outCol, ((Number) constantValue).doubleValue(), typeInfo);
     case DECIMAL:
-      return new ConstantVectorExpression(outCol, (HiveDecimal) constantValue, typeName);
+      return new ConstantVectorExpression(outCol, (HiveDecimal) constantValue, typeInfo);
     case STRING:
-      return new ConstantVectorExpression(outCol, ((String) constantValue).getBytes());
+      return new ConstantVectorExpression(outCol, ((String) constantValue).getBytes(), typeInfo);
     case CHAR:
-      return new ConstantVectorExpression(outCol, ((HiveChar) constantValue), typeName);
+      return new ConstantVectorExpression(outCol, ((HiveChar) constantValue), typeInfo);
     case VARCHAR:
-      return new ConstantVectorExpression(outCol, ((HiveVarchar) constantValue), typeName);
+      return new ConstantVectorExpression(outCol, ((HiveVarchar) constantValue), typeInfo);
     default:
       throw new HiveException("Unsupported constant type: " + typeName + ", object class " + constantValue.getClass().getSimpleName());
     }
@@ -1100,23 +1098,24 @@ public class VectorizationContext {
       throws HiveException {
     ExprNodeDesc childExpr = childExprList.get(0);
     int inputCol;
-    String colType;
+    TypeInfo identityTypeInfo;
     VectorExpression v1 = null;
     if (childExpr instanceof ExprNodeGenericFuncDesc) {
       v1 = getVectorExpression(childExpr);
       inputCol = v1.getOutputColumn();
-      colType = v1.getOutputType();
+      identityTypeInfo = v1.getOutputTypeInfo();
     } else if (childExpr instanceof ExprNodeColumnDesc) {
       ExprNodeColumnDesc colDesc = (ExprNodeColumnDesc) childExpr;
       inputCol = getInputColumnIndex(colDesc.getColumn());
-      colType = colDesc.getTypeString();
+      identityTypeInfo = colDesc.getTypeInfo();
     } else {
       throw new HiveException("Expression not supported: "+childExpr);
     }
-    VectorExpression expr = new IdentityExpression(inputCol, colType);
+    VectorExpression expr = new IdentityExpression(inputCol);
     if (v1 != null) {
       expr.setChildExpressions(new VectorExpression [] {v1});
     }
+    expr.setOutputTypeInfo(identityTypeInfo);
     return expr;
   }
 
@@ -1288,7 +1287,7 @@ public class VectorizationContext {
     return cleaned;
   }
 
-  private VectorExpression instantiateExpression(Class<?> vclass, TypeInfo returnType, Object...args)
+  private VectorExpression instantiateExpression(Class<?> vclass, TypeInfo returnTypeInfo, Object...args)
       throws HiveException {
     VectorExpression ve = null;
     Constructor<?> ctor = getConstructor(vclass);
@@ -1312,24 +1311,19 @@ public class VectorizationContext {
       // Additional argument is needed, which is the outputcolumn.
       Object [] newArgs = null;
       try {
-        String outType;
-
-        // Special handling for decimal because decimal types need scale and precision parameter.
-        // This special handling should be avoided by using returnType uniformly for all cases.
-        if (returnType != null) {
-          outType = getNormalizedName(returnType.getTypeName()).toLowerCase();
-          if (outType == null) {
-           throw new HiveException("No vector type for type name " + returnType);
-          }
-        } else {
-          outType = ((VectorExpression) vclass.newInstance()).getOutputType();
+        if (returnTypeInfo == null) {
+          throw new HiveException("Missing output type information");
         }
-        int outputCol = ocm.allocateOutputColumn(outType);
+        String returnTypeName = VectorizationContext.mapTypeNameSynonyms(returnTypeInfo.getTypeName());
+        int outputCol = ocm.allocateOutputColumn(returnTypeName);
         newArgs = Arrays.copyOf(args, numParams);
         newArgs[numParams-1] = outputCol;
 
         ve = (VectorExpression) ctor.newInstance(newArgs);
-        ve.setOutputType(outType);
+        /*
+         * Caller is responsible for setting children and input type information.
+         */
+        ve.setOutputTypeInfo(returnTypeInfo);
       } catch (Exception ex) {
           throw new HiveException("Could not instantiate " + vclass.getSimpleName() + " with arguments " + getNewInstanceArgumentString(newArgs) + ", exception: " +
               getStackTraceAsSingleLine(ex));
@@ -1338,8 +1332,8 @@ public class VectorizationContext {
     // Add maxLength parameter to UDFs that have CHAR or VARCHAR output.
     if (ve instanceof TruncStringOutput) {
       TruncStringOutput truncStringOutput = (TruncStringOutput) ve;
-      if (returnType instanceof BaseCharTypeInfo) {
-        BaseCharTypeInfo baseCharTypeInfo = (BaseCharTypeInfo) returnType;
+      if (returnTypeInfo instanceof BaseCharTypeInfo) {
+        BaseCharTypeInfo baseCharTypeInfo = (BaseCharTypeInfo) returnTypeInfo;
         truncStringOutput.setMaxLength(baseCharTypeInfo.getLength());
       }
     }
@@ -1436,7 +1430,7 @@ public class VectorizationContext {
 
     int outColumn = ocm.allocateOutputColumn(returnType.getTypeName());
     VectorCoalesce vectorCoalesce = new VectorCoalesce(inputColumns, outColumn);
-    vectorCoalesce.setOutputType(returnType.getTypeName());
+    vectorCoalesce.setOutputTypeInfo(returnType);
     vectorCoalesce.setChildExpressions(vectorChildren);
     freeNonColumns(vectorChildren);
     return vectorCoalesce;
@@ -1455,7 +1449,7 @@ public class VectorizationContext {
 
     int outColumn = ocm.allocateOutputColumn(returnType.getTypeName());
     VectorElt vectorElt = new VectorElt(inputColumns, outColumn);
-    vectorElt.setOutputType(returnType.getTypeName());
+    vectorElt.setOutputTypeInfo(returnType);
     vectorElt.setChildExpressions(vectorChildren);
     freeNonColumns(vectorChildren);
     return vectorElt;
@@ -1918,7 +1912,7 @@ public class VectorizationContext {
     }
     if (inputType.equals("boolean")) {
       // Boolean must come before the integer family. It's a special case.
-      return createVectorExpression(CastBooleanToStringViaLongToString.class, childExpr, VectorExpressionDescriptor.Mode.PROJECTION, null);
+      return createVectorExpression(CastBooleanToStringViaLongToString.class, childExpr, VectorExpressionDescriptor.Mode.PROJECTION, returnType);
     } else if (isIntFamily(inputType)) {
       return createVectorExpression(CastLongToString.class, childExpr, VectorExpressionDescriptor.Mode.PROJECTION, returnType);
     } else if (isDecimalFamily(inputType)) {
@@ -2023,12 +2017,13 @@ public class VectorizationContext {
     if (isStringFamily(inputType)) {
       // string casts to false if it is 0 characters long, otherwise true
       VectorExpression lenExpr = createVectorExpression(StringLength.class, childExpr,
-          VectorExpressionDescriptor.Mode.PROJECTION, null);
+          VectorExpressionDescriptor.Mode.PROJECTION, TypeInfoFactory.longTypeInfo);
 
       int outputCol = ocm.allocateOutputColumn("Long");
       VectorExpression lenToBoolExpr =
           new CastLongToBooleanViaLongToLong(lenExpr.getOutputColumn(), outputCol);
       lenToBoolExpr.setChildExpressions(new VectorExpression[] {lenExpr});
+      lenToBoolExpr.setOutputTypeInfo(TypeInfoFactory.booleanTypeInfo);
       ocm.freeOutputColumn(lenExpr.getOutputColumn());
       return lenToBoolExpr;
     }
@@ -2210,7 +2205,8 @@ public class VectorizationContext {
 
     // Allocate output column and get column number;
     int outputCol = -1;
-    String resultTypeName = expr.getTypeInfo().getTypeName();
+    TypeInfo resultTypeInfo = expr.getTypeInfo();
+    String resultTypeName = resultTypeInfo.getTypeName();
 
     outputCol = ocm.allocateOutputColumn(resultTypeName);
 
@@ -2228,6 +2224,7 @@ public class VectorizationContext {
       }
     }
     ve.setChildExpressions(childVEs);
+    ve.setOutputTypeInfo(resultTypeInfo);
 
     // Free output columns if inputs have non-leaf expression trees.
     for (Integer i : exprResultColumnNums) {

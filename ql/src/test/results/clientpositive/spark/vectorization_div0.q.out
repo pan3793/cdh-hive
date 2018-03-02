@@ -209,7 +209,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 3, val 0) -> boolean, FilterLongColLessLongScalar(col 3, val 100000000) -> boolean) -> boolean
+                        predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 3, val 0), FilterLongColLessLongScalar(col 3, val 100000000))
                     predicate: ((cbigint > 0) and (cbigint < 100000000)) (type: boolean)
                     Statistics: Num rows: 1365 Data size: 41904 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -219,7 +219,7 @@ STAGE PLANS:
                           className: VectorSelectOperator
                           native: true
                           projectedOutputColumns: [12, 15, 16]
-                          selectExpressions: LongColSubtractLongScalar(col 3, val 988888) -> 12:long, DoubleColDivideDoubleColumn(col 5, col 14)(children: CastLongToDouble(col 13)(children: LongColSubtractLongScalar(col 3, val 988888) -> 13:long) -> 14:double) -> 15:double, DoubleScalarDivideDoubleColumn(val 1.2, col 14)(children: CastLongToDouble(col 13)(children: LongColSubtractLongScalar(col 3, val 988888) -> 13:long) -> 14:double) -> 16:double
+                          selectExpressions: LongColSubtractLongScalar(col 3, val 988888) -> 12:bigint, DoubleColDivideDoubleColumn(col 5, col 14)(children: CastLongToDouble(col 13)(children: LongColSubtractLongScalar(col 3, val 988888) -> 13:bigint) -> 14:double) -> 15:double, DoubleScalarDivideDoubleColumn(val 1.2, col 14)(children: CastLongToDouble(col 13)(children: LongColSubtractLongScalar(col 3, val 988888) -> 13:bigint) -> 14:double) -> 16:double
                       Statistics: Num rows: 1365 Data size: 41904 Basic stats: COMPLETE Column stats: NONE
                       Reduce Output Operator
                         key expressions: _col0 (type: bigint), _col1 (type: double)
@@ -427,7 +427,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterExprAndExpr(children: FilterDoubleColGreaterEqualDoubleScalar(col 5, val -500.0) -> boolean, FilterDoubleColLessDoubleScalar(col 5, val -199.0) -> boolean) -> boolean
+                        predicateExpression: FilterExprAndExpr(children: FilterDoubleColGreaterEqualDoubleScalar(col 5, val -500.0), FilterDoubleColLessDoubleScalar(col 5, val -199.0))
                     predicate: ((cdouble >= -500.0) and (cdouble < -199.0)) (type: boolean)
                     Statistics: Num rows: 1365 Data size: 41904 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -645,7 +645,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterExprOrExpr(children: FilterLongColGreaterLongScalar(col 2, val 500000000) -> boolean, FilterDoubleColGreaterDoubleScalar(col 5, val 1.0E9) -> boolean, FilterLongColEqualLongScalar(col 0, val 0) -> boolean) -> boolean
+                        predicateExpression: FilterExprOrExpr(children: FilterLongColGreaterLongScalar(col 2, val 500000000), FilterDoubleColGreaterDoubleScalar(col 5, val 1.0E9), FilterLongColEqualLongScalar(col 0, val 0))
                     predicate: ((cint > 500000000) or (cdouble > 1.0E9) or (ctinyint = 0)) (type: boolean)
                     Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -655,7 +655,7 @@ STAGE PLANS:
                           className: VectorSelectOperator
                           native: true
                           projectedOutputColumns: [2, 3, 0, 13, 14, 15, 16, 17, 12]
-                          selectExpressions: LongColDivideLongColumn(col 2, col 12)(children: LongColSubtractLongScalar(col 2, val 528534767) -> 12:long) -> 13:double, LongColDivideLongColumn(col 3, col 12)(children: LongColSubtractLongScalar(col 3, val 1018195815) -> 12:long) -> 14:double, LongColDivideLongColumn(col 0, col 0) -> 15:double, LongColModuloLongColumn(col 2, col 12)(children: LongColSubtractLongScalar(col 2, val 528534767) -> 12:long) -> 16:long, LongColModuloLongColumn(col 3, col 12)(children: LongColSubtractLongScalar(col 3, val 1018195815) -> 12:long) -> 17:long, LongColModuloLongColumn(col 0, col 0) -> 12:long
+                          selectExpressions: LongColDivideLongColumn(col 2, col 12)(children: LongColSubtractLongScalar(col 2, val 528534767) -> 12:int) -> 13:double, LongColDivideLongColumn(col 3, col 12)(children: LongColSubtractLongScalar(col 3, val 1018195815) -> 12:bigint) -> 14:double, LongColDivideLongColumn(col 0, col 0) -> 15:double, LongColModuloLongColumn(col 2, col 12)(children: LongColSubtractLongScalar(col 2, val 528534767) -> 12:int) -> 16:int, LongColModuloLongColumn(col 3, col 12)(children: LongColSubtractLongScalar(col 3, val 1018195815) -> 12:bigint) -> 17:bigint, LongColModuloLongColumn(col 0, col 0) -> 12:tinyint
                       Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                       Reduce Output Operator
                         key expressions: _col3 (type: double), _col4 (type: double)

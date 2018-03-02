@@ -22,14 +22,9 @@ import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor.Descriptor;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
-import org.apache.hadoop.hive.ql.metadata.HiveException;
-import org.apache.hadoop.hive.ql.udf.UDFLike;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Evaluate an IN boolean expression (not a filter) on a batch for a vector of strings.
@@ -132,12 +127,6 @@ public class StringColumnInList extends VectorExpression implements IStringInExp
         }
       }
     }
-  }
-
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   public void setInputColumn(int inputCol) {

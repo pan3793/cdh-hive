@@ -62,7 +62,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterLongColNotEqualLongScalar(col 0, val 0) -> boolean, FilterExprOrExpr(children: FilterExprAndExpr(children: FilterLongColLessEqualLongScalar(col 10, val 0) -> boolean, FilterLongColGreaterEqualLongColumn(col 11, col 10) -> boolean) -> boolean, FilterExprAndExpr(children: SelectColumnIsNotNull(col 3) -> boolean, FilterExprOrExpr(children: FilterStringColLikeStringScalar(col 7, pattern %a) -> boolean, FilterDoubleColLessEqualDoubleScalar(col 4, val -257.0) -> boolean) -> boolean) -> boolean) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterLongColNotEqualLongScalar(col 0, val 0), FilterExprOrExpr(children: FilterExprAndExpr(children: FilterLongColLessEqualLongScalar(col 10, val 0), FilterLongColGreaterEqualLongColumn(col 11, col 10)), FilterExprAndExpr(children: SelectColumnIsNotNull(col 3), FilterExprOrExpr(children: FilterStringColLikeStringScalar(col 7, pattern %a), FilterDoubleColLessEqualDoubleScalar(col 4, val -257.0)))))
               predicate: ((ctinyint <> 0) and (((cboolean1 <= 0) and (cboolean2 >= cboolean1)) or (cbigint is not null and ((cstring2 like '%a') or (cfloat <= -257.0))))) (type: boolean)
               Statistics: Num rows: 11605 Data size: 560748 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -72,7 +72,7 @@ STAGE PLANS:
                     className: VectorSelectOperator
                     native: true
                     projectedOutputColumns: [10, 4, 6, 12, 13, 14, 15, 16, 17, 18, 19, 21]
-                    selectExpressions: LongScalarMultiplyLongColumn(val 988888, col 1)(children: col 1) -> 12:long, LongColUnaryMinus(col 1) -> 13:long, DoubleColUnaryMinus(col 4) -> 14:double, DoubleScalarDivideDoubleColumn(val -26.28, col 4)(children: col 4) -> 15:double, DoubleColMultiplyDoubleScalar(col 4, val 359.0) -> 16:double, LongColModuloLongColumn(col 2, col 0)(children: col 0) -> 17:long, DoubleColUnaryMinus(col 5) -> 18:double, LongColSubtractLongScalar(col 0, val -75)(children: col 0) -> 19:long, LongScalarMultiplyLongColumn(val 762, col 20)(children: LongColModuloLongColumn(col 2, col 0)(children: col 0) -> 20:long) -> 21:long
+                    selectExpressions: LongScalarMultiplyLongColumn(val 988888, col 1)(children: col 1) -> 12:int, LongColUnaryMinus(col 1) -> 13:smallint, DoubleColUnaryMinus(col 4) -> 14:float, DoubleScalarDivideDoubleColumn(val -26.28, col 4)(children: col 4) -> 15:double, DoubleColMultiplyDoubleScalar(col 4, val 359.0) -> 16:float, LongColModuloLongColumn(col 2, col 0)(children: col 0) -> 17:int, DoubleColUnaryMinus(col 5) -> 18:double, LongColSubtractLongScalar(col 0, val -75)(children: col 0) -> 19:int, LongScalarMultiplyLongColumn(val 762, col 20)(children: LongColModuloLongColumn(col 2, col 0)(children: col 0) -> 20:int) -> 21:int
                 Statistics: Num rows: 11605 Data size: 560748 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false

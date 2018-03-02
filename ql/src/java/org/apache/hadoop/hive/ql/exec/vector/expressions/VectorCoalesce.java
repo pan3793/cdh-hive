@@ -18,11 +18,11 @@
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.ColumnVector;
-import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 
 import com.google.common.base.Preconditions;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 import java.util.Arrays;
 
@@ -124,8 +124,8 @@ public class VectorCoalesce extends VectorExpression {
   }
 
   @Override
-  public String getOutputType() {
-    return outputType;
+  public TypeInfo getOutputTypeInfo() {
+    return outputTypeInfo;
   }
 
   public int [] getInputColumns() {

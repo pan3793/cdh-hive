@@ -25,6 +25,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Base class for expressions.
@@ -69,7 +70,7 @@ public abstract class VectorExpression implements Serializable {
   /**
    * Output type of the expression.
    */
-  protected String outputType;
+  protected TypeInfo outputTypeInfo;
 
   /**
    * This is the primary method to implement expression logic.
@@ -87,15 +88,16 @@ public abstract class VectorExpression implements Serializable {
   /**
    * Returns type of the output column.
    */
-  public String getOutputType() {
-    return outputType;
+  public TypeInfo getOutputTypeInfo() {
+    return outputTypeInfo;
   }
 
   /**
    * Set type of the output column.
+   * @param outputTypeInfo
    */
-  public void setOutputType(String type) {
-    this.outputType = type;
+  public void setOutputTypeInfo(TypeInfo outputTypeInfo) {
+    this.outputTypeInfo = outputTypeInfo;
   }
 
   /**
@@ -166,13 +168,13 @@ public abstract class VectorExpression implements Serializable {
         }
         b.append(")");
       }
-      b.append(" -> ");
       int outputColumn = getOutputColumn();
       if (outputColumn != -1) {
+        b.append(" -> ");
         b.append(outputColumn);
         b.append(":");
+        b.append(getOutputTypeInfo());
       }
-      b.append(getOutputType());
     }
 
     return b.toString();

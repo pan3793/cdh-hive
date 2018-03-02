@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 public class CastBooleanToVarCharViaLongToVarChar extends CastBooleanToStringViaLongToString implements TruncStringOutput {
   private static final long serialVersionUID = 1L;
@@ -38,11 +39,6 @@ public class CastBooleanToVarCharViaLongToVarChar extends CastBooleanToStringVia
   }
 
   @Override
-  public String getOutputType() {
-    return "Char";
-  }
-  
-    @Override
   public int getMaxLength() {
     return maxLength;
   }

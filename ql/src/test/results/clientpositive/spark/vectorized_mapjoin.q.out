@@ -32,7 +32,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: SelectColumnIsNotNull(col 2) -> boolean
+                        predicateExpression: SelectColumnIsNotNull(col 2)
                     predicate: cint is not null (type: boolean)
                     Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -80,7 +80,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: SelectColumnIsNotNull(col 2) -> boolean
+                        predicateExpression: SelectColumnIsNotNull(col 2)
                     predicate: cint is not null (type: boolean)
                     Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -112,7 +112,7 @@ STAGE PLANS:
                               className: VectorSelectOperator
                               native: true
                               projectedOutputColumns: [2, 2, 12]
-                              selectExpressions: LongColAddLongColumn(col 2, col 2) -> 12:long
+                              selectExpressions: LongColAddLongColumn(col 2, col 2) -> 12:int
                           Statistics: Num rows: 13516 Data size: 414960 Basic stats: COMPLETE Column stats: NONE
                           Group By Operator
                             aggregations: count(_col0), max(_col1), min(_col0), avg(_col2)

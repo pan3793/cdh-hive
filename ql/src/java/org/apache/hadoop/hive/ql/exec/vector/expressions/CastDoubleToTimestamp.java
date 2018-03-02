@@ -23,6 +23,7 @@ import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.util.TimestampUtils;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 public class CastDoubleToTimestamp extends VectorExpression {
   private static final long serialVersionUID = 1L;
@@ -106,11 +107,6 @@ public class CastDoubleToTimestamp extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "timestamp";
   }
 
   @Override

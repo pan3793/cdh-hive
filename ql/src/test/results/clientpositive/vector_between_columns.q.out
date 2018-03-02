@@ -135,7 +135,7 @@ STAGE PLANS:
                       className: VectorSelectOperator
                       native: true
                       projectedOutputColumns: [0, 2, 1, 3, 5]
-                      selectExpressions: VectorUDFAdaptor(CASE WHEN (_col1 BETWEEN UDFToInteger(_col3) AND UDFToInteger(_col3)) THEN ('Ok') ELSE ('NoOk') END)(children: VectorUDFAdaptor(_col1 BETWEEN UDFToInteger(_col3) AND UDFToInteger(_col3))(children: col 3, col 3) -> 4:Long) -> 5:String
+                      selectExpressions: VectorUDFAdaptor(CASE WHEN (_col1 BETWEEN UDFToInteger(_col3) AND UDFToInteger(_col3)) THEN ('Ok') ELSE ('NoOk') END)(children: VectorUDFAdaptor(_col1 BETWEEN UDFToInteger(_col3) AND UDFToInteger(_col3))(children: col 3, col 3) -> 4:boolean) -> 5:string
                   Statistics: Num rows: 25 Data size: 385 Basic stats: COMPLETE Column stats: NONE
                   File Output Operator
                     compressed: false
@@ -262,7 +262,7 @@ STAGE PLANS:
                 Filter Vectorization:
                     className: VectorFilterOperator
                     native: true
-                    predicateExpression: SelectColumnIsTrue(col 4)(children: VectorUDFAdaptor(_col1 BETWEEN _col6 AND _col6) -> 4:Long) -> boolean
+                    predicateExpression: SelectColumnIsTrue(col 4)(children: VectorUDFAdaptor(_col1 BETWEEN _col6 AND _col6) -> 4:boolean)
                 predicate: _col1 BETWEEN _col6 AND _col6 (type: boolean)
                 Statistics: Num rows: 12 Data size: 184 Basic stats: COMPLETE Column stats: NONE
                 Select Operator

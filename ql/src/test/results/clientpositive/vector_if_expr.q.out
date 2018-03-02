@@ -26,7 +26,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsTrue(col 10) -> boolean, SelectColumnIsNotNull(col 10) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsTrue(col 10), SelectColumnIsNotNull(col 10))
               predicate: (cboolean1 and cboolean1 is not null) (type: boolean)
               Statistics: Num rows: 6144 Data size: 1320982 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -36,7 +36,7 @@ STAGE PLANS:
                     className: VectorSelectOperator
                     native: true
                     projectedOutputColumns: [10, 12]
-                    selectExpressions: IfExprStringScalarStringScalar(col 10, val first, val second) -> 12:String
+                    selectExpressions: IfExprStringScalarStringScalar(col 10, val first, val second) -> 12:string
                 Statistics: Num rows: 6144 Data size: 1320982 Basic stats: COMPLETE Column stats: NONE
                 Reduce Output Operator
                   key expressions: _col0 (type: boolean)

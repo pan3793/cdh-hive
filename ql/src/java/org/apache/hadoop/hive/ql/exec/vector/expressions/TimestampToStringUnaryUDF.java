@@ -22,6 +22,7 @@ import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * This is a superclass for unary long functions returning strings that operate directly on the
@@ -126,11 +127,6 @@ abstract public class TimestampToStringUnaryUDF extends VectorExpression {
 
   public void setInputColumn(int inputColumn) {
     this.inputColumn = inputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "String";
   }
 
   public String vectorExpressionParameters() {

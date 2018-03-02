@@ -65,7 +65,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterExprAndExpr(children: FilterStringColLikeStringScalar(col 7, pattern %b%) -> boolean, FilterExprOrExpr(children: FilterDoubleColGreaterEqualDoubleScalar(col 5, val -1.389) -> boolean, FilterStringGroupColLessStringScalar(col 6, val a) -> boolean) -> boolean) -> boolean
+                        predicateExpression: FilterExprAndExpr(children: FilterStringColLikeStringScalar(col 7, pattern %b%), FilterExprOrExpr(children: FilterDoubleColGreaterEqualDoubleScalar(col 5, val -1.389), FilterStringGroupColLessStringScalar(col 6, val a)))
                     predicate: ((cstring2 like '%b%') and ((cdouble >= -1.389) or (cstring1 < 'a'))) (type: boolean)
                     Statistics: Num rows: 4096 Data size: 49152 Basic stats: COMPLETE Column stats: NONE
                     Select Operator

@@ -91,7 +91,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: ctinyint is not null (type: boolean)
               Statistics: Num rows: 12288 Data size: 2641964 Basic stats: COMPLETE Column stats: NONE
               Select Operator

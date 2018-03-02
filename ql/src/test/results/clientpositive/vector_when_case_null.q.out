@@ -45,7 +45,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 3]
-                  selectExpressions: VectorUDFAdaptor(CASE WHEN (bool) THEN (1) WHEN ((not bool)) THEN (0) ELSE (null) END)(children: NotCol(col 1) -> 2:boolean) -> 3:Long
+                  selectExpressions: VectorUDFAdaptor(CASE WHEN (bool) THEN (1) WHEN ((not bool)) THEN (0) ELSE (null) END)(children: NotCol(col 1) -> 2:boolean) -> 3:int
               Statistics: Num rows: 5 Data size: 452 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: count(_col1)

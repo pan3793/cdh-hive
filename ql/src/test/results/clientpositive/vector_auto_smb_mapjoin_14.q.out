@@ -70,7 +70,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 10 Data size: 930 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -201,7 +201,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 10 Data size: 930 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -399,7 +399,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 10 Data size: 930 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -525,7 +525,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 10 Data size: 930 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -684,7 +684,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterLongColLessLongScalar(col 0, val 6) -> boolean
+                  predicateExpression: FilterLongColLessLongScalar(col 0, val 6)
               predicate: (key < 6) (type: boolean)
               Statistics: Num rows: 3 Data size: 279 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -822,7 +822,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterLongColLessLongScalar(col 0, val 8) -> boolean, FilterLongColLessLongScalar(col 0, val 6) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterLongColLessLongScalar(col 0, val 8), FilterLongColLessLongScalar(col 0, val 6))
               predicate: ((key < 8) and (key < 6)) (type: boolean)
               Statistics: Num rows: 1 Data size: 93 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -984,7 +984,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterLongColLessLongScalar(col 0, val 8) -> boolean, FilterLongColLessLongScalar(col 0, val 6) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterLongColLessLongScalar(col 0, val 8), FilterLongColLessLongScalar(col 0, val 6))
               predicate: ((key < 8) and (key < 6)) (type: boolean)
               Statistics: Num rows: 1 Data size: 93 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -1134,7 +1134,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterLongColLessLongScalar(col 0, val 8) -> boolean
+                  predicateExpression: FilterLongColLessLongScalar(col 0, val 8)
               predicate: (key < 8) (type: boolean)
               Statistics: Num rows: 3 Data size: 279 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -1405,7 +1405,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterLongColLessLongScalar(col 0, val 6) -> boolean
+                  predicateExpression: FilterLongColLessLongScalar(col 0, val 6)
               predicate: (key < 6) (type: boolean)
               Statistics: Num rows: 3 Data size: 279 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -1535,7 +1535,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterLongColLessLongScalar(col 0, val 6) -> boolean
+                  predicateExpression: FilterLongColLessLongScalar(col 0, val 6)
               predicate: (key < 6) (type: boolean)
               Statistics: Num rows: 3 Data size: 279 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -1683,7 +1683,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterLongColLessLongScalar(col 0, val 8) -> boolean, FilterLongColLessLongScalar(col 0, val 6) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterLongColLessLongScalar(col 0, val 8), FilterLongColLessLongScalar(col 0, val 6))
               predicate: ((key < 8) and (key < 6)) (type: boolean)
               Statistics: Num rows: 1 Data size: 93 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -1852,7 +1852,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 10 Data size: 930 Basic stats: COMPLETE Column stats: NONE
               Sorted Merge Bucket Map Join Operator
@@ -2158,7 +2158,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 10 Data size: 930 Basic stats: COMPLETE Column stats: NONE
               Sorted Merge Bucket Map Join Operator

@@ -23,6 +23,7 @@ import java.util.Random;
 import org.apache.hadoop.hive.ql.exec.vector.DoubleColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Implements vectorized rand() function evaluation.
@@ -91,11 +92,6 @@ public class FuncRandNoSeed extends VectorExpression {
 
   public void setRandom(Random random) {
     this.random = random;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "double";
   }
 
   @Override

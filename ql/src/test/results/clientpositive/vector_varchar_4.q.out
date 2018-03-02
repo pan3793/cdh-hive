@@ -158,7 +158,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [13, 14, 15, 16, 17, 18, 19]
-                  selectExpressions: CastLongToVarChar(col 0, maxLength 10) -> 13:VarChar, CastLongToVarChar(col 1, maxLength 10) -> 14:VarChar, CastLongToVarChar(col 2, maxLength 20) -> 15:VarChar, CastLongToVarChar(col 3, maxLength 30) -> 16:VarChar, VectorUDFAdaptor(CAST( f AS varchar(20))) -> 17:varchar(20), VectorUDFAdaptor(CAST( d AS varchar(20))) -> 18:varchar(20), CastStringGroupToVarChar(col 8, maxLength 50) -> 19:VarChar
+                  selectExpressions: CastLongToVarChar(col 0, maxLength 10) -> 13:varchar(10), CastLongToVarChar(col 1, maxLength 10) -> 14:varchar(10), CastLongToVarChar(col 2, maxLength 20) -> 15:varchar(20), CastLongToVarChar(col 3, maxLength 30) -> 16:varchar(30), VectorUDFAdaptor(CAST( f AS varchar(20))) -> 17:varchar(20), VectorUDFAdaptor(CAST( d AS varchar(20))) -> 18:varchar(20), CastStringGroupToVarChar(col 8, maxLength 50) -> 19:varchar(50)
               Statistics: Num rows: 2000 Data size: 918712 Basic stats: COMPLETE Column stats: NONE
               File Output Operator
                 compressed: false

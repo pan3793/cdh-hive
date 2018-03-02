@@ -201,7 +201,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 3, val 0) -> boolean, FilterLongColLessLongScalar(col 3, val 100000000) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 3, val 0), FilterLongColLessLongScalar(col 3, val 100000000))
               predicate: ((cbigint > 0) and (cbigint < 100000000)) (type: boolean)
               Statistics: Num rows: 1365 Data size: 65956 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -211,7 +211,7 @@ STAGE PLANS:
                     className: VectorSelectOperator
                     native: true
                     projectedOutputColumns: [12, 15, 16]
-                    selectExpressions: LongColSubtractLongScalar(col 3, val 988888) -> 12:long, DoubleColDivideDoubleColumn(col 5, col 14)(children: CastLongToDouble(col 13)(children: LongColSubtractLongScalar(col 3, val 988888) -> 13:long) -> 14:double) -> 15:double, DoubleScalarDivideDoubleColumn(val 1.2, col 14)(children: CastLongToDouble(col 13)(children: LongColSubtractLongScalar(col 3, val 988888) -> 13:long) -> 14:double) -> 16:double
+                    selectExpressions: LongColSubtractLongScalar(col 3, val 988888) -> 12:bigint, DoubleColDivideDoubleColumn(col 5, col 14)(children: CastLongToDouble(col 13)(children: LongColSubtractLongScalar(col 3, val 988888) -> 13:bigint) -> 14:double) -> 15:double, DoubleScalarDivideDoubleColumn(val 1.2, col 14)(children: CastLongToDouble(col 13)(children: LongColSubtractLongScalar(col 3, val 988888) -> 13:bigint) -> 14:double) -> 16:double
                 Statistics: Num rows: 1365 Data size: 65956 Basic stats: COMPLETE Column stats: NONE
                 Reduce Output Operator
                   key expressions: _col0 (type: bigint), _col1 (type: double)
@@ -399,7 +399,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterDoubleColGreaterEqualDoubleScalar(col 5, val -500.0) -> boolean, FilterDoubleColLessDoubleScalar(col 5, val -199.0) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterDoubleColGreaterEqualDoubleScalar(col 5, val -500.0), FilterDoubleColLessDoubleScalar(col 5, val -199.0))
               predicate: ((cdouble >= -500.0) and (cdouble < -199.0)) (type: boolean)
               Statistics: Num rows: 1365 Data size: 65956 Basic stats: COMPLETE Column stats: NONE
               Select Operator

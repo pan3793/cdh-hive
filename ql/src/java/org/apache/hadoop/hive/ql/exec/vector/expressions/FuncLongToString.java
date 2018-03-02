@@ -22,6 +22,7 @@ import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Superclass to support vectorized functions that take a long
@@ -136,11 +137,6 @@ public abstract class FuncLongToString extends VectorExpression {
 
   public void setInputCol(int inputCol) {
     this.inputCol = inputCol;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "String";
   }
 
   @Override

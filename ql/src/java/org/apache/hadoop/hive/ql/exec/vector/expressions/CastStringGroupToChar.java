@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 public class CastStringGroupToChar extends StringUnaryUDFDirect implements TruncStringOutput {
   private static final long serialVersionUID = 1L;
@@ -38,12 +39,8 @@ public class CastStringGroupToChar extends StringUnaryUDFDirect implements Trunc
   protected void func(BytesColumnVector outV, byte[][] vector, int[] start, int[] length, int i) {
     StringExpr.rightTrimAndTruncate(outV, i, vector[i], start[i], length[i], maxLength);
   }
-  @Override
-  public String getOutputType() {
-    return "Char";
-  }
   
-    @Override
+  @Override
   public int getMaxLength() {
     return maxLength;
   }

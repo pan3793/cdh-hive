@@ -53,7 +53,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterLongColGreaterLongScalar(col 0, val 0) -> boolean
+                  predicateExpression: FilterLongColGreaterLongScalar(col 0, val 0)
               predicate: (cint > 0) (type: boolean)
               Statistics: Num rows: 1024 Data size: 113013 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -156,7 +156,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterLongColGreaterLongScalar(col 0, val 0) -> boolean
+                  predicateExpression: FilterLongColGreaterLongScalar(col 0, val 0)
               predicate: (cint > 0) (type: boolean)
               Statistics: Num rows: 1024 Data size: 113013 Basic stats: COMPLETE Column stats: NONE
               Select Operator

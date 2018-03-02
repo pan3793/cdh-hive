@@ -22,6 +22,7 @@ import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.DoubleColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * This is a superclass for unary decimal functions and expressions returning doubles that
@@ -126,11 +127,6 @@ public abstract class FuncDecimalToDouble extends VectorExpression {
 
   public void setInputColumn(int inputColumn) {
     this.inputColumn = inputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "double";
   }
 
   @Override

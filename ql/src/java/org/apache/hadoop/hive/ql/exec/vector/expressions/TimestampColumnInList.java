@@ -26,6 +26,7 @@ import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor.Descriptor;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Output a boolean value indicating if a column is IN a list of constants.
@@ -128,12 +129,6 @@ public class TimestampColumnInList extends VectorExpression implements ITimestam
         }
       }
     }
-  }
-
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   @Override

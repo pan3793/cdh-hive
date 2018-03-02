@@ -66,7 +66,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterDecimalColumnInList(col 0, values [100000000, 200000000]) -> boolean
+                  predicateExpression: FilterDecimalColumnInList(col 0, values [100000000, 200000000])
               predicate: (id) IN (100000000, 200000000) (type: boolean)
               Statistics: Num rows: 2 Data size: 224 Basic stats: COMPLETE Column stats: NONE
               Select Operator

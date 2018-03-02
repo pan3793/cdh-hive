@@ -85,7 +85,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [1, 2]
-                  selectExpressions: VectorUDFAdaptor(UDFToInteger(key)) -> 2:Long
+                  selectExpressions: VectorUDFAdaptor(UDFToInteger(key)) -> 2:int
               Statistics: Num rows: 500 Data size: 99000 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: sum(_col1), count()
@@ -263,7 +263,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [1, 2]
-                  selectExpressions: VectorUDFAdaptor(UDFToInteger(key)) -> 2:Long
+                  selectExpressions: VectorUDFAdaptor(UDFToInteger(key)) -> 2:int
               Statistics: Num rows: 500 Data size: 99000 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: sum(_col1), count()

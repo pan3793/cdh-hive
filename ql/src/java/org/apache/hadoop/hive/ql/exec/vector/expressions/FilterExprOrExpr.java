@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
 
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * This class represents an Or expression. This applies short circuit optimization.
@@ -224,11 +225,6 @@ public class FilterExprOrExpr extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return -1;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   @Override

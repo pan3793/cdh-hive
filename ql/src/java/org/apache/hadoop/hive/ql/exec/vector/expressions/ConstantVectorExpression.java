@@ -26,6 +26,7 @@ import org.apache.hadoop.hive.common.type.HiveChar;
 import org.apache.hadoop.hive.common.type.HiveIntervalDayTime;
 import org.apache.hadoop.hive.common.type.HiveVarchar;
 import org.apache.hadoop.hive.ql.exec.vector.*;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 
@@ -45,65 +46,68 @@ public class ConstantVectorExpression extends VectorExpression {
   private HiveIntervalDayTime intervalDayTimeValue = null;
   private boolean isNullValue = false;
 
-  private ColumnVector.Type type;
+  private final ColumnVector.Type type;
   private int bytesValueLength = 0;
 
   public ConstantVectorExpression() {
     super();
+    // Dummy final assignments.
+    type = null;
   }
 
-  ConstantVectorExpression(int outputColumn, String typeString) {
-    this();
+  ConstantVectorExpression(int outputColumn, TypeInfo outputTypeInfo) {
     this.outputColumn = outputColumn;
-    setTypeString(typeString);
+    this.outputTypeInfo = outputTypeInfo;
+    type = VectorizationContext.getColumnVectorTypeFromTypeInfo(outputTypeInfo);
   }
 
-  public ConstantVectorExpression(int outputColumn, long value) {
-    this(outputColumn, "long");
+  public ConstantVectorExpression(int outputColumn, long value, TypeInfo outputTypeInfo) throws
+      HiveException {
+    this(outputColumn, outputTypeInfo);
     this.longValue = value;
   }
 
-  public ConstantVectorExpression(int outputColumn, double value) {
-    this(outputColumn, "double");
+  public ConstantVectorExpression(int outputColumn, double value, TypeInfo outputTypeInfo) throws HiveException {
+    this(outputColumn, outputTypeInfo);
     this.doubleValue = value;
   }
 
-  public ConstantVectorExpression(int outputColumn, byte[] value) {
-    this(outputColumn, "string");
+  public ConstantVectorExpression(int outputColumn, byte[] value, TypeInfo outputTypeInfo) throws HiveException {
+    this(outputColumn, outputTypeInfo);
     setBytesValue(value);
   }
 
-  public ConstantVectorExpression(int outputColumn, HiveChar value, String typeName) {
-    this(outputColumn, typeName);
+  public ConstantVectorExpression(int outputColumn, HiveChar value, TypeInfo outputTypeInfo) throws HiveException {
+    this(outputColumn, outputTypeInfo);
     setBytesValue(value.getStrippedValue().getBytes());
   }
 
-  public ConstantVectorExpression(int outputColumn, HiveVarchar value, String typeName) {
-    this(outputColumn, typeName);
+  public ConstantVectorExpression(int outputColumn, HiveVarchar value, TypeInfo outputTypeInfo) throws HiveException {
+    this(outputColumn, outputTypeInfo);
     setBytesValue(value.getValue().getBytes());
   }
 
   // Include type name for precision/scale.
-  public ConstantVectorExpression(int outputColumn, HiveDecimal value, String typeName) {
-    this(outputColumn, typeName);
+  public ConstantVectorExpression(int outputColumn, HiveDecimal value, TypeInfo outputTypeInfo) throws HiveException {
+    this(outputColumn, outputTypeInfo);
     setDecimalValue(value);
   }
 
-  public ConstantVectorExpression(int outputColumn, Timestamp value) {
-    this(outputColumn, "timestamp");
+  public ConstantVectorExpression(int outputColumn, Timestamp value, TypeInfo outputTypeInfo) throws HiveException {
+    this(outputColumn, outputTypeInfo);
     setTimestampValue(value);
   }
 
-  public ConstantVectorExpression(int outputColumn, HiveIntervalDayTime value) {
-    this(outputColumn, "interval_day_time");
+  public ConstantVectorExpression(int outputColumn, HiveIntervalDayTime value, TypeInfo outputTypeInfo) throws HiveException {
+    this(outputColumn, outputTypeInfo);
     setIntervalDayTimeValue(value);
   }
 
   /*
    * Support for null constant object
    */
-  public ConstantVectorExpression(int outputColumn, String typeString, boolean isNull) {
-    this(outputColumn, typeString);
+  public ConstantVectorExpression(int outputColumn, TypeInfo outputTypeInfo, boolean isNull) {
+    this(outputColumn, outputTypeInfo);
     isNullValue = isNull;
   }
 
@@ -250,18 +254,6 @@ public class ConstantVectorExpression extends VectorExpression {
 
   public HiveIntervalDayTime getIntervalDayTimeValue() {
     return intervalDayTimeValue;
-  }
-
-  public String getTypeString() {
-    return getOutputType();
-  }
-
-  private void setTypeString(String typeString) {
-    this.outputType = typeString;
-
-    String typeName = VectorizationContext.mapTypeNameSynonyms(outputType);
-    TypeInfo typeInfo = TypeInfoUtils.getTypeInfoFromTypeString(typeName);
-    this.type = VectorizationContext.getColumnVectorTypeFromTypeInfo(typeInfo);
   }
 
   public void setOutputColumn(int outputColumn) {

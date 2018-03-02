@@ -33,6 +33,7 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.serde2.ByteStream.Output;
 import org.apache.hadoop.hive.serde2.binarysortable.fast.BinarySortableSerializeWrite;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Evaluate an IN boolean expression (not a filter) on a batch for a vector of structs.
@@ -136,12 +137,6 @@ public class StructColumnInList extends StringColumnInList implements IStructInE
       throw new RuntimeException(e);
     }
    }
-
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
-  }
 
   @Override
   public Descriptor getDescriptor() {

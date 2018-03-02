@@ -130,7 +130,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 1, 2, 7, 8, 9]
-                  selectExpressions: LongColLessLongScalar(col 0, val 0) -> 7:long, LongColLessEqualLongScalar(col 1, val 0) -> 8:long, LongColEqualLongScalar(col 2, val 0) -> 9:long
+                  selectExpressions: LongColLessLongScalar(col 0, val 0) -> 7:boolean, LongColLessEqualLongScalar(col 1, val 0) -> 8:boolean, LongColEqualLongScalar(col 2, val 0) -> 9:boolean
               Statistics: Num rows: 2001 Data size: 273608 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: tinyint), _col1 (type: smallint), _col2 (type: int)
@@ -233,7 +233,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 1, 2, 3, 7, 8, 9, 10]
-                  selectExpressions: LongColGreaterLongScalar(col 0, val 0) -> 7:long, LongColGreaterEqualLongScalar(col 1, val 0) -> 8:long, LongColNotEqualLongScalar(col 2, val 0) -> 9:long, LongColGreaterLongScalar(col 3, val 0) -> 10:long
+                  selectExpressions: LongColGreaterLongScalar(col 0, val 0) -> 7:boolean, LongColGreaterEqualLongScalar(col 1, val 0) -> 8:boolean, LongColNotEqualLongScalar(col 2, val 0) -> 9:boolean, LongColGreaterLongScalar(col 3, val 0) -> 10:boolean
               Statistics: Num rows: 2001 Data size: 273608 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: tinyint), _col1 (type: smallint), _col2 (type: int), _col3 (type: bigint)
