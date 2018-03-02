@@ -18,12 +18,10 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor.Descriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Evaluate an IN filter on a batch for a vector of strings.
@@ -151,12 +149,6 @@ public class FilterStringColumnInList extends VectorExpression implements IStrin
         }
       }
     }
-  }
-
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   public void setInputColumn(int inputCol) {

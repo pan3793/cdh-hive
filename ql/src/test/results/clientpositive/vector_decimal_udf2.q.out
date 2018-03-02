@@ -78,7 +78,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterDecimalColEqualDecimalScalar(col 0, val 10) -> boolean
+                  predicateExpression: FilterDecimalColEqualDecimalScalar(col 0, val 10)
               predicate: (key = 10) (type: boolean)
               Statistics: Num rows: 19 Data size: 2148 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -163,7 +163,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterDecimalColEqualDecimalScalar(col 0, val 10) -> boolean
+                  predicateExpression: FilterDecimalColEqualDecimalScalar(col 0, val 10)
               predicate: (key = 10) (type: boolean)
               Statistics: Num rows: 19 Data size: 2148 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -173,7 +173,7 @@ STAGE PLANS:
                     className: VectorSelectOperator
                     native: true
                     projectedOutputColumns: [2, 3, 4, 5, 6, 7, 8, 9]
-                    selectExpressions: ConstantVectorExpression(val 22026.465794806718) -> 2:double, ConstantVectorExpression(val 2.302585092994046) -> 3:double, ConstantVectorExpression(val 2.302585092994046) -> 4:double, ConstantVectorExpression(val 1.0) -> 5:double, FuncLogWithBaseLongToDouble(col 1) -> 6:double, VectorUDFAdaptor(log(value, 10)) -> 7:Double, ConstantVectorExpression(val 1.0) -> 8:double, ConstantVectorExpression(val 3.1622776601683795) -> 9:double
+                    selectExpressions: ConstantVectorExpression(val 22026.465794806718) -> 2:double, ConstantVectorExpression(val 2.302585092994046) -> 3:double, ConstantVectorExpression(val 2.302585092994046) -> 4:double, ConstantVectorExpression(val 1.0) -> 5:double, FuncLogWithBaseLongToDouble(col 1) -> 6:double, VectorUDFAdaptor(log(value, 10)) -> 7:double, ConstantVectorExpression(val 1.0) -> 8:double, ConstantVectorExpression(val 3.1622776601683795) -> 9:double
                 Statistics: Num rows: 19 Data size: 2148 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false

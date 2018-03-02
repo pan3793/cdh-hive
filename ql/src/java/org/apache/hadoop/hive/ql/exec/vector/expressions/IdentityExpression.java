@@ -19,6 +19,7 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * An expression representing a column, only children are evaluated.
@@ -28,14 +29,12 @@ public class IdentityExpression extends VectorExpression {
   private static final long serialVersionUID = 1L;
 
   private int colNum = -1;
-  private String type = null;
 
   public IdentityExpression() {
   }
 
-  public IdentityExpression(int colNum, String type) {
+  public IdentityExpression(int colNum) {
     this.colNum = colNum;
-    this.type = type;
   }
 
   @Override
@@ -59,25 +58,12 @@ public class IdentityExpression extends VectorExpression {
     return colNum;
   }
 
-  @Override
-  public String getOutputType() {
-    return type;
-  }
-
   public int getColNum() {
     return getOutputColumn();
   }
 
-  public String getType() {
-    return getOutputType();
-  }
-
   public void setColNum(int colNum) {
     this.colNum = colNum;
-  }
-
-  public void setType(String type) {
-    this.type = type;
   }
 
   @Override

@@ -18,11 +18,11 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
-import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Compute IF(expr1, expr2, expr3) for 3 input column expressions.
@@ -170,11 +170,6 @@ public class IfExprStringGroupColumnStringGroupColumn extends VectorExpression {
   public int getOutputColumn() {
     return outputColumn;
   }
-
-  @Override
-  public String getOutputType() {
-    return "String";
-  }	
 
   @Override
   public String vectorExpressionParameters() {

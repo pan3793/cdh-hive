@@ -43,11 +43,10 @@ public class <ClassName> extends VectorExpression {
     this.colNum = colNum;
     this.value = value;
     this.outputColumn = outputColumn;
-    this.outputType = "decimal";
   }
 
   public <ClassName>() {
-    this.outputType = "decimal";
+    super();
   }
 
   @Override

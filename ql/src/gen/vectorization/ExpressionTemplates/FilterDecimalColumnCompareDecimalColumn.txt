@@ -420,11 +420,6 @@ public class <ClassName> extends VectorExpression {
   }
 
   @Override
-  public String getOutputType() {
-    return "boolean";
-  }
-
-  @Override
   public int getOutputColumn() {
     return -1;
   }

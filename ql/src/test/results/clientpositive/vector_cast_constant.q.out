@@ -139,13 +139,13 @@ STAGE PLANS:
               Group By Operator
                 aggregations: avg(50), avg(50.0), avg(50)
                 Group By Vectorization:
-                    aggregators: VectorUDAFAvgLong(ConstantVectorExpression(val 50) -> 11:long) -> struct<count:bigint,sum:double>, VectorUDAFAvgDouble(ConstantVectorExpression(val 50.0) -> 12:double) -> struct<count:bigint,sum:double>, VectorUDAFAvgDecimal(ConstantVectorExpression(val 50) -> 13:decimal(10,0)) -> struct<count:bigint,sum:decimal(20,0)>
+                    aggregators: VectorUDAFAvgLong(ConstantVectorExpression(val 50) -> 11:int) -> struct<count:bigint,sum:double>, VectorUDAFAvgDouble(ConstantVectorExpression(val 50.0) -> 12:double) -> struct<count:bigint,sum:double>, VectorUDAFAvgDecimal(ConstantVectorExpression(val 50) -> 13:decimal(10,0)) -> struct<count:bigint,sum:decimal(20,0)>
                     className: VectorGroupByOperator
                     vectorOutput: false
                     keyExpressions: col 2
                     native: false
                     projectedOutputColumns: [0, 1, 2]
-                    vectorOutputConditionsNotMet: Vector output of VectorUDAFAvgLong(ConstantVectorExpression(val 50) -> 11:long) -> struct<count:bigint,sum:double> output type STRUCT requires PRIMITIVE IS false, Vector output of VectorUDAFAvgDouble(ConstantVectorExpression(val 50.0) -> 12:double) -> struct<count:bigint,sum:double> output type STRUCT requires PRIMITIVE IS false, Vector output of VectorUDAFAvgDecimal(ConstantVectorExpression(val 50) -> 13:decimal(10,0)) -> struct<count:bigint,sum:decimal(20,0)> output type STRUCT requires PRIMITIVE IS false
+                    vectorOutputConditionsNotMet: Vector output of VectorUDAFAvgLong(ConstantVectorExpression(val 50) -> 11:int) -> struct<count:bigint,sum:double> output type STRUCT requires PRIMITIVE IS false, Vector output of VectorUDAFAvgDouble(ConstantVectorExpression(val 50.0) -> 12:double) -> struct<count:bigint,sum:double> output type STRUCT requires PRIMITIVE IS false, Vector output of VectorUDAFAvgDecimal(ConstantVectorExpression(val 50) -> 13:decimal(10,0)) -> struct<count:bigint,sum:decimal(20,0)> output type STRUCT requires PRIMITIVE IS false
                 keys: _col0 (type: int)
                 mode: hash
                 outputColumnNames: _col0, _col1, _col2, _col3

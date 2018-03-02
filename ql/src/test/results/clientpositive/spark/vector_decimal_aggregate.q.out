@@ -124,7 +124,7 @@ STAGE PLANS:
                   Filter Vectorization:
                       className: VectorFilterOperator
                       native: true
-                      predicateExpression: FilterLongColGreaterLongScalar(col 9, val 1) -> boolean
+                      predicateExpression: FilterLongColGreaterLongScalar(col 9, val 1)
                   predicate: (_col9 > 1) (type: boolean)
                   Statistics: Num rows: 2048 Data size: 360843 Basic stats: COMPLETE Column stats: NONE
                   Select Operator

@@ -19,6 +19,8 @@
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 public class FilterConstantBooleanVectorExpression extends ConstantVectorExpression {
 
@@ -28,8 +30,9 @@ public class FilterConstantBooleanVectorExpression extends ConstantVectorExpress
     super();
   }
 
-  public FilterConstantBooleanVectorExpression(long value) {
-    super(-1, value);
+  public FilterConstantBooleanVectorExpression(long value, TypeInfo outputTypeInfo) throws
+      HiveException {
+    super(-1, value, outputTypeInfo);
   }
 
   @Override

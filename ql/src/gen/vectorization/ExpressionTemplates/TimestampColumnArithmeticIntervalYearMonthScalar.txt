@@ -38,7 +38,7 @@ public class <ClassName> extends VectorExpression {
   private int colNum;
   private HiveIntervalYearMonth value;
   private int outputColumn;
-  private DateTimeMath dtm = new DateTimeMath();
+  private transient final DateTimeMath dtm = new DateTimeMath();
 
   public <ClassName>(int colNum, long value, int outputColumn) {
     this.colNum = colNum;
@@ -120,11 +120,6 @@ public class <ClassName> extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "timestamp";
   }
 
   @Override

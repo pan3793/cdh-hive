@@ -20,13 +20,11 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.common.type.HiveIntervalDayTime;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
-import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.IntervalDayTimeColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde.serdeConstants;
-import org.apache.hive.common.util.DateUtils;
-
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Casts a string vector to a interval day-time vector.
@@ -140,11 +138,6 @@ public class CastStringToIntervalDayTime extends VectorExpression {
 
   public void setInputColumn(int inputColumn) {
     this.inputColumn = inputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return serdeConstants.INTERVAL_DAY_TIME_TYPE_NAME;
   }
 
   @Override

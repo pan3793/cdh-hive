@@ -37,6 +37,7 @@ import org.apache.hadoop.hive.serde2.io.HiveVarcharWritable;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.*;
 import org.apache.hadoop.hive.serde2.typeinfo.CharTypeInfo;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeInfo;
 import org.apache.hadoop.io.Text;
 
@@ -342,19 +343,6 @@ public class VectorUDFAdaptor extends VectorExpression {
 
   public void setOutputColumn(int outputColumn) {
     this.outputColumn = outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return resultType;
-  }
-
-  public String getResultType() {
-    return resultType;
-  }
-
-  public void setResultType(String resultType) {
-    this.resultType = resultType;
   }
 
   public VectorUDFArgDesc[] getArgDescs() {

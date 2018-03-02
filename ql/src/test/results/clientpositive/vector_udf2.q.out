@@ -69,7 +69,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [4, 5, 6, 7, 8, 9]
-                  selectExpressions: SelectStringColLikeStringScalar(col 0) -> 4:String_Family, SelectStringColLikeStringScalar(col 1) -> 5:String_Family, SelectStringColLikeStringScalar(col 2) -> 6:String_Family, SelectStringColLikeStringScalar(col 0) -> 7:String_Family, SelectStringColLikeStringScalar(col 1) -> 8:String_Family, SelectStringColLikeStringScalar(col 2) -> 9:String_Family
+                  selectExpressions: SelectStringColLikeStringScalar(col 0) -> 4:boolean, SelectStringColLikeStringScalar(col 1) -> 5:boolean, SelectStringColLikeStringScalar(col 2) -> 6:boolean, SelectStringColLikeStringScalar(col 0) -> 7:boolean, SelectStringColLikeStringScalar(col 1) -> 8:boolean, SelectStringColLikeStringScalar(col 2) -> 9:boolean
               Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1

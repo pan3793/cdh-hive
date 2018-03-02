@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * To support vectorized cast of decimal to string.
@@ -42,11 +43,6 @@ public class CastDecimalToChar extends CastDecimalToString implements TruncStrin
   }
 
   @Override
-  public String getOutputType() {
-    return "Char";
-  }
-  
-    @Override
   public int getMaxLength() {
     return maxLength;
   }

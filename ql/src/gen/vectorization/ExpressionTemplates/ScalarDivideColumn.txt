@@ -136,11 +136,6 @@ public class <ClassName> extends VectorExpression {
     return outputColumn;
   }
 
-  @Override
-  public String getOutputType() {
-    return "<ReturnType>";
-  }
-
   public int getColNum() {
     return colNum;
   }

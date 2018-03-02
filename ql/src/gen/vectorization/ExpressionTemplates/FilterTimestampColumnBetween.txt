@@ -149,11 +149,6 @@ public class <ClassName> extends VectorExpression {
   }
 
   @Override
-  public String getOutputType() {
-    return "boolean";
-  }
-
-  @Override
   public String vectorExpressionParameters() {
     return "col " + colNum + ", left " + leftValue.toString() + ", right " + rightValue.toString();
   }

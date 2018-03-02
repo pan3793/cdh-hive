@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * This class provides the implementation of vectorized substring, with a start index and length
@@ -236,11 +237,6 @@ public class StringSubstrColStartLen extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "string";
   }
 
   public int getStartIdx() {

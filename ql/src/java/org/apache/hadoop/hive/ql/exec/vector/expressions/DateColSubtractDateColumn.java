@@ -21,11 +21,10 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions;
 import java.sql.Timestamp;
 
 import org.apache.hadoop.hive.common.type.HiveIntervalDayTime;
-import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
-import org.apache.hadoop.hive.ql.exec.vector.expressions.NullUtil;
 import org.apache.hadoop.hive.ql.exec.vector.*;
 import org.apache.hadoop.hive.ql.util.DateTimeMath;
 import org.apache.hadoop.hive.serde2.io.DateWritable;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 // A type date (LongColumnVector storing epoch days) minus a type date produces a
 // type interval_day_time (IntervalDayTimeColumnVector storing nanosecond interval in 2 longs).
@@ -161,11 +160,6 @@ public class DateColSubtractDateColumn extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "timestamp";
   }
 
   public String vectorExpressionParameters() {

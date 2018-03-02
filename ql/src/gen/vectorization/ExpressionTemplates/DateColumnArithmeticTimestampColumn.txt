@@ -165,11 +165,6 @@ public class <ClassName> extends VectorExpression {
   }
 
   @Override
-  public String getOutputType() {
-    return "<ReturnType>";
-  }
-
-  @Override
   public String vectorExpressionParameters() {
     return "col " + colNum1 + ", col " + + colNum2;
   }

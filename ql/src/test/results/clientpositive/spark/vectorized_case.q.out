@@ -59,7 +59,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterExprOrExpr(children: FilterLongColEqualLongScalar(col 1, val 418) -> boolean, FilterLongColEqualLongScalar(col 1, val 12205) -> boolean, FilterLongColEqualLongScalar(col 1, val 10583) -> boolean) -> boolean
+                        predicateExpression: FilterExprOrExpr(children: FilterLongColEqualLongScalar(col 1, val 418), FilterLongColEqualLongScalar(col 1, val 12205), FilterLongColEqualLongScalar(col 1, val 10583))
                     predicate: ((csmallint = 418) or (csmallint = 12205) or (csmallint = 10583)) (type: boolean)
                     Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -69,7 +69,7 @@ STAGE PLANS:
                           className: VectorSelectOperator
                           native: true
                           projectedOutputColumns: [1, 14, 15]
-                          selectExpressions: VectorUDFAdaptor(CASE WHEN ((csmallint = 418)) THEN ('a') WHEN ((csmallint = 12205)) THEN ('b') ELSE ('c') END)(children: LongColEqualLongScalar(col 1, val 418) -> 12:long, LongColEqualLongScalar(col 1, val 12205) -> 13:long) -> 14:String, VectorUDFAdaptor(CASE WHEN ((csmallint = 418)) THEN ('a') WHEN ((csmallint = 12205)) THEN ('b') ELSE ('c') END)(children: LongColEqualLongScalar(col 1, val 418) -> 12:long, LongColEqualLongScalar(col 1, val 12205) -> 13:long) -> 15:String
+                          selectExpressions: VectorUDFAdaptor(CASE WHEN ((csmallint = 418)) THEN ('a') WHEN ((csmallint = 12205)) THEN ('b') ELSE ('c') END)(children: LongColEqualLongScalar(col 1, val 418) -> 12:boolean, LongColEqualLongScalar(col 1, val 12205) -> 13:boolean) -> 14:string, VectorUDFAdaptor(CASE WHEN ((csmallint = 418)) THEN ('a') WHEN ((csmallint = 12205)) THEN ('b') ELSE ('c') END)(children: LongColEqualLongScalar(col 1, val 418) -> 12:boolean, LongColEqualLongScalar(col 1, val 12205) -> 13:boolean) -> 15:string
                       Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                       File Output Operator
                         compressed: false
@@ -200,7 +200,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterExprOrExpr(children: FilterLongColEqualLongScalar(col 1, val 418) -> boolean, FilterLongColEqualLongScalar(col 1, val 12205) -> boolean, FilterLongColEqualLongScalar(col 1, val 10583) -> boolean) -> boolean
+                        predicateExpression: FilterExprOrExpr(children: FilterLongColEqualLongScalar(col 1, val 418), FilterLongColEqualLongScalar(col 1, val 12205), FilterLongColEqualLongScalar(col 1, val 10583))
                     predicate: ((csmallint = 418) or (csmallint = 12205) or (csmallint = 10583)) (type: boolean)
                     Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -210,7 +210,7 @@ STAGE PLANS:
                           className: VectorSelectOperator
                           native: true
                           projectedOutputColumns: [1, 14, 15]
-                          selectExpressions: VectorUDFAdaptor(CASE WHEN ((csmallint = 418)) THEN ('a') WHEN ((csmallint = 12205)) THEN ('b') ELSE (null) END)(children: LongColEqualLongScalar(col 1, val 418) -> 12:long, LongColEqualLongScalar(col 1, val 12205) -> 13:long) -> 14:String, VectorUDFAdaptor(CASE WHEN ((csmallint = 418)) THEN ('a') WHEN ((csmallint = 12205)) THEN (null) ELSE ('c') END)(children: LongColEqualLongScalar(col 1, val 418) -> 12:long, LongColEqualLongScalar(col 1, val 12205) -> 13:long) -> 15:String
+                          selectExpressions: VectorUDFAdaptor(CASE WHEN ((csmallint = 418)) THEN ('a') WHEN ((csmallint = 12205)) THEN ('b') ELSE (null) END)(children: LongColEqualLongScalar(col 1, val 418) -> 12:boolean, LongColEqualLongScalar(col 1, val 12205) -> 13:boolean) -> 14:string, VectorUDFAdaptor(CASE WHEN ((csmallint = 418)) THEN ('a') WHEN ((csmallint = 12205)) THEN (null) ELSE ('c') END)(children: LongColEqualLongScalar(col 1, val 418) -> 12:boolean, LongColEqualLongScalar(col 1, val 12205) -> 13:boolean) -> 15:string
                       Statistics: Num rows: 12288 Data size: 377237 Basic stats: COMPLETE Column stats: NONE
                       File Output Operator
                         compressed: false

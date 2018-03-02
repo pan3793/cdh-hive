@@ -80,7 +80,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: b is not null (type: boolean)
               Statistics: Num rows: 45 Data size: 181 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -106,7 +106,7 @@ STAGE PLANS:
                   Group By Operator
                     aggregations: count(1)
                     Group By Vectorization:
-                        aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 0:long) -> bigint
+                        aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 0:int) -> bigint
                         className: VectorGroupByOperator
                         vectorOutput: true
                         native: false

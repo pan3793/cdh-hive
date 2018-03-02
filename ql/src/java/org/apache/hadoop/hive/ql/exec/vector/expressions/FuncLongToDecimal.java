@@ -35,12 +35,10 @@ public abstract class FuncLongToDecimal extends VectorExpression {
   public FuncLongToDecimal(int inputColumn, int outputColumn) {
     this.inputColumn = inputColumn;
     this.outputColumn = outputColumn;
-    this.outputType = "decimal";
   }
 
   public FuncLongToDecimal() {
     super();
-    this.outputType = "decimal";
   }
 
   abstract protected void func(DecimalColumnVector outV, LongColumnVector inV, int i);

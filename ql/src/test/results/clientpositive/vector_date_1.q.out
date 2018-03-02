@@ -682,7 +682,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterLongColumnInList(col 0, values [0, 11323]) -> boolean
+                  predicateExpression: FilterLongColumnInList(col 0, values [0, 11323])
               predicate: (dt1) IN (1970-01-01, 2001-01-01) (type: boolean)
               Statistics: Num rows: 2 Data size: 149 Basic stats: COMPLETE Column stats: NONE
               Select Operator

@@ -85,7 +85,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 2, 3, 4, 5, 6, 7]
-                  selectExpressions: DateColSubtractIntervalYearMonthScalar(col 0, val 2-2) -> 2:long, DateColSubtractIntervalYearMonthScalar(col 0, val -2-2) -> 3:long, DateColAddIntervalYearMonthScalar(col 0, val 2-2) -> 4:long, DateColAddIntervalYearMonthScalar(col 0, val -2-2) -> 5:long, IntervalYearMonthScalarAddDateColumn(val -2-2, col 0) -> 6:long, IntervalYearMonthScalarAddDateColumn(val 2-2, col 0) -> 7:long
+                  selectExpressions: DateColSubtractIntervalYearMonthScalar(col 0, val 2-2) -> 2:date, DateColSubtractIntervalYearMonthScalar(col 0, val -2-2) -> 3:date, DateColAddIntervalYearMonthScalar(col 0, val 2-2) -> 4:date, DateColAddIntervalYearMonthScalar(col 0, val -2-2) -> 5:date, IntervalYearMonthScalarAddDateColumn(val -2-2, col 0) -> 6:date, IntervalYearMonthScalarAddDateColumn(val 2-2, col 0) -> 7:date
               Statistics: Num rows: 50 Data size: 4800 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: date)
@@ -250,7 +250,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 2, 3, 4]
-                  selectExpressions: DateColSubtractDateScalar(col 0, val 1999-06-07 00:00:00.0) -> 2:timestamp, DateScalarSubtractDateColumn(val 1999-06-07 00:00:00.0, col 0) -> 3:timestamp, DateColSubtractDateColumn(col 0, col 0) -> 4:timestamp
+                  selectExpressions: DateColSubtractDateScalar(col 0, val 1999-06-07 00:00:00.0) -> 2:interval_day_time, DateScalarSubtractDateColumn(val 1999-06-07 00:00:00.0, col 0) -> 3:interval_day_time, DateColSubtractDateColumn(col 0, col 0) -> 4:interval_day_time
               Statistics: Num rows: 50 Data size: 4800 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: date)

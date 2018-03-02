@@ -31,7 +31,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterLongColGreaterLongScalar(col 0, val 0) -> boolean
+                        predicateExpression: FilterLongColGreaterLongScalar(col 0, val 0)
                     predicate: (ctinyint > 0) (type: boolean)
                     Statistics: Num rows: 4096 Data size: 125745 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -41,7 +41,7 @@ STAGE PLANS:
                           className: VectorSelectOperator
                           native: true
                           projectedOutputColumns: [13, 6, 2, 16]
-                          selectExpressions: LongColAddLongScalar(col 12, val 1)(children: LongColModuloLongScalar(col 0, val 2)(children: col 0) -> 12:long) -> 13:long, VectorElt(columns [14, 6, 15])(children: LongColAddLongScalar(col 12, val 1)(children: LongColModuloLongScalar(col 0, val 2)(children: col 0) -> 12:long) -> 14:long, col 6, CastLongToString(col 2) -> 15:String) -> 16:string
+                          selectExpressions: LongColAddLongScalar(col 12, val 1)(children: LongColModuloLongScalar(col 0, val 2)(children: col 0) -> 12:int) -> 13:int, VectorElt(columns [14, 6, 15])(children: LongColAddLongScalar(col 12, val 1)(children: LongColModuloLongScalar(col 0, val 2)(children: col 0) -> 12:int) -> 14:int, col 6, CastLongToString(col 2) -> 15:string) -> 16:string
                       Statistics: Num rows: 4096 Data size: 125745 Basic stats: COMPLETE Column stats: NONE
                       Limit
                         Number of rows: 10

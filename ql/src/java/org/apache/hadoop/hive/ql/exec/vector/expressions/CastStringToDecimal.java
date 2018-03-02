@@ -39,12 +39,10 @@ public class CastStringToDecimal extends VectorExpression {
   public CastStringToDecimal(int inputColumn, int outputColumn) {
     this.inputColumn = inputColumn;
     this.outputColumn = outputColumn;
-    this.outputType = "decimal";
   }
 
   public CastStringToDecimal() {
     super();
-    this.outputType = "decimal";
   }
 
   /**

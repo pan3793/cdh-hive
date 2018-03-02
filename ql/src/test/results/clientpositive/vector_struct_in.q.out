@@ -64,7 +64,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterStructColumnInList(structExpressions [col 0, col 1], fieldVectorColumnTypes [BYTES, BYTES], structColumnMap [0, 1]) -> boolean
+                  predicateExpression: FilterStructColumnInList(structExpressions [col 0, col 1], fieldVectorColumnTypes [BYTES, BYTES], structColumnMap [0, 1])
               predicate: (struct(id,lineid)) IN (const struct('two','3'), const struct('three','1'), const struct('one','1'), const struct('five','2'), const struct('six','1'), const struct('eight','1'), const struct('seven','1'), const struct('nine','1'), const struct('ten','1')) (type: boolean)
               Statistics: Num rows: 1 Data size: 173 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -312,7 +312,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterStructColumnInList(structExpressions [col 0, col 1], fieldVectorColumnTypes [LONG, LONG], structColumnMap [0, 1]) -> boolean
+                  predicateExpression: FilterStructColumnInList(structExpressions [col 0, col 1], fieldVectorColumnTypes [LONG, LONG], structColumnMap [0, 1])
               predicate: (struct(id,lineid)) IN (const struct(2,3), const struct(3,1), const struct(1,1), const struct(5,2), const struct(6,1), const struct(8,1), const struct(7,1), const struct(9,1), const struct(10,1)) (type: boolean)
               Statistics: Num rows: 1 Data size: 8 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -560,7 +560,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterStructColumnInList(structExpressions [col 0, col 1], fieldVectorColumnTypes [BYTES, LONG], structColumnMap [0, 1]) -> boolean
+                  predicateExpression: FilterStructColumnInList(structExpressions [col 0, col 1], fieldVectorColumnTypes [BYTES, LONG], structColumnMap [0, 1])
               predicate: (struct(id,lineid)) IN (const struct('two',3), const struct('three',1), const struct('one',1), const struct('five',2), const struct('six',1), const struct('eight',1), const struct('seven',1), const struct('nine',1), const struct('ten',1)) (type: boolean)
               Statistics: Num rows: 1 Data size: 92 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -811,7 +811,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterStructColumnInList(structExpressions [col 0, col 1, col 2], fieldVectorColumnTypes [LONG, BYTES, DOUBLE], structColumnMap [0, 1, 2]) -> boolean
+                  predicateExpression: FilterStructColumnInList(structExpressions [col 0, col 1, col 2], fieldVectorColumnTypes [LONG, BYTES, DOUBLE], structColumnMap [0, 1, 2])
               predicate: (struct(my_bigint,my_string,my_double)) IN (const struct(1,'a',1.5), const struct(1,'b',-0.5), const struct(3,'b',1.5), const struct(1,'d',1.5), const struct(1,'c',1.5), const struct(1,'b',2.5), const struct(1,'b',0.5), const struct(5,'b',1.5), const struct(1,'a',0.5), const struct(3,'b',1.5)) (type: boolean)
               Statistics: Num rows: 1 Data size: 101 Basic stats: COMPLETE Column stats: NONE
               Select Operator

@@ -20,12 +20,12 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.ColumnVector;
-import org.apache.hadoop.hive.ql.exec.vector.DoubleColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde2.io.DateWritable;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 import java.sql.Date;
 import java.text.ParseException;
@@ -330,11 +330,6 @@ public class VectorUDFDateDiffColCol extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return this.outputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "long";
   }
 
   public int getColNum1() {

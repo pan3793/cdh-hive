@@ -4851,7 +4851,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -4992,7 +4992,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -5135,7 +5135,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -5270,7 +5270,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -5424,7 +5424,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -5562,7 +5562,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -5708,7 +5708,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -5851,7 +5851,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -5991,7 +5991,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -6145,7 +6145,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -6300,7 +6300,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -6463,7 +6463,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 0) -> boolean, SelectColumnIsNotNull(col 1) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 0), SelectColumnIsNotNull(col 1))
               predicate: (key is not null and value is not null) (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -6641,7 +6641,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -7645,7 +7645,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -7830,7 +7830,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 0, val 100) -> boolean, SelectColumnIsNotNull(col 1) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 0, val 100), SelectColumnIsNotNull(col 1))
               predicate: ((key > 100) and value is not null) (type: boolean)
               Statistics: Num rows: 7 Data size: 651 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -7958,7 +7958,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -8099,7 +8099,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -8242,7 +8242,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -8377,7 +8377,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -8531,7 +8531,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -8669,7 +8669,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -8815,7 +8815,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -8958,7 +8958,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -9098,7 +9098,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -9252,7 +9252,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -9407,7 +9407,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -9570,7 +9570,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 0) -> boolean, SelectColumnIsNotNull(col 1) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 0), SelectColumnIsNotNull(col 1))
               predicate: (key is not null and value is not null) (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -9748,7 +9748,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -10752,7 +10752,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -10937,7 +10937,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 0, val 100) -> boolean, SelectColumnIsNotNull(col 1) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 0, val 100), SelectColumnIsNotNull(col 1))
               predicate: ((key > 100) and value is not null) (type: boolean)
               Statistics: Num rows: 7 Data size: 651 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -11065,7 +11065,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -11206,7 +11206,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -11349,7 +11349,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -11484,7 +11484,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -11638,7 +11638,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -11776,7 +11776,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -11922,7 +11922,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -12065,7 +12065,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -12205,7 +12205,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -12359,7 +12359,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -12514,7 +12514,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 11 Data size: 1023 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -12677,7 +12677,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 0) -> boolean, SelectColumnIsNotNull(col 1) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 0), SelectColumnIsNotNull(col 1))
               predicate: (key is not null and value is not null) (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -12855,7 +12855,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -13859,7 +13859,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                  predicateExpression: SelectColumnIsNotNull(col 0)
               predicate: key is not null (type: boolean)
               Statistics: Num rows: 22 Data size: 2046 Basic stats: COMPLETE Column stats: NONE
               Map Join Operator
@@ -14044,7 +14044,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 0, val 100) -> boolean, SelectColumnIsNotNull(col 1) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: FilterLongColGreaterLongScalar(col 0, val 100), SelectColumnIsNotNull(col 1))
               predicate: ((key > 100) and value is not null) (type: boolean)
               Statistics: Num rows: 7 Data size: 651 Basic stats: COMPLETE Column stats: NONE
               Select Operator

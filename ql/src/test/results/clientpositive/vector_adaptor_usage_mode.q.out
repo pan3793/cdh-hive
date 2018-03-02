@@ -425,7 +425,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [4, 5, 8]
-                  selectExpressions: VectorUDFAdaptor(regexp_extract(c2, 'val_([0-9]+)', 1)) -> 4:String, VectorUDFAdaptor(regexp_extract(c4, 'val_([0-9]+)', 1)) -> 5:String, StringGroupColEqualStringGroupColumn(col 6, col 7)(children: VectorUDFAdaptor(regexp_extract(c2, 'val_([0-9]+)', 1)) -> 6:String, VectorUDFAdaptor(regexp_extract(c4, 'val_([0-9]+)', 1)) -> 7:String) -> 8:boolean
+                  selectExpressions: VectorUDFAdaptor(regexp_extract(c2, 'val_([0-9]+)', 1)) -> 4:string, VectorUDFAdaptor(regexp_extract(c4, 'val_([0-9]+)', 1)) -> 5:string, StringGroupColEqualStringGroupColumn(col 6, col 7)(children: VectorUDFAdaptor(regexp_extract(c2, 'val_([0-9]+)', 1)) -> 6:string, VectorUDFAdaptor(regexp_extract(c4, 'val_([0-9]+)', 1)) -> 7:string) -> 8:boolean
               Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
@@ -515,7 +515,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [4, 5, 8]
-                  selectExpressions: VectorUDFAdaptor(regexp_replace(c2, 'val', 'replaced')) -> 4:String, VectorUDFAdaptor(regexp_replace(c4, 'val', 'replaced')) -> 5:String, StringGroupColEqualStringGroupColumn(col 6, col 7)(children: VectorUDFAdaptor(regexp_replace(c2, 'val', 'replaced')) -> 6:String, VectorUDFAdaptor(regexp_replace(c4, 'val', 'replaced')) -> 7:String) -> 8:boolean
+                  selectExpressions: VectorUDFAdaptor(regexp_replace(c2, 'val', 'replaced')) -> 4:string, VectorUDFAdaptor(regexp_replace(c4, 'val', 'replaced')) -> 5:string, StringGroupColEqualStringGroupColumn(col 6, col 7)(children: VectorUDFAdaptor(regexp_replace(c2, 'val', 'replaced')) -> 6:string, VectorUDFAdaptor(regexp_replace(c4, 'val', 'replaced')) -> 7:string) -> 8:boolean
               Statistics: Num rows: 1 Data size: 356 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 1
@@ -1006,7 +1006,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 3]
-                  selectExpressions: VectorUDFAdaptor(CASE WHEN (bool) THEN (1) WHEN ((not bool)) THEN (0) ELSE (null) END)(children: NotCol(col 1) -> 2:boolean) -> 3:Long
+                  selectExpressions: VectorUDFAdaptor(CASE WHEN (bool) THEN (1) WHEN ((not bool)) THEN (0) ELSE (null) END)(children: NotCol(col 1) -> 2:boolean) -> 3:int
               Statistics: Num rows: 5 Data size: 452 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 aggregations: count(_col1)

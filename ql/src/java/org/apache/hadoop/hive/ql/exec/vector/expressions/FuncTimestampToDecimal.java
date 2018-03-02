@@ -35,12 +35,10 @@ public abstract class FuncTimestampToDecimal extends VectorExpression {
   public FuncTimestampToDecimal(int inputColumn, int outputColumn) {
     this.inputColumn = inputColumn;
     this.outputColumn = outputColumn;
-    this.outputType = "decimal";
   }
 
   public FuncTimestampToDecimal() {
     super();
-    this.outputType = "decimal";
   }
 
   abstract protected void func(DecimalColumnVector outV, TimestampColumnVector inV, int i);

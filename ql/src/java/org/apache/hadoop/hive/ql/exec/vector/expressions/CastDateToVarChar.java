@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 public class CastDateToVarChar extends CastDateToString implements TruncStringOutput {
   private static final long serialVersionUID = 1L;
@@ -38,11 +39,6 @@ public class CastDateToVarChar extends CastDateToString implements TruncStringOu
   }
 
   @Override
-  public String getOutputType() {
-    return "VarChar";
-  }
-  
-    @Override
   public int getMaxLength() {
     return maxLength;
   }

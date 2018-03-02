@@ -21,6 +21,7 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions;
 import org.apache.hadoop.hive.common.type.HiveVarchar;
 
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Compute IF(expr1, expr2, expr3) for 3 input column expressions.
@@ -38,11 +39,6 @@ public class IfExprStringScalarVarCharScalar extends IfExprStringScalarStringSca
   }
 
   public IfExprStringScalarVarCharScalar() {
-  }
-
-  @Override
-  public String getOutputType() {
-    return "String";
   }
 
   @Override

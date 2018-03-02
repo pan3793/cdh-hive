@@ -21,6 +21,7 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * This expression selects a row if the given boolean column is true.
@@ -122,11 +123,6 @@ public class SelectColumnIsTrue extends VectorExpression {
   @Override
   public int getOutputColumn() {
     return -1;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   public int getColNum1() {

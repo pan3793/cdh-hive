@@ -24,7 +24,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 5) -> boolean, SelectColumnIsNotNull(col 2) -> boolean, SelectColumnIsNotNull(col 10) -> boolean, SelectColumnIsNotNull(col 8) -> boolean) -> boolean
+                  predicateExpression: FilterExprAndExpr(children: SelectColumnIsNotNull(col 5), SelectColumnIsNotNull(col 2), SelectColumnIsNotNull(col 10), SelectColumnIsNotNull(col 8))
               predicate: (cdouble is not null and cint is not null and cboolean1 is not null and ctimestamp1 is not null) (type: boolean)
               Statistics: Num rows: 12288 Data size: 2641964 Basic stats: COMPLETE Column stats: NONE
               Select Operator

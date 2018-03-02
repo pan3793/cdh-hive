@@ -25,6 +25,7 @@ import java.util.HashSet;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor.Descriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Evaluate IN filter on a batch for a vector of timestamps.
@@ -147,12 +148,6 @@ public class FilterTimestampColumnInList extends VectorExpression implements ITi
         }
       }
     }
-  }
-
-
-  @Override
-  public String getOutputType() {
-    return "boolean";
   }
 
   @Override

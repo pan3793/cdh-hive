@@ -186,7 +186,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [1, 6, 5, 8, 7]
-                  selectExpressions: IntervalYearMonthColAddIntervalYearMonthColumn(col 4, col 5)(children: CastStringToIntervalYearMonth(col 2) -> 4:interval_year_month, CastStringToIntervalYearMonth(col 2) -> 5:interval_year_month) -> 6:long, IntervalYearMonthScalarAddIntervalYearMonthColumn(val 14, col 4)(children: CastStringToIntervalYearMonth(col 2) -> 4:interval_year_month) -> 5:long, IntervalYearMonthColSubtractIntervalYearMonthColumn(col 4, col 7)(children: CastStringToIntervalYearMonth(col 2) -> 4:interval_year_month, CastStringToIntervalYearMonth(col 2) -> 7:interval_year_month) -> 8:long, IntervalYearMonthScalarSubtractIntervalYearMonthColumn(val 14, col 4)(children: CastStringToIntervalYearMonth(col 2) -> 4:interval_year_month) -> 7:long
+                  selectExpressions: IntervalYearMonthColAddIntervalYearMonthColumn(col 4, col 5)(children: CastStringToIntervalYearMonth(col 2) -> 4:interval_year_month, CastStringToIntervalYearMonth(col 2) -> 5:interval_year_month) -> 6:interval_year_month, IntervalYearMonthScalarAddIntervalYearMonthColumn(val 14, col 4)(children: CastStringToIntervalYearMonth(col 2) -> 4:interval_year_month) -> 5:interval_year_month, IntervalYearMonthColSubtractIntervalYearMonthColumn(col 4, col 7)(children: CastStringToIntervalYearMonth(col 2) -> 4:interval_year_month, CastStringToIntervalYearMonth(col 2) -> 7:interval_year_month) -> 8:interval_year_month, IntervalYearMonthScalarSubtractIntervalYearMonthColumn(val 14, col 4)(children: CastStringToIntervalYearMonth(col 2) -> 4:interval_year_month) -> 7:interval_year_month
               Statistics: Num rows: 2 Data size: 442 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: date)
@@ -303,7 +303,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [1, 6, 5, 8, 7]
-                  selectExpressions: IntervalDayTimeColAddIntervalDayTimeColumn(col 4, col 5)(children: CastStringToIntervalDayTime(col 3) -> 4:interval_day_time, CastStringToIntervalDayTime(col 3) -> 5:interval_day_time) -> 6:interval_day_time, IntervalDayTimeScalarAddIntervalDayTimeColumn(val 1 02:03:04.000000000, col 4)(children: CastStringToIntervalDayTime(col 3) -> 4:interval_day_time) -> 5:timestamp, IntervalDayTimeColSubtractIntervalDayTimeColumn(col 4, col 7)(children: CastStringToIntervalDayTime(col 3) -> 4:interval_day_time, CastStringToIntervalDayTime(col 3) -> 7:interval_day_time) -> 8:interval_day_time, IntervalDayTimeScalarSubtractIntervalDayTimeColumn(val 1 02:03:04.000000000, col 4)(children: CastStringToIntervalDayTime(col 3) -> 4:interval_day_time) -> 7:timestamp
+                  selectExpressions: IntervalDayTimeColAddIntervalDayTimeColumn(col 4, col 5)(children: CastStringToIntervalDayTime(col 3) -> 4:interval_day_time, CastStringToIntervalDayTime(col 3) -> 5:interval_day_time) -> 6:interval_day_time, IntervalDayTimeScalarAddIntervalDayTimeColumn(val 1 02:03:04.000000000, col 4)(children: CastStringToIntervalDayTime(col 3) -> 4:interval_day_time) -> 5:interval_day_time, IntervalDayTimeColSubtractIntervalDayTimeColumn(col 4, col 7)(children: CastStringToIntervalDayTime(col 3) -> 4:interval_day_time, CastStringToIntervalDayTime(col 3) -> 7:interval_day_time) -> 8:interval_day_time, IntervalDayTimeScalarSubtractIntervalDayTimeColumn(val 1 02:03:04.000000000, col 4)(children: CastStringToIntervalDayTime(col 3) -> 4:interval_day_time) -> 7:interval_day_time
               Statistics: Num rows: 2 Data size: 442 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: date)
@@ -432,7 +432,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [1, 4, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17]
-                  selectExpressions: DateColAddIntervalYearMonthScalar(col 1, val 1-2) -> 4:long, DateColAddIntervalYearMonthColumn(col 1, col 5)(children: CastStringToIntervalYearMonth(col 2) -> 5:interval_year_month) -> 6:long, IntervalYearMonthScalarAddDateColumn(val 1-2, col 1) -> 7:long, IntervalYearMonthColAddDateColumn(col 5, col 1)(children: CastStringToIntervalYearMonth(col 2) -> 5:interval_year_month) -> 8:long, DateColSubtractIntervalYearMonthScalar(col 1, val 1-2) -> 9:long, DateColSubtractIntervalYearMonthColumn(col 1, col 5)(children: CastStringToIntervalYearMonth(col 2) -> 5:interval_year_month) -> 10:long, DateColAddIntervalDayTimeScalar(col 1, val 1 02:03:04.000000000) -> 11:timestamp, DateColAddIntervalDayTimeColumn(col 1, col 12)(children: CastStringToIntervalDayTime(col 3) -> 12:interval_day_time) -> 13:timestamp, IntervalDayTimeScalarAddDateColumn(val 1 02:03:04.000000000, col 1) -> 14:timestamp, IntervalDayTimeColAddDateColumn(col 12, col 1)(children: CastStringToIntervalDayTime(col 3) -> 12:interval_day_time) -> 15:interval_day_time, DateColSubtractIntervalDayTimeScalar(col 1, val 1 02:03:04.000000000) -> 16:timestamp, DateColSubtractIntervalDayTimeColumn(col 1, col 12)(children: CastStringToIntervalDayTime(col 3) -> 12:interval_day_time) -> 17:timestamp
+                  selectExpressions: DateColAddIntervalYearMonthScalar(col 1, val 1-2) -> 4:date, DateColAddIntervalYearMonthColumn(col 1, col 5)(children: CastStringToIntervalYearMonth(col 2) -> 5:interval_year_month) -> 6:date, IntervalYearMonthScalarAddDateColumn(val 1-2, col 1) -> 7:date, IntervalYearMonthColAddDateColumn(col 5, col 1)(children: CastStringToIntervalYearMonth(col 2) -> 5:interval_year_month) -> 8:date, DateColSubtractIntervalYearMonthScalar(col 1, val 1-2) -> 9:date, DateColSubtractIntervalYearMonthColumn(col 1, col 5)(children: CastStringToIntervalYearMonth(col 2) -> 5:interval_year_month) -> 10:date, DateColAddIntervalDayTimeScalar(col 1, val 1 02:03:04.000000000) -> 11:timestamp, DateColAddIntervalDayTimeColumn(col 1, col 12)(children: CastStringToIntervalDayTime(col 3) -> 12:interval_day_time) -> 13:timestamp, IntervalDayTimeScalarAddDateColumn(val 1 02:03:04.000000000, col 1) -> 14:timestamp, IntervalDayTimeColAddDateColumn(col 12, col 1)(children: CastStringToIntervalDayTime(col 3) -> 12:interval_day_time) -> 15:timestamp, DateColSubtractIntervalDayTimeScalar(col 1, val 1 02:03:04.000000000) -> 16:timestamp, DateColSubtractIntervalDayTimeColumn(col 1, col 12)(children: CastStringToIntervalDayTime(col 3) -> 12:interval_day_time) -> 17:timestamp
               Statistics: Num rows: 2 Data size: 442 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: date)
@@ -696,7 +696,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [0, 4, 5, 6]
-                  selectExpressions: TimestampColSubtractTimestampColumn(col 0, col 0) -> 4:interval_day_time, TimestampScalarSubtractTimestampColumn(val 2001-01-01 01:02:03.0, col 0) -> 5:timestamp, TimestampColSubtractTimestampScalar(col 0, val 2001-01-01 01:02:03.0) -> 6:interval_day_time
+                  selectExpressions: TimestampColSubtractTimestampColumn(col 0, col 0) -> 4:interval_day_time, TimestampScalarSubtractTimestampColumn(val 2001-01-01 01:02:03.0, col 0) -> 5:interval_day_time, TimestampColSubtractTimestampScalar(col 0, val 2001-01-01 01:02:03.0) -> 6:interval_day_time
               Statistics: Num rows: 2 Data size: 442 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: timestamp)
@@ -801,7 +801,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [1, 4, 5, 6]
-                  selectExpressions: DateColSubtractDateColumn(col 1, col 1) -> 4:timestamp, DateScalarSubtractDateColumn(val 2001-01-01 00:00:00.0, col 1) -> 5:timestamp, DateColSubtractDateScalar(col 1, val 2001-01-01 00:00:00.0) -> 6:timestamp
+                  selectExpressions: DateColSubtractDateColumn(col 1, col 1) -> 4:interval_day_time, DateScalarSubtractDateColumn(val 2001-01-01 00:00:00.0, col 1) -> 5:interval_day_time, DateColSubtractDateScalar(col 1, val 2001-01-01 00:00:00.0) -> 6:interval_day_time
               Statistics: Num rows: 2 Data size: 442 Basic stats: COMPLETE Column stats: NONE
               Reduce Output Operator
                 key expressions: _col0 (type: date)

@@ -24,7 +24,7 @@ import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde.serdeConstants;
-
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Casts a string vector to a interval year-month vector.
@@ -138,11 +138,6 @@ public class CastStringToIntervalYearMonth extends VectorExpression {
 
   public void setInputColumn(int inputColumn) {
     this.inputColumn = inputColumn;
-  }
-
-  @Override
-  public String getOutputType() {
-    return serdeConstants.INTERVAL_YEAR_MONTH_TYPE_NAME;
   }
 
   @Override

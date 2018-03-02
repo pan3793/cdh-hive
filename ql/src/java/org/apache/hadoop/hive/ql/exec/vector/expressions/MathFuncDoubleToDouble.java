@@ -19,8 +19,8 @@
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
 import org.apache.hadoop.hive.ql.exec.vector.DoubleColumnVector;
-import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
  * Implement vectorized math function that takes a double (and optionally additional
@@ -127,11 +127,6 @@ public abstract class MathFuncDoubleToDouble extends VectorExpression {
 
   public void setColNum(int colNum) {
     this.colNum = colNum;
-  }
-
-  @Override
-  public String getOutputType() {
-    return "double";
   }
 
   @Override

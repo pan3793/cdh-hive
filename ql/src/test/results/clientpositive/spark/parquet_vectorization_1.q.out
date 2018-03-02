@@ -67,7 +67,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterExprOrExpr(children: FilterExprAndExpr(children: FilterDoubleColGreaterDoubleColumn(col 5, col 12)(children: CastLongToDouble(col 0) -> 12:double) -> boolean, FilterLongColGreaterLongScalar(col 11, val 0) -> boolean) -> boolean, FilterLongColLessLongColumn(col 3, col 0)(children: col 0) -> boolean, FilterLongColGreaterLongColumn(col 2, col 3)(children: col 2) -> boolean, FilterLongColLessLongScalar(col 10, val 0) -> boolean) -> boolean
+                        predicateExpression: FilterExprOrExpr(children: FilterExprAndExpr(children: FilterDoubleColGreaterDoubleColumn(col 5, col 12)(children: CastLongToDouble(col 0) -> 12:double), FilterLongColGreaterLongScalar(col 11, val 0)), FilterLongColLessLongColumn(col 3, col 0)(children: col 0), FilterLongColGreaterLongColumn(col 2, col 3)(children: col 2), FilterLongColLessLongScalar(col 10, val 0))
                     predicate: (((cdouble > UDFToDouble(ctinyint)) and (cboolean2 > 0)) or (cbigint < UDFToLong(ctinyint)) or (UDFToLong(cint) > cbigint) or (cboolean1 < 0)) (type: boolean)
                     Statistics: Num rows: 12288 Data size: 147456 Basic stats: COMPLETE Column stats: NONE
                     Select Operator

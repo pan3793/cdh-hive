@@ -18,12 +18,11 @@
  
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
-import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
-import org.apache.hadoop.hive.ql.exec.vector.expressions.DecimalUtil;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 import java.util.Arrays;
 
@@ -40,7 +39,6 @@ public class FuncRoundWithNumDigitsDecimalToDecimal extends VectorExpression {
     this.colNum = colNum;
     this.outputColumn = outputColumn;
     this.decimalPlaces = scalarValue;
-    this.outputType = "decimal";
   }
   
   public FuncRoundWithNumDigitsDecimalToDecimal() {
@@ -116,8 +114,8 @@ public class FuncRoundWithNumDigitsDecimalToDecimal extends VectorExpression {
   }
   
   @Override
-  public String getOutputType() {
-    return outputType;
+  public TypeInfo getOutputTypeInfo() {
+    return outputTypeInfo;
   }
 
   public String vectorExpressionParameters() {

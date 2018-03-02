@@ -26,7 +26,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsTrue(col 13)(children: CastLongToBooleanViaLongToLong(col 12)(children: StringLength(col 6) -> 12:Long) -> 13:long) -> boolean
+                  predicateExpression: SelectColumnIsTrue(col 13)(children: CastLongToBooleanViaLongToLong(col 12)(children: StringLength(col 6) -> 12:bigint) -> 13:boolean)
               predicate: cstring1 (type: string)
               Statistics: Num rows: 6144 Data size: 1320982 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -133,7 +133,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsTrue(col 12)(children: CastLongToBooleanViaLongToLong(col 2) -> 12:long) -> boolean
+                  predicateExpression: SelectColumnIsTrue(col 12)(children: CastLongToBooleanViaLongToLong(col 2) -> 12:boolean)
               predicate: cint (type: int)
               Statistics: Num rows: 6144 Data size: 1320982 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
@@ -232,7 +232,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsTrue(col 12)(children: CastDoubleToBooleanViaDoubleToLong(col 4) -> 12:long) -> boolean
+                  predicateExpression: SelectColumnIsTrue(col 12)(children: CastDoubleToBooleanViaDoubleToLong(col 4) -> 12:boolean)
               predicate: cfloat (type: float)
               Statistics: Num rows: 6144 Data size: 1320982 Basic stats: COMPLETE Column stats: NONE
               Select Operator
@@ -339,7 +339,7 @@ STAGE PLANS:
               Filter Vectorization:
                   className: VectorFilterOperator
                   native: true
-                  predicateExpression: SelectColumnIsTrue(col 12)(children: CastTimestampToBoolean(col 8) -> 12:long) -> boolean
+                  predicateExpression: SelectColumnIsTrue(col 12)(children: CastTimestampToBoolean(col 8) -> 12:boolean)
               predicate: ctimestamp1 (type: timestamp)
               Statistics: Num rows: 6144 Data size: 1320982 Basic stats: COMPLETE Column stats: NONE
               Select Operator

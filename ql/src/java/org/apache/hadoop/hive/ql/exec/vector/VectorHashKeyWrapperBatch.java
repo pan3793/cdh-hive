@@ -22,7 +22,6 @@ import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriter;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.util.JavaDataModel;
-import org.apache.hadoop.hive.serde2.io.TimestampWritable;
 
 /**
  * Class for handling vectorized hash map key wrappers. It evaluates the key columns in a
@@ -708,7 +707,7 @@ public class VectorHashKeyWrapperBatch extends VectorColumnSetInfo {
 
     // Inspect the output type of each key expression.
     for(int i=0; i < keyExpressions.length; ++i) {
-      compiledKeyWrapperBatch.addKey(keyExpressions[i].getOutputType());
+      compiledKeyWrapperBatch.addKey(keyExpressions[i].getOutputTypeInfo().getTypeName());
     }
     compiledKeyWrapperBatch.finishAdding();
 

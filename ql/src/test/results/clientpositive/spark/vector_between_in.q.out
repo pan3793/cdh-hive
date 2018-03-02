@@ -43,7 +43,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterLongColumnInList(col 3, values [-67, -171]) -> boolean
+                        predicateExpression: FilterLongColumnInList(col 3, values [-67, -171])
                     predicate: (cdate) IN (1969-10-26, 1969-07-14) (type: boolean)
                     Statistics: Num rows: 6144 Data size: 1233808 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -138,7 +138,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: SelectColumnIsFalse(col 4)(children: LongColumnInList(col 3, values [-67, -171, 20]) -> 4:boolean) -> boolean
+                        predicateExpression: SelectColumnIsFalse(col 4)(children: LongColumnInList(col 3, values [-67, -171, 20]) -> 4:boolean)
                     predicate: (not (cdate) IN (1969-10-26, 1969-07-14, 1970-01-21)) (type: boolean)
                     Statistics: Num rows: 6144 Data size: 1233808 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -245,7 +245,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterDecimalColumnInList(col 1, values [2365.8945945946, 881.0135135135, -3367.6517567568]) -> boolean
+                        predicateExpression: FilterDecimalColumnInList(col 1, values [2365.8945945946, 881.0135135135, -3367.6517567568])
                     predicate: (cdecimal1) IN (2365.8945945946, 881.0135135135, -3367.6517567568) (type: boolean)
                     Statistics: Num rows: 6144 Data size: 1233808 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -340,7 +340,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: SelectColumnIsFalse(col 4)(children: DecimalColumnInList(col 1, values [2365.8945945946, 881.0135135135, -3367.6517567568]) -> 4:boolean) -> boolean
+                        predicateExpression: SelectColumnIsFalse(col 4)(children: DecimalColumnInList(col 1, values [2365.8945945946, 881.0135135135, -3367.6517567568]) -> 4:boolean)
                     predicate: (not (cdecimal1) IN (2365.8945945946, 881.0135135135, -3367.6517567568)) (type: boolean)
                     Statistics: Num rows: 6144 Data size: 1233808 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -447,7 +447,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterLongColumnBetween(col 3, left -2, right 1) -> boolean
+                        predicateExpression: FilterLongColumnBetween(col 3, left -2, right 1)
                     predicate: cdate BETWEEN 1969-12-30 AND 1970-01-02 (type: boolean)
                     Statistics: Num rows: 6144 Data size: 1233808 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -542,7 +542,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterLongColumnNotBetween(col 3, left -610, right 608) -> boolean
+                        predicateExpression: FilterLongColumnNotBetween(col 3, left -610, right 608)
                     predicate: cdate NOT BETWEEN 1968-05-01 AND 1971-09-01 (type: boolean)
                     Statistics: Num rows: 6144 Data size: 1233808 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -637,7 +637,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterDecimalColumnBetween(col 4, left -20, right 45.9918918919)(children: CastDecimalToDecimal(col 1) -> 4:decimal(25,15)) -> boolean
+                        predicateExpression: FilterDecimalColumnBetween(col 4, left -20, right 45.9918918919)(children: CastDecimalToDecimal(col 1) -> 4:decimal(25,15))
                     predicate: cdecimal1 BETWEEN -20 AND 45.9918918919 (type: boolean)
                     Statistics: Num rows: 6144 Data size: 1233808 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -732,7 +732,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: FilterDecimalColumnNotBetween(col 4, left -2000, right 4390.1351351351)(children: CastDecimalToDecimal(col 1) -> 4:decimal(25,15)) -> boolean
+                        predicateExpression: FilterDecimalColumnNotBetween(col 4, left -2000, right 4390.1351351351)(children: CastDecimalToDecimal(col 1) -> 4:decimal(25,15))
                     predicate: cdecimal1 NOT BETWEEN -2000 AND 4390.1351351351 (type: boolean)
                     Statistics: Num rows: 6144 Data size: 1233808 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
@@ -1093,7 +1093,7 @@ STAGE PLANS:
                     Group By Operator
                       aggregations: count(1)
                       Group By Vectorization:
-                          aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 5:long) -> bigint
+                          aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 5:int) -> bigint
                           className: VectorGroupByOperator
                           vectorOutput: true
                           keyExpressions: col 4
@@ -1230,7 +1230,7 @@ STAGE PLANS:
                     Group By Operator
                       aggregations: count(1)
                       Group By Vectorization:
-                          aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 5:long) -> bigint
+                          aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 5:int) -> bigint
                           className: VectorGroupByOperator
                           vectorOutput: true
                           keyExpressions: col 4
@@ -1362,12 +1362,12 @@ STAGE PLANS:
                         className: VectorSelectOperator
                         native: true
                         projectedOutputColumns: [4]
-                        selectExpressions: VectorUDFAdaptor(cdate BETWEEN 1969-12-30 AND 1970-01-02) -> 4:Long
+                        selectExpressions: VectorUDFAdaptor(cdate BETWEEN 1969-12-30 AND 1970-01-02) -> 4:boolean
                     Statistics: Num rows: 12288 Data size: 2467616 Basic stats: COMPLETE Column stats: NONE
                     Group By Operator
                       aggregations: count(1)
                       Group By Vectorization:
-                          aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 5:long) -> bigint
+                          aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 5:int) -> bigint
                           className: VectorGroupByOperator
                           vectorOutput: true
                           keyExpressions: col 4
@@ -1499,12 +1499,12 @@ STAGE PLANS:
                         className: VectorSelectOperator
                         native: true
                         projectedOutputColumns: [4]
-                        selectExpressions: VectorUDFAdaptor(cdecimal1 NOT BETWEEN -2000 AND 4390.1351351351) -> 4:Long
+                        selectExpressions: VectorUDFAdaptor(cdecimal1 NOT BETWEEN -2000 AND 4390.1351351351) -> 4:boolean
                     Statistics: Num rows: 12288 Data size: 2467616 Basic stats: COMPLETE Column stats: NONE
                     Group By Operator
                       aggregations: count(1)
                       Group By Vectorization:
-                          aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 5:long) -> bigint
+                          aggregators: VectorUDAFCount(ConstantVectorExpression(val 1) -> 5:int) -> bigint
                           className: VectorGroupByOperator
                           vectorOutput: true
                           keyExpressions: col 4

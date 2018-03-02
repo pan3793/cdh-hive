@@ -130,7 +130,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [7, 12, 11]
-                  selectExpressions: StringGroupColConcatStringScalar(col 11, val       )(children: StringScalarConcatStringGroupCol(val       , col 7) -> 11:String_Family) -> 12:String_Family, StringGroupColConcatStringScalar(col 13, val |)(children: StringScalarConcatStringGroupCol(val |, col 11)(children: StringRTrim(col 13)(children: StringGroupColConcatStringScalar(col 11, val       )(children: StringScalarConcatStringGroupCol(val       , col 7) -> 11:String_Family) -> 13:String_Family) -> 11:String) -> 13:String_Family) -> 11:String_Family
+                  selectExpressions: StringGroupColConcatStringScalar(col 11, val       )(children: StringScalarConcatStringGroupCol(val       , col 7) -> 11:string) -> 12:string, StringGroupColConcatStringScalar(col 13, val |)(children: StringScalarConcatStringGroupCol(val |, col 11)(children: StringRTrim(col 13)(children: StringGroupColConcatStringScalar(col 11, val       )(children: StringScalarConcatStringGroupCol(val       , col 7) -> 11:string) -> 13:string) -> 11:string) -> 13:string) -> 11:string
               Statistics: Num rows: 1049 Data size: 311170 Basic stats: COMPLETE Column stats: NONE
               Limit
                 Number of rows: 20
@@ -341,7 +341,7 @@ STAGE PLANS:
                   className: VectorSelectOperator
                   native: true
                   projectedOutputColumns: [19]
-                  selectExpressions: StringGroupConcatColCol(col 17, col 18)(children: StringGroupColConcatStringScalar(col 18, val -)(children: StringScalarConcatStringGroupCol(val Quarter , col 17)(children: CastLongToString(col 13)(children: CastDoubleToLong(col 15)(children: DoubleColAddDoubleScalar(col 16, val 1.0)(children: DoubleColDivideDoubleScalar(col 15, val 3.0)(children: CastLongToDouble(col 14)(children: LongColSubtractLongScalar(col 13, val 1)(children: VectorUDFMonthDate(col 12, field MONTH) -> 13:long) -> 14:long) -> 15:double) -> 16:double) -> 15:double) -> 13:long) -> 17:String) -> 18:String_Family) -> 17:String_Family, CastLongToString(col 13)(children: VectorUDFYearDate(col 12, field YEAR) -> 13:long) -> 18:String) -> 19:String_Family
+                  selectExpressions: StringGroupConcatColCol(col 17, col 18)(children: StringGroupColConcatStringScalar(col 18, val -)(children: StringScalarConcatStringGroupCol(val Quarter , col 17)(children: CastLongToString(col 13)(children: CastDoubleToLong(col 15)(children: DoubleColAddDoubleScalar(col 16, val 1.0)(children: DoubleColDivideDoubleScalar(col 15, val 3.0)(children: CastLongToDouble(col 14)(children: LongColSubtractLongScalar(col 13, val 1)(children: VectorUDFMonthDate(col 12, field MONTH) -> 13:int) -> 14:int) -> 15:double) -> 16:double) -> 15:double) -> 13:int) -> 17:string) -> 18:string) -> 17:string, CastLongToString(col 13)(children: VectorUDFYearDate(col 12, field YEAR) -> 13:int) -> 18:string) -> 19:string
               Statistics: Num rows: 2000 Data size: 918712 Basic stats: COMPLETE Column stats: NONE
               Group By Operator
                 Group By Vectorization:

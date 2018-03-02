@@ -132,10 +132,6 @@ public abstract class <ClassName> extends VectorExpression {
     return outputColumn;
   }
 
-  @Override
-  public String getOutputType() {
-    return "boolean";
-  }
   
   public int getColNum() {
     return colNum;

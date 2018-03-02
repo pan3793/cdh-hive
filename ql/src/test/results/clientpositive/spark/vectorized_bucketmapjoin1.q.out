@@ -125,7 +125,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                        predicateExpression: SelectColumnIsNotNull(col 0)
                     predicate: key is not null (type: boolean)
                     Statistics: Num rows: 2 Data size: 208 Basic stats: COMPLETE Column stats: NONE
                     Sorted Merge Bucket Map Join Operator
@@ -218,7 +218,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                        predicateExpression: SelectColumnIsNotNull(col 0)
                     predicate: key is not null (type: boolean)
                     Statistics: Num rows: 2 Data size: 208 Basic stats: COMPLETE Column stats: NONE
                     Sorted Merge Bucket Map Join Operator
@@ -311,7 +311,7 @@ STAGE PLANS:
                     Filter Vectorization:
                         className: VectorFilterOperator
                         native: true
-                        predicateExpression: SelectColumnIsNotNull(col 0) -> boolean
+                        predicateExpression: SelectColumnIsNotNull(col 0)
                     predicate: key is not null (type: boolean)
                     Statistics: Num rows: 2 Data size: 208 Basic stats: COMPLETE Column stats: NONE
                     Sorted Merge Bucket Map Join Operator

@@ -150,11 +150,6 @@ public class <ClassName> extends VectorExpression {
   }
 
   @Override
-  public String getOutputType() {
-    return "long";
-  }
-
-  @Override
   public String vectorExpressionParameters() {
     return "val " + value + ", col " + + colNum;
   }
