@@ -340,7 +340,7 @@ public class TestFunctionRegistry extends TestCase {
     unionAll(TypeInfoFactory.intTypeInfo, TypeInfoFactory.decimalTypeInfo,
         TypeInfoFactory.decimalTypeInfo);
     unionAll(TypeInfoFactory.doubleTypeInfo, TypeInfoFactory.decimalTypeInfo,
-        TypeInfoFactory.doubleTypeInfo);
+        TypeInfoFactory.decimalTypeInfo);
 
     unionAll(varchar5, varchar10, varchar10);
     unionAll(varchar10, varchar5, varchar10);
