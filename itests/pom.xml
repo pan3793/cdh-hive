@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.hive</groupId>
     <artifactId>hive</artifactId>
-    <version>2.1.1-cdh6.x-SNAPSHOT</version>
+    <version>2.1.1-cdh6.0.x-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -91,11 +91,11 @@
                       fi
                       fi
                       tar -zxf $DOWNLOAD_DIR/$tarName -C $BASE_DIR
-                      mv $BASE_DIR/spark-2.2.0-cdh6.x-SNAPSHOT-bin-3.0.0-alpha4-cdh6.x-SNAPSHOT $BASE_DIR/$finalName
+                      mv $BASE_DIR/spark-2.2.0-cdh6.0.x-SNAPSHOT-bin-3.0.0-alpha4-cdh6.0.x-SNAPSHOT $BASE_DIR/$finalName
                       }
                       mkdir -p $DOWNLOAD_DIR
                       CDH_VERSION=$(echo ${spark.version}|cut -d- -f2)
-                      REPO_URL="https://s3-us-west-1.amazonaws.com/hive-spark/spark-tarball/spark-2.2.0-cdh6.x-SNAPSHOT-bin-3.0.0-alpha4-cdh6.x-SNAPSHOT.tgz"
+                      REPO_URL="https://s3-us-west-1.amazonaws.com/hive-spark/spark-tarball/spark-2.2.0-cdh6.0.x-SNAPSHOT-bin-3.0.0-alpha4-cdh6.0.x-SNAPSHOT.tgz"
                       if ! download "$REPO_URL" "spark"; then
                       echo "ERROR: Cannot download spark-latest.tar.gz from $REPO_URL"
                       exit 1
