@@ -328,30 +328,45 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
   @Override
   public String getMetaStoreSchemaVersion(MetaStoreConnectionInfo connectionInfo)
     throws HiveMetaException {
-    String versionQuery;
     boolean needsQuotedIdentifier =
       HiveSchemaHelper.getDbCommandParser(connectionInfo.getDbType()).needsQuotedIdentifier();
-    if (needsQuotedIdentifier) {
-      versionQuery = "select * from \"VERSION\" t";
+    Connection metastoreDbConnection = null;
+
+    try {
+      metastoreDbConnection = HiveSchemaHelper.getConnectionToMetastore(connectionInfo);
+      return getSchemaVersionInternal(metastoreDbConnection, "CDH_VERSION", needsQuotedIdentifier);
+    } catch (SQLException ex) {
+      try {
+        return getSchemaVersionInternal(metastoreDbConnection, "VERSION", needsQuotedIdentifier);
+      } catch (SQLException e) {
+        throw new HiveMetaException("Failed to get schema version, Cause:" + e.getMessage());
+      }
+    }
+  }
+
+  private String getSchemaVersionInternal(Connection metastoreDbConnection, String table, boolean quoted)
+    throws SQLException {
+    String versionQuery;
+    if (quoted) {
+      versionQuery = "select * from \"" + table + "\" t";
     } else {
-      versionQuery = "select * from VERSION t";
+      versionQuery = "select * from " + table + " t";
     }
 
-    try (Connection metastoreDbConnection =
-      HiveSchemaHelper.getConnectionToMetastore(connectionInfo)) {
+    try {
       Statement stmt = metastoreDbConnection.createStatement();
       ResultSet res = stmt.executeQuery(versionQuery);
       if (!res.next()) {
-        throw new HiveMetaException("Could not find version info in metastore VERSION table.");
+        throw new SQLException("Could not find version info in metastore " + table + " table.");
       }
       // get schema_version_v2 if available else fall-back to schema_version
       String version = getSchemaVersion(res);
       if (res.next()) {
-        throw new HiveMetaException("Multiple versions were found in metastore.");
+        throw new SQLException("Multiple versions were found in metastore.");
       }
       return version;
     } catch (SQLException e) {
-      throw new HiveMetaException("Failed to get schema version, Cause:" + e.getMessage());
+      throw e;
     }
   }
 
@@ -363,7 +378,7 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
     return version;
   }
 
-  private String getColumnValue(ResultSet res, String columnName) throws SQLException {
+  protected String getColumnValue(ResultSet res, String columnName) throws SQLException {
     if (res.getMetaData() == null) {
       throw new IllegalArgumentException("ResultSet metadata cannot be null");
     }

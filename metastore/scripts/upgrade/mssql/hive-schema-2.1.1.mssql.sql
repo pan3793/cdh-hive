@@ -1014,9 +1014,19 @@ CREATE TABLE WRITE_SET (
 
 :r 026-HIVE-16556.mssql.sql
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
+-- Schema changes for CDH-64045.
+-- Table VERSION for classes [org.apache.hadoop.hive.metastore.model.MVersionTable]
+CREATE TABLE CDH_VERSION
+(
+    VER_ID bigint NOT NULL,
+    SCHEMA_VERSION nvarchar(127) NOT NULL,
+    VERSION_COMMENT nvarchar(255) NOT NULL
+);
 
-ALTER TABLE VERSION ADD SCHEMA_VERSION_V2 VARCHAR(255);
+ALTER TABLE CDH_VERSION ADD CONSTRAINT CDH_VERSION_PK PRIMARY KEY (VER_ID);
+
 -- -----------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
-INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '2.1.1', '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
+INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1', 'Hive release version 2.1.1');
+INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
