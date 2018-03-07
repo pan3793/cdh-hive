@@ -484,7 +484,7 @@ public class MapredLocalTask extends Task<MapredLocalWork> implements Serializab
       ColumnProjectionUtils.appendReadColumns(
           jobClone, ts.getNeededColumnIDs(), ts.getNeededColumns());
       // push down filters
-      HiveInputFormat.pushFilters(jobClone, ts, null);
+      HiveInputFormat.pushFilters(jobClone, ts);
 
       AcidUtils.setTransactionalTableScan(jobClone, ts.getConf().isAcidTable());
 

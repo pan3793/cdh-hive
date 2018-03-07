@@ -209,7 +209,7 @@ public class SMBMapJoinOperator extends AbstractMapJoinOperator<SMBJoinDesc> imp
       ColumnProjectionUtils.appendReadColumns(
           jobClone, ts.getNeededColumnIDs(), ts.getNeededColumns());
       // push down filters
-      HiveInputFormat.pushFilters(jobClone, ts, null);
+      HiveInputFormat.pushFilters(jobClone, ts);
 
       AcidUtils.setTransactionalTableScan(jobClone, ts.getConf().isAcidTable());
 

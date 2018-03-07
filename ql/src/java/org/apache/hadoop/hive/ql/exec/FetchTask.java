@@ -78,7 +78,7 @@ public class FetchTask extends Task<FetchWork> implements Serializable {
         ColumnProjectionUtils.appendReadColumns(
             job, ts.getNeededColumnIDs(), ts.getNeededColumns());
         // push down filters
-        HiveInputFormat.pushFilters(job, ts, null);
+        HiveInputFormat.pushFilters(job, ts);
 
         AcidUtils.setTransactionalTableScan(job, ts.getConf().isAcidTable());
       }
