@@ -797,7 +797,6 @@ ALTER TABLE KEY_CONSTRAINTS ADD CONSTRAINT CONSTRAINTS_PK PRIMARY KEY (CONSTRAIN
 
 CREATE INDEX CONSTRAINTS_PT_INDEX ON KEY_CONSTRAINTS(PARENT_TBL_ID);
 
-
 ------------------------------
 -- Transaction and lock tables
 ------------------------------
@@ -805,9 +804,16 @@ CREATE INDEX CONSTRAINTS_PT_INDEX ON KEY_CONSTRAINTS(PARENT_TBL_ID);
 
 @041-HIVE-16556.oracle.sql;
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
+-- Schema changes for CDH-64045.
+CREATE TABLE CDH_VERSION (
+  VER_ID NUMBER NOT NULL,
+  SCHEMA_VERSION VARCHAR(127) NOT NULL,
+  VERSION_COMMENT VARCHAR(255)
+);
+ALTER TABLE CDH_VERSION ADD CONSTRAINT CDH_VERSION_PK PRIMARY KEY (VER_ID);
 
-ALTER TABLE VERSION ADD SCHEMA_VERSION_V2 VARCHAR2(255);
 -- -----------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
-INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '2.1.1', '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
+INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1', 'Hive release version 2.1.1');
+INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');

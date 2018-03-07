@@ -335,10 +335,13 @@ RUN 'hive-txn-schema-2.1.1.derby.sql';
 
 RUN '041-HIVE-16556.derby.sql';
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
+-- Schema changes for CDH-64045.
+CREATE TABLE "APP"."CDH_VERSION" ("VER_ID" BIGINT NOT NULL, "SCHEMA_VERSION" VARCHAR(127) NOT NULL, "VERSION_COMMENT" VARCHAR(255));
+ALTER TABLE "APP"."CDH_VERSION" ADD CONSTRAINT "CDH_VERSION_PK" PRIMARY KEY ("VER_ID");
 
-ALTER TABLE "APP".VERSION ADD COLUMN SCHEMA_VERSION_V2 VARCHAR(255);
 -- -----------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
-INSERT INTO "APP"."VERSION" (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '2.1.1', '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
+INSERT INTO "APP"."VERSION" (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1', 'Hive release version 2.1.1');
+INSERT INTO "APP"."CDH_VERSION" (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
 

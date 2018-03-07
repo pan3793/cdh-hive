@@ -1472,10 +1472,18 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 
 \i 040-HIVE-16556.postgres.sql;
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
-
-ALTER TABLE "VERSION" ADD COLUMN "SCHEMA_VERSION_V2" VARCHAR(255);
+-- Schema changes for CDH-64045 introduced directly above.
+-- Table structure for CDH_VERSION
+--
+CREATE TABLE "CDH_VERSION" (
+  "VER_ID" bigint,
+  "SCHEMA_VERSION" character varying(127) NOT NULL,
+  "VERSION_COMMENT" character varying(255) NOT NULL
+);
+ALTER TABLE ONLY "CDH_VERSION" ADD CONSTRAINT "CDH_VERSION_pkey" PRIMARY KEY ("VER_ID");
 
 -- -----------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
-INSERT INTO "VERSION" ("VER_ID", "SCHEMA_VERSION", "SCHEMA_VERSION_V2", "VERSION_COMMENT") VALUES (1, '2.1.1', '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
+INSERT INTO "VERSION" ("VER_ID", "SCHEMA_VERSION", "VERSION_COMMENT") VALUES (1, '2.1.1', 'Hive release version 2.1.1');
+INSERT INTO "CDH_VERSION" ("VER_ID", "SCHEMA_VERSION", "VERSION_COMMENT") VALUES (1, '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');

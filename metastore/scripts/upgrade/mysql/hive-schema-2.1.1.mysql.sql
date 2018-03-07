@@ -834,12 +834,21 @@ SOURCE hive-txn-schema-2.1.1.mysql.sql;
 
 SOURCE 041-HIVE-16556.mysql.sql;
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
+-- Schema changes for CDH-64045 introduced directly above.
+-- Table structure for CDH_VERSION
+--
+CREATE TABLE IF NOT EXISTS `CDH_VERSION` (
+  `VER_ID` BIGINT NOT NULL,
+  `SCHEMA_VERSION` VARCHAR(127) NOT NULL,
+  `VERSION_COMMENT` VARCHAR(255),
+  PRIMARY KEY (`VER_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER TABLE VERSION ADD COLUMN SCHEMA_VERSION_V2 VARCHAR(255);
 -- -----------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
-INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '2.1.1', '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
+INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1', 'Hive release version 2.1.1');
+INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
