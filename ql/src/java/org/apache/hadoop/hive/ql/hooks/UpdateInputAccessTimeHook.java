@@ -18,10 +18,7 @@
 package org.apache.hadoop.hive.ql.hooks;
 
 import java.util.Set;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
-import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.hive.ql.metadata.Hive;
@@ -64,19 +61,23 @@ public class UpdateInputAccessTimeHook {
         // of the object, before it was modified by StatsTask.
         // Get the latest versions of the object
         case TABLE: {
-          Table t = db.getTable(re.getTable().getTableName());
+          String dbName = re.getTable().getDbName();
+          String tblName = re.getTable().getTableName();
+          Table t = db.getTable(dbName, tblName);
           t.setLastAccessTime(lastAccessTime);
-          db.alterTable(t.getDbName() + "." + t.getTableName(), t);
+          db.alterTable(dbName + "." + tblName, t);
           break;
         }
         case PARTITION: {
+          String dbName = re.getTable().getDbName();
+          String tblName = re.getTable().getTableName();
           Partition p = re.getPartition();
-          Table t = db.getTable(p.getTable().getTableName());
+          Table t = db.getTable(dbName, tblName);
           p = db.getPartition(t, p.getSpec(), false);
           p.setLastAccessTime(lastAccessTime);
-          db.alterPartition(t.getTableName(), p);
+          db.alterPartition(dbName, tblName, p);
           t.setLastAccessTime(lastAccessTime);
-          db.alterTable(t.getDbName() + "." + t.getTableName(), t);
+          db.alterTable(dbName + "." + tblName, t);
           break;
         }
         default:
