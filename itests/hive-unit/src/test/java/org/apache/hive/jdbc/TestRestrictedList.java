@@ -76,6 +76,7 @@ public class TestRestrictedList {
     addToExpectedRestrictedMap("_hive.local.session.path");
     addToExpectedRestrictedMap("_hive.tmp_table_space");
     addToExpectedRestrictedMap("_hive.hdfs.session.path");
+    addToExpectedRestrictedMap("spark.home");
   }
 
   @AfterClass

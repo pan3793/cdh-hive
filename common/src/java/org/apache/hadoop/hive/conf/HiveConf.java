@@ -1991,7 +1991,8 @@ public class HiveConf extends Configuration {
         "hive.security.authenticator.manager,hive.security.authorization.manager," +
         "hive.users.in.admin.role," +
         "hadoop.bin.path," +
-        "yarn.bin.path",
+        "yarn.bin.path," +
+        "spark.home",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
         METASTOREPWD.varname + "," + HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname
