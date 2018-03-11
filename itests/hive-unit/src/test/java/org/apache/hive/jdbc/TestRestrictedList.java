@@ -86,6 +86,7 @@ public class TestRestrictedList {
     addToExpectedRestrictedMap("hive.spark.client.secret.bits");
     addToExpectedRestrictedMap("hive.spark.client.rpc.server.port");
     addToExpectedRestrictedMap("hive.spark.client.rpc.sasl.mechanisms");
+    addToExpectedRestrictedMap("spark.home");
   }
 
   @AfterClass
