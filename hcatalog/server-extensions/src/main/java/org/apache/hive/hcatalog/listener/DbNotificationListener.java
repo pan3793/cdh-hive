@@ -65,13 +65,15 @@ import java.util.concurrent.TimeUnit;
  * avoid slowing down other metadata operations with the work of putting the notification into
  * the database.  Also, occasionally the thread needs to clean the database of old records.  We
  * definitely don't want to do that as part of another metadata operation.
+ *
+ * NOTE: This listener is modified to skip events that are not used by Sentry. Currently
+ * Sentry is the only consumer and some workloads generate huge  events that are not
+ * useful for Sentry.
  */
 public class DbNotificationListener extends MetaStoreEventListener {
 
   private static final Logger LOG = LoggerFactory.getLogger(DbNotificationListener.class.getName());
   private static CleanerThread cleaner = null;
-
-  private static final Object NOTIFICATION_TBL_LOCK = new Object();
 
   // This is the same object as super.conf, but it's convenient to keep a copy of it as a
   // HiveConf rather than a Configuration.
@@ -147,6 +149,28 @@ public class DbNotificationListener extends MetaStoreEventListener {
   public void onAlterTable (AlterTableEvent tableEvent) throws MetaException {
     Table before = tableEvent.getOldTable();
     Table after = tableEvent.getNewTable();
+
+    // Verify whether either the name of the db or table changed or location changed.
+    if (before.getDbName() == null || after.getDbName() == null ||
+        before.getTableName() == null || after.getTableName() == null) {
+      return;
+    }
+
+    if (before.getSd() == null || after.getSd() == null) {
+      return;
+    }
+
+    if (before.getSd().getLocation() == null || after.getSd().getLocation() == null) {
+      return;
+    }
+
+    if (before.getDbName().equals(after.getDbName()) &&
+        before.getTableName().equals(after.getTableName()) &&
+        before.getSd().getLocation().equals(after.getSd().getLocation())) {
+      // Nothing interesting changed
+      return;
+    }
+
     NotificationEvent event = new NotificationEvent(0, now(),
         HCatConstants.HCAT_ALTER_TABLE_EVENT,
         msgFactory.buildAlterTableMessage(before, after).toString());
@@ -191,6 +215,21 @@ public class DbNotificationListener extends MetaStoreEventListener {
   public void onAlterPartition (AlterPartitionEvent partitionEvent)  throws MetaException {
     Partition before = partitionEvent.getOldPartition();
     Partition after = partitionEvent.getNewPartition();
+
+    // Verify whether either the name of the db or table changed or location changed.
+    if (before.getSd() == null || after.getSd() == null) {
+      return;
+    }
+    if (before.getSd().getLocation() == null || after.getSd().getLocation() == null) {
+      return;
+    }
+
+    if (before.getDbName().equals(after.getDbName()) &&
+        before.getTableName().equals(after.getTableName()) &&
+        before.getSd().getLocation().equals(after.getSd().getLocation())) {
+      return;
+    }
+
     NotificationEvent event = new NotificationEvent(0, now(),
         HCatConstants.HCAT_ALTER_PARTITION_EVENT,
         msgFactory.buildAlterPartitionMessage(partitionEvent.getTable(),before, after).toString());
@@ -230,12 +269,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
    * @throws MetaException
    */
   public void onCreateFunction (CreateFunctionEvent fnEvent) throws MetaException {
-    Function fn = fnEvent.getFunction();
-    NotificationEvent event = new NotificationEvent(0, now(),
-        HCatConstants.HCAT_CREATE_FUNCTION_EVENT,
-        msgFactory.buildCreateFunctionMessage(fn).toString());
-    event.setDbName(fn.getDbName());
-    enqueue(event, fnEvent);
+    // Sentry doesn't care about this one
   }
 
   /**
@@ -243,12 +277,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
    * @throws MetaException
    */
   public void onDropFunction (DropFunctionEvent fnEvent) throws MetaException {
-    Function fn = fnEvent.getFunction();
-    NotificationEvent event = new NotificationEvent(0, now(),
-        HCatConstants.HCAT_DROP_FUNCTION_EVENT,
-        msgFactory.buildDropFunctionMessage(fn).toString());
-    event.setDbName(fn.getDbName());
-    enqueue(event, fnEvent);
+    // Sentry doesn't care about this one
   }
 
   /**
@@ -256,12 +285,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
    * @throws MetaException
    */
   public void onAddIndex (AddIndexEvent indexEvent) throws MetaException {
-    Index index = indexEvent.getIndex();
-    NotificationEvent event = new NotificationEvent(0, now(),
-        HCatConstants.HCAT_CREATE_INDEX_EVENT,
-        msgFactory.buildCreateIndexMessage(index).toString());
-    event.setDbName(index.getDbName());
-    enqueue(event, indexEvent);
+    // Sentry doesn't care about this one
   }
 
   /**
@@ -269,12 +293,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
    * @throws MetaException
    */
   public void onDropIndex (DropIndexEvent indexEvent) throws MetaException {
-    Index index = indexEvent.getIndex();
-    NotificationEvent event = new NotificationEvent(0, now(),
-        HCatConstants.HCAT_DROP_INDEX_EVENT,
-        msgFactory.buildDropIndexMessage(index).toString());
-    event.setDbName(index.getDbName());
-    enqueue(event, indexEvent);
+    // Sentry doesn't care about this one
   }
 
   /**
@@ -282,23 +301,12 @@ public class DbNotificationListener extends MetaStoreEventListener {
    * @throws MetaException
    */
   public void onAlterIndex (AlterIndexEvent indexEvent)  throws MetaException {
-    Index before = indexEvent.getOldIndex();
-    Index after = indexEvent.getNewIndex();
-    NotificationEvent event = new NotificationEvent(0, now(),
-        HCatConstants.HCAT_ALTER_INDEX_EVENT,
-        msgFactory.buildAlterIndexMessage(before, after).toString());
-    event.setDbName(before.getDbName());
-    enqueue(event, indexEvent);
+    // Sentry doesn't care about this one
   }
 
   @Override
   public void onInsert(InsertEvent insertEvent) throws MetaException {
-    NotificationEvent event = new NotificationEvent(0, now(), HCatConstants.HCAT_INSERT_EVENT,
-        msgFactory.buildInsertMessage(insertEvent.getDb(), insertEvent.getTable(),
-            insertEvent.getPartitionKeyValues(), insertEvent.getFiles()).toString());
-    event.setDbName(insertEvent.getDb());
-    event.setTableName(insertEvent.getTable());
-    enqueue(event, insertEvent);
+    // Sentry doesn't care about this one
   }
 
   /**
@@ -330,11 +338,9 @@ public class DbNotificationListener extends MetaStoreEventListener {
    *                      DB_NOTIFICATION_EVENT_ID_KEY_NAME for future reference by other listeners.
    */
   private void enqueue(NotificationEvent event, ListenerEvent listenerEvent) throws MetaException {
-    synchronized (NOTIFICATION_TBL_LOCK) {
       LOG.debug("DbNotificationListener: Processing : {}:{}", event.getEventId(),
           event.getMessage());
       HMSHandler.getMSForConf(hiveConf).addNotificationEvent(event);
-    }
 
       // Set the DB_NOTIFICATION_EVENT_ID for future reference by other listeners.
       if (event.isSetEventId()) {
@@ -360,10 +366,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
     @Override
     public void run() {
       while (true) {
-        synchronized(NOTIFICATION_TBL_LOCK) {
-          rs.cleanNotificationEvents(ttl);
-        }
-        LOG.debug("Cleaner thread done");
+        rs.cleanNotificationEvents(ttl);
         try {
           Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
