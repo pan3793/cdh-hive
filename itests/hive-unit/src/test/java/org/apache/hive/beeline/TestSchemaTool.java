@@ -240,7 +240,8 @@ public class TestSchemaTool extends TestCase {
    boolean isValid = schemaTool.validateSchemaVersions(conn);
    // Test an invalid case with multiple versions
    String[] scripts = new String[] {
-      "insert into VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) values(100, '2.2.0', '2.2.0', 'Hive release version 2.2.0')"
+      "insert into VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) values(100, '2.2.0', 'Hive release version 2.2.0')",
+      "insert into CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) values(100, '2.2.0-cdh6.5.0', 'Hive release version 2.2.0')"
    };
    File scriptFile = generateTestScript(scripts);
    schemaTool.runBeeLine(scriptFile.getPath());
@@ -248,7 +249,8 @@ public class TestSchemaTool extends TestCase {
    assertFalse(isValid);
 
    scripts = new String[] {
-       "delete from VERSION where VER_ID = 100"
+       "delete from VERSION where VER_ID = 100",
+       "delete from CDH_VERSION where VER_ID = 100"
    };
    scriptFile = generateTestScript(scripts);
    schemaTool.runBeeLine(scriptFile.getPath());
@@ -257,7 +259,8 @@ public class TestSchemaTool extends TestCase {
 
    // Test an invalid case without version
    scripts = new String[] {
-       "delete from VERSION"
+       "delete from VERSION",
+       "delete from CDH_VERSION"
    };
    scriptFile = generateTestScript(scripts);
    schemaTool.runBeeLine(scriptFile.getPath());
