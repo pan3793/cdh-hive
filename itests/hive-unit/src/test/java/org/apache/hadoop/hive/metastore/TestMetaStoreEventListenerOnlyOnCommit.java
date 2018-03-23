@@ -27,7 +27,6 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.events.ListenerEvent;
 import org.apache.hadoop.hive.ql.Driver;
 import org.apache.hadoop.hive.ql.session.SessionState;
-import org.apache.hadoop.hive.shims.ShimLoader;
 
 /**
  * Ensure that the status of MetaStore events depend on the RawStore's commit status.
@@ -50,10 +49,8 @@ public class TestMetaStoreEventListenerOnlyOnCommit extends TestCase {
     System.setProperty(HiveConf.ConfVars.METASTORE_RAW_STORE_IMPL.varname,
             DummyRawStoreControlledCommit.class.getName());
 
-    int port = MetaStoreUtils.startMetaStoreWithRetry();
-
     hiveConf = new HiveConf(this.getClass());
-    hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
+    MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
     hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     hiveConf.set(HiveConf.ConfVars.PREEXECHOOKS.varname, "");
     hiveConf.set(HiveConf.ConfVars.POSTEXECHOOKS.varname, "");

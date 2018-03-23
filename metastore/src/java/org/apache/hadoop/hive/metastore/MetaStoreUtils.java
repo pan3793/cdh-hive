@@ -1216,16 +1216,6 @@ public class MetaStoreUtils {
     }
   }
 
-  public static int startMetaStore() throws Exception {
-    return startMetaStore(ShimLoader.getHadoopThriftAuthBridge(), null);
-  }
-
-  public static int startMetaStore(final HadoopThriftAuthBridge bridge, HiveConf conf) throws Exception {
-    int port = findFreePort();
-    startMetaStore(port, bridge, conf);
-    return port;
-  }
-
   public static int startMetaStoreWithRetry(final HadoopThriftAuthBridge bridge) throws Exception {
     return startMetaStoreWithRetry(bridge, null);
   }
@@ -1235,18 +1225,25 @@ public class MetaStoreUtils {
   }
 
   public static int startMetaStoreWithRetry() throws Exception {
-    return startMetaStoreWithRetry(ShimLoader.getHadoopThriftAuthBridge(), null);
+    return startMetaStoreWithRetry(ShimLoader.getHadoopThriftAuthBridge(), new HiveConf());
   }
 
   public static int startMetaStoreWithRetry(final HadoopThriftAuthBridge bridge, HiveConf conf)
       throws Exception {
     Exception metaStoreException = null;
     int metaStorePort = 0;
+    String warehouseDir = HiveConf.getVar(conf, HiveConf.ConfVars.METASTOREWAREHOUSE);
 
     for (int tryCount = 0; tryCount < MetaStoreUtils.RETRY_COUNT; tryCount++) {
       try {
         metaStorePort = findFreePort();
+        Path postfixedWarehouseDir = new Path(warehouseDir, String.valueOf(metaStorePort));
+        HiveConf.setVar(conf, HiveConf.ConfVars.METASTOREWAREHOUSE,
+            postfixedWarehouseDir.toString());
+        HiveConf.setVar(conf, HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + metaStorePort);
         startMetaStore(metaStorePort, bridge, conf);
+        LOG.error("MetaStore Thrift Server started on port: {} with warehouse dir: {}",
+            metaStorePort, postfixedWarehouseDir);
         return metaStorePort;
       } catch (ConnectException ce) {
         metaStoreException = ce;
@@ -1256,15 +1253,14 @@ public class MetaStoreUtils {
     throw metaStoreException;
   }
 
+  @Deprecated
+  // Kept only for backward compatibilty in kudu
+  // org.apache.kudu.hive.metastore.TestKuduMetastorePlugin.java
   public static int startMetaStore(HiveConf conf) throws Exception {
-    return startMetaStore(ShimLoader.getHadoopThriftAuthBridge(), conf);
+    return startMetaStoreWithRetry(conf);
   }
 
-  public static void startMetaStore(final int port, final HadoopThriftAuthBridge bridge) throws Exception {
-    startMetaStore(port, bridge, null);
-  }
-
-  public static void startMetaStore(final int port,
+  private static void startMetaStore(final int port,
       final HadoopThriftAuthBridge bridge, HiveConf hiveConf)
       throws Exception{
     if (hiveConf == null) {

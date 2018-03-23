@@ -86,7 +86,7 @@ public class TestHiveMetaStorePartitionSpecs {
     HiveConf metastoreConf = new HiveConf();
     metastoreConf.setClass(HiveConf.ConfVars.METASTORE_EXPRESSION_PROXY_CLASS.varname,
       MockPartitionExpressionForMetastore.class, PartitionExpressionProxy.class);
-    msPort = MetaStoreUtils.startMetaStore(metastoreConf);
+    msPort = MetaStoreUtils.startMetaStoreWithRetry(metastoreConf);
     securityManager = System.getSecurityManager();
     System.setSecurityManager(new NoExitSecurityManager());
     hiveConf = new HiveConf(TestHiveMetaStorePartitionSpecs.class);

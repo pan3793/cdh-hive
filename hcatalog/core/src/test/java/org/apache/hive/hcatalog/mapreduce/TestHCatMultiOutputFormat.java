@@ -161,7 +161,10 @@ public class TestHCatMultiOutputFormat {
     metastoreConf.setVar(HiveConf.ConfVars.METASTOREWAREHOUSE, warehousedir.toString());
 
     // Run hive metastore server
-    msPort = MetaStoreUtils.startMetaStore(metastoreConf);
+    msPort = MetaStoreUtils.startMetaStoreWithRetry(metastoreConf);
+    // Read the warehouse dir, which can be changed so multiple MetaStore tests could be run on
+    // the same server
+    warehousedir = new Path(metastoreConf.getVar(HiveConf.ConfVars.METASTOREWAREHOUSE));
     // LocalJobRunner does not work with mapreduce OutputCommitter. So need
     // to use MiniMRCluster. MAPREDUCE-2350
     Configuration conf = new Configuration(true);

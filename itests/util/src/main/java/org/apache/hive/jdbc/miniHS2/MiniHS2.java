@@ -334,8 +334,7 @@ public class MiniHS2 extends AbstractHiveService {
 
   public void start(Map<String, String> confOverlay) throws Exception {
     if (isMetastoreRemote) {
-      int metaStorePort = MetaStoreUtils.startMetaStoreWithRetry(getHiveConf());
-      getHiveConf().setVar(ConfVars.METASTOREURIS, "thrift://localhost:" + metaStorePort);
+      MetaStoreUtils.startMetaStoreWithRetry(getHiveConf());
     }
 
     // Set confOverlay parameters

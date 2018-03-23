@@ -37,7 +37,6 @@ import org.apache.hadoop.hive.ql.io.HiveInputFormat;
 import org.apache.hadoop.hive.ql.io.HiveOutputFormat;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
-import org.apache.hadoop.hive.shims.ShimLoader;
 
 /**
  * TestRetryingHMSHandler. Test case for
@@ -53,9 +52,8 @@ public class TestRetryingHMSHandler extends TestCase {
     super.setUp();
     System.setProperty("hive.metastore.pre.event.listeners",
         AlternateFailurePreListener.class.getName());
-    int port = MetaStoreUtils.startMetaStoreWithRetry();
     hiveConf = new HiveConf(this.getClass());
-    hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
+    MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
     hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     hiveConf.setIntVar(HiveConf.ConfVars.HMSHANDLERATTEMPTS, 2);
     hiveConf.setTimeVar(HiveConf.ConfVars.HMSHANDLERINTERVAL, 0, TimeUnit.MILLISECONDS);
