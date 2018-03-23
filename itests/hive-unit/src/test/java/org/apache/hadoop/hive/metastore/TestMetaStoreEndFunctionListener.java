@@ -27,7 +27,6 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.ql.Driver;
 import org.apache.hadoop.hive.ql.session.SessionState;
-import org.apache.hadoop.hive.shims.ShimLoader;
 /**
  * TestMetaStoreEventListener. Test case for
  * {@link org.apache.hadoop.hive.metastore.MetaStoreEndFunctionListener}
@@ -47,9 +46,8 @@ public class TestMetaStoreEndFunctionListener extends TestCase {
         DummyPreListener.class.getName());
     System.setProperty("hive.metastore.end.function.listeners",
         DummyEndFunctionListener.class.getName());
-    int port = MetaStoreUtils.startMetaStoreWithRetry();
     hiveConf = new HiveConf(this.getClass());
-    hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
+    MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
     hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     hiveConf.set(HiveConf.ConfVars.PREEXECHOOKS.varname, "");
     hiveConf.set(HiveConf.ConfVars.POSTEXECHOOKS.varname, "");

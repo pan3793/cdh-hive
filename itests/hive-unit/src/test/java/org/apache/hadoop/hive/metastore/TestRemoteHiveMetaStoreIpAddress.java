@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.api.Database;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.util.StringUtils;
 
 /**
@@ -50,12 +49,10 @@ public class TestRemoteHiveMetaStoreIpAddress extends TestCase {
 
     System.setProperty(ConfVars.METASTORE_EVENT_LISTENERS.varname,
         IpAddressListener.class.getName());
-    int port = MetaStoreUtils.startMetaStoreWithRetry();
-    System.out.println("Starting MetaStore Server on port " + port);
+    MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
     isServerStarted = true;
 
-    // This is default case with setugi off for both client and server
-    createClient(port);
+    msc = new HiveMetaStoreClient(hiveConf);
   }
 
   public void testIpAddress() throws Exception {
@@ -70,10 +67,5 @@ public class TestRemoteHiveMetaStoreIpAddress extends TestCase {
       System.err.println("testIpAddress() failed.");
       throw e;
     }
-  }
-
-  protected void createClient(int port) throws Exception {
-    hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
-    msc = new HiveMetaStoreClient(hiveConf);
   }
 }

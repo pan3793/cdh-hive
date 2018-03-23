@@ -35,7 +35,6 @@ import org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventLis
 import org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.WindowsPathUtil;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.Shell;
@@ -76,12 +75,11 @@ public class StorageBasedMetastoreTestBase {
         InjectableDummyAuthenticator.class.getName());
 
     clientHiveConf = createHiveConf();
-    int port = MetaStoreUtils.startMetaStoreWithRetry(clientHiveConf);
+    MetaStoreUtils.startMetaStoreWithRetry(clientHiveConf);
 
     // Turn off client-side authorization
     clientHiveConf.setBoolVar(HiveConf.ConfVars.HIVE_AUTHORIZATION_ENABLED,false);
 
-    clientHiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
     clientHiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     clientHiveConf.set(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY.varname, "false");
 

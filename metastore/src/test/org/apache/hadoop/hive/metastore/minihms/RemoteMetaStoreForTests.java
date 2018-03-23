@@ -34,8 +34,7 @@ public class RemoteMetaStoreForTests extends AbstractMetaStoreService {
 
   public void start() throws Exception {
     HiveConf.setBoolVar(configuration, HiveConf.ConfVars.METASTORE_EXECUTE_SET_UGI, false);
-    int port = MetaStoreUtils.startMetaStore(configuration);
-    HiveConf.setVar(configuration, HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
+    MetaStoreUtils.startMetaStoreWithRetry(configuration);
     super.start();
   }
 }

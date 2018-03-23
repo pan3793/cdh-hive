@@ -22,10 +22,8 @@ import junit.framework.TestCase;
 
 import org.apache.hadoop.hive.cli.CliSessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.ql.Driver;
 import org.apache.hadoop.hive.ql.session.SessionState;
-import org.apache.hadoop.hive.shims.ShimLoader;
 
 /**
  * TestMetaStoreInitListener. Test case for
@@ -42,9 +40,8 @@ public class TestMetaStoreInitListener extends TestCase {
     super.setUp();
     System.setProperty("hive.metastore.init.hooks",
         DummyMetaStoreInitListener.class.getName());
-    int port = MetaStoreUtils.startMetaStoreWithRetry();
     hiveConf = new HiveConf(this.getClass());
-    hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
+    MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
     hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     hiveConf.set(HiveConf.ConfVars.PREEXECHOOKS.varname, "");
     hiveConf.set(HiveConf.ConfVars.POSTEXECHOOKS.varname, "");

@@ -25,7 +25,7 @@ public class TestMarkPartitionRemote extends TestMarkPartition {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + MetaStoreUtils.startMetaStore());
+    MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
     hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
   }
 }

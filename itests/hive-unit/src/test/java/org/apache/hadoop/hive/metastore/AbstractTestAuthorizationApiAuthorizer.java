@@ -33,7 +33,6 @@ import org.apache.hadoop.hive.metastore.api.PrivilegeBag;
 import org.apache.hadoop.hive.metastore.api.Role;
 import org.apache.hadoop.hive.ql.security.authorization.MetaStoreAuthzAPIAuthorizerEmbedOnly;
 import org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventListener;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.junit.Test;
 
 /**
@@ -57,8 +56,7 @@ public abstract class AbstractTestAuthorizationApiAuthorizer {
 
     hiveConf = new HiveConf();
     if (isRemoteMetastoreMode) {
-      int port = MetaStoreUtils.startMetaStoreWithRetry();
-      hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
+      MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
     }
     hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     hiveConf.set(HiveConf.ConfVars.PREEXECHOOKS.varname, "");
