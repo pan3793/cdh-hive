@@ -66,6 +66,20 @@ public class TestHadoopAuthBridge23 extends TestCase {
    */
   static volatile boolean isMetastoreTokenManagerInited;
 
+  public static class MyTokenStore extends MemoryTokenStore {
+    static volatile DelegationTokenStore TOKEN_STORE = null;
+    public void init(Object hmsHandler, HadoopThriftAuthBridge.Server.ServerMode smode) throws TokenStoreException {
+      super.init(hmsHandler, smode);
+      TOKEN_STORE = this;
+      try {
+        Thread.sleep(5000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      isMetastoreTokenManagerInited = true;
+    }
+  }
+
   private static class MyHadoopThriftAuthBridge23 extends HadoopThriftAuthBridge23 {
     @Override
     public Server createServer(String keytabFile, String principalConf)
@@ -136,15 +150,12 @@ public class TestHadoopAuthBridge23 extends TestCase {
 
   public void setup() throws Exception {
     isMetastoreTokenManagerInited = false;
-    int port = findFreePort();
     System.setProperty(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL.varname,
         "true");
-    System.setProperty(HiveConf.ConfVars.METASTOREURIS.varname,
-        "thrift://localhost:" + port);
-    System.setProperty(HiveConf.ConfVars.METASTOREWAREHOUSE.varname, new Path(
-        System.getProperty("test.build.data", "/tmp")).toString());
+    System.setProperty(HiveConf.ConfVars.METASTORE_CLUSTER_DELEGATION_TOKEN_STORE_CLS.varname,
+        MyTokenStore.class.getName());
     conf = new HiveConf(TestHadoopAuthBridge23.class);
-    MetaStoreUtils.startMetaStore(port, new MyHadoopThriftAuthBridge23());
+    MetaStoreUtils.startMetaStoreWithRetry(new MyHadoopThriftAuthBridge23(), conf);
   }
 
   /**
