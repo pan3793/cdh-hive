@@ -274,10 +274,7 @@ public class MiniHS2 extends AbstractHiveService {
 
   public void start(Map<String, String> confOverlay) throws Exception {
     if (isMetastoreRemote) {
-      int metaStorePort = MetaStoreUtils.findFreePort();
-      getHiveConf().setVar(ConfVars.METASTOREURIS, "thrift://localhost:" + metaStorePort);
-      MetaStoreUtils.startMetaStore(metaStorePort,
-      ShimLoader.getHadoopThriftAuthBridge(), getHiveConf());
+      MetaStoreUtils.startMetaStoreWithRetry(getHiveConf());
     }
 
     hiveServer2 = new HiveServer2();
