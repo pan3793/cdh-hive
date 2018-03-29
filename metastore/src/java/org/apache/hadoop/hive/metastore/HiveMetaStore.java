@@ -2198,6 +2198,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         final String tableName, final List<String> part_vals, final EnvironmentContext envContext)
         throws InvalidObjectException, AlreadyExistsException, MetaException {
       startPartitionFunction("append_partition", dbName, tableName, part_vals);
+      if (part_vals == null) {
+          throw new MetaException("The partition values must not be null.");
+      }
       if (LOG.isDebugEnabled()) {
         for (String part : part_vals) {
           LOG.debug(part);
