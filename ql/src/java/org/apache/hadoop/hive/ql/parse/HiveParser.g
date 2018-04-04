@@ -185,6 +185,7 @@ TOK_ALTERTABLE_ADDCONSTRAINT;
 TOK_ALTERINDEX_REBUILD;
 TOK_ALTERINDEX_PROPERTIES;
 TOK_ALTERTABLE_OWNER;
+TOK_ALTERTABLE_UPDATECOLUMNS;
 TOK_MSCK;
 TOK_SHOWDATABASES;
 TOK_SHOWTABLES;
@@ -674,6 +675,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 
   // counter to generate unique union aliases
   private int aliasCounter;
+
   private String generateUnionAlias() {
     return "_u" + (++aliasCounter);
   }
@@ -1093,6 +1095,7 @@ alterTblPartitionStatementSuffix
   | alterStatementSuffixUpdateStats
   | alterStatementSuffixRenameCol
   | alterStatementSuffixAddCol
+  | alterStatementSuffixUpdateColumns
   ;
 
 alterStatementPartitionKeyType
@@ -1185,6 +1188,13 @@ alterStatementSuffixDropConstraint
    : KW_DROP KW_CONSTRAINT cName=identifier
    ->^(TOK_ALTERTABLE_DROPCONSTRAINT $cName)
    ;
+
+alterStatementSuffixUpdateColumns
+@init { pushMsg("update columns statement", state); }
+@after { popMsg(state); }
+    : KW_UPDATE KW_COLUMNS restrictOrCascade?
+    -> ^(TOK_ALTERTABLE_UPDATECOLUMNS restrictOrCascade?)
+    ;
 
 alterStatementSuffixRenameCol
 @init { pushMsg("rename column name", state); }
@@ -1423,10 +1433,10 @@ tabTypeExpr
    (identifier (DOT^
    (
    (KW_ELEM_TYPE) => KW_ELEM_TYPE
-   | 
+   |
    (KW_KEY_TYPE) => KW_KEY_TYPE
-   | 
-   (KW_VALUE_TYPE) => KW_VALUE_TYPE 
+   |
+   (KW_VALUE_TYPE) => KW_VALUE_TYPE
    | identifier
    ))*
    )?
@@ -1490,7 +1500,7 @@ showStatement
     | KW_SHOW KW_TABLE KW_EXTENDED ((KW_FROM|KW_IN) db_name=identifier)? KW_LIKE showStmtIdentifier partitionSpec?
     -> ^(TOK_SHOW_TABLESTATUS showStmtIdentifier $db_name? partitionSpec?)
     | KW_SHOW KW_TBLPROPERTIES tableName (LPAREN prptyName=StringLiteral RPAREN)? -> ^(TOK_SHOW_TBLPROPERTIES tableName $prptyName?)
-    | KW_SHOW KW_LOCKS 
+    | KW_SHOW KW_LOCKS
       (
       (KW_DATABASE|KW_SCHEMA) => (KW_DATABASE|KW_SCHEMA) (dbName=Identifier) (isExtended=KW_EXTENDED)? -> ^(TOK_SHOWDBLOCKS $dbName $isExtended?)
       |
@@ -1603,7 +1613,7 @@ showCurrentRole
 setRole
 @init {pushMsg("set role", state);}
 @after {popMsg(state);}
-    : KW_SET KW_ROLE 
+    : KW_SET KW_ROLE
     (
     (KW_ALL) => (all=KW_ALL) -> ^(TOK_SHOW_SET_ROLE Identifier[$all.text])
     |

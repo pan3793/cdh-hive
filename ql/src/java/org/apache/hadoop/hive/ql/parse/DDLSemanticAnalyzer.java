@@ -333,6 +333,8 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
           analyzeAlterTableAddConstraint(ast, tableName);
       } else if (ast.getToken().getType() == HiveParser.TOK_ALTERTABLE_OWNER) {
         analyzeAlterTableOwner(ast, tableName);
+      } else if(ast.getToken().getType() == HiveParser.TOK_ALTERTABLE_UPDATECOLUMNS) {
+        analyzeAlterTableUpdateColumns(ast, tableName, partSpec);
       }
       break;
     }
@@ -1818,6 +1820,23 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
         alterTblDesc), conf));
   }
 
+  private void analyzeAlterTableUpdateColumns(ASTNode ast, String tableName,
+                                              HashMap<String, String> partSpec) throws SemanticException {
+
+    boolean isCascade = false;
+    if (null != ast.getFirstChildWithType(HiveParser.TOK_CASCADE)) {
+      isCascade = true;
+    }
+
+    AlterTableDesc alterTblDesc = new AlterTableDesc(AlterTableTypes.UPDATECOLUMNS);
+    alterTblDesc.setOldName(tableName);
+    alterTblDesc.setIsCascade(isCascade);
+    alterTblDesc.setPartSpec(partSpec);
+
+    rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(),
+            alterTblDesc), conf));
+  }
+
   static HashMap<String, String> getProps(ASTNode prop) {
     // Must be deterministic order map for consistent q-test output across Java versions
     HashMap<String, String> mapProp = new LinkedHashMap<String, String>();
@@ -3222,7 +3241,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
       return new ExprNodeGenericFuncDesc(TypeInfoFactory.booleanTypeInfo,
           FunctionRegistry.getFunctionInfo(fn).getGenericUDF(), Lists.newArrayList(left, right));
   }
-  
+
   public static ExprNodeGenericFuncDesc makeUnaryPredicate(
       String fn, ExprNodeDesc arg) throws SemanticException {
       return new ExprNodeGenericFuncDesc(TypeInfoFactory.booleanTypeInfo,

@@ -3928,6 +3928,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         }
         tbl.setNumBuckets(alterTbl.getNumberBuckets());
       }
+    } else if (alterTbl.getOp() == AlterTableTypes.UPDATECOLUMNS) {
+      updateColumns(tbl, part);
     } else {
       throw new HiveException(ErrorMsg.UNSUPPORTED_ALTER_TBL_OP, alterTbl.getOp().toString());
     }
@@ -3959,6 +3961,29 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     } catch (NoSuchObjectException e) {
       throw new HiveException(e);
     }
+    return 0;
+  }
+
+  private int updateColumns(Table tbl, Partition part)
+          throws HiveException {
+    String serializationLib = tbl.getSd().getSerdeInfo().getSerializationLib();
+    if (conf.getStringCollection(ConfVars.SERDESUSINGMETASTOREFORSCHEMA.varname)
+            .contains(serializationLib)) {
+      throw new HiveException(tbl.getTableName() + " has serde " + serializationLib + " for which schema " +
+              "is already handled by HMS.");
+    }
+    Deserializer deserializer = tbl.getDeserializer(true);
+    try {
+      LOG.info("Updating metastore columns for table: " + tbl.getTableName());
+      final List<FieldSchema> fields = MetaStoreUtils.getFieldsFromDeserializer(
+              tbl.getTableName(), deserializer);
+      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
+      sd.setCols(fields);
+    } catch (org.apache.hadoop.hive.serde2.SerDeException | MetaException e) {
+      LOG.error("alter table update columns: {}", e);
+      throw new HiveException(e, ErrorMsg.GENERIC_ERROR);
+    }
+
     return 0;
   }
 

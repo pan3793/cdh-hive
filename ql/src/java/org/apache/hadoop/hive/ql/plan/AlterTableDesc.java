@@ -59,7 +59,7 @@ public class AlterTableDesc extends DDLDesc implements Serializable {
     ALTERSKEWEDLOCATION("alter skew location"), ALTERBUCKETNUM("alter bucket number"),
     ALTERPARTITION("alter partition"), COMPACT("compact"),
     TRUNCATE("truncate"), MERGEFILES("merge files"), DROPCONSTRAINT("drop constraint"), ADDCONSTRAINT("add constraint"),
-    OWNER("set owner");
+    OWNER("set owner"),UPDATECOLUMNS("update columns");
     ;
 
     private final String name;
@@ -816,6 +816,13 @@ public class AlterTableDesc extends DDLDesc implements Serializable {
    */
   public boolean getIsCascade() {
     return isCascade;
+  }
+
+  /**
+   * @param cascade the isCascade to set
+   */
+  public void setIsCascade(boolean isCascade) {
+    this.isCascade = isCascade;
   }
 
   public static boolean doesAlterTableTypeSupportPartialPartitionSpec(AlterTableTypes type) {
