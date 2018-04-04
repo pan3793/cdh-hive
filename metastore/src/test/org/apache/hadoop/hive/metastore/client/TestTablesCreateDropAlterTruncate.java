@@ -1014,13 +1014,18 @@ public class TestTablesCreateDropAlterTruncate {
     client.alter_table(originalTable.getDbName(), originalTable.getTableName(), newTable);
   }
 
-  @Test(expected = MetaException.class)
+  @Test
   public void testAlterTableInvalidStorageDescriptorNullLocation() throws Exception {
     Table originalTable = testTables[0];
     Table newTable = originalTable.deepCopy();
     newTable.getSd().setLocation(null);
 
     client.alter_table(originalTable.getDbName(), originalTable.getTableName(), newTable);
+    Table alteredTable = client.getTable(originalTable.getDbName(), originalTable.getTableName());
+    // TODO: Previously a NPE occurred when the location was null. With reverting HIVE-6727 this NPE
+    // doesn't occur any more. The table location can be altered to null. Check if this behaviour
+    // is correct or not.
+    Assert.assertNull(alteredTable.getSd().getLocation());
   }
 
   @Test(expected = InvalidOperationException.class)
