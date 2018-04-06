@@ -966,6 +966,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     public Database get_database_core(final String name) throws NoSuchObjectException,
         MetaException {
       Database db = null;
+      if (name == null) {
+        throw new MetaException("Database name cannot be null.");
+      }
       try {
         db = getMS().getDatabase(name);
       } catch (MetaException e) {
@@ -1016,6 +1019,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       List<Path> tablePaths = new ArrayList<Path>();
       List<Path> partitionPaths = new ArrayList<Path>();
       Map<String, String> transactionalListenerResponses = Collections.emptyMap();
+      if (name == null) {
+        throw new MetaException("Database name cannot be null.");
+      }
       try {
         ms.openTransaction();
         db = ms.getDatabase(name);
