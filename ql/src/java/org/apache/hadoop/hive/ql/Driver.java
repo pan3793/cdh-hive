@@ -261,6 +261,10 @@ public class Driver implements CommandProcessor {
     return schema;
   }
 
+  public Context getContext() {
+    return ctx;
+  }
+
   /**
    * Get a Schema with fields represented with native Hive types
    */
