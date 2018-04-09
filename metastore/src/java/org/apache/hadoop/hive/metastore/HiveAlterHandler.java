@@ -55,9 +55,11 @@ import org.apache.hive.common.util.HiveStringUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Hive specific implementation of alter
@@ -122,8 +124,12 @@ public class HiveAlterHandler implements AlterHandler {
     Table oldt = null;
     List<ObjectPair<Partition, String>> altps = new ArrayList<ObjectPair<Partition, String>>();
     List<MetaStoreEventListener> transactionalListeners = null;
+    List<MetaStoreEventListener> listeners = null;
+    Map<String, String> txnAlterTableEventResponses = Collections.emptyMap();
+
     if (handler != null) {
       transactionalListeners = handler.getTransactionalListeners();
+      listeners = handler.getListeners();
     }
 
     try {
@@ -279,7 +285,7 @@ public class HiveAlterHandler implements AlterHandler {
 
       alterTableUpdateTableColumnStats(msdb, oldt, newt);
       if (transactionalListeners != null && !transactionalListeners.isEmpty()) {
-        MetaStoreListenerNotifier.notifyEvent(transactionalListeners,
+        txnAlterTableEventResponses = MetaStoreListenerNotifier.notifyEvent(transactionalListeners,
                                               EventMessage.EventType.ALTER_TABLE,
                                               new AlterTableEvent(oldt, newt, true, handler),
                                               environmentContext);
@@ -339,6 +345,12 @@ public class HiveAlterHandler implements AlterHandler {
           throw new InvalidOperationException("Alter Table operation for " + dbname + "." + name +
             " failed to move data due to: '" + getSimpleMessage(e) + "' See hive log file for details.");
         }
+      }
+
+      if (!listeners.isEmpty()) {
+        MetaStoreListenerNotifier.notifyEvent(listeners, EventMessage.EventType.ALTER_TABLE,
+            new AlterTableEvent(oldt, newt, success, handler),
+            environmentContext, txnAlterTableEventResponses, msdb);
       }
     }
     if (!success) {
