@@ -2404,6 +2404,9 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   @Override
   public void createFunction(Function func) throws InvalidObjectException,
       MetaException, TException {
+    if (func == null) {
+      throw new MetaException("Function cannot be null.");
+    }
     client.create_function(func);
   }
 

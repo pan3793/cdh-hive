@@ -6070,12 +6070,27 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     }
 
     private void validateFunctionInfo(Function func) throws InvalidObjectException, MetaException {
+      if (func == null) {
+        throw new MetaException("Function cannot be null.");
+      }
+      if (func.getFunctionName() == null) {
+        throw new MetaException("Function name cannot be null.");
+      }
+      if (func.getDbName() == null) {
+        throw new MetaException("Database name in Function cannot be null.");
+      }
       if (!MetaStoreUtils.validateName(func.getFunctionName(), null)) {
         throw new InvalidObjectException(func.getFunctionName() + " is not a valid object name");
       }
       String className = func.getClassName();
       if (className == null) {
         throw new InvalidObjectException("Function class name cannot be null");
+      }
+      if (func.getOwnerType() == null) {
+        throw new MetaException("Function owner type cannot be null.");
+      }
+      if (func.getFunctionType() == null) {
+        throw new MetaException("Function type cannot be null.");
       }
     }
 
@@ -6130,10 +6145,16 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     public void drop_function(String dbName, String funcName)
         throws NoSuchObjectException, MetaException,
         InvalidObjectException, InvalidInputException {
+      if (funcName == null) {
+        throw new MetaException("Function name cannot be null.");
+      }
       boolean success = false;
       Function func = null;
       RawStore ms = getMS();
       Map<String, String> transactionalListenerResponses = Collections.emptyMap();
+      if (dbName == null) {
+        throw new MetaException("Database name cannot be null.");
+      }
       try {
         ms.openTransaction();
         func = ms.getFunction(dbName, funcName);
@@ -6168,17 +6189,38 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     @Override
     public void alter_function(String dbName, String funcName, Function newFunc)
         throws InvalidOperationException, MetaException, TException {
-      validateFunctionInfo(newFunc);
+      validateForAlterFunction(dbName, funcName, newFunc);
       boolean success = false;
       RawStore ms = getMS();
       try {
         ms.openTransaction();
         ms.alterFunction(dbName, funcName, newFunc);
         success = ms.commitTransaction();
+      } catch (InvalidObjectException e) {
+        // Throwing MetaException instead of InvalidObjectException as the InvalidObjectException
+        // is not defined for the alter_function method in the Thrift interface.
+        throw newMetaException(e);
       } finally {
         if (!success) {
           ms.rollbackTransaction();
         }
+      }
+    }
+
+    private void validateForAlterFunction(String dbName, String funcName, Function newFunc)
+        throws MetaException {
+      if (dbName == null || funcName == null) {
+        throw new MetaException("Database and function name cannot be null.");
+      }
+      try {
+        validateFunctionInfo(newFunc);
+      } catch (InvalidObjectException e) {
+        // The validateFunctionInfo method is used by the create and alter function methods as well
+        // and it can throw InvalidObjectException. But the InvalidObjectException is not defined
+        // for the alter_function method in the Thrift interface, therefore a TApplicationException
+        // will occur at the caller side. Re-throwing the InvalidObjectException as MetaException
+        // would eliminate the TApplicationException at caller side.
+        throw newMetaException(e);
       }
     }
 
@@ -6226,6 +6268,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     @Override
     public Function get_function(String dbName, String funcName)
         throws MetaException, NoSuchObjectException, TException {
+      if (dbName == null || funcName == null) {
+        throw new MetaException("Database and function name cannot be null.");
+      }
       startFunction("get_function", ": " + dbName + "." + funcName);
 
       RawStore ms = getMS();
