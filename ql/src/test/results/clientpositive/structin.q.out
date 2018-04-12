@@ -64,3 +64,12 @@ STAGE PLANS:
       Processor Tree:
         ListSink
 
+PREHOOK: query: select struct("x", null)
+PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
+POSTHOOK: query: select struct("x", null)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
+{"col1":"x","col2":null}
