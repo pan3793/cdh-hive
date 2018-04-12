@@ -75,6 +75,12 @@ public final class ObjectInspectorConverters {
   private static Converter getConverter(PrimitiveObjectInspector inputOI,
       PrimitiveObjectInspector outputOI) {
     switch (outputOI.getPrimitiveCategory()) {
+    case VOID:
+      if (!outputOI.getTypeInfo().equals(inputOI.getTypeInfo())) {
+        throw new RuntimeException("Hive internal error: conversion of "
+            + inputOI.getTypeName() + " to void not possible.");
+      }
+      return new IdentityConverter();
     case BOOLEAN:
       return new PrimitiveObjectInspectorConverter.BooleanConverter(
           inputOI,

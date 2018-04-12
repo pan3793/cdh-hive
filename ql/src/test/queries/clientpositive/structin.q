@@ -21,3 +21,6 @@ IN (
 struct('1234-1111-0074578664','3'),
 struct('1234-1111-0074578695',1)
 );
+
+set hive.optimize.constant.propagation=true;
+select struct("x", null);
