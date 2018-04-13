@@ -190,4 +190,8 @@ public class ExplainWork implements Serializable {
   public void setUserLevelExplain(boolean userLevelExplain) {
     config.setUserLevelExplain(userLevelExplain);
   }
+
+  public void setConfig(ExplainConfiguration config) {
+    this.config = config;
+  }
 }

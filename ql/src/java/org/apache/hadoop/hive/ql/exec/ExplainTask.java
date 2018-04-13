@@ -629,7 +629,7 @@ public class ExplainTask extends Task<ExplainWork> implements Serializable {
           out.println();
         }
         JSONObject jsonOut = outputPlan(o, out, extended,
-            jsonOutput, jsonOutput ? 0 : (hasHeader ? indent + 2 : indent));
+            jsonOutput, jsonOutput ? 0 : (hasHeader ? indent + 2 : indent), "");
         if (jsonOutput) {
           outputArray.put(jsonOut);
         }
@@ -664,7 +664,7 @@ public class ExplainTask extends Task<ExplainWork> implements Serializable {
     return outputPlan(work, out, extended, jsonOutput, indent, "");
   }
 
-  private JSONObject outputPlan(Object work, PrintStream out,
+  public JSONObject outputPlan(Object work, PrintStream out,
       boolean extended, boolean jsonOutput, int indent, String appendToHeader) throws Exception {
     // Check if work has an explain annotation
     Annotation note = AnnotationUtils.getAnnotation(work.getClass(), Explain.class);
@@ -780,7 +780,7 @@ public class ExplainTask extends Task<ExplainWork> implements Serializable {
         if (operator.getChildOperators() != null) {
           int cindent = jsonOutput ? 0 : indent + 2;
           for (Operator<? extends OperatorDesc> op : operator.getChildOperators()) {
-            JSONObject jsonOut = outputPlan(op, out, extended, jsonOutput, cindent);
+            JSONObject jsonOut = outputPlan(op, out, extended, jsonOutput, cindent, "");
             if (jsonOutput) {
               ((JSONObject)json.get(JSONObject.getNames(json)[0])).accumulate("children", jsonOut);
             }
@@ -947,7 +947,8 @@ public class ExplainTask extends Task<ExplainWork> implements Serializable {
               out.print(header);
             }
 
-            JSONArray jsonOut = outputList(l, out, !skipHeader && !emptyHeader, extended, jsonOutput, ind);
+            JSONArray jsonOut = outputList(l, out, !skipHeader && !emptyHeader, extended,
+                    jsonOutput, ind);
 
             if (jsonOutput && !l.isEmpty()) {
               json.put(header, jsonOut);
@@ -961,7 +962,7 @@ public class ExplainTask extends Task<ExplainWork> implements Serializable {
             if (!skipHeader && out != null) {
               out.println(header);
             }
-            JSONObject jsonOut = outputPlan(val, out, extended, jsonOutput, ind);
+            JSONObject jsonOut = outputPlan(val, out, extended, jsonOutput, ind, "");
             if (jsonOutput && jsonOut != null && jsonOut.length() != 0) {
               if (!skipHeader) {
                 json.put(header, jsonOut);

@@ -2143,8 +2143,12 @@ public class HiveConf extends Configuration {
     HIVE_EXPLAIN_USER("hive.explain.user", true,
         "Whether to show explain result at user level.\n" +
         "When enabled, will log EXPLAIN output for the query at user level."),
+    HIVE_SPARK_LOG_EXPLAIN_WEBUI("hive.spark.log.explain.webui", true, "Whether to show the " +
+        "explain plan in the Spark Web UI. Only shows the regular EXPLAIN plan, and ignores " +
+        "any extra EXPLAIN configuration (e.g. hive.spark.explain.user, etc.). The explain " +
+        "plan for each stage is truncated at 100,000 characters."),
 
-    // prefix used to auto generated column aliases (this should be started with '_')
+    // prefix used to auto generated column aliases (this should be s,tarted with '_')
     HIVE_AUTOGEN_COLUMNALIAS_PREFIX_LABEL("hive.autogen.columnalias.prefix.label", "_c",
         "String used as a prefix when auto generating column alias.\n" +
         "By default the prefix label will be appended with a column position number to form the column alias. \n" +
