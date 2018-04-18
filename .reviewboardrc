@@ -26,8 +26,8 @@
 #
 # Note: This may not work correctly if $HOME/.reviewboardrc exists.
 
-REPOSITORY='hive-git'
-REVIEWBOARD_URL='https://reviews.apache.org'
-TRACKING_BRANCH='origin/branch-2.1'
+REPOSITORY='hive'
+REVIEWBOARD_URL='https://review.infra.cloudera.com'
+TRACKING_BRANCH='origin/cdh6.x'
 TARGET_GROUPS='hive'
 GUESS_FIELDS='yes'
