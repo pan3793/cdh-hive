@@ -39,7 +39,7 @@ public class CompositePartitionSpecProxy extends PartitionSpecProxy {
   private List<PartitionSpecProxy> partitionSpecProxies;
   private int size = 0;
 
-  protected CompositePartitionSpecProxy(List<PartitionSpec> partitionSpecs) {
+  protected CompositePartitionSpecProxy(List<PartitionSpec> partitionSpecs) throws MetaException {
     this.partitionSpecs = partitionSpecs;
     if (partitionSpecs.isEmpty()) {
       dbName = null;
@@ -59,7 +59,8 @@ public class CompositePartitionSpecProxy extends PartitionSpecProxy {
     assert isValid() : "Invalid CompositePartitionSpecProxy!";
   }
 
-  protected CompositePartitionSpecProxy(String dbName, String tableName, List<PartitionSpec> partitionSpecs) {
+  protected CompositePartitionSpecProxy(String dbName, String tableName,
+      List<PartitionSpec> partitionSpecs) throws MetaException {
     this.dbName = dbName;
     this.tableName = tableName;
     this.partitionSpecs = partitionSpecs;
