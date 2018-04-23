@@ -75,7 +75,7 @@ public class StorageBasedMetastoreTestBase {
         InjectableDummyAuthenticator.class.getName());
 
     clientHiveConf = createHiveConf();
-    MetaStoreUtils.startMetaStore(clientHiveConf);
+    MetaStoreUtils.startMetaStoreWithRetry(clientHiveConf);
 
     // Turn off client-side authorization
     clientHiveConf.setBoolVar(HiveConf.ConfVars.HIVE_AUTHORIZATION_ENABLED,false);

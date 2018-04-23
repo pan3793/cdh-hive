@@ -1301,16 +1301,10 @@ public class MetaStoreUtils {
   }
 
   @Deprecated
-  // Kept only for backward compatibilty in kudu, and itests
+  // Kept only for backward compatibilty in kudu
   // org.apache.kudu.hive.metastore.TestKuduMetastorePlugin.java
-  // and for org.apache.hadoop.hive.ql.security.StorageBasedMetastoreTestBase.java
   public static int startMetaStore(HiveConf conf) throws Exception {
-    String warehouseDir = HiveConf.getVar(conf, HiveConf.ConfVars.METASTOREWAREHOUSE);
-    int metaStorePort = findFreePort();
-    HiveConf.setVar(conf, HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + metaStorePort);
-    startMetaStore(metaStorePort, ShimLoader.getHadoopThriftAuthBridge(), conf);
-    LOG.error("MetaStore Thrift Server started on port: {} with warehouse dir: {}", metaStorePort, warehouseDir);
-    return metaStorePort;
+    return startMetaStoreWithRetry(conf);
   }
 
   private static void startMetaStore(final int port,
