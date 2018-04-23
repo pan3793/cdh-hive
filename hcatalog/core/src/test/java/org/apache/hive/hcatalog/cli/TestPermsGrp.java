@@ -61,7 +61,6 @@ import org.slf4j.LoggerFactory;
 public class TestPermsGrp extends TestCase {
 
   private boolean isServerRunning = false;
-  private int msPort;
   private HiveConf hcatConf;
   private Warehouse clientWH;
   private HiveMetaStoreClient msc;
@@ -79,16 +78,14 @@ public class TestPermsGrp extends TestCase {
       return;
     }
 
-
-    msPort = MetaStoreUtils.startMetaStoreWithRetry();
+    hcatConf = new HiveConf(this.getClass());
+    MetaStoreUtils.startMetaStoreWithRetry(hcatConf);
 
     isServerRunning = true;
 
     securityManager = System.getSecurityManager();
     System.setSecurityManager(new NoExitSecurityManager());
 
-    hcatConf = new HiveConf(this.getClass());
-    hcatConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://127.0.0.1:" + msPort);
     hcatConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     hcatConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES, 3);
 
@@ -101,6 +98,12 @@ public class TestPermsGrp extends TestCase {
     msc = new HiveMetaStoreClient(hcatConf, null);
     System.setProperty(HiveConf.ConfVars.PREEXECHOOKS.varname, " ");
     System.setProperty(HiveConf.ConfVars.POSTEXECHOOKS.varname, " ");
+    System.setProperty(HiveConf.ConfVars.METASTOREWAREHOUSE.varname,
+        HiveConf.getVar(hcatConf, HiveConf.ConfVars.METASTOREWAREHOUSE));
+    System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname,
+        HiveConf.getVar(hcatConf, HiveConf.ConfVars.METASTORECONNECTURLKEY));
+    System.setProperty(HiveConf.ConfVars.METASTOREURIS.varname,
+        HiveConf.getVar(hcatConf, HiveConf.ConfVars.METASTOREURIS));
   }
 
   public void testCustomPerms() throws Exception {

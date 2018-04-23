@@ -92,7 +92,7 @@ import com.google.common.collect.Lists;
 public abstract class TestHiveMetaStore extends TestCase {
   private static final Log LOG = LogFactory.getLog(TestHiveMetaStore.class);
   protected static HiveMetaStoreClient client;
-  protected static HiveConf hiveConf;
+  protected static HiveConf hiveConf = new HiveConf(TestHiveMetaStore.class);
   protected static Warehouse warehouse;
   protected static boolean isThriftClient = false;
 
@@ -105,7 +105,6 @@ public abstract class TestHiveMetaStore extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    hiveConf = new HiveConf(this.getClass());
     warehouse = new Warehouse(hiveConf);
 
     // set some values to use for getting conf. vars

@@ -45,7 +45,6 @@ import org.apache.hadoop.hive.ql.io.RCFileInputFormat;
 import org.apache.hadoop.hive.ql.io.RCFileOutputFormat;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -71,7 +70,6 @@ public class TestHCatPartitionPublish {
   private static FileSystem fs = null;
   private static MiniMRCluster mrCluster = null;
   private static boolean isServerRunning = false;
-  private static int msPort;
   private static HiveConf hcatConf;
   private static HiveMetaStoreClient msc;
   private static SecurityManager securityManager;
@@ -104,17 +102,13 @@ public class TestHCatPartitionPublish {
       return;
     }
 
-    msPort = MetaStoreUtils.findFreePort();
+    hcatConf = new HiveConf(TestHCatPartitionPublish.class);
+    MetaStoreUtils.startMetaStoreWithRetry(hcatConf);
 
-    msPort = MetaStoreUtils.startMetaStoreWithRetry();
-    Thread.sleep(10000);
     isServerRunning = true;
     securityManager = System.getSecurityManager();
     System.setSecurityManager(new NoExitSecurityManager());
 
-    hcatConf = new HiveConf(TestHCatPartitionPublish.class);
-    hcatConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:"
-        + msPort);
     hcatConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     hcatConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES, 3);
     hcatConf.setTimeVar(HiveConf.ConfVars.METASTORE_CLIENT_SOCKET_TIMEOUT, 120, TimeUnit.SECONDS);
@@ -127,6 +121,12 @@ public class TestHCatPartitionPublish {
     msc = new HiveMetaStoreClient(hcatConf, null);
     System.setProperty(HiveConf.ConfVars.PREEXECHOOKS.varname, " ");
     System.setProperty(HiveConf.ConfVars.POSTEXECHOOKS.varname, " ");
+    System.setProperty(HiveConf.ConfVars.METASTOREWAREHOUSE.varname,
+        HiveConf.getVar(hcatConf, HiveConf.ConfVars.METASTOREWAREHOUSE));
+    System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname,
+        HiveConf.getVar(hcatConf, HiveConf.ConfVars.METASTORECONNECTURLKEY));
+    System.setProperty(HiveConf.ConfVars.METASTOREURIS.varname,
+        HiveConf.getVar(hcatConf, HiveConf.ConfVars.METASTOREURIS));
   }
 
   @AfterClass
