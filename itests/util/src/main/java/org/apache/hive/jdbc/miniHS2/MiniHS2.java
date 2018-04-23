@@ -280,9 +280,6 @@ public class MiniHS2 extends AbstractHiveService {
       hiveConf.setVar(ConfVars.HIVE_SERVER2_AUTHENTICATION, authType);
     }
 
-    String metaStoreURL = "jdbc:derby:;databaseName=" + baseDir.getAbsolutePath() + File.separator
-        + "test_metastore;create=true";
-
     if (isMetastoreSecure) {
       hiveConf.setVar(ConfVars.METASTORE_KERBEROS_PRINCIPAL, metastoreServerPrincipal);
       hiveConf.setVar(ConfVars.METASTORE_KERBEROS_KEYTAB_FILE, metastoreKeyTab);
@@ -296,8 +293,6 @@ public class MiniHS2 extends AbstractHiveService {
 
     fs.mkdirs(wareHouseDir);
     setWareHouseDir(wareHouseDir.toString());
-    System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname, metaStoreURL);
-    hiveConf.setVar(HiveConf.ConfVars.METASTORECONNECTURLKEY, metaStoreURL);
     if (!usePortsFromConf) {
       // reassign a new port, just in case if one of the MR services grabbed the last one
       setBinaryPort(MetaStoreUtils.findFreePort());
@@ -335,6 +330,7 @@ public class MiniHS2 extends AbstractHiveService {
   public void start(Map<String, String> confOverlay) throws Exception {
     if (isMetastoreRemote) {
       MetaStoreUtils.startMetaStoreWithRetry(getHiveConf());
+      setWareHouseDir(HiveConf.getVar(getHiveConf(), ConfVars.METASTOREWAREHOUSE));
     }
 
     // Set confOverlay parameters

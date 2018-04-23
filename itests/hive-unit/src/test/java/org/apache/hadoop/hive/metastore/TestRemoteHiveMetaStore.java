@@ -38,7 +38,6 @@ public class TestRemoteHiveMetaStore extends TestHiveMetaStore {
 
     if (isServerStarted) {
       assertNotNull("Unable to connect to the MetaStore server", client);
-      hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + port);
       return;
     }
 

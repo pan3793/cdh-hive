@@ -89,9 +89,6 @@ public class TestHCatMultiOutputFormat {
   private static HiveConf hiveConf;
   private static File workDir;
 
-  private static int msPort;
-  private static Thread t;
-
   static {
     schemaMap.put(tableNames[0], new HCatSchema(ColumnHolder.hCattest1Cols));
     schemaMap.put(tableNames[1], new HCatSchema(ColumnHolder.hCattest2Cols));
@@ -161,7 +158,7 @@ public class TestHCatMultiOutputFormat {
     metastoreConf.setVar(HiveConf.ConfVars.METASTOREWAREHOUSE, warehousedir.toString());
 
     // Run hive metastore server
-    msPort = MetaStoreUtils.startMetaStoreWithRetry(metastoreConf);
+    MetaStoreUtils.startMetaStoreWithRetry(metastoreConf);
     // Read the warehouse dir, which can be changed so multiple MetaStore tests could be run on
     // the same server
     warehousedir = new Path(metastoreConf.getVar(HiveConf.ConfVars.METASTOREWAREHOUSE));
@@ -177,15 +174,14 @@ public class TestHCatMultiOutputFormat {
       new JobConf(conf));
     mrConf = mrCluster.createJobConf();
 
-    initializeSetup();
+    initializeSetup(metastoreConf);
 
     warehousedir.getFileSystem(conf).mkdirs(warehousedir);
   }
 
-  private static void initializeSetup() throws Exception {
+  private static void initializeSetup(HiveConf metastoreConf) throws Exception {
 
-    hiveConf = new HiveConf(mrConf, TestHCatMultiOutputFormat.class);
-    hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + msPort);
+    hiveConf = new HiveConf(metastoreConf, TestHCatMultiOutputFormat.class);
     hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 3);
     hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES, 3);
     hiveConf.set(HiveConf.ConfVars.SEMANTIC_ANALYZER_HOOK.varname,
@@ -195,6 +191,12 @@ public class TestHCatMultiOutputFormat {
     hiveConf.set(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY.varname, "false");
     System.setProperty(HiveConf.ConfVars.PREEXECHOOKS.varname, " ");
     System.setProperty(HiveConf.ConfVars.POSTEXECHOOKS.varname, " ");
+    System.setProperty(HiveConf.ConfVars.METASTOREWAREHOUSE.varname,
+        HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTOREWAREHOUSE));
+    System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname,
+        HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTORECONNECTURLKEY));
+    System.setProperty(HiveConf.ConfVars.METASTOREURIS.varname,
+        HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTOREURIS));
 
     hiveConf.set(HiveConf.ConfVars.METASTOREWAREHOUSE.varname, warehousedir.toString());
     try {
