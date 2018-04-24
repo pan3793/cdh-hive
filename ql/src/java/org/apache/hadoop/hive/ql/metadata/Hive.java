@@ -2777,7 +2777,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
         try {
           files = srcFs.listStatus(src.getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER);
         } catch (IOException e) {
-          pool.shutdownNow();
+          if (null != pool) {
+            pool.shutdownNow();
+          }
           throw new HiveException(e);
         }
       } else {
