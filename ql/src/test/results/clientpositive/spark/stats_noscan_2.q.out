@@ -49,8 +49,8 @@ Table Type:         	EXTERNAL_TABLE
 Table Parameters:	 	 
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
 	EXTERNAL            	TRUE                
-	numFiles            	1                   
-	totalSize           	11                  
+	numFiles            	0                   
+	totalSize           	0                   
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -90,10 +90,10 @@ Table Type:         	EXTERNAL_TABLE
 Table Parameters:	 	 
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
 	EXTERNAL            	TRUE                
-	numFiles            	1                   
+	numFiles            	0                   
 	numRows             	6                   
 	rawDataSize         	6                   
-	totalSize           	11                  
+	totalSize           	0                   
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
