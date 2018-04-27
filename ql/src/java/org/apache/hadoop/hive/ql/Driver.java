@@ -435,8 +435,7 @@ public class Driver implements CommandProcessor {
   // interrupted, it should be set to true if the compile is called within another method like
   // runInternal, which defers the close to the called in that method.
   public int compile(String command, boolean resetTaskIds, boolean deferClose) {
-    PerfLogger perfLogger = SessionState.getPerfLogger(true);
-    perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.DRIVER_RUN);
+    PerfLogger perfLogger = SessionState.getPerfLogger();
     perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.COMPILE);
     lDrvState.stateLock.lock();
     try {
@@ -584,7 +583,7 @@ public class Driver implements CommandProcessor {
 
       // get the output schema
       schema = getSchema(sem, conf);
-      plan = new QueryPlan(queryStr, sem, perfLogger.getStartTime(PerfLogger.DRIVER_RUN), queryId,
+      plan = new QueryPlan(queryStr, sem, queryDisplay.getQueryStartTime(), queryId,
         queryState.getHiveOperation(), schema);
 
       conf.setQueryString(queryStr);
@@ -1341,6 +1340,7 @@ public class Driver implements CommandProcessor {
       metrics.incrementCounter(MetricsConstant.WAITING_COMPILE_OPS, 1);
     }
 
+    PerfLogger perfLogger = SessionState.getPerfLogger(true);
     final ReentrantLock compileLock = tryAcquireCompileLock(isParallelEnabled,
       command);
     if (compileLock == null) {
@@ -1364,11 +1364,9 @@ public class Driver implements CommandProcessor {
             + org.apache.hadoop.util.StringUtils.stringifyException(e));
       }
     }
-
     //Save compile-time PerfLogging for WebUI.
     //Execution-time Perf logs are done by either another thread's PerfLogger
     //or a reset PerfLogger.
-    PerfLogger perfLogger = SessionState.getPerfLogger();
     queryDisplay.setPerfLogStarts(QueryDisplay.Phase.COMPILATION, perfLogger.getStartTimes());
     queryDisplay.setPerfLogEnds(QueryDisplay.Phase.COMPILATION, perfLogger.getEndTimes());
     return ret;
@@ -1479,23 +1477,22 @@ public class Driver implements CommandProcessor {
         return createProcessorResponse(12);
       }
 
-      PerfLogger perfLogger = null;
-
       int ret;
       if (!alreadyCompiled) {
         // compile internal will automatically reset the perf logger
         ret = compileInternal(command, true);
-        // then we continue to use this perf logger
-        perfLogger = SessionState.getPerfLogger();
         if (ret != 0) {
           return createProcessorResponse(ret);
         }
       } else {
-        // reuse existing perf logger.
-        perfLogger = SessionState.getPerfLogger();
         // Since we're reusing the compiled plan, we need to update its start time for current run
-        plan.setQueryStartTime(perfLogger.getStartTime(PerfLogger.DRIVER_RUN));
+        plan.setQueryStartTime(queryDisplay.getQueryStartTime());
       }
+
+      //Reset the PerfLogger so that it doesn't retain any previous values.
+      // Any value from compilation phase can be obtained through the map set in queryDisplay during compilation.
+      PerfLogger perfLogger = SessionState.getPerfLogger(true);
+
       // the reason that we set the txn manager for the cxt here is because each
       // query has its own ctx object. The txn mgr is shared across the
       // same instance of Driver, which can run multiple queries.
@@ -1574,7 +1571,6 @@ public class Driver implements CommandProcessor {
         return handleHiveException(e, 12);
       }
 
-      perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.DRIVER_RUN);
       queryDisplay.setPerfLogStarts(QueryDisplay.Phase.EXECUTION, perfLogger.getStartTimes());
       queryDisplay.setPerfLogEnds(QueryDisplay.Phase.EXECUTION, perfLogger.getEndTimes());
 
