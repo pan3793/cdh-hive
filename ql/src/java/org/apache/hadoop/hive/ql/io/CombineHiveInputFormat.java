@@ -455,7 +455,7 @@ public class CombineHiveInputFormat<K extends WritableComparable, V extends Writ
       result.add(csplit);
     }
 
-    LOG.info("number of splits " + result.size());
+    LOG.debug("Number of splits " + result.size());
     return result.toArray(new CombineHiveInputSplit[result.size()]);
   }
 
