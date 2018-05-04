@@ -58,6 +58,6 @@ public class TestJdbcWithDBTokenStoreNoDoAs extends TestJdbcWithMiniKdc{
     // tests original intention, so keep everything as it was originally.
 //    System.setProperty(HiveConf.ConfVars.METASTOREURIS.varname,
 //        HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTOREURIS));
-    Thread.sleep(2000);
+    Thread.sleep(4000);
   }
 }
