@@ -346,7 +346,7 @@ STAGE PLANS:
   Stage: Stage-1
     Spark
       Edges:
-        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 2), Map 4 (PARTITION-LEVEL SORT, 2)
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 4), Map 4 (PARTITION-LEVEL SORT, 4)
         Reducer 3 <- Reducer 2 (GROUP, 1)
 #### A masked pattern was here ####
       Vertices:
@@ -1220,8 +1220,8 @@ STAGE PLANS:
   Stage: Stage-1
     Spark
       Edges:
-        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 2), Map 5 (PARTITION-LEVEL SORT, 2)
-        Reducer 3 <- Map 6 (PARTITION-LEVEL SORT, 2), Reducer 2 (PARTITION-LEVEL SORT, 2)
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 4), Map 5 (PARTITION-LEVEL SORT, 4)
+        Reducer 3 <- Map 6 (PARTITION-LEVEL SORT, 4), Reducer 2 (PARTITION-LEVEL SORT, 4)
         Reducer 4 <- Reducer 3 (GROUP, 1)
 #### A masked pattern was here ####
       Vertices:
@@ -1550,7 +1550,7 @@ STAGE PLANS:
   Stage: Stage-1
     Spark
       Edges:
-        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 2), Map 4 (PARTITION-LEVEL SORT, 2)
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 4), Map 4 (PARTITION-LEVEL SORT, 4)
         Reducer 3 <- Reducer 2 (GROUP, 1)
 #### A masked pattern was here ####
       Vertices:
@@ -4256,8 +4256,6 @@ STAGE PLANS:
       Edges:
         Reducer 11 <- Map 10 (GROUP, 1)
         Reducer 13 <- Map 12 (GROUP, 1)
-        Reducer 15 <- Map 10 (GROUP, 1)
-        Reducer 17 <- Map 12 (GROUP, 1)
 #### A masked pattern was here ####
       Vertices:
         Map 10 
@@ -4327,66 +4325,6 @@ STAGE PLANS:
                           Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
                           target work: Map 1
         Reducer 13 
-            Execution mode: vectorized
-            Reduce Operator Tree:
-              Group By Operator
-                aggregations: min(VALUE._col0)
-                mode: mergepartial
-                outputColumnNames: _col0
-                Statistics: Num rows: 1 Data size: 184 Basic stats: COMPLETE Column stats: NONE
-                Filter Operator
-                  predicate: _col0 is not null (type: boolean)
-                  Statistics: Num rows: 1 Data size: 184 Basic stats: COMPLETE Column stats: NONE
-                  Group By Operator
-                    keys: _col0 (type: string)
-                    mode: hash
-                    outputColumnNames: _col0
-                    Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                    Select Operator
-                      expressions: _col0 (type: string)
-                      outputColumnNames: _col0
-                      Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                      Group By Operator
-                        keys: _col0 (type: string)
-                        mode: hash
-                        outputColumnNames: _col0
-                        Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                        Spark Partition Pruning Sink Operator
-                          Target column: ds (string)
-                          partition key expr: ds
-                          Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                          target work: Map 1
-        Reducer 15 
-            Execution mode: vectorized
-            Reduce Operator Tree:
-              Group By Operator
-                aggregations: max(VALUE._col0)
-                mode: mergepartial
-                outputColumnNames: _col0
-                Statistics: Num rows: 1 Data size: 184 Basic stats: COMPLETE Column stats: NONE
-                Filter Operator
-                  predicate: _col0 is not null (type: boolean)
-                  Statistics: Num rows: 1 Data size: 184 Basic stats: COMPLETE Column stats: NONE
-                  Group By Operator
-                    keys: _col0 (type: string)
-                    mode: hash
-                    outputColumnNames: _col0
-                    Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                    Select Operator
-                      expressions: _col0 (type: string)
-                      outputColumnNames: _col0
-                      Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                      Group By Operator
-                        keys: _col0 (type: string)
-                        mode: hash
-                        outputColumnNames: _col0
-                        Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                        Spark Partition Pruning Sink Operator
-                          Target column: ds (string)
-                          partition key expr: ds
-                          Statistics: Num rows: 2 Data size: 368 Basic stats: COMPLETE Column stats: NONE
-                          target work: Map 1
-        Reducer 17 
             Execution mode: vectorized
             Reduce Operator Tree:
               Group By Operator
