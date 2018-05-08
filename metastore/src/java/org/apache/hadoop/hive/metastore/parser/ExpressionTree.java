@@ -362,7 +362,8 @@ public class ExpressionTree {
 
       boolean isOpEquals = operator == Operator.EQUALS;
       if (isOpEquals || operator == Operator.NOTEQUALS || operator == Operator.NOTEQUALS2) {
-        makeFilterForEquals(keyName, valueAsString, paramName, params,
+        String partitionKey = table.getPartitionKeys().get(partitionColumnIndex).getName();
+        makeFilterForEquals(partitionKey, valueAsString, paramName, params,
             partitionColumnIndex, partitionColumnCount, isOpEquals, filterBuilder);
         return;
       }

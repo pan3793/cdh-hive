@@ -5084,6 +5084,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     public int get_num_partitions_by_filter(final String dbName,
                                             final String tblName, final String filter)
             throws TException {
+      if (dbName == null || tblName == null) {
+        throw new MetaException("The DB and table name cannot be null.");
+      }
       startTableFunction("get_num_partitions_by_filter", dbName, tblName);
 
       int ret = -1;
