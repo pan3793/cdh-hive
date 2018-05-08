@@ -2381,7 +2381,7 @@ public class ObjectStore implements RawStore, Configurable {
       Query query = queryWrapper.query = pm.newQuery(MPartition.class, "table.tableName == t1 && table.database.name == t2");
       query.declareParameters("java.lang.String t1, java.lang.String t2");
       query.setOrdering("partitionName ascending");
-      if (max > 0) {
+      if (max >= 0) {
         query.setRange(0, max);
       }
       mparts = (List<MPartition>) query.execute(tableName, dbName);
