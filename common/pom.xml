@@ -306,11 +306,14 @@
             <phase>generate-sources</phase>
             <configuration>
               <target>
+                <property file="${basedir}/../cloudera/build.properties" />
+                <property name="cloudera.hash" value="" />
                 <exec executable="bash" failonerror="true">
                   <arg value="${basedir}/src/scripts/saveVersion.sh"/>
                   <arg value="${project.version}"/>
                   <arg value="${hive.version.shortname}"/>
                   <arg value="${basedir}/src"/>
+                  <arg value="${cloudera.hash}"/>
                 </exec>
               </target>
             </configuration>
