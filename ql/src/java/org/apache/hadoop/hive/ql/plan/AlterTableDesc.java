@@ -55,7 +55,8 @@ public class AlterTableDesc extends DDLDesc implements Serializable {
     DROPPARTITION("drop partition"), RENAMEPARTITION("rename partition"), ADDSKEWEDBY("add skew column"),
     ALTERSKEWEDLOCATION("alter skew location"), ALTERBUCKETNUM("alter bucket number"),
     ALTERPARTITION("alter partition"), COMPACT("compact"),
-    TRUNCATE("truncate"), MERGEFILES("merge files");
+    TRUNCATE("truncate"), MERGEFILES("merge files"),
+    OWNER("set owner");
     ;
 
     private final String name;
@@ -115,6 +116,7 @@ public class AlterTableDesc extends DDLDesc implements Serializable {
   boolean isDropIfExists = false;
   boolean isTurnOffSorting = false;
   boolean isCascade = false;
+  PrincipalDesc ownerPrincipal;
 
   public AlterTableDesc() {
   }
@@ -259,6 +261,24 @@ public class AlterTableDesc extends DDLDesc implements Serializable {
     this.oldName = tableName;
     this.partSpec = partSpec;
     this.numberBuckets = numBuckets;
+  }
+
+  public AlterTableDesc(String tableName, PrincipalDesc ownerPrincipal) {
+    op  = AlterTableTypes.OWNER;
+    this.oldName = tableName;
+    this.ownerPrincipal = ownerPrincipal;
+  }
+
+  /**
+   * @param ownerPrincipal the owner principal of the table
+   */
+  public void setOwnerPrincipal(PrincipalDesc ownerPrincipal) {
+    this.ownerPrincipal = ownerPrincipal;
+  }
+
+  @Explain(displayName="owner")
+  public PrincipalDesc getOwnerPrincipal() {
+    return this.ownerPrincipal;
   }
 
   @Explain(displayName = "new columns")

@@ -343,6 +343,7 @@ public final class MetaDataFormatUtils {
 
   private static void getTableMetaDataInformation(StringBuilder tableInfo, Table  tbl) {
     formatOutput("Database:", tbl.getDbName(), tableInfo);
+    formatOutput("OwnerType:", (tbl.getOwnerType() != null) ? tbl.getOwnerType().name() : "null", tableInfo);
     formatOutput("Owner:", tbl.getOwner(), tableInfo);
     formatOutput("CreateTime:", formatDate(tbl.getTTable().getCreateTime()), tableInfo);
     formatOutput("LastAccessTime:", formatDate(tbl.getTTable().getLastAccessTime()), tableInfo);
