@@ -23,10 +23,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.apache.hadoop.hive.common.metrics.common.Metrics;
+import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
+import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.shims.ShimLoader;
-import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.Shell;
 import org.apache.hive.service.auth.HiveAuthFactory;
@@ -38,11 +43,11 @@ import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocolFactory;
 import org.apache.thrift.server.TServlet;
+
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -105,7 +110,7 @@ public class ThriftHttpCLIService extends ThriftCLIService {
         LOG.info("HTTP Server SSL: adding excluded protocols: " + Arrays.toString(excludedProtocols));
         sslContextFactory.addExcludeProtocols(excludedProtocols);
         LOG.info("HTTP Server SSL: SslContextFactory.getExcludeProtocols = " +
-          Arrays.toString(sslContextFactory.getExcludeProtocols()));
+            Arrays.toString(sslContextFactory.getExcludeProtocols()));
         sslContextFactory.setKeyStorePath(keyStorePath);
         sslContextFactory.setKeyStorePassword(keyStorePassword);
         connector = new ServerConnector(httpServer, sslContextFactory, http);
@@ -148,7 +153,35 @@ public class ThriftHttpCLIService extends ThriftCLIService {
         LOG.warn("XSRF filter disabled");
       }
 
-      String httpPath = getHttpPath(hiveConf
+
+      context.addEventListener(new ServletContextListener() {
+        @Override
+        public void contextInitialized(ServletContextEvent servletContextEvent) {
+          Metrics metrics = MetricsFactory.getInstance();
+          if (metrics != null) {
+            try {
+              metrics.incrementCounter(MetricsConstant.OPEN_CONNECTIONS);
+              metrics.incrementCounter(MetricsConstant.CUMULATIVE_CONNECTION_COUNT);
+            } catch (Exception e) {
+              LOG.warn("Error reporting HS2 open connection operation to Metrics system", e);
+            }
+          }
+        }
+
+        @Override
+        public void contextDestroyed(ServletContextEvent servletContextEvent) {
+          Metrics metrics = MetricsFactory.getInstance();
+          if (metrics != null) {
+            try {
+              metrics.decrementCounter(MetricsConstant.OPEN_CONNECTIONS);
+            } catch (Exception e) {
+              LOG.warn("Error reporting HS2 close connection operation to Metrics system", e);
+            }
+          }
+        }
+      });
+
+      final String httpPath = getHttpPath(hiveConf
           .getVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_HTTP_PATH));
       httpServer.setHandler(context);
       context.addServlet(new ServletHolder(thriftHttpServlet), httpPath);
