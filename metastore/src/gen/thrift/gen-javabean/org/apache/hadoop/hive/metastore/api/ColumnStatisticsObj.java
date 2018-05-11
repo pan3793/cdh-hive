@@ -135,8 +135,8 @@ import org.slf4j.LoggerFactory;
     ColumnStatisticsData statsData)
   {
     this();
-    this.colName = colName;
-    this.colType = colType;
+    this.colName = org.apache.hive.common.util.HiveStringUtils.intern(colName);
+    this.colType = org.apache.hive.common.util.HiveStringUtils.intern(colType);
     this.statsData = statsData;
   }
 
@@ -145,10 +145,10 @@ import org.slf4j.LoggerFactory;
    */
   public ColumnStatisticsObj(ColumnStatisticsObj other) {
     if (other.isSetColName()) {
-      this.colName = other.colName;
+      this.colName = org.apache.hive.common.util.HiveStringUtils.intern(other.colName);
     }
     if (other.isSetColType()) {
-      this.colType = other.colType;
+      this.colType = org.apache.hive.common.util.HiveStringUtils.intern(other.colType);
     }
     if (other.isSetStatsData()) {
       this.statsData = new ColumnStatisticsData(other.statsData);
@@ -171,7 +171,7 @@ import org.slf4j.LoggerFactory;
   }
 
   public void setColName(String colName) {
-    this.colName = colName;
+    this.colName = org.apache.hive.common.util.HiveStringUtils.intern(colName);
   }
 
   public void unsetColName() {
@@ -194,7 +194,7 @@ import org.slf4j.LoggerFactory;
   }
 
   public void setColType(String colType) {
-    this.colType = colType;
+    this.colType = org.apache.hive.common.util.HiveStringUtils.intern(colType);
   }
 
   public void unsetColType() {
@@ -499,7 +499,7 @@ import org.slf4j.LoggerFactory;
         switch (schemeField.id) {
           case 1: // COL_NAME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.colName = iprot.readString();
+              struct.colName = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
               struct.setColNameIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -507,7 +507,7 @@ import org.slf4j.LoggerFactory;
             break;
           case 2: // COL_TYPE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.colType = iprot.readString();
+              struct.colType = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
               struct.setColTypeIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -575,9 +575,9 @@ import org.slf4j.LoggerFactory;
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, ColumnStatisticsObj struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      struct.colName = iprot.readString();
+      struct.colName = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
       struct.setColNameIsSet(true);
-      struct.colType = iprot.readString();
+      struct.colType = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
       struct.setColTypeIsSet(true);
       struct.statsData = new ColumnStatisticsData();
       struct.statsData.read(iprot);
