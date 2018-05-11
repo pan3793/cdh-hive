@@ -1318,7 +1318,7 @@ import org.slf4j.LoggerFactory;
             break;
           case 2: // LOCATION
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.location = iprot.readString();
+              struct.location = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
               struct.setLocationIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1326,7 +1326,7 @@ import org.slf4j.LoggerFactory;
             break;
           case 3: // INPUT_FORMAT
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.inputFormat = iprot.readString();
+              struct.inputFormat = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
               struct.setInputFormatIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1334,7 +1334,7 @@ import org.slf4j.LoggerFactory;
             break;
           case 4: // OUTPUT_FORMAT
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.outputFormat = iprot.readString();
+              struct.outputFormat = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
               struct.setOutputFormatIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1378,7 +1378,7 @@ import org.slf4j.LoggerFactory;
                 }
                 iprot.readListEnd();
               }
-              struct.setBucketColsIsSet(true);
+              struct.bucketCols = org.apache.hive.common.util.HiveStringUtils.intern(struct.bucketCols); struct.setBucketColsIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1676,15 +1676,15 @@ import org.slf4j.LoggerFactory;
         struct.setColsIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.location = iprot.readString();
+        struct.location = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
         struct.setLocationIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.inputFormat = iprot.readString();
+        struct.inputFormat = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
         struct.setInputFormatIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.outputFormat = iprot.readString();
+        struct.outputFormat = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
         struct.setOutputFormatIsSet(true);
       }
       if (incoming.get(4)) {
@@ -1711,7 +1711,7 @@ import org.slf4j.LoggerFactory;
             struct.bucketCols.add(_elem182);
           }
         }
-        struct.setBucketColsIsSet(true);
+        struct.bucketCols = org.apache.hive.common.util.HiveStringUtils.intern(struct.bucketCols); struct.setBucketColsIsSet(true);
       }
       if (incoming.get(8)) {
         {

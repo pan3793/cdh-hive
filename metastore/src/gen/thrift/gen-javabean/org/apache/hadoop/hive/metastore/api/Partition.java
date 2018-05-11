@@ -958,7 +958,7 @@ import org.slf4j.LoggerFactory;
             break;
           case 2: // DB_NAME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.dbName = iprot.readString();
+              struct.dbName = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
               struct.setDbNameIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -966,7 +966,7 @@ import org.slf4j.LoggerFactory;
             break;
           case 3: // TABLE_NAME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.tableName = iprot.readString();
+              struct.tableName = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
               struct.setTableNameIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1192,11 +1192,11 @@ import org.slf4j.LoggerFactory;
         struct.setValuesIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.dbName = iprot.readString();
+        struct.dbName = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
         struct.setDbNameIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.tableName = iprot.readString();
+        struct.tableName = org.apache.hive.common.util.HiveStringUtils.intern(iprot.readString());
         struct.setTableNameIsSet(true);
       }
       if (incoming.get(3)) {
