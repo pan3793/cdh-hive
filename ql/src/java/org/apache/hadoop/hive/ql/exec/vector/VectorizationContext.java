@@ -317,7 +317,6 @@ public class VectorizationContext {
     return projectionColumnMap;
   }
 
-
   public static final Pattern decimalTypePattern = Pattern.compile("decimal.*",
       Pattern.CASE_INSENSITIVE);
 

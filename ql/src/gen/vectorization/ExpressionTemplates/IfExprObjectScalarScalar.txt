@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,15 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hive.ql.exec.vector.expressions;
+package org.apache.hadoop.hive.ql.exec.vector.expressions.gen;
+
+import java.util.Arrays;
 
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
-import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.<ColumnVectorType>;
+import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
+import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
-import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
-
-import java.sql.Timestamp;
-import java.util.Arrays;
+import <ScalarImport>;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 
 /**
  * Compute IF(expr1, expr2, expr3) for 3 input  expressions.
@@ -32,24 +34,30 @@ import java.util.Arrays;
  * The second is a constant value.
  * The third is a constant value.
  */
-public abstract class IfExprTimestampScalarScalarBase extends VectorExpression {
+public class <ClassName> extends VectorExpression {
 
   private static final long serialVersionUID = 1L;
 
-  private int arg1Column;
-  private Timestamp arg2Scalar;
-  private Timestamp arg3Scalar;
-  private int outputColumn;
+  private final int arg1Column;
+  private final <ScalarType> arg2Scalar;
+  private final <ScalarType> arg3Scalar;
+  private int outputColumnNum;
 
-  public IfExprTimestampScalarScalarBase(int arg1Column, Timestamp arg2Scalar, Timestamp arg3Scalar,
-      int outputColumn) {
+  public <ClassName>(int arg1Column, <ScalarType> arg2Scalar, <ScalarType> arg3Scalar,
+      int outputColumnNum) {
     this.arg1Column = arg1Column;
     this.arg2Scalar = arg2Scalar;
     this.arg3Scalar = arg3Scalar;
-    this.outputColumn = outputColumn;
+    this.outputColumnNum = outputColumnNum;
   }
 
-  public IfExprTimestampScalarScalarBase() {
+  public <ClassName>() {
+    super();
+
+    // Dummy final assignments.
+    arg1Column = -1;
+    arg2Scalar = null;
+    arg3Scalar = null;
   }
 
   @Override
@@ -60,7 +68,7 @@ public abstract class IfExprTimestampScalarScalarBase extends VectorExpression {
     }
 
     LongColumnVector arg1ColVector = (LongColumnVector) batch.cols[arg1Column];
-    TimestampColumnVector outputColVector = (TimestampColumnVector) batch.cols[outputColumn];
+    <ColumnVectorType> outputColVector = (<ColumnVectorType>) batch.cols[outputColumnNum];
     int[] sel = batch.selected;
     boolean[] outputIsNull = outputColVector.isNull;
 
@@ -138,12 +146,27 @@ public abstract class IfExprTimestampScalarScalarBase extends VectorExpression {
 
   @Override
   public int getOutputColumn() {
-    return outputColumn;
+    return outputColumnNum;
   }
 
   @Override
   public String vectorExpressionParameters() {
-    return "col " + arg1Column + ", val "+ arg2Scalar + ", val "+ arg3Scalar;
+    return getColumnParamString(0, arg1Column) + ", val "+ arg2Scalar + ", val "+ arg3Scalar;
   }
 
+  @Override
+  public VectorExpressionDescriptor.Descriptor getDescriptor() {
+    return (new VectorExpressionDescriptor.Builder())
+        .setMode(
+            VectorExpressionDescriptor.Mode.PROJECTION)
+        .setNumArguments(3)
+        .setArgumentTypes(
+            VectorExpressionDescriptor.ArgumentType.getType("int_family"),
+            VectorExpressionDescriptor.ArgumentType.getType("<TypeName>"),
+            VectorExpressionDescriptor.ArgumentType.getType("<TypeName>"))
+        .setInputExpressionTypes(
+            VectorExpressionDescriptor.InputExpressionType.COLUMN,
+            VectorExpressionDescriptor.InputExpressionType.SCALAR,
+            VectorExpressionDescriptor.InputExpressionType.SCALAR).build();
+  }
 }
