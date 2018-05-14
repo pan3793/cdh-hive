@@ -275,7 +275,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
     public static final Logger auditLog = LoggerFactory.getLogger(
         HiveMetaStore.class.getName() + ".audit");
-    
+
     private static final void logAuditEvent(String cmd) {
       if (cmd == null) {
         return;
@@ -546,6 +546,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         for (MetaStoreEventListener transactionalListener : transactionalListeners) {
           transactionalListener.onConfigChange(cce);
         }
+      }
+
+      if (ConfVars.METASTORE_TRY_DIRECT_SQL == confVar) {
+        HMSHandler.LOG.info("Direct SQL optimization = {}",  value);
       }
     }
 
@@ -7259,6 +7263,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       HMSHandler.LOG.info("Options.maxWorkerThreads = "
           + maxWorkerThreads);
       HMSHandler.LOG.info("TCP keepalive = " + tcpKeepAlive);
+
+      boolean directSqlEnabled = HiveConf.getBoolVar(conf, ConfVars.METASTORE_TRY_DIRECT_SQL);
+      HMSHandler.LOG.info("Direct SQL optimization = {}",  directSqlEnabled);
 
       if (startLock != null) {
         signalOtherThreadsToStart(tServer, startLock, startCondition, startedServing);

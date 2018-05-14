@@ -2751,6 +2751,7 @@ public class ObjectStore implements RawStore, Configurable {
           try {
             directSql.prepareTxn();
             this.results = getSqlResult(this);
+            LOG.debug("Using direct SQL optimization.");
           } catch (Exception ex) {
             handleDirectSqlError(ex);
           }
@@ -2760,6 +2761,7 @@ public class ObjectStore implements RawStore, Configurable {
         //    2) DirectSQL threw and was disabled in handleDirectSqlError.
         if (!doUseDirectSql) {
           this.results = getJdoResult(this);
+          LOG.debug("Not using direct SQL optimization.");
         }
         return commit();
       } catch (NoSuchObjectException ex) {
