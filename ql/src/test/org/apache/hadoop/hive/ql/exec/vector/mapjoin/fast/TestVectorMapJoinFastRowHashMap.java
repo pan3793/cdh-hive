@@ -109,8 +109,7 @@ public class TestVectorMapJoinFastRowHashMap extends CommonFastHashTable {
       byte[] key;
       if (random.nextBoolean() || verifyTable.getCount() == 0) {
         Object[] keyRow =
-            VectorRandomRowSource.randomRow(keyCount, random, keyPrimitiveObjectInspectorList,
-                keyPrimitiveCategories, keyPrimitiveTypeInfos);
+            VectorRandomRowSource.randomWritablePrimitiveRow(keyCount, random, keyPrimitiveTypeInfos);
 
         Output keyOutput = new Output();
         keySerializeWrite.set(keyOutput);
