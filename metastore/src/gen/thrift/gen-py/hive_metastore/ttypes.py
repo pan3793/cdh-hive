@@ -3122,6 +3122,7 @@ class Table:
    - tableType
    - privileges
    - temporary
+   - ownerType
   """
 
   thrift_spec = (
@@ -3140,9 +3141,10 @@ class Table:
     (12, TType.STRING, 'tableType', None, None, ), # 12
     (13, TType.STRUCT, 'privileges', (PrincipalPrivilegeSet, PrincipalPrivilegeSet.thrift_spec), None, ), # 13
     (14, TType.BOOL, 'temporary', None, False, ), # 14
+    (15, TType.I32, 'ownerType', None,     1, ), # 15
   )
 
-  def __init__(self, tableName=None, dbName=None, owner=None, createTime=None, lastAccessTime=None, retention=None, sd=None, partitionKeys=None, parameters=None, viewOriginalText=None, viewExpandedText=None, tableType=None, privileges=None, temporary=thrift_spec[14][4],):
+  def __init__(self, tableName=None, dbName=None, owner=None, createTime=None, lastAccessTime=None, retention=None, sd=None, partitionKeys=None, parameters=None, viewOriginalText=None, viewExpandedText=None, tableType=None, privileges=None, temporary=thrift_spec[14][4], ownerType=thrift_spec[15][4],):
     self.tableName = tableName
     self.dbName = dbName
     self.owner = owner
@@ -3157,6 +3159,7 @@ class Table:
     self.tableType = tableType
     self.privileges = privileges
     self.temporary = temporary
+    self.ownerType = ownerType
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -3251,6 +3254,11 @@ class Table:
           self.temporary = iprot.readBool()
         else:
           iprot.skip(ftype)
+      elif fid == 15:
+        if ftype == TType.I32:
+          self.ownerType = iprot.readI32()
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3324,6 +3332,10 @@ class Table:
       oprot.writeFieldBegin('temporary', TType.BOOL, 14)
       oprot.writeBool(self.temporary)
       oprot.writeFieldEnd()
+    if self.ownerType is not None:
+      oprot.writeFieldBegin('ownerType', TType.I32, 15)
+      oprot.writeI32(self.ownerType)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -3347,6 +3359,7 @@ class Table:
     value = (value * 31) ^ hash(self.tableType)
     value = (value * 31) ^ hash(self.privileges)
     value = (value * 31) ^ hash(self.temporary)
+    value = (value * 31) ^ hash(self.ownerType)
     return value
 
   def __repr__(self):

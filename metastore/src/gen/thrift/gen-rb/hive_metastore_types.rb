@@ -728,6 +728,7 @@ class Table
   TABLETYPE = 12
   PRIVILEGES = 13
   TEMPORARY = 14
+  OWNERTYPE = 15
 
   FIELDS = {
     TABLENAME => {:type => ::Thrift::Types::STRING, :name => 'tableName'},
@@ -743,12 +744,16 @@ class Table
     VIEWEXPANDEDTEXT => {:type => ::Thrift::Types::STRING, :name => 'viewExpandedText'},
     TABLETYPE => {:type => ::Thrift::Types::STRING, :name => 'tableType'},
     PRIVILEGES => {:type => ::Thrift::Types::STRUCT, :name => 'privileges', :class => ::PrincipalPrivilegeSet, :optional => true},
-    TEMPORARY => {:type => ::Thrift::Types::BOOL, :name => 'temporary', :default => false, :optional => true}
+    TEMPORARY => {:type => ::Thrift::Types::BOOL, :name => 'temporary', :default => false, :optional => true},
+    OWNERTYPE => {:type => ::Thrift::Types::I32, :name => 'ownerType', :default =>     1, :optional => true, :enum_class => ::PrincipalType}
   }
 
   def struct_fields; FIELDS; end
 
   def validate
+    unless @ownerType.nil? || ::PrincipalType::VALID_VALUES.include?(@ownerType)
+      raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Invalid value of field ownerType!')
+    end
   end
 
   ::Thrift::Struct.generate_accessors self

@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
   private static final org.apache.thrift.protocol.TField TABLE_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("tableType", org.apache.thrift.protocol.TType.STRING, (short)12);
   private static final org.apache.thrift.protocol.TField PRIVILEGES_FIELD_DESC = new org.apache.thrift.protocol.TField("privileges", org.apache.thrift.protocol.TType.STRUCT, (short)13);
   private static final org.apache.thrift.protocol.TField TEMPORARY_FIELD_DESC = new org.apache.thrift.protocol.TField("temporary", org.apache.thrift.protocol.TType.BOOL, (short)14);
+  private static final org.apache.thrift.protocol.TField OWNER_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("ownerType", org.apache.thrift.protocol.TType.I32, (short)15);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -73,6 +74,7 @@ import org.slf4j.LoggerFactory;
   private String tableType; // required
   private PrincipalPrivilegeSet privileges; // optional
   private boolean temporary; // optional
+  private PrincipalType ownerType; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -89,7 +91,12 @@ import org.slf4j.LoggerFactory;
     VIEW_EXPANDED_TEXT((short)11, "viewExpandedText"),
     TABLE_TYPE((short)12, "tableType"),
     PRIVILEGES((short)13, "privileges"),
-    TEMPORARY((short)14, "temporary");
+    TEMPORARY((short)14, "temporary"),
+    /**
+     * 
+     * @see PrincipalType
+     */
+    OWNER_TYPE((short)15, "ownerType");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -132,6 +139,8 @@ import org.slf4j.LoggerFactory;
           return PRIVILEGES;
         case 14: // TEMPORARY
           return TEMPORARY;
+        case 15: // OWNER_TYPE
+          return OWNER_TYPE;
         default:
           return null;
       }
@@ -177,7 +186,7 @@ import org.slf4j.LoggerFactory;
   private static final int __RETENTION_ISSET_ID = 2;
   private static final int __TEMPORARY_ISSET_ID = 3;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.PRIVILEGES,_Fields.TEMPORARY};
+  private static final _Fields optionals[] = {_Fields.PRIVILEGES,_Fields.TEMPORARY,_Fields.OWNER_TYPE};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -212,12 +221,16 @@ import org.slf4j.LoggerFactory;
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, PrincipalPrivilegeSet.class)));
     tmpMap.put(_Fields.TEMPORARY, new org.apache.thrift.meta_data.FieldMetaData("temporary", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+    tmpMap.put(_Fields.OWNER_TYPE, new org.apache.thrift.meta_data.FieldMetaData("ownerType", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, PrincipalType.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Table.class, metaDataMap);
   }
 
   public Table() {
     this.temporary = false;
+
+    this.ownerType = org.apache.hadoop.hive.metastore.api.PrincipalType.USER;
 
   }
 
@@ -297,6 +310,9 @@ import org.slf4j.LoggerFactory;
       this.privileges = new PrincipalPrivilegeSet(other.privileges);
     }
     this.temporary = other.temporary;
+    if (other.isSetOwnerType()) {
+      this.ownerType = other.ownerType;
+    }
   }
 
   public Table deepCopy() {
@@ -322,6 +338,8 @@ import org.slf4j.LoggerFactory;
     this.tableType = null;
     this.privileges = null;
     this.temporary = false;
+
+    this.ownerType = org.apache.hadoop.hive.metastore.api.PrincipalType.USER;
 
   }
 
@@ -669,6 +687,37 @@ import org.slf4j.LoggerFactory;
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __TEMPORARY_ISSET_ID, value);
   }
 
+  /**
+   * 
+   * @see PrincipalType
+   */
+  public PrincipalType getOwnerType() {
+    return this.ownerType;
+  }
+
+  /**
+   * 
+   * @see PrincipalType
+   */
+  public void setOwnerType(PrincipalType ownerType) {
+    this.ownerType = ownerType;
+  }
+
+  public void unsetOwnerType() {
+    this.ownerType = null;
+  }
+
+  /** Returns true if field ownerType is set (has been assigned a value) and false otherwise */
+  public boolean isSetOwnerType() {
+    return this.ownerType != null;
+  }
+
+  public void setOwnerTypeIsSet(boolean value) {
+    if (!value) {
+      this.ownerType = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case TABLE_NAME:
@@ -783,6 +832,14 @@ import org.slf4j.LoggerFactory;
       }
       break;
 
+    case OWNER_TYPE:
+      if (value == null) {
+        unsetOwnerType();
+      } else {
+        setOwnerType((PrincipalType)value);
+      }
+      break;
+
     }
   }
 
@@ -830,6 +887,9 @@ import org.slf4j.LoggerFactory;
     case TEMPORARY:
       return isTemporary();
 
+    case OWNER_TYPE:
+      return getOwnerType();
+
     }
     throw new IllegalStateException();
   }
@@ -869,6 +929,8 @@ import org.slf4j.LoggerFactory;
       return isSetPrivileges();
     case TEMPORARY:
       return isSetTemporary();
+    case OWNER_TYPE:
+      return isSetOwnerType();
     }
     throw new IllegalStateException();
   }
@@ -1012,6 +1074,15 @@ import org.slf4j.LoggerFactory;
         return false;
     }
 
+    boolean this_present_ownerType = true && this.isSetOwnerType();
+    boolean that_present_ownerType = true && that.isSetOwnerType();
+    if (this_present_ownerType || that_present_ownerType) {
+      if (!(this_present_ownerType && that_present_ownerType))
+        return false;
+      if (!this.ownerType.equals(that.ownerType))
+        return false;
+    }
+
     return true;
   }
 
@@ -1088,6 +1159,11 @@ import org.slf4j.LoggerFactory;
     list.add(present_temporary);
     if (present_temporary)
       list.add(temporary);
+
+    boolean present_ownerType = true && (isSetOwnerType());
+    list.add(present_ownerType);
+    if (present_ownerType)
+      list.add(ownerType.getValue());
 
     return list.hashCode();
   }
@@ -1240,6 +1316,16 @@ import org.slf4j.LoggerFactory;
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetOwnerType()).compareTo(other.isSetOwnerType());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetOwnerType()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ownerType, other.ownerType);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -1357,6 +1443,16 @@ import org.slf4j.LoggerFactory;
       if (!first) sb.append(", ");
       sb.append("temporary:");
       sb.append(this.temporary);
+      first = false;
+    }
+    if (isSetOwnerType()) {
+      if (!first) sb.append(", ");
+      sb.append("ownerType:");
+      if (this.ownerType == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ownerType);
+      }
       first = false;
     }
     sb.append(")");
@@ -1547,6 +1643,14 @@ import org.slf4j.LoggerFactory;
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 15: // OWNER_TYPE
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.ownerType = org.apache.hadoop.hive.metastore.api.PrincipalType.findByValue(iprot.readI32());
+              struct.setOwnerTypeIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -1641,6 +1745,13 @@ import org.slf4j.LoggerFactory;
         oprot.writeBool(struct.temporary);
         oprot.writeFieldEnd();
       }
+      if (struct.ownerType != null) {
+        if (struct.isSetOwnerType()) {
+          oprot.writeFieldBegin(OWNER_TYPE_FIELD_DESC);
+          oprot.writeI32(struct.ownerType.getValue());
+          oprot.writeFieldEnd();
+        }
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -1701,7 +1812,10 @@ import org.slf4j.LoggerFactory;
       if (struct.isSetTemporary()) {
         optionals.set(13);
       }
-      oprot.writeBitSet(optionals, 14);
+      if (struct.isSetOwnerType()) {
+        optionals.set(14);
+      }
+      oprot.writeBitSet(optionals, 15);
       if (struct.isSetTableName()) {
         oprot.writeString(struct.tableName);
       }
@@ -1757,12 +1871,15 @@ import org.slf4j.LoggerFactory;
       if (struct.isSetTemporary()) {
         oprot.writeBool(struct.temporary);
       }
+      if (struct.isSetOwnerType()) {
+        oprot.writeI32(struct.ownerType.getValue());
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, Table struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(14);
+      BitSet incoming = iprot.readBitSet(15);
       if (incoming.get(0)) {
         struct.tableName = iprot.readString();
         struct.setTableNameIsSet(true);
@@ -1841,6 +1958,10 @@ import org.slf4j.LoggerFactory;
       if (incoming.get(13)) {
         struct.temporary = iprot.readBool();
         struct.setTemporaryIsSet(true);
+      }
+      if (incoming.get(14)) {
+        struct.ownerType = org.apache.hadoop.hive.metastore.api.PrincipalType.findByValue(iprot.readI32());
+        struct.setOwnerTypeIsSet(true);
       }
     }
   }
