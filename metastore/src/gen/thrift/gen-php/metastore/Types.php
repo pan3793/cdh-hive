@@ -3636,6 +3636,7 @@ class Table {
   public $tableType = null;
   public $privileges = null;
   public $temporary = false;
+  public $ownerType =   1;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3711,6 +3712,10 @@ class Table {
           'var' => 'temporary',
           'type' => TType::BOOL,
           ),
+        15 => array(
+          'var' => 'ownerType',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -3755,6 +3760,9 @@ class Table {
       }
       if (isset($vals['temporary'])) {
         $this->temporary = $vals['temporary'];
+      }
+      if (isset($vals['ownerType'])) {
+        $this->ownerType = $vals['ownerType'];
       }
     }
   }
@@ -3902,6 +3910,13 @@ class Table {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 15:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->ownerType);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -4014,6 +4029,11 @@ class Table {
     if ($this->temporary !== null) {
       $xfer += $output->writeFieldBegin('temporary', TType::BOOL, 14);
       $xfer += $output->writeBool($this->temporary);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ownerType !== null) {
+      $xfer += $output->writeFieldBegin('ownerType', TType::I32, 15);
+      $xfer += $output->writeI32($this->ownerType);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

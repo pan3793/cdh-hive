@@ -1605,7 +1605,7 @@ class StorageDescriptor {
 void swap(StorageDescriptor &a, StorageDescriptor &b);
 
 typedef struct _Table__isset {
-  _Table__isset() : tableName(false), dbName(false), owner(false), createTime(false), lastAccessTime(false), retention(false), sd(false), partitionKeys(false), parameters(false), viewOriginalText(false), viewExpandedText(false), tableType(false), privileges(false), temporary(true) {}
+  _Table__isset() : tableName(false), dbName(false), owner(false), createTime(false), lastAccessTime(false), retention(false), sd(false), partitionKeys(false), parameters(false), viewOriginalText(false), viewExpandedText(false), tableType(false), privileges(false), temporary(true), ownerType(true) {}
   bool tableName;
   bool dbName;
   bool owner;
@@ -1620,15 +1620,18 @@ typedef struct _Table__isset {
   bool tableType;
   bool privileges;
   bool temporary;
+  bool ownerType;
 } _Table__isset;
 
 class Table {
  public:
 
-  static const char* ascii_fingerprint; // = "29EFB2A5970EF572039E5D94CC78AA85";
-  static const uint8_t binary_fingerprint[16]; // = {0x29,0xEF,0xB2,0xA5,0x97,0x0E,0xF5,0x72,0x03,0x9E,0x5D,0x94,0xCC,0x78,0xAA,0x85};
+  static const char* ascii_fingerprint; // = "76613944DD8672414DE370B5A337F8DF";
+  static const uint8_t binary_fingerprint[16]; // = {0x76,0x61,0x39,0x44,0xDD,0x86,0x72,0x41,0x4D,0xE3,0x70,0xB5,0xA3,0x37,0xF8,0xDF};
 
-  Table() : tableName(), dbName(), owner(), createTime(0), lastAccessTime(0), retention(0), viewOriginalText(), viewExpandedText(), tableType(), temporary(false) {
+  Table() : tableName(), dbName(), owner(), createTime(0), lastAccessTime(0), retention(0), viewOriginalText(), viewExpandedText(), tableType(), temporary(false), ownerType((PrincipalType::type)1) {
+    ownerType = (PrincipalType::type)1;
+
   }
 
   virtual ~Table() throw() {}
@@ -1647,6 +1650,7 @@ class Table {
   std::string tableType;
   PrincipalPrivilegeSet privileges;
   bool temporary;
+  PrincipalType::type ownerType;
 
   _Table__isset __isset;
 
@@ -1708,6 +1712,11 @@ class Table {
     __isset.temporary = true;
   }
 
+  void __set_ownerType(const PrincipalType::type val) {
+    ownerType = val;
+    __isset.ownerType = true;
+  }
+
   bool operator == (const Table & rhs) const
   {
     if (!(tableName == rhs.tableName))
@@ -1741,6 +1750,10 @@ class Table {
     if (__isset.temporary != rhs.__isset.temporary)
       return false;
     else if (__isset.temporary && !(temporary == rhs.temporary))
+      return false;
+    if (__isset.ownerType != rhs.__isset.ownerType)
+      return false;
+    else if (__isset.ownerType && !(ownerType == rhs.ownerType))
       return false;
     return true;
   }
