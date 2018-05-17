@@ -86,10 +86,8 @@ POSTHOOK: Output: database:default
 POSTHOOK: Output: default@like_table
 PREHOOK: query: MSCK REPAIR TABLE like_table
 PREHOOK: type: MSCK
-PREHOOK: Output: default@like_table
 POSTHOOK: query: MSCK REPAIR TABLE like_table
 POSTHOOK: type: MSCK
-POSTHOOK: Output: default@like_table
 Partitions not in metastore:	like_table:dt=20110924/hour=1	like_table:dt=20110924/hour=2	like_table:dt=20110925/hour=1	like_table:dt=20110925/hour=2
 Repair: Added partition to metastore like_table:dt=20110924/hour=1
 Repair: Added partition to metastore like_table:dt=20110924/hour=2
