@@ -108,13 +108,18 @@ POSTHOOK: query: INSERT INTO TABLE blobstore_list_bucketing PARTITION (pt='a', d
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@empty
 POSTHOOK: Output: default@blobstore_list_bucketing@pt=a/dt=a/hr=a
+POSTHOOK: Lineage: blobstore_list_bucketing PARTITION(pt=a,dt=a,hr=a).dept SIMPLE [(empty)empty.FieldSchema(name:dept, type:string, comment:null), ]
+POSTHOOK: Lineage: blobstore_list_bucketing PARTITION(pt=a,dt=a,hr=a).id SIMPLE [(empty)empty.FieldSchema(name:id, type:int, comment:null), ]
+POSTHOOK: Lineage: blobstore_list_bucketing PARTITION(pt=a,dt=a,hr=a).name SIMPLE [(empty)empty.FieldSchema(name:name, type:string, comment:null), ]
 PREHOOK: query: SELECT COUNT(*) FROM blobstore_list_bucketing
 PREHOOK: type: QUERY
 PREHOOK: Input: default@blobstore_list_bucketing
+PREHOOK: Input: default@blobstore_list_bucketing@pt=a/dt=a/hr=a
 #### A masked pattern was here ####
 POSTHOOK: query: SELECT COUNT(*) FROM blobstore_list_bucketing
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@blobstore_list_bucketing
+POSTHOOK: Input: default@blobstore_list_bucketing@pt=a/dt=a/hr=a
 #### A masked pattern was here ####
 0
 PREHOOK: query: INSERT INTO TABLE blobstore_dynamic_partitioning PARTITION (pt='b', dt, hr) SELECT id, name, dept, dt, hr FROM empty
@@ -147,9 +152,13 @@ POSTHOOK: Lineage: blobstore_list_bucketing PARTITION(pt=b,dt=b,hr=b).name SIMPL
 PREHOOK: query: SELECT COUNT(*) FROM blobstore_list_bucketing
 PREHOOK: type: QUERY
 PREHOOK: Input: default@blobstore_list_bucketing
+PREHOOK: Input: default@blobstore_list_bucketing@pt=a/dt=a/hr=a
+PREHOOK: Input: default@blobstore_list_bucketing@pt=b/dt=b/hr=b
 #### A masked pattern was here ####
 POSTHOOK: query: SELECT COUNT(*) FROM blobstore_list_bucketing
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@blobstore_list_bucketing
+POSTHOOK: Input: default@blobstore_list_bucketing@pt=a/dt=a/hr=a
+POSTHOOK: Input: default@blobstore_list_bucketing@pt=b/dt=b/hr=b
 #### A masked pattern was here ####
 0

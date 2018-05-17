@@ -65,12 +65,10 @@ POSTHOOK: Output: database:db_with_location
 POSTHOOK: Output: db_with_location@events
 PREHOOK: query: MSCK REPAIR TABLE events
 PREHOOK: type: MSCK
-PREHOOK: Output: db_with_location@events
 POSTHOOK: query: MSCK REPAIR TABLE events
 POSTHOOK: type: MSCK
-POSTHOOK: Output: db_with_location@events
 Partitions not in metastore:	events:dt=2010-12-08
-#### A masked pattern was here ####
+Repair: Added partition to metastore events:dt=2010-12-08
 PREHOOK: query: SHOW TABLES
 PREHOOK: type: SHOWTABLES
 PREHOOK: Input: database:db_with_location
