@@ -138,10 +138,16 @@ run_date=20121121/game_id=39/event_name=hq_change
 PREHOOK: query: SELECT COUNT(*) FROM orc_events
 PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_events
+PREHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 POSTHOOK: query: SELECT COUNT(*) FROM orc_events
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@orc_events
+POSTHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 200
 PREHOOK: query: ALTER TABLE orc_events ADD PARTITION (run_date=201211, game_id=39, event_name='hq_change')
@@ -167,6 +173,14 @@ WHERE SUBSTR(run_date,1,6)='201211'
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src_events
 POSTHOOK: Output: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).event_data SIMPLE [(src_events)src_events.FieldSchema(name:event_data, type:string, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).full_uid SIMPLE [(src_events)src_events.FieldSchema(name:full_uid, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).log_id SIMPLE [(src_events)src_events.FieldSchema(name:log_id, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).session_id SIMPLE [(src_events)src_events.FieldSchema(name:session_id, type:string, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).time SIMPLE [(src_events)src_events.FieldSchema(name:time, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).type SIMPLE [(src_events)src_events.FieldSchema(name:type, type:int, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).uid SIMPLE [(src_events)src_events.FieldSchema(name:uid, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).user_id SIMPLE [(src_events)src_events.FieldSchema(name:user_id, type:bigint, comment:null), ]
 PREHOOK: query: SHOW PARTITIONS orc_events
 PREHOOK: type: SHOWPARTITIONS
 PREHOOK: Input: default@orc_events
@@ -180,10 +194,18 @@ run_date=20121121/game_id=39/event_name=hq_change
 PREHOOK: query: SELECT COUNT(*) FROM orc_events
 PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_events
+PREHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 POSTHOOK: query: SELECT COUNT(*) FROM orc_events
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@orc_events
+POSTHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 300
 PREHOOK: query: INSERT INTO TABLE orc_events PARTITION (run_date=201211, game_id=39, event_name='hq_change')
@@ -198,6 +220,14 @@ WHERE SUBSTR(run_date,1,6)='201211'
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src_events
 POSTHOOK: Output: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).event_data SIMPLE [(src_events)src_events.FieldSchema(name:event_data, type:string, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).full_uid SIMPLE [(src_events)src_events.FieldSchema(name:full_uid, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).log_id SIMPLE [(src_events)src_events.FieldSchema(name:log_id, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).session_id SIMPLE [(src_events)src_events.FieldSchema(name:session_id, type:string, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).time SIMPLE [(src_events)src_events.FieldSchema(name:time, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).type SIMPLE [(src_events)src_events.FieldSchema(name:type, type:int, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).uid SIMPLE [(src_events)src_events.FieldSchema(name:uid, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201211,game_id=39,event_name=hq_change).user_id SIMPLE [(src_events)src_events.FieldSchema(name:user_id, type:bigint, comment:null), ]
 PREHOOK: query: SHOW PARTITIONS orc_events
 PREHOOK: type: SHOWPARTITIONS
 PREHOOK: Input: default@orc_events
@@ -211,10 +241,18 @@ run_date=20121121/game_id=39/event_name=hq_change
 PREHOOK: query: SELECT COUNT(*) FROM orc_events
 PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_events
+PREHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 POSTHOOK: query: SELECT COUNT(*) FROM orc_events
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@orc_events
+POSTHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 400
 PREHOOK: query: ALTER TABLE orc_events ADD PARTITION (run_date=201209, game_id=39, event_name='hq_change')
@@ -282,10 +320,20 @@ run_date=20121121/game_id=39/event_name=hq_change
 PREHOOK: query: SELECT COUNT(*) FROM orc_events
 PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_events
+PREHOOK: Input: default@orc_events@run_date=201209/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 POSTHOOK: query: SELECT COUNT(*) FROM orc_events
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@orc_events
+POSTHOOK: Input: default@orc_events@run_date=201209/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 500
 PREHOOK: query: INSERT OVERWRITE TABLE orc_events PARTITION (run_date, game_id, event_name)
@@ -338,10 +386,20 @@ run_date=20121121/game_id=39/event_name=hq_change
 PREHOOK: query: SELECT COUNT(*) FROM orc_events
 PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_events
+PREHOOK: Input: default@orc_events@run_date=201209/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 POSTHOOK: query: SELECT COUNT(*) FROM orc_events
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@orc_events
+POSTHOOK: Input: default@orc_events@run_date=201209/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=201211/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 500
 PREHOOK: query: ALTER TABLE orc_events ADD PARTITION (run_date=201207, game_id=39, event_name='hq_change')
@@ -367,6 +425,14 @@ WHERE SUBSTR(run_date,1,6)='201209'
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@src_events
 POSTHOOK: Output: default@orc_events@run_date=201207/game_id=39/event_name=hq_change
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201207,game_id=39,event_name=hq_change).event_data SIMPLE [(src_events)src_events.FieldSchema(name:event_data, type:string, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201207,game_id=39,event_name=hq_change).full_uid SIMPLE [(src_events)src_events.FieldSchema(name:full_uid, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201207,game_id=39,event_name=hq_change).log_id SIMPLE [(src_events)src_events.FieldSchema(name:log_id, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201207,game_id=39,event_name=hq_change).session_id SIMPLE [(src_events)src_events.FieldSchema(name:session_id, type:string, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201207,game_id=39,event_name=hq_change).time SIMPLE [(src_events)src_events.FieldSchema(name:time, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201207,game_id=39,event_name=hq_change).type SIMPLE [(src_events)src_events.FieldSchema(name:type, type:int, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201207,game_id=39,event_name=hq_change).uid SIMPLE [(src_events)src_events.FieldSchema(name:uid, type:bigint, comment:null), ]
+POSTHOOK: Lineage: orc_events PARTITION(run_date=201207,game_id=39,event_name=hq_change).user_id SIMPLE [(src_events)src_events.FieldSchema(name:user_id, type:bigint, comment:null), ]
 PREHOOK: query: SHOW PARTITIONS orc_events
 PREHOOK: type: SHOWPARTITIONS
 PREHOOK: Input: default@orc_events
@@ -505,9 +571,15 @@ run_date=20121121/game_id=39/event_name=hq_change
 PREHOOK: query: SELECT COUNT(*) FROM orc_events
 PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_events
+PREHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+PREHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 POSTHOOK: query: SELECT COUNT(*) FROM orc_events
 POSTHOOK: type: QUERY
 POSTHOOK: Input: default@orc_events
+POSTHOOK: Input: default@orc_events@run_date=20120921/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121021/game_id=39/event_name=hq_change
+POSTHOOK: Input: default@orc_events@run_date=20121121/game_id=39/event_name=hq_change
 #### A masked pattern was here ####
 200
