@@ -26,10 +26,4 @@ public class CoreBlobstoreCliDriver extends AbstractCoreBlobstoreCliDriver {
   public void runTest(String tname, String fname, String fpath) throws Exception {
     super.runTestHelper(tname, fname, fpath, true);
   }
-
-  @Override
-  protected void maskAdditionalPatterns() {
-    qt.addPatternWithMaskComment("(pblob|s3.?|swift|wasb.?).*hive-staging.*", "### BLOBSTORE_STAGING_PATH ###");
-    qt.addPatternWithMaskComment(testBlobstorePathUnique, String.format("### %s ###", HCONF_TEST_BLOBSTORE_PATH));
-  }
 }
