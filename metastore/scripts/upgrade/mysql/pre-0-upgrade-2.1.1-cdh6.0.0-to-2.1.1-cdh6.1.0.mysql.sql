@@ -1,0 +1,1 @@
+SOURCE 041-HIVE-19372.mysql.sql;

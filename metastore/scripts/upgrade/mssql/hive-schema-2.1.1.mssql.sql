@@ -353,6 +353,7 @@ CREATE TABLE TBLS
     DB_ID bigint NULL,
     LAST_ACCESS_TIME int NOT NULL,
     OWNER nvarchar(767) NULL,
+    OWNER_TYPE nvarchar(10) NULL,
     RETENTION int NOT NULL,
     SD_ID bigint NULL,
     TBL_NAME nvarchar(256) NULL,
@@ -1029,4 +1030,4 @@ ALTER TABLE CDH_VERSION ADD CONSTRAINT CDH_VERSION_PK PRIMARY KEY (VER_ID);
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
 INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1', 'Hive release version 2.1.1');
-INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.0.0', 'Hive release version 2.1.1 for CDH 6.0.0');
+INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.1.0', 'Hive release version 2.1.1 for CDH 6.1.0');

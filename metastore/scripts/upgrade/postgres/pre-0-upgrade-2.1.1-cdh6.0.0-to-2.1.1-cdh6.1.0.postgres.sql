@@ -1,0 +1,1 @@
+\i 040-HIVE-19372.postgres.sql;

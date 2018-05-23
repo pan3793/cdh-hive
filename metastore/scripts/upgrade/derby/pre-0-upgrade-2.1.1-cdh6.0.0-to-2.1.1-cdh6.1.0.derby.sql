@@ -1,0 +1,1 @@
+RUN '041-HIVE-19372.derby.sql';

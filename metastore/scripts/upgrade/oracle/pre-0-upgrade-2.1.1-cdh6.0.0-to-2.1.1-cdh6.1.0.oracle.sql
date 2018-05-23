@@ -1,0 +1,1 @@
+@041-HIVE-19372.oracle.sql;

@@ -169,7 +169,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-
+import com.google.common.base.Strings;
 
 /**
  * This class is the interface between the application logic and the database
@@ -1428,11 +1428,21 @@ public class ObjectStore implements RawStore, Configurable {
         tableType = TableType.MANAGED_TABLE.toString();
       }
     }
-    return new Table(mtbl.getTableName(), mtbl.getDatabase().getName(), mtbl
+    Table t = new Table(mtbl.getTableName(), mtbl.getDatabase().getName(), mtbl
         .getOwner(), mtbl.getCreateTime(), mtbl.getLastAccessTime(), mtbl
         .getRetention(), convertToStorageDescriptor(mtbl.getSd()),
         convertToFieldSchemas(mtbl.getPartitionKeys()), convertMap(mtbl.getParameters()),
         mtbl.getViewOriginalText(), mtbl.getViewExpandedText(), tableType);
+
+    if (Strings.isNullOrEmpty(mtbl.getOwnerType())) {
+      // Before the ownerType exists in an old Hive schema, USER was the default type for owner.
+      // Let's set the default to USER to keep backward compatibility.
+      t.setOwnerType(PrincipalType.USER);
+    } else {
+      t.setOwnerType(PrincipalType.valueOf(mtbl.getOwnerType()));
+    }
+
+    return t;
   }
 
   private MTable convertToMTable(Table tbl) throws InvalidObjectException,
@@ -1464,9 +1474,12 @@ public class ObjectStore implements RawStore, Configurable {
       }
     }
 
+    PrincipalType ownerPrincipalType = tbl.getOwnerType();
+    String ownerType = (ownerPrincipalType == null) ? PrincipalType.USER.name() : ownerPrincipalType.name();
+
     // A new table is always created with a new column descriptor
     return new MTable(HiveStringUtils.normalizeIdentifier(tbl.getTableName()), mdb,
-        convertToMStorageDescriptor(tbl.getSd()), tbl.getOwner(), tbl
+        convertToMStorageDescriptor(tbl.getSd()), tbl.getOwner(), ownerType, tbl
         .getCreateTime(), tbl.getLastAccessTime(), tbl.getRetention(),
         convertToMFieldSchemas(tbl.getPartitionKeys()), tbl.getParameters(),
         tbl.getViewOriginalText(), tbl.getViewExpandedText(),
@@ -3204,6 +3217,7 @@ public class ObjectStore implements RawStore, Configurable {
       oldt.setTableName(HiveStringUtils.normalizeIdentifier(newt.getTableName()));
       oldt.setParameters(newt.getParameters());
       oldt.setOwner(newt.getOwner());
+      oldt.setOwnerType(newt.getOwnerType());
       // Fully copy over the contents of the new SD into the old SD,
       // so we don't create an extra SD in the metastore db that has no references.
       MColumnDescriptor oldCD = null;
