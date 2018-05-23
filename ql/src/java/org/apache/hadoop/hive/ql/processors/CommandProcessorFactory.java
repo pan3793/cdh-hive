@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.ql.processors;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -99,6 +100,12 @@ public final class CommandProcessorFactory {
           return new CryptoProcessor(SessionState.get().getHdfsEncryptionShim(), conf);
         } catch (HiveException e) {
           throw new SQLException("Fail to start the command processor due to the exception: ", e);
+        }
+      case ERASURE:
+        try {
+          return new ErasureProcessor(conf);
+        } catch (IOException e) {
+          throw new SQLException("Fail to start the erasure command processor due to the exception: ", e);
         }
       default:
         throw new AssertionError("Unknown HiveCommand " + hiveCommand);
