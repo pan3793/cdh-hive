@@ -166,6 +166,8 @@ import org.apache.thrift.TException;
 import org.datanucleus.AbstractNucleusContext;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.NucleusContext;
+import org.datanucleus.PropertyNames;
+import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.store.rdbms.exceptions.MissingTableException;
 import org.slf4j.Logger;
@@ -520,7 +522,8 @@ public class ObjectStore implements RawStore, Configurable {
     if (pmf == null) {
 
       HiveConf conf = new HiveConf(ObjectStore.class);
-      DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+      DataSourceProvider dsp = DataSourceProviderFactory.hasProviderSpecificConfigurations(conf) ?
+              DataSourceProviderFactory.getDataSourceProvider(conf) : null;
       if (dsp == null) {
         pmf = JDOHelper.getPersistenceManagerFactory(prop);
       } else {
@@ -529,7 +532,8 @@ public class ObjectStore implements RawStore, Configurable {
           Map<Object, Object> dsProperties = new HashMap<>();
           //Any preexisting datanucleus property should be passed along
           dsProperties.putAll(prop);
-          dsProperties.put("datanucleus.ConnectionFactory", ds);
+          dsProperties.put(PropertyNames.PROPERTY_CONNECTION_FACTORY, ds);
+          dsProperties.put(PropertyNames.PROPERTY_CONNECTION_FACTORY2, ds);
           dsProperties.put("javax.jdo.PersistenceManagerFactoryClass",
               "org.datanucleus.api.jdo.JDOPersistenceManagerFactory");
           pmf = JDOHelper.getPersistenceManagerFactory(dsProperties);

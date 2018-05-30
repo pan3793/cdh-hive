@@ -18,25 +18,17 @@
 package org.apache.hadoop.hive.metastore.txn;
 
 import com.google.common.annotations.VisibleForTesting;
-
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.DriverManagerConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.hadoop.hive.common.ServerUtils;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.metastore.HouseKeeperService;
 import org.apache.hadoop.hive.metastore.Warehouse;
-import org.apache.hadoop.hive.metastore.datasource.BoneCPDataSourceProvider;
 import org.apache.hadoop.hive.metastore.datasource.DataSourceProvider;
-import org.apache.hadoop.hive.metastore.datasource.HikariCPDataSourceProvider;
+import org.apache.hadoop.hive.metastore.datasource.DataSourceProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.dbcp.PoolingDataSource;
 
-import org.apache.commons.pool.ObjectPool;
-import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.StringableMap;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -2931,26 +2923,13 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
   private static synchronized void setupJdbcConnectionPool(HiveConf conf) throws SQLException {
     if (connPool != null) return;
 
-    String driverUrl = DataSourceProvider.getMetastoreJdbcDriverUrl(conf);
-    String user = DataSourceProvider.getMetastoreJdbcUser(conf);
-    String passwd = DataSourceProvider.getMetastoreJdbcPasswd(conf);
-    String connectionPooler = HiveConf.getVar(conf,
-      HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE).toLowerCase();
-
-    if ("bonecp".equals(connectionPooler)) {
-      doRetryOnConnPool = true;  // Enable retries to work around BONECP bug.
-      connPool = new BoneCPDataSourceProvider().create(conf);
-    } else if ("dbcp".equals(connectionPooler)) {
-      ObjectPool objectPool = new GenericObjectPool();
-      ConnectionFactory connFactory = new DriverManagerConnectionFactory(driverUrl, user, passwd);
-      // This doesn't get used, but it's still necessary, see
-      // http://svn.apache.org/viewvc/commons/proper/dbcp/branches/DBCP_1_4_x_BRANCH/doc/ManualPoolingDataSourceExample.java?view=markup
-      PoolableConnectionFactory poolConnFactory =
-        new PoolableConnectionFactory(connFactory, objectPool, null, null, false, true);
-      connPool = new PoolingDataSource(objectPool);
-    } else if ("hikaricp".equals(connectionPooler)) {
-      connPool = new HikariCPDataSourceProvider().create(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    if (dsp != null) {
+      doRetryOnConnPool = dsp.mayReturnClosedConnection();
+      connPool = dsp.create(conf);
     } else {
+      String connectionPooler = HiveConf.getVar(conf,
+              HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE).toLowerCase();
       throw new RuntimeException("Unknown JDBC connection pooling " + connectionPooler);
     }
   }
