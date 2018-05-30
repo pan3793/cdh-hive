@@ -96,8 +96,18 @@ public class TestVectorSerDeRow extends TestCase {
       Object expected = expectedRow[i];
       PrimitiveCategory primitiveCategory = primitiveCategories[i];
       PrimitiveTypeInfo primitiveTypeInfo = source.primitiveTypeInfos()[i];
-      if (deserializeRead.readCheckNull()) {
-        throw new HiveException("Unexpected NULL");
+      boolean isNull;
+
+      isNull = deserializeRead.readCheckNull();
+      if (isNull) {
+        if (expected != null) {
+          TestCase.fail(
+              "Field reports null but object is not null (class " + expected.getClass().getName() + ", "
+                  + expected.toString() + ")");
+        }
+        return;
+      } else if (expected == null) {
+        TestCase.fail("Field report not null but object is null");
       }
       switch (primitiveCategory) {
       case BOOLEAN:
@@ -527,7 +537,7 @@ public class TestVectorSerDeRow extends TestCase {
     tbl.setProperty("columns", fieldNames);
     tbl.setProperty("columns.types", fieldTypes);
 
-    tbl.setProperty(serdeConstants.SERIALIZATION_NULL_FORMAT, "NULL");
+    tbl.setProperty(serdeConstants.SERIALIZATION_NULL_FORMAT, "\\N");
   }
 
   private LazySerDeParameters getSerDeParams( StructObjectInspector rowObjectInspector) throws SerDeException {
