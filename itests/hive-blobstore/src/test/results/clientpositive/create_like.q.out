@@ -89,7 +89,10 @@ PREHOOK: type: MSCK
 POSTHOOK: query: MSCK REPAIR TABLE like_table
 POSTHOOK: type: MSCK
 Partitions not in metastore:	like_table:dt=20110924/hour=1	like_table:dt=20110924/hour=2	like_table:dt=20110925/hour=1	like_table:dt=20110925/hour=2
-#### A masked pattern was here ####
+Repair: Added partition to metastore like_table:dt=20110925/hour=1
+Repair: Added partition to metastore like_table:dt=20110924/hour=1
+Repair: Added partition to metastore like_table:dt=20110924/hour=2
+Repair: Added partition to metastore like_table:dt=20110925/hour=2
 PREHOOK: query: show partitions like_table
 PREHOOK: type: SHOWPARTITIONS
 PREHOOK: Input: default@like_table
