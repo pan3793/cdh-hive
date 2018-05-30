@@ -353,6 +353,7 @@ CREATE TABLE TBLS
     DB_ID bigint NULL,
     LAST_ACCESS_TIME int NOT NULL,
     OWNER varchar(767) NULL,
+    OWNER_TYPE nvarchar(10) NULL,
     RETENTION int NOT NULL,
     SD_ID bigint NULL,
     TBL_NAME varchar(128) NULL,
@@ -948,4 +949,4 @@ ALTER TABLE VERSION ADD SCHEMA_VERSION_V2 VARCHAR(255);
 -- -----------------------------------------------------------------------------------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script. Starting CDH-5.13.0 CDH version must be included in the schema version
 -- -----------------------------------------------------------------------------------------------------------------------------------------
-INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '1.1.0', '1.1.0-cdh5.12.0', 'Hive release version 1.1.0');
+INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '1.1.0', '1.1.0-cdh5.16.0', 'Hive release version 1.1.0');

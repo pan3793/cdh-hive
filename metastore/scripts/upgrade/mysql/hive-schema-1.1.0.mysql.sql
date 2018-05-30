@@ -584,6 +584,7 @@ CREATE TABLE IF NOT EXISTS `TBLS` (
   `DB_ID` bigint(20) DEFAULT NULL,
   `LAST_ACCESS_TIME` int(11) NOT NULL,
   `OWNER` varchar(767) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `OWNER_TYPE` varchar(10) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `RETENTION` int(11) NOT NULL,
   `SD_ID` bigint(20) DEFAULT NULL,
   `TBL_NAME` varchar(128) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
@@ -830,7 +831,7 @@ ALTER TABLE VERSION ADD COLUMN SCHEMA_VERSION_V2 VARCHAR(255);
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Record schema version. Should be the last step in the init script. Starting CDH-5.12.0 the CDH specific schema version should also be recored in SCHEMA_VERSION_V2
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '1.1.0', '1.1.0-cdh5.12.0', 'Hive release version 1.1.0');
+INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, SCHEMA_VERSION_V2, VERSION_COMMENT) VALUES (1, '1.1.0', '1.1.0-cdh5.16.0', 'Hive release version 1.1.0');
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
