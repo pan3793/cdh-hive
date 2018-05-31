@@ -133,6 +133,7 @@ import org.apache.hadoop.hive.ql.exec.InPlaceUpdates;
 import org.apache.hadoop.hive.ql.index.HiveIndexHandler;
 import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.hadoop.hive.metastore.SynchronizedMetaStoreClient;
+import org.apache.hadoop.hive.ql.log.PerfLogger;
 import org.apache.hadoop.hive.ql.optimizer.listbucketingpruner.ListBucketingPrunerUtils;
 import org.apache.hadoop.hive.ql.plan.AddPartitionDesc;
 import org.apache.hadoop.hive.ql.plan.DropTableDesc;
@@ -1516,6 +1517,9 @@ public class Hive {
 
     Path tblDataLocationPath =  tbl.getDataLocation();
     try {
+      PerfLogger perfLogger = SessionState.getPerfLogger();
+      perfLogger.PerfLogBegin("MoveTask", PerfLogger.LOAD_PARTITION);
+
       Partition oldPart = getPartition(tbl, partSpec, false);
       /**
        * Move files before creating the partition since down stream processes
@@ -1550,6 +1554,7 @@ public class Hive {
       } else {
         newPartPath = oldPartPath;
       }
+      perfLogger.PerfLogBegin("MoveTask", PerfLogger.FILE_MOVES);
       List<Path> newFiles = null;
       if (replace || (oldPart == null && !isAcid)) {
         boolean isAutoPurge = "true".equalsIgnoreCase(tbl.getProperty("auto.purge"));
@@ -1563,6 +1568,7 @@ public class Hive {
         FileSystem fs = tbl.getDataLocation().getFileSystem(conf);
         Hive.copyFiles(conf, loadPath, newPartPath, fs, isSrcLocal, isAcid, newFiles);
       }
+      perfLogger.PerfLogEnd("MoveTask", PerfLogger.FILE_MOVES);
       Partition newTPart = oldPart != null ? oldPart : new Partition(tbl, partSpec, newPartPath);
       alterPartitionSpecInMemory(tbl, partSpec, newTPart.getTPartition(), inheritTableSpecs, newPartPath.toString());
       validatePartition(newTPart);
@@ -1626,6 +1632,7 @@ public class Hive {
       } else {
         setStatsPropAndAlterPartition(hasFollowingStatsTask, tbl, newTPart);
       }
+      perfLogger.PerfLogEnd("MoveTask", PerfLogger.LOAD_PARTITION);
       return newTPart;
     } catch (IOException e) {
       LOG.error(StringUtils.stringifyException(e));
@@ -1795,6 +1802,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
       final boolean hasFollowingStatsTask, final AcidUtils.Operation operation)
       throws HiveException {
 
+    PerfLogger perfLogger = SessionState.getPerfLogger();
+    perfLogger.PerfLogBegin("MoveTask", PerfLogger.LOAD_DYNAMIC_PARTITIONS);
+
     final Map<Map<String, String>, Partition> partitionsMap =
         Collections.synchronizedMap(new LinkedHashMap<Map<String, String>, Partition>());
 
@@ -1889,6 +1899,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
           partNames, AcidUtils.toDataOperationType(operation));
       }
       LOG.info("Loaded " + partitionsMap.size() + " partitions");
+
+      perfLogger.PerfLogEnd("MoveTask", PerfLogger.LOAD_DYNAMIC_PARTITIONS);
+
       return partitionsMap;
     } catch (TException te) {
       throw new HiveException("Exception updating metastore for acid table "
@@ -1920,12 +1933,16 @@ private void constructOneLBLocationMap(FileStatus fSta,
       boolean isSkewedStoreAsSubdir, boolean isAcid, boolean hasFollowingStatsTask)
       throws HiveException {
 
+    PerfLogger perfLogger = SessionState.getPerfLogger();
+    perfLogger.PerfLogBegin("MoveTask", PerfLogger.LOAD_TABLE);
+
     List<Path> newFiles = null;
     Table tbl = getTable(tableName);
     HiveConf sessionConf = SessionState.getSessionConf();
     if (conf.getBoolVar(ConfVars.FIRE_EVENTS_FOR_DML) && !tbl.isTemporary()) {
       newFiles = Collections.synchronizedList(new ArrayList<Path>());
     }
+    perfLogger.PerfLogBegin("MoveTask", PerfLogger.FILE_MOVES);
     if (replace) {
       Path tableDest = tbl.getPath();
       boolean isAutopurge = "true".equalsIgnoreCase(tbl.getProperty("auto.purge"));
@@ -1938,6 +1955,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
       } catch (IOException e) {
         throw new HiveException("addFiles: filesystem error in check phase", e);
       }
+      perfLogger.PerfLogEnd("MoveTask", PerfLogger.FILE_MOVES);
     }
     if (!this.getConf().getBoolVar(HiveConf.ConfVars.HIVESTATSAUTOGATHER)) {
       StatsSetupConst.setBasicStatsState(tbl.getParameters(), StatsSetupConst.FALSE);
@@ -1972,6 +1990,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
 
     fireInsertEvent(tbl, null, newFiles);
+
+    perfLogger.PerfLogEnd("MoveTask", PerfLogger.LOAD_TABLE);
   }
 
   /**
