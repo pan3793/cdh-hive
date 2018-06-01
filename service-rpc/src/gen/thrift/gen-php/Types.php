@@ -8088,6 +8088,10 @@ class TGetOperationStatusResp {
    * @var bool
    */
   public $hasResultSet = null;
+  /**
+   * @var int
+   */
+  public $numModifiedRows = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -8129,6 +8133,10 @@ class TGetOperationStatusResp {
           'var' => 'hasResultSet',
           'type' => TType::BOOL,
           ),
+        10 => array(
+          'var' => 'numModifiedRows',
+          'type' => TType::I64,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -8158,6 +8166,9 @@ class TGetOperationStatusResp {
       }
       if (isset($vals['hasResultSet'])) {
         $this->hasResultSet = $vals['hasResultSet'];
+      }
+      if (isset($vals['numModifiedRows'])) {
+        $this->numModifiedRows = $vals['numModifiedRows'];
       }
     }
   }
@@ -8245,6 +8256,13 @@ class TGetOperationStatusResp {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 10:
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->numModifiedRows);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -8304,6 +8322,11 @@ class TGetOperationStatusResp {
     if ($this->hasResultSet !== null) {
       $xfer += $output->writeFieldBegin('hasResultSet', TType::BOOL, 9);
       $xfer += $output->writeBool($this->hasResultSet);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->numModifiedRows !== null) {
+      $xfer += $output->writeFieldBegin('numModifiedRows', TType::I64, 10);
+      $xfer += $output->writeI64($this->numModifiedRows);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

@@ -1047,6 +1047,7 @@ struct TGetOperationStatusResp {
   // If the operation has the result
   9: optional bool hasResultSet
 
+  10: optional i64 numModifiedRows
 }
 
 

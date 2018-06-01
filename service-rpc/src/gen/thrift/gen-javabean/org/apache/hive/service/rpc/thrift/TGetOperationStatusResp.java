@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
   private static final org.apache.thrift.protocol.TField OPERATION_STARTED_FIELD_DESC = new org.apache.thrift.protocol.TField("operationStarted", org.apache.thrift.protocol.TType.I64, (short)7);
   private static final org.apache.thrift.protocol.TField OPERATION_COMPLETED_FIELD_DESC = new org.apache.thrift.protocol.TField("operationCompleted", org.apache.thrift.protocol.TType.I64, (short)8);
   private static final org.apache.thrift.protocol.TField HAS_RESULT_SET_FIELD_DESC = new org.apache.thrift.protocol.TField("hasResultSet", org.apache.thrift.protocol.TType.BOOL, (short)9);
+  private static final org.apache.thrift.protocol.TField NUM_MODIFIED_ROWS_FIELD_DESC = new org.apache.thrift.protocol.TField("numModifiedRows", org.apache.thrift.protocol.TType.I64, (short)10);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -63,6 +64,7 @@ import org.slf4j.LoggerFactory;
   private long operationStarted; // optional
   private long operationCompleted; // optional
   private boolean hasResultSet; // optional
+  private long numModifiedRows; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -78,7 +80,8 @@ import org.slf4j.LoggerFactory;
     TASK_STATUS((short)6, "taskStatus"),
     OPERATION_STARTED((short)7, "operationStarted"),
     OPERATION_COMPLETED((short)8, "operationCompleted"),
-    HAS_RESULT_SET((short)9, "hasResultSet");
+    HAS_RESULT_SET((short)9, "hasResultSet"),
+    NUM_MODIFIED_ROWS((short)10, "numModifiedRows");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -111,6 +114,8 @@ import org.slf4j.LoggerFactory;
           return OPERATION_COMPLETED;
         case 9: // HAS_RESULT_SET
           return HAS_RESULT_SET;
+        case 10: // NUM_MODIFIED_ROWS
+          return NUM_MODIFIED_ROWS;
         default:
           return null;
       }
@@ -155,8 +160,9 @@ import org.slf4j.LoggerFactory;
   private static final int __OPERATIONSTARTED_ISSET_ID = 1;
   private static final int __OPERATIONCOMPLETED_ISSET_ID = 2;
   private static final int __HASRESULTSET_ISSET_ID = 3;
+  private static final int __NUMMODIFIEDROWS_ISSET_ID = 4;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.OPERATION_STATE,_Fields.SQL_STATE,_Fields.ERROR_CODE,_Fields.ERROR_MESSAGE,_Fields.TASK_STATUS,_Fields.OPERATION_STARTED,_Fields.OPERATION_COMPLETED,_Fields.HAS_RESULT_SET};
+  private static final _Fields optionals[] = {_Fields.OPERATION_STATE,_Fields.SQL_STATE,_Fields.ERROR_CODE,_Fields.ERROR_MESSAGE,_Fields.TASK_STATUS,_Fields.OPERATION_STARTED,_Fields.OPERATION_COMPLETED,_Fields.HAS_RESULT_SET,_Fields.NUM_MODIFIED_ROWS};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -178,6 +184,8 @@ import org.slf4j.LoggerFactory;
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     tmpMap.put(_Fields.HAS_RESULT_SET, new org.apache.thrift.meta_data.FieldMetaData("hasResultSet", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+    tmpMap.put(_Fields.NUM_MODIFIED_ROWS, new org.apache.thrift.meta_data.FieldMetaData("numModifiedRows", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TGetOperationStatusResp.class, metaDataMap);
   }
@@ -216,6 +224,7 @@ import org.slf4j.LoggerFactory;
     this.operationStarted = other.operationStarted;
     this.operationCompleted = other.operationCompleted;
     this.hasResultSet = other.hasResultSet;
+    this.numModifiedRows = other.numModifiedRows;
   }
 
   public TGetOperationStatusResp deepCopy() {
@@ -237,6 +246,8 @@ import org.slf4j.LoggerFactory;
     this.operationCompleted = 0;
     setHasResultSetIsSet(false);
     this.hasResultSet = false;
+    setNumModifiedRowsIsSet(false);
+    this.numModifiedRows = 0;
   }
 
   public TStatus getStatus() {
@@ -450,6 +461,28 @@ import org.slf4j.LoggerFactory;
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __HASRESULTSET_ISSET_ID, value);
   }
 
+  public long getNumModifiedRows() {
+    return this.numModifiedRows;
+  }
+
+  public void setNumModifiedRows(long numModifiedRows) {
+    this.numModifiedRows = numModifiedRows;
+    setNumModifiedRowsIsSet(true);
+  }
+
+  public void unsetNumModifiedRows() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __NUMMODIFIEDROWS_ISSET_ID);
+  }
+
+  /** Returns true if field numModifiedRows is set (has been assigned a value) and false otherwise */
+  public boolean isSetNumModifiedRows() {
+    return EncodingUtils.testBit(__isset_bitfield, __NUMMODIFIEDROWS_ISSET_ID);
+  }
+
+  public void setNumModifiedRowsIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __NUMMODIFIEDROWS_ISSET_ID, value);
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case STATUS:
@@ -524,6 +557,14 @@ import org.slf4j.LoggerFactory;
       }
       break;
 
+    case NUM_MODIFIED_ROWS:
+      if (value == null) {
+        unsetNumModifiedRows();
+      } else {
+        setNumModifiedRows((Long)value);
+      }
+      break;
+
     }
   }
 
@@ -556,6 +597,9 @@ import org.slf4j.LoggerFactory;
     case HAS_RESULT_SET:
       return isHasResultSet();
 
+    case NUM_MODIFIED_ROWS:
+      return getNumModifiedRows();
+
     }
     throw new IllegalStateException();
   }
@@ -585,6 +629,8 @@ import org.slf4j.LoggerFactory;
       return isSetOperationCompleted();
     case HAS_RESULT_SET:
       return isSetHasResultSet();
+    case NUM_MODIFIED_ROWS:
+      return isSetNumModifiedRows();
     }
     throw new IllegalStateException();
   }
@@ -683,6 +729,15 @@ import org.slf4j.LoggerFactory;
         return false;
     }
 
+    boolean this_present_numModifiedRows = true && this.isSetNumModifiedRows();
+    boolean that_present_numModifiedRows = true && that.isSetNumModifiedRows();
+    if (this_present_numModifiedRows || that_present_numModifiedRows) {
+      if (!(this_present_numModifiedRows && that_present_numModifiedRows))
+        return false;
+      if (this.numModifiedRows != that.numModifiedRows)
+        return false;
+    }
+
     return true;
   }
 
@@ -734,6 +789,11 @@ import org.slf4j.LoggerFactory;
     list.add(present_hasResultSet);
     if (present_hasResultSet)
       list.add(hasResultSet);
+
+    boolean present_numModifiedRows = true && (isSetNumModifiedRows());
+    list.add(present_numModifiedRows);
+    if (present_numModifiedRows)
+      list.add(numModifiedRows);
 
     return list.hashCode();
   }
@@ -836,6 +896,16 @@ import org.slf4j.LoggerFactory;
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetNumModifiedRows()).compareTo(other.isSetNumModifiedRows());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetNumModifiedRows()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.numModifiedRows, other.numModifiedRows);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -925,6 +995,12 @@ import org.slf4j.LoggerFactory;
       if (!first) sb.append(", ");
       sb.append("hasResultSet:");
       sb.append(this.hasResultSet);
+      first = false;
+    }
+    if (isSetNumModifiedRows()) {
+      if (!first) sb.append(", ");
+      sb.append("numModifiedRows:");
+      sb.append(this.numModifiedRows);
       first = false;
     }
     sb.append(")");
@@ -1052,6 +1128,14 @@ import org.slf4j.LoggerFactory;
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 10: // NUM_MODIFIED_ROWS
+            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
+              struct.numModifiedRows = iprot.readI64();
+              struct.setNumModifiedRowsIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -1118,6 +1202,11 @@ import org.slf4j.LoggerFactory;
         oprot.writeBool(struct.hasResultSet);
         oprot.writeFieldEnd();
       }
+      if (struct.isSetNumModifiedRows()) {
+        oprot.writeFieldBegin(NUM_MODIFIED_ROWS_FIELD_DESC);
+        oprot.writeI64(struct.numModifiedRows);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -1161,7 +1250,10 @@ import org.slf4j.LoggerFactory;
       if (struct.isSetHasResultSet()) {
         optionals.set(7);
       }
-      oprot.writeBitSet(optionals, 8);
+      if (struct.isSetNumModifiedRows()) {
+        optionals.set(8);
+      }
+      oprot.writeBitSet(optionals, 9);
       if (struct.isSetOperationState()) {
         oprot.writeI32(struct.operationState.getValue());
       }
@@ -1186,6 +1278,9 @@ import org.slf4j.LoggerFactory;
       if (struct.isSetHasResultSet()) {
         oprot.writeBool(struct.hasResultSet);
       }
+      if (struct.isSetNumModifiedRows()) {
+        oprot.writeI64(struct.numModifiedRows);
+      }
     }
 
     @Override
@@ -1194,7 +1289,7 @@ import org.slf4j.LoggerFactory;
       struct.status = new TStatus();
       struct.status.read(iprot);
       struct.setStatusIsSet(true);
-      BitSet incoming = iprot.readBitSet(8);
+      BitSet incoming = iprot.readBitSet(9);
       if (incoming.get(0)) {
         struct.operationState = org.apache.hive.service.rpc.thrift.TOperationState.findByValue(iprot.readI32());
         struct.setOperationStateIsSet(true);
@@ -1226,6 +1321,10 @@ import org.slf4j.LoggerFactory;
       if (incoming.get(7)) {
         struct.hasResultSet = iprot.readBool();
         struct.setHasResultSetIsSet(true);
+      }
+      if (incoming.get(8)) {
+        struct.numModifiedRows = iprot.readI64();
+        struct.setNumModifiedRowsIsSet(true);
       }
     }
   }

@@ -18,6 +18,7 @@
 
 package org.apache.hive.service.cli.thrift;
 
+import org.apache.hive.service.cli.OperationState;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -632,6 +633,11 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     try {
       OperationStatus operationStatus = cliService.getOperationStatus(
           new OperationHandle(req.getOperationHandle()));
+
+      if (operationStatus.getState().equals(OperationState.FINISHED)) {
+        long numModifiedRows = operationStatus.getNumModifiedRows();
+        resp.setNumModifiedRows(numModifiedRows);
+      }
       resp.setOperationState(operationStatus.getState().toTOperationState());
       HiveSQLException opException = operationStatus.getOperationException();
       resp.setTaskStatus(operationStatus.getTaskStatus());

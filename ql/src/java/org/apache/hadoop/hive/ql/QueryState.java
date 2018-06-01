@@ -47,6 +47,11 @@ public class QueryState {
    */
   private LineageState lineageState = new LineageState();
 
+  /**
+   * Holds the number of rows affected for insert queries.
+   */
+  private long numModifiedRows = 0;
+
   public QueryState(HiveConf conf) {
     this(conf, null, false);
   }
@@ -133,5 +138,13 @@ public class QueryState {
 
   public void setLineageState(LineageState lineageState) {
     this.lineageState = lineageState;
+  }
+
+  public long getNumModifiedRows() {
+    return numModifiedRows;
+  }
+
+  public void setNumModifiedRows(long numModifiedRows) {
+    this.numModifiedRows = numModifiedRows;
   }
 }
