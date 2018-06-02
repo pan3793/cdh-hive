@@ -54,6 +54,7 @@ import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.FuncSignLongToDoubl
 import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.FuncSinDoubleToDouble;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.FuncSqrtDoubleToDouble;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.FuncTanDoubleToDouble;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.serde2.io.TimestampWritable;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorRound() {
+  public void testVectorRound() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     VectorExpression expr = new FuncRoundDoubleToDouble(0, 1);
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
@@ -104,7 +105,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testRoundToDecimalPlaces() {
+  public void testRoundToDecimalPlaces() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     VectorExpression expr = new RoundWithNumDigitsDoubleToDouble(0, 4, 1);
     ((ISetLongArg) expr).setArg(4);  // set number of digits
@@ -311,7 +312,7 @@ public class TestVectorMathFunctions {
    * (for FuncRoundDoubleToDouble).
    */
   @Test
-  public void testVectorSin() {
+  public void testVectorSin() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -321,7 +322,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorCos() {
+  public void testVectorCos() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -331,7 +332,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorTan() {
+  public void testVectorTan() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -341,7 +342,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorASin() {
+  public void testVectorASin() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -351,7 +352,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorACos() {
+  public void testVectorACos() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -361,7 +362,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorATan() {
+  public void testVectorATan() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -371,7 +372,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorDegrees() {
+  public void testVectorDegrees() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -381,7 +382,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorRadians() {
+  public void testVectorRadians() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -391,7 +392,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorFloor() {
+  public void testVectorFloor() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInLongOut();
     LongColumnVector resultV = (LongColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -402,7 +403,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorCeil() {
+  public void testVectorCeil() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInLongOut();
     LongColumnVector resultV = (LongColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -413,7 +414,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorExp() {
+  public void testVectorExp() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -423,7 +424,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorLn() {
+  public void testVectorLn() throws HiveException {
 
     // test double->double version
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
@@ -443,7 +444,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorLog2() {
+  public void testVectorLog2() throws HiveException {
 
     // test double->double version
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
@@ -463,7 +464,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorLog10() {
+  public void testVectorLog10() throws HiveException {
 
     // test double->double version
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
@@ -483,7 +484,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorRand() {
+  public void testVectorRand() throws HiveException {
     VectorizedRowBatch b = new VectorizedRowBatch(1);
     DoubleColumnVector v = new DoubleColumnVector();
     b.cols[0] = v;
@@ -519,7 +520,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorLogBase() {
+  public void testVectorLogBase() throws HiveException {
 
     // test double->double version
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
@@ -532,7 +533,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorPosMod() {
+  public void testVectorPosMod() throws HiveException {
 
     // test double->double version
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
@@ -576,7 +577,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorPosModWithFloatOutputType() {
+  public void testVectorPosModWithFloatOutputType() throws HiveException {
 
     // test double->double version
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
@@ -600,7 +601,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorPower() {
+  public void testVectorPower() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -611,7 +612,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorSqrt() {
+  public void testVectorSqrt() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -621,7 +622,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorAbs() {
+  public void testVectorAbs() throws HiveException {
 
     // test double->double version
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
@@ -643,7 +644,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorSign() {
+  public void testVectorSign() throws HiveException {
 
     // test double->double version
     VectorizedRowBatch b = getVectorizedRowBatchDoubleInDoubleOut();
@@ -665,7 +666,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorBin() {
+  public void testVectorBin() throws HiveException {
 
     // test conversion of long->string
     VectorizedRowBatch b = getBatchForStringMath();
@@ -678,7 +679,7 @@ public class TestVectorMathFunctions {
   }
 
   @Test
-  public void testVectorHex() {
+  public void testVectorHex() throws HiveException {
 
     // test long->string version
     VectorizedRowBatch b = getBatchForStringMath();

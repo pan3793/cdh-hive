@@ -25,6 +25,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 /**
@@ -76,7 +77,7 @@ public abstract class VectorExpression implements Serializable {
    * This is the primary method to implement expression logic.
    * @param batch
    */
-  public abstract void evaluate(VectorizedRowBatch batch);
+  public abstract void evaluate(VectorizedRowBatch batch) throws HiveException;
 
   /**
    * Returns the index of the output column in the array
@@ -118,7 +119,7 @@ public abstract class VectorExpression implements Serializable {
    * Evaluate the child expressions on the given input batch.
    * @param vrg {@link VectorizedRowBatch}
    */
-  final protected void evaluateChildren(VectorizedRowBatch vrg) {
+  final protected void evaluateChildren(VectorizedRowBatch vrg) throws HiveException {
     if (childExpressions != null) {
       for (VectorExpression ve : childExpressions) {
         ve.evaluate(vrg);

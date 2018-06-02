@@ -53,6 +53,7 @@ import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.FilterTimestampColu
 import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.FilterTimestampColumnNotBetween;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.LongColAddLongScalar;
 import org.apache.hadoop.hive.ql.exec.vector.util.VectorizedRowGroupGenUtil;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -62,7 +63,7 @@ import org.junit.Test;
 public class TestVectorFilterExpressions {
 
   @Test
-  public void testFilterLongColEqualLongScalar() {
+  public void testFilterLongColEqualLongScalar() throws HiveException {
     VectorizedRowBatch vrg =
         VectorizedRowGroupGenUtil.getVectorizedRowBatch(1024, 1, 23);
     FilterLongColEqualLongScalar expr = new FilterLongColEqualLongScalar(0, 46);
@@ -72,7 +73,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterLongColGreaterLongColumn() {
+  public void testFilterLongColGreaterLongColumn() throws HiveException {
     int seed = 17;
     VectorizedRowBatch b = VectorizedRowGroupGenUtil.getVectorizedRowBatch(
         VectorizedRowBatch.DEFAULT_SIZE,
@@ -129,7 +130,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testColOpScalarNumericFilterNullAndRepeatingLogic() {
+  public void testColOpScalarNumericFilterNullAndRepeatingLogic() throws HiveException {
     // No nulls, not repeating
     FilterLongColGreaterLongScalar f = new FilterLongColGreaterLongScalar(0, 1);
     VectorizedRowBatch batch = this.getSimpleLongBatch();
@@ -193,7 +194,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterLongColLessLongColumn() {
+  public void testFilterLongColLessLongColumn() throws HiveException {
     int seed = 17;
     VectorizedRowBatch vrg = VectorizedRowGroupGenUtil.getVectorizedRowBatch(
         5, 3, seed);
@@ -226,7 +227,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterLongScalarLessLongColumn() {
+  public void testFilterLongScalarLessLongColumn() throws HiveException {
     int seed = 17;
     VectorizedRowBatch vrb = VectorizedRowGroupGenUtil.getVectorizedRowBatch(
         5, 2, seed);
@@ -330,7 +331,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterLongBetween() {
+  public void testFilterLongBetween() throws HiveException {
     int seed = 17;
     VectorizedRowBatch vrb = VectorizedRowGroupGenUtil.getVectorizedRowBatch(
         5, 2, seed);
@@ -439,7 +440,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterLongNotBetween() {
+  public void testFilterLongNotBetween() throws HiveException {
 
     // Spot check only. null & repeating behavior are checked elsewhere for the same template.
     int seed = 17;
@@ -462,7 +463,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterDoubleBetween() {
+  public void testFilterDoubleBetween() throws HiveException {
 
     // Spot check only. null & repeating behavior are checked elsewhere for the same template.
     int seed = 17;
@@ -486,7 +487,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterDoubleNotBetween() {
+  public void testFilterDoubleNotBetween() throws HiveException {
 
     // Spot check only. null & repeating behavior are checked elsewhere for the same template.
     int seed = 17;
@@ -524,7 +525,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterStringBetween() {
+  public void testFilterStringBetween() throws HiveException {
     int seed = 17;
     VectorizedRowBatch vrb = VectorizedRowGroupGenUtil.getVectorizedRowBatch(
         3, 2, seed);
@@ -576,7 +577,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterStringNotBetween() {
+  public void testFilterStringNotBetween() throws HiveException {
 
     // Spot check only. Non-standard cases are checked for the same template in another test.
     int seed = 17;
@@ -599,7 +600,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterTimestampBetween() {
+  public void testFilterTimestampBetween() throws HiveException {
 
     VectorizedRowBatch vrb = new VectorizedRowBatch(1);
     vrb.cols[0] = new TimestampColumnVector();
@@ -624,7 +625,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterTimestampNotBetween() {
+  public void testFilterTimestampNotBetween() throws HiveException {
     VectorizedRowBatch vrb = new VectorizedRowBatch(1);
     vrb.cols[0] = new TimestampColumnVector();
 
@@ -654,7 +655,7 @@ public class TestVectorFilterExpressions {
    */
 
   @Test
-  public void testFilterLongIn() {
+  public void testFilterLongIn() throws HiveException {
     int seed = 17;
     VectorizedRowBatch vrb = VectorizedRowGroupGenUtil.getVectorizedRowBatch(
         5, 2, seed);
@@ -754,7 +755,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterDoubleIn() {
+  public void testFilterDoubleIn() throws HiveException {
     int seed = 17;
     VectorizedRowBatch vrb = VectorizedRowGroupGenUtil.getVectorizedRowBatch(
         5, 2, seed);
@@ -781,7 +782,7 @@ public class TestVectorFilterExpressions {
   }
 
   @Test
-  public void testFilterStringIn() {
+  public void testFilterStringIn() throws HiveException {
     int seed = 17;
     VectorizedRowBatch vrb = VectorizedRowGroupGenUtil.getVectorizedRowBatch(
         3, 2, seed);
@@ -840,7 +841,7 @@ public class TestVectorFilterExpressions {
    * multiple cases because the logic is the same for <, >, <=, >=, == and !=.
    */
   @Test
-  public void testFilterDecimalColEqualDecimalScalar() {
+  public void testFilterDecimalColEqualDecimalScalar() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatch1DecimalCol();
     HiveDecimal scalar = HiveDecimal.create("-3.30");
     VectorExpression expr = new FilterDecimalColEqualDecimalScalar(0, scalar);
@@ -885,7 +886,7 @@ public class TestVectorFilterExpressions {
    * cases because the logic is the same for <, >, <=, >=, == and !=.
    */
   @Test
-  public void testFilterDecimalScalarEqualDecimalColumn() {
+  public void testFilterDecimalScalarEqualDecimalColumn() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatch1DecimalCol();
     HiveDecimal scalar = HiveDecimal.create("-3.30");
     VectorExpression expr = new FilterDecimalScalarEqualDecimalColumn(scalar, 0);
@@ -930,7 +931,7 @@ public class TestVectorFilterExpressions {
    * cases because the logic is the same for <, >, <=, >=, == and !=.
    */
   @Test
-  public void testFilterDecimalColumnEqualDecimalColumn() {
+  public void testFilterDecimalColumnEqualDecimalColumn() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatch2DecimalCol();
     VectorExpression expr = new FilterDecimalColEqualDecimalColumn(0, 1);
     expr.evaluate(b);
@@ -990,7 +991,7 @@ public class TestVectorFilterExpressions {
    * Spot check col < scalar for decimal.
    */
   @Test
-  public void testFilterDecimalColLessScalar() {
+  public void testFilterDecimalColLessScalar() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatch1DecimalCol();
     HiveDecimal scalar = HiveDecimal.create("0");
     VectorExpression expr = new FilterDecimalColLessDecimalScalar(0, scalar);
@@ -1006,7 +1007,7 @@ public class TestVectorFilterExpressions {
    * Spot check scalar > col for decimal.
    */
   @Test
-  public void testFilterDecimalScalarGreaterThanColumn() {
+  public void testFilterDecimalScalarGreaterThanColumn() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatch1DecimalCol();
     HiveDecimal scalar = HiveDecimal.create("0");
     VectorExpression expr = new FilterDecimalScalarGreaterDecimalColumn(scalar, 0);
@@ -1022,7 +1023,7 @@ public class TestVectorFilterExpressions {
    * Spot check col >= col for decimal.
    */
   @Test
-  public void testFilterDecimalColGreaterEqualCol() {
+  public void testFilterDecimalColGreaterEqualCol() throws HiveException {
     VectorizedRowBatch b = getVectorizedRowBatch2DecimalCol();
     VectorExpression expr = new FilterDecimalColGreaterEqualDecimalColumn(0, 1);
     expr.evaluate(b);

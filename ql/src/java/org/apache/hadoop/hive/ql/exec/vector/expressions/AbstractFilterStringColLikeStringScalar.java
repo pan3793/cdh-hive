@@ -34,6 +34,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
+
 /**
  * An abstract class for LIKE and REGEXP expressions. LIKE and REGEXP expression share similar
  * functions, but they have different grammars. AbstractFilterStringColLikeStringScalar class
@@ -73,7 +75,7 @@ public abstract class AbstractFilterStringColLikeStringScalar extends VectorExpr
   }
 
   @Override
-  public void evaluate(VectorizedRowBatch batch) {
+  public void evaluate(VectorizedRowBatch batch) throws HiveException {
 
     if (checker == null) {
       checker = createChecker(pattern);

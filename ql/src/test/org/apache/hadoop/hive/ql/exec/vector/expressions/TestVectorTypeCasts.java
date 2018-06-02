@@ -43,6 +43,7 @@ import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.*;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.*;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.util.TimestampUtils;
 import org.apache.hadoop.hive.serde2.io.TimestampWritable;
 import org.apache.hadoop.hive.serde2.typeinfo.HiveDecimalUtils;
@@ -54,7 +55,7 @@ import org.junit.Test;
 public class TestVectorTypeCasts {
 
   @Test
-  public void testVectorCastLongToDouble() {
+  public void testVectorCastLongToDouble() throws HiveException {
     VectorizedRowBatch b = TestVectorMathFunctions.getVectorizedRowBatchLongInDoubleOut();
     DoubleColumnVector resultV = (DoubleColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -64,7 +65,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testVectorCastDoubleToLong() {
+  public void testVectorCastDoubleToLong() throws HiveException {
     VectorizedRowBatch b = TestVectorMathFunctions.getVectorizedRowBatchDoubleInLongOut();
     LongColumnVector resultV = (LongColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -74,7 +75,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastDoubleToBoolean() {
+  public void testCastDoubleToBoolean() throws HiveException {
     VectorizedRowBatch b = TestVectorMathFunctions.getVectorizedRowBatchDoubleInLongOut();
     LongColumnVector resultV = (LongColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -85,7 +86,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastDoubleToTimestamp() {
+  public void testCastDoubleToTimestamp() throws HiveException {
     VectorizedRowBatch b = TestVectorMathFunctions.getVectorizedRowBatchDoubleInTimestampOut();
     TimestampColumnVector resultV = (TimestampColumnVector) b.cols[1];
     b.cols[0].noNulls = true;
@@ -96,7 +97,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastLongToBoolean() {
+  public void testCastLongToBoolean() throws HiveException {
     VectorizedRowBatch b = TestVectorMathFunctions.getVectorizedRowBatchLongInLongOut();
     LongColumnVector inV = (LongColumnVector) b.cols[0];
     inV.vector[0] = 0;  // make one entry produce false in result
@@ -109,7 +110,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastLongToTimestamp() {
+  public void testCastLongToTimestamp() throws HiveException {
     long[] longValues = new long[500];
     VectorizedRowBatch b = TestVectorMathFunctions.getVectorizedRowBatchLongInTimestampOut(longValues);
     TimestampColumnVector resultV = (TimestampColumnVector) b.cols[1];
@@ -124,7 +125,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastTimestampToLong() {
+  public void testCastTimestampToLong() throws HiveException {
     long[] longValues = new long[500];
     VectorizedRowBatch b = TestVectorMathFunctions.getVectorizedRowBatchTimestampInLongOut(longValues);
     TimestampColumnVector inV = (TimestampColumnVector) b.cols[0];
@@ -142,7 +143,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastTimestampToDouble() {
+  public void testCastTimestampToDouble() throws HiveException {
     double[] doubleValues = new double[500];
     VectorizedRowBatch b = TestVectorMathFunctions.getVectorizedRowBatchTimestampInDoubleOut(doubleValues);
     TimestampColumnVector inV = (TimestampColumnVector) b.cols[0];
@@ -168,7 +169,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastLongToString() {
+  public void testCastLongToString() throws HiveException {
     VectorizedRowBatch b = TestVectorMathFunctions.getBatchForStringMath();
     BytesColumnVector resultV = (BytesColumnVector) b.cols[2];
     b.cols[1].noNulls = true;
@@ -181,7 +182,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastBooleanToString() {
+  public void testCastBooleanToString() throws HiveException {
     byte[] t = toBytes("TRUE");
     byte[] f = toBytes("FALSE");
     VectorizedRowBatch b = TestVectorMathFunctions.getBatchForStringMath();
@@ -199,7 +200,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastDecimalToLong() {
+  public void testCastDecimalToLong() throws HiveException {
 
     // test basic case
     VectorizedRowBatch b = getBatchDecimalLong();
@@ -244,7 +245,7 @@ public class TestVectorTypeCasts {
   /* Just spot check the basic case because code path is the same as
    * for cast of decimal to long due to inheritance.
    */
-  public void testCastDecimalToBoolean() {
+  public void testCastDecimalToBoolean() throws HiveException {
     VectorizedRowBatch b = getBatchDecimalLong();
     VectorExpression expr = new CastDecimalToBoolean(0, 1);
     DecimalColumnVector in = (DecimalColumnVector) b.cols[0];
@@ -273,7 +274,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastDecimalToDouble() {
+  public void testCastDecimalToDouble() throws HiveException {
 
     final double eps = 0.000001d; // tolerance to check double equality
 
@@ -333,7 +334,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastDecimalToString() {
+  public void testCastDecimalToString() throws HiveException {
     VectorizedRowBatch b = getBatchDecimalString();
     VectorExpression expr = new CastDecimalToString(0, 1);
     expr.evaluate(b);
@@ -374,7 +375,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastDecimalToTimestamp() {
+  public void testCastDecimalToTimestamp() throws HiveException {
     double[] doubleValues = new double[500];
     VectorizedRowBatch b = getBatchDecimalTimestamp(doubleValues);
     VectorExpression expr = new CastDecimalToTimestamp(0, 1);
@@ -429,7 +430,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastLongToDecimal() {
+  public void testCastLongToDecimal() throws HiveException {
     VectorizedRowBatch b = getBatchLongDecimal();
     VectorExpression expr = new CastLongToDecimal(0, 1);
     expr.evaluate(b);
@@ -492,7 +493,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastDoubleToDecimal() {
+  public void testCastDoubleToDecimal() throws HiveException {
     VectorizedRowBatch b = getBatchDoubleDecimal();
     VectorExpression expr = new CastDoubleToDecimal(0, 1);
     expr.evaluate(b);
@@ -529,7 +530,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastStringToDecimal() {
+  public void testCastStringToDecimal() throws HiveException {
     VectorizedRowBatch b = getBatchStringDecimal();
     VectorExpression expr = new CastStringToDecimal(0, 1);
     expr.evaluate(b);
@@ -559,7 +560,7 @@ public class TestVectorTypeCasts {
   }
 
   @Test
-  public void testCastTimestampToDecimal() {
+  public void testCastTimestampToDecimal() throws HiveException {
 
     // The input timestamps are stored as long values
     // measured in nanoseconds from the epoch.

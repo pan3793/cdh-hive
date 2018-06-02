@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.junit.Assert;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
@@ -112,7 +113,7 @@ public class TestVectorDateExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFYear(VectorizedRowBatch batch) {
+  private void verifyUDFYear(VectorizedRowBatch batch) throws HiveException {
     VectorExpression udf = null;
     udf = new VectorUDFYearDate(0, 1);
     udf.setInputTypes(VectorExpression.Type.DATE);
@@ -135,7 +136,7 @@ public class TestVectorDateExpressions {
   }
 
   @Test
-  public void testVectorUDFYear() {
+  public void testVectorUDFYear() throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new int[] {0},
             VectorizedRowBatch.DEFAULT_SIZE);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -174,7 +175,7 @@ public class TestVectorDateExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFDayOfMonth(VectorizedRowBatch batch) {
+  private void verifyUDFDayOfMonth(VectorizedRowBatch batch) throws HiveException {
     VectorExpression udf = null;
     udf = new VectorUDFDayOfMonthDate(0, 1);
     udf.setInputTypes(VectorExpression.Type.DATE);
@@ -197,7 +198,7 @@ public class TestVectorDateExpressions {
   }
 
   @Test
-  public void testVectorUDFDayOfMonth() {
+  public void testVectorUDFDayOfMonth() throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new int[] {0},
             VectorizedRowBatch.DEFAULT_SIZE);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -236,7 +237,7 @@ public class TestVectorDateExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFMonth(VectorizedRowBatch batch) {
+  private void verifyUDFMonth(VectorizedRowBatch batch) throws HiveException {
     VectorExpression udf;
       udf = new VectorUDFMonthDate(0, 1);
     udf.setInputTypes(VectorExpression.Type.DATE);
@@ -259,7 +260,7 @@ public class TestVectorDateExpressions {
   }
 
   @Test
-  public void testVectorUDFMonth() {
+  public void testVectorUDFMonth() throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new int[] {0},
             VectorizedRowBatch.DEFAULT_SIZE);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -312,7 +313,7 @@ public class TestVectorDateExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFUnixTimeStamp(VectorizedRowBatch batch) {
+  private void verifyUDFUnixTimeStamp(VectorizedRowBatch batch) throws HiveException {
     VectorExpression udf;
     udf = new VectorUDFUnixTimeStampDate(0, 1);
     udf.setInputTypes(VectorExpression.Type.DATE);
@@ -335,7 +336,7 @@ public class TestVectorDateExpressions {
   }
 
   @Test
-  public void testVectorUDFUnixTimeStamp() {
+  public void testVectorUDFUnixTimeStamp() throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new int[] {0},
             VectorizedRowBatch.DEFAULT_SIZE);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -374,7 +375,7 @@ public class TestVectorDateExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFWeekOfYear(VectorizedRowBatch batch) {
+  private void verifyUDFWeekOfYear(VectorizedRowBatch batch) throws HiveException {
     VectorExpression udf;
     udf = new VectorUDFWeekOfYearDate(0, 1);
     udf.setInputTypes(VectorExpression.Type.DATE);
@@ -394,7 +395,7 @@ public class TestVectorDateExpressions {
   }
 
   @Test
-  public void testVectorUDFWeekOfYear() {
+  public void testVectorUDFWeekOfYear() throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new int[] {0},
             VectorizedRowBatch.DEFAULT_SIZE);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -456,7 +457,7 @@ public class TestVectorDateExpressions {
 
   // 5s timeout
   @Test(timeout = 5000)
-  public void testMultiThreadedVectorUDFDate() {
+  public void testMultiThreadedVectorUDFDate() throws HiveException {
     List<Callable<Void>> tasks = new ArrayList<Callable<Void>>();
     for (int i = 0; i < 200; i++) {
       tasks.add(new MultiThreadedDateFormatTest());
@@ -480,7 +481,7 @@ public class TestVectorDateExpressions {
     }
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws HiveException {
     TestVectorDateExpressions self = new TestVectorDateExpressions();
     self.testVectorUDFYear();
     self.testVectorUDFMonth();
