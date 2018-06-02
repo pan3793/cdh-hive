@@ -2709,6 +2709,10 @@ public class HiveConf extends Configuration {
         "This flag should be set to true to use overflow checked vector expressions when available.\n" +
         "For example, arithmetic expressions which can overflow the output data type can be evaluated using\n" +
         " checked vector expressions so that they produce same result as non-vectorized evaluation."),
+    HIVE_VECTORIZED_ADAPTOR_SUPPRESS_EVALUATE_EXCEPTIONS(
+		"hive.vectorized.adaptor.suppress.evaluate.exceptions", false,
+        "This flag should be set to true to suppress HiveException from the generic UDF function\n" +
+		"evaluate call and turn them into NULLs. Assume, by default, this is not needed"),
     HIVE_TYPE_CHECK_ON_INSERT("hive.typecheck.on.insert", true, "This property has been extended to control "
         + "whether to check, convert, and normalize partition value to conform to its column type in "
         + "partition operations including but not limited to insert, such as alter, describe etc."),

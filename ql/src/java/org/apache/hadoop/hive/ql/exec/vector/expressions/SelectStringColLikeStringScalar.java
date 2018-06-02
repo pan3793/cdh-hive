@@ -28,6 +28,7 @@ import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 
 public class SelectStringColLikeStringScalar extends VectorExpression {
 
@@ -50,7 +51,7 @@ public class SelectStringColLikeStringScalar extends VectorExpression {
   }
 
   @Override
-	public void evaluate(VectorizedRowBatch batch) {
+	public void evaluate(VectorizedRowBatch batch) throws HiveException {
     if (checker == null) {
       checker = borrowChecker();
     }

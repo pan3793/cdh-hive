@@ -194,7 +194,7 @@ public abstract class VectorMapJoinOuterGenerateResultOperator
    *          The (original) input batch size.
    */
   private void doValueExprOnInputSelected(VectorizedRowBatch batch,
-      boolean inputSelectedInUse, int inputLogicalSize) {
+      boolean inputSelectedInUse, int inputLogicalSize) throws HiveException {
 
     int saveBatchSize = batch.size;
     int[] saveSelected = batch.selected;
@@ -226,7 +226,7 @@ public abstract class VectorMapJoinOuterGenerateResultOperator
    *          The size of selected.
    */
   private void doValueExpr(VectorizedRowBatch batch,
-      int[] selected, int size) {
+      int[] selected, int size) throws HiveException {
 
     int saveBatchSize = batch.size;
     int[] saveSelected = batch.selected;

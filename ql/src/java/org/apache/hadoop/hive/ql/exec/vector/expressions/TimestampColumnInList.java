@@ -27,6 +27,7 @@ import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor.Descript
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 
 /**
  * Output a boolean value indicating if a column is IN a list of constants.
@@ -55,7 +56,7 @@ public class TimestampColumnInList extends VectorExpression implements ITimestam
   }
 
   @Override
-  public void evaluate(VectorizedRowBatch batch) {
+  public void evaluate(VectorizedRowBatch batch) throws HiveException {
 
     if (childExpressions != null) {
       super.evaluateChildren(batch);

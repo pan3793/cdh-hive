@@ -25,6 +25,7 @@ import org.apache.hadoop.hive.ql.exec.vector.DoubleColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 
 /**
  * This is a superclass for unary decimal functions and expressions returning doubles that
@@ -47,7 +48,7 @@ public abstract class FuncDecimalToDouble extends VectorExpression {
   abstract protected void func(DoubleColumnVector outputColVector, DecimalColumnVector inputColVector, int i);
 
   @Override
-  public void evaluate(VectorizedRowBatch batch) {
+  public void evaluate(VectorizedRowBatch batch) throws HiveException {
 
     if (childExpressions != null) {
       super.evaluateChildren(batch);

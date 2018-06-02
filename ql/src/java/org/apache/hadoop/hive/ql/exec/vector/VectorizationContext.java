@@ -181,10 +181,15 @@ public class VectorizationContext {
   //when set to true use the overflow checked vector expressions
   private boolean useCheckedVectorExpressions;
 
+  private boolean adaptorSuppressEvaluateExceptions;
+
   private void setHiveConfVars(HiveConf hiveConf) {
     hiveVectorAdaptorUsageMode = HiveVectorAdaptorUsageMode.getHiveConfValue(hiveConf);
     useCheckedVectorExpressions =
         HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.HIVE_VECTORIZATION_USE_CHECKED_EXPRESSIONS);
+    adaptorSuppressEvaluateExceptions =
+        HiveConf.getBoolVar(
+            hiveConf, HiveConf.ConfVars.HIVE_VECTORIZED_ADAPTOR_SUPPRESS_EVALUATE_EXCEPTIONS);
   }
 
   private void copyHiveConfVars(VectorizationContext vContextEnvironment) {
@@ -2219,7 +2224,8 @@ public class VectorizationContext {
     // Make vectorized operator
     String normalizedName = getNormalizedName(resultTypeName);
 
-    VectorExpression ve = new VectorUDFAdaptor(expr, outputCol, normalizedName, argDescs);
+    VectorUDFAdaptor ve = new VectorUDFAdaptor(expr, outputCol, normalizedName, argDescs);
+    ve.setSuppressEvaluateExceptions(adaptorSuppressEvaluateExceptions);
 
     // Set child expressions
     VectorExpression[] childVEs = null;

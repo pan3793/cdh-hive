@@ -24,6 +24,7 @@ import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TestVectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.serde2.io.DateWritable;
 import org.junit.Assert;
 import org.junit.Test;
@@ -95,7 +96,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   private void validateDateAdd(VectorizedRowBatch batch, VectorExpression.Type colType1, long scalar2,
-                               boolean isPositive, LongColumnVector date1) {
+                               boolean isPositive, LongColumnVector date1) throws HiveException {
     VectorUDFDateAddColScalar udf;
     if (isPositive) {
       udf = new VectorUDFDateAddColScalar(0, scalar2, 1);
@@ -143,7 +144,8 @@ public class TestVectorGenericDateExpressions {
     }
   }
 
-  private void testDateAddColScalar(VectorExpression.Type colType1, boolean isPositive) {
+  private void testDateAddColScalar(VectorExpression.Type colType1, boolean isPositive)
+      throws HiveException {
     LongColumnVector date1 = newRandomLongColumnVector(10000, size);
     ColumnVector col1 = castTo(date1, colType1);
     long scalar2 = newRandom(1000);
@@ -159,7 +161,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateAddColScalar() {
+  public void testDateAddColScalar() throws HiveException {
     for (VectorExpression.Type colType1 : dateTimestampStringTypes)
       testDateAddColScalar(colType1, true);
 
@@ -178,7 +180,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateSubColScalar() {
+  public void testDateSubColScalar() throws HiveException {
     for (VectorExpression.Type colType1 : dateTimestampStringTypes)
       testDateAddColScalar(colType1, false);
 
@@ -197,7 +199,8 @@ public class TestVectorGenericDateExpressions {
   }
 
   private void validateDateAdd(VectorizedRowBatch batch, long scalar1, LongColumnVector date2,
-                               VectorExpression.Type colType1, boolean isPositive) {
+                               VectorExpression.Type colType1, boolean isPositive)
+      throws HiveException {
     VectorExpression udf = null;
     if (isPositive) {
       switch (colType1) {
@@ -255,7 +258,8 @@ public class TestVectorGenericDateExpressions {
     }
   }
 
-  private void testDateAddScalarCol(VectorExpression.Type colType1, boolean isPositive) {
+  private void testDateAddScalarCol(VectorExpression.Type colType1, boolean isPositive)
+      throws HiveException {
     LongColumnVector date2 = newRandomLongColumnVector(10000, size);
     long scalar1 = newRandom(1000);
 
@@ -271,7 +275,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateAddScalarCol() {
+  public void testDateAddScalarCol() throws HiveException {
     for (VectorExpression.Type scalarType1 : dateTimestampStringTypes)
       testDateAddScalarCol(scalarType1, true);
 
@@ -285,7 +289,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateSubScalarCol() {
+  public void testDateSubScalarCol() throws HiveException {
     for (VectorExpression.Type scalarType1 : dateTimestampStringTypes)
       testDateAddScalarCol(scalarType1, false);
 
@@ -300,7 +304,8 @@ public class TestVectorGenericDateExpressions {
 
   private void validateDateAdd(VectorizedRowBatch batch,
                                LongColumnVector date1, LongColumnVector date2,
-                               VectorExpression.Type colType1, boolean isPositive) {
+                               VectorExpression.Type colType1, boolean isPositive)
+      throws HiveException {
     VectorExpression udf;
     if (isPositive) {
       udf = new VectorUDFDateAddColCol(0, 1, 2);
@@ -329,7 +334,8 @@ public class TestVectorGenericDateExpressions {
     }
   }
 
-  private void testDateAddColCol(VectorExpression.Type colType1, boolean isPositive) {
+  private void testDateAddColCol(VectorExpression.Type colType1, boolean isPositive)
+      throws HiveException {
     LongColumnVector date1 = newRandomLongColumnVector(10000, size);
     LongColumnVector days2 = newRandomLongColumnVector(1000, size);
     ColumnVector col1 = castTo(date1, colType1);
@@ -351,7 +357,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateAddColCol() {
+  public void testDateAddColCol() throws HiveException {
     for (VectorExpression.Type colType1 : dateTimestampStringTypes)
       testDateAddColCol(colType1, true);
 
@@ -373,7 +379,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateSubColCol() {
+  public void testDateSubColCol() throws HiveException {
     for (VectorExpression.Type colType1 : dateTimestampStringTypes)
       testDateAddColCol(colType1, false);
 
@@ -396,7 +402,7 @@ public class TestVectorGenericDateExpressions {
 
   private void validateDateDiff(VectorizedRowBatch batch, long scalar1,
                                 VectorExpression.Type scalarType1, VectorExpression.Type colType2,
-                                LongColumnVector date2) {
+                                LongColumnVector date2) throws HiveException {
     VectorExpression udf = null;
     switch (scalarType1) {
       case DATE:
@@ -422,7 +428,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateDiffScalarCol() {
+  public void testDateDiffScalarCol() throws HiveException {
     for (VectorExpression.Type scalarType1 : dateTimestampStringTypes) {
       for (VectorExpression.Type colType2 : dateTimestampStringTypes) {
         LongColumnVector date2 = newRandomLongColumnVector(10000, size);
@@ -465,7 +471,8 @@ public class TestVectorGenericDateExpressions {
   }
 
   private void validateDateDiff(VectorizedRowBatch batch, LongColumnVector date1, long scalar2,
-                                VectorExpression.Type colType1, VectorExpression.Type scalarType2) {
+                                VectorExpression.Type colType1, VectorExpression.Type scalarType2)
+      throws HiveException {
     VectorExpression udf = null;
     switch (scalarType2) {
       case DATE:
@@ -491,7 +498,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateDiffColScalar() {
+  public void testDateDiffColScalar() throws HiveException {
     for (VectorExpression.Type colType1 : dateTimestampStringTypes) {
       for (VectorExpression.Type scalarType2 : dateTimestampStringTypes) {
         LongColumnVector date1 = newRandomLongColumnVector(10000, size);
@@ -533,7 +540,8 @@ public class TestVectorGenericDateExpressions {
 
   private void validateDateDiff(VectorizedRowBatch batch,
                                 LongColumnVector date1, LongColumnVector date2,
-                                VectorExpression.Type colType1, VectorExpression.Type colType2) {
+                                VectorExpression.Type colType1, VectorExpression.Type colType2)
+      throws HiveException {
     VectorExpression udf = new VectorUDFDateDiffColCol(0, 1, 2);
     udf.setInputTypes(colType1, colType2);
     udf.evaluate(batch);
@@ -548,7 +556,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDateDiffColCol() {
+  public void testDateDiffColCol() throws HiveException {
     for (VectorExpression.Type colType1 : dateTimestampStringTypes) {
       for (VectorExpression.Type colType2 : dateTimestampStringTypes) {
         LongColumnVector date1 = newRandomLongColumnVector(10000, size);
@@ -598,7 +606,8 @@ public class TestVectorGenericDateExpressions {
     Assert.assertEquals(batch.cols[2].isNull[0], true);
   }
 
-  private void validateDate(VectorizedRowBatch batch, VectorExpression.Type colType, LongColumnVector date) {
+  private void validateDate(VectorizedRowBatch batch, VectorExpression.Type colType, LongColumnVector date)
+      throws HiveException {
     VectorExpression udf;
     if (colType == VectorExpression.Type.STRING) {
       udf = new VectorUDFDateString(0, 1);
@@ -629,7 +638,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testDate() {
+  public void testDate() throws HiveException {
     for (VectorExpression.Type colType : dateTimestampStringTypes) {
       LongColumnVector date = newRandomLongColumnVector(10000, size);
       LongColumnVector output = new LongColumnVector(size);
@@ -658,7 +667,8 @@ public class TestVectorGenericDateExpressions {
     Assert.assertEquals(batch.cols[1].isNull[0], true);
   }
 
-  private void validateToDate(VectorizedRowBatch batch, VectorExpression.Type colType, LongColumnVector date) {
+  private void validateToDate(VectorizedRowBatch batch, VectorExpression.Type colType, LongColumnVector date)
+      throws HiveException {
     VectorExpression udf;
     if (colType == VectorExpression.Type.STRING ||
         colType == VectorExpression.Type.CHAR ||
@@ -685,7 +695,7 @@ public class TestVectorGenericDateExpressions {
   }
 
   @Test
-  public void testToDate() {
+  public void testToDate() throws HiveException {
     for (VectorExpression.Type type :
         Arrays.asList(VectorExpression.Type.TIMESTAMP, VectorExpression.Type.STRING)) {
       LongColumnVector date = newRandomLongColumnVector(10000, size);

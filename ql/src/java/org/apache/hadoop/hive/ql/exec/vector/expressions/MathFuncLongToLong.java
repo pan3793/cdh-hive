@@ -23,6 +23,7 @@ import java.util.Arrays;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 
 /**
  * Implement vectorized math function that takes a long (and optionally additional
@@ -50,7 +51,7 @@ public abstract class MathFuncLongToLong extends VectorExpression {
   }
 
   @Override
-  public void evaluate(VectorizedRowBatch batch) {
+  public void evaluate(VectorizedRowBatch batch) throws HiveException {
 
     if (childExpressions != null) {
       this.evaluateChildren(batch);

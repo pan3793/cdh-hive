@@ -53,6 +53,7 @@ public class VectorUDFAdaptor extends VectorExpression {
   private String resultType;
   private VectorUDFArgDesc[] argDescs;
   private ExprNodeGenericFuncDesc expr;
+  private boolean suppressEvaluateExceptions;
 
   private transient GenericUDF genericUDF;
   private transient GenericUDF.DeferredObject[] deferredChildren;
@@ -75,6 +76,10 @@ public class VectorUDFAdaptor extends VectorExpression {
     this.outputColumn = outputColumn;
     this.resultType = resultType;
     this.argDescs = argDescs;
+  }
+
+  public void setSuppressEvaluateExceptions(boolean suppressEvaluateExceptions) {
+    this.suppressEvaluateExceptions = suppressEvaluateExceptions;
   }
 
   // Initialize transient fields. To be called after deserialization of other fields.
@@ -104,7 +109,7 @@ public class VectorUDFAdaptor extends VectorExpression {
   }
 
   @Override
-  public void evaluate(VectorizedRowBatch batch) {
+  public void evaluate(VectorizedRowBatch batch) throws HiveException {
 
     if (genericUDF == null) {
       try {
@@ -184,7 +189,7 @@ public class VectorUDFAdaptor extends VectorExpression {
   /* Calculate the function result for row i of the batch and
    * set the output column vector entry i to the result.
    */
-  private void setResult(int i, VectorizedRowBatch b) {
+  private void setResult(int i, VectorizedRowBatch b) throws HiveException {
 
     // get arguments
     for (int j = 0; j < argDescs.length; j++) {
@@ -193,15 +198,19 @@ public class VectorUDFAdaptor extends VectorExpression {
 
     // call function
     Object result;
-    try {
+    if (!suppressEvaluateExceptions) {
       result = genericUDF.evaluate(deferredChildren);
-    } catch (HiveException e) {
+    } else {
+      try {
+        result = genericUDF.evaluate(deferredChildren);
+      } catch (HiveException e) {
 
-      /* For UDFs that expect primitive types (like int instead of Integer or IntWritable),
-       * this will catch the the exception that happens if they are passed a NULL value.
-       * Then the default NULL handling logic will apply, and the result will be NULL.
-       */
-      result = null;
+        /* For UDFs that expect primitive types (like int instead of Integer or IntWritable),
+         * this will catch the the exception that happens if they are passed a NULL value.
+         * Then the default NULL handling logic will apply, and the result will be NULL.
+         */
+        result = null;
+      }
     }
 
     // set output column vector entry

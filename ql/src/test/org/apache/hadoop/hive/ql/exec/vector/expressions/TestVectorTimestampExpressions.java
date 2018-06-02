@@ -39,6 +39,7 @@ import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TestVectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.UDFDayOfMonth;
 import org.apache.hadoop.hive.ql.udf.UDFHour;
 import org.apache.hadoop.hive.ql.udf.UDFMinute;
@@ -231,7 +232,7 @@ public class TestVectorTimestampExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFYear(VectorizedRowBatch batch, TestType testType) {
+  private void verifyUDFYear(VectorizedRowBatch batch, TestType testType) throws HiveException {
     VectorExpression udf = null;
     if (testType == TestType.TIMESTAMP_LONG) {
       udf = new VectorUDFYearTimestamp(0, 1);
@@ -258,7 +259,7 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void testVectorUDFYear(TestType testType) {
+  private void testVectorUDFYear(TestType testType) throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new Timestamp[] {new Timestamp(0)},
             VectorizedRowBatch.DEFAULT_SIZE, testType);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -300,12 +301,12 @@ public class TestVectorTimestampExpressions {
   }
 
   @Test
-  public void testVectorUDFYearTimestamp() {
+  public void testVectorUDFYearTimestamp() throws HiveException {
     testVectorUDFYear(TestType.TIMESTAMP_LONG);
   }
 
   @Test
-  public void testVectorUDFYearString() {
+  public void testVectorUDFYearString() throws HiveException {
     testVectorUDFYear(TestType.STRING_LONG);
 
     VectorizedRowBatch batch = getVectorizedRowBatchStringLong(new byte[] {'2', '2', '0', '1', '3'}, 1, 3);
@@ -323,7 +324,8 @@ public class TestVectorTimestampExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFDayOfMonth(VectorizedRowBatch batch, TestType testType) {
+  private void verifyUDFDayOfMonth(VectorizedRowBatch batch, TestType testType)
+      throws HiveException {
     VectorExpression udf = null;
     if (testType == TestType.TIMESTAMP_LONG) {
       udf = new VectorUDFDayOfMonthTimestamp(0, 1);
@@ -350,7 +352,7 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void testVectorUDFDayOfMonth(TestType testType) {
+  private void testVectorUDFDayOfMonth(TestType testType) throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new Timestamp[] {new Timestamp(0)},
             VectorizedRowBatch.DEFAULT_SIZE, testType);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -392,12 +394,12 @@ public class TestVectorTimestampExpressions {
   }
 
   @Test
-  public void testVectorUDFDayOfMonthTimestamp() {
+  public void testVectorUDFDayOfMonthTimestamp() throws HiveException {
     testVectorUDFDayOfMonth(TestType.TIMESTAMP_LONG);
   }
 
   @Test
-  public void testVectorUDFDayOfMonthString() {
+  public void testVectorUDFDayOfMonthString() throws HiveException {
     testVectorUDFDayOfMonth(TestType.STRING_LONG);
   }
 
@@ -408,7 +410,7 @@ public class TestVectorTimestampExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFHour(VectorizedRowBatch batch, TestType testType) {
+  private void verifyUDFHour(VectorizedRowBatch batch, TestType testType) throws HiveException {
     VectorExpression udf = null;
     if (testType == TestType.TIMESTAMP_LONG) {
       udf = new VectorUDFHourTimestamp(0, 1);
@@ -435,7 +437,7 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void testVectorUDFHour(TestType testType) {
+  private void testVectorUDFHour(TestType testType) throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new Timestamp[] {new Timestamp(0)},
             VectorizedRowBatch.DEFAULT_SIZE, testType);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -477,12 +479,12 @@ public class TestVectorTimestampExpressions {
   }
 
   @Test
-  public void testVectorUDFHourTimestamp() {
+  public void testVectorUDFHourTimestamp() throws HiveException {
     testVectorUDFHour(TestType.TIMESTAMP_LONG);
   }
 
   @Test
-  public void testVectorUDFHourString() {
+  public void testVectorUDFHourString() throws HiveException {
     testVectorUDFHour(TestType.STRING_LONG);
   }
 
@@ -493,7 +495,7 @@ public class TestVectorTimestampExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFMinute(VectorizedRowBatch batch, TestType testType) {
+  private void verifyUDFMinute(VectorizedRowBatch batch, TestType testType) throws HiveException {
     VectorExpression udf = null;
     if (testType == TestType.TIMESTAMP_LONG) {
       udf = new VectorUDFMinuteTimestamp(0, 1);
@@ -520,7 +522,7 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void testVectorUDFMinute(TestType testType) {
+  private void testVectorUDFMinute(TestType testType) throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new Timestamp[] {new Timestamp(0)},
             VectorizedRowBatch.DEFAULT_SIZE, testType);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -562,12 +564,12 @@ public class TestVectorTimestampExpressions {
   }
 
   @Test
-  public void testVectorUDFMinuteLong() {
+  public void testVectorUDFMinuteLong() throws HiveException {
     testVectorUDFMinute(TestType.TIMESTAMP_LONG);
   }
 
   @Test
-  public void testVectorUDFMinuteString() {
+  public void testVectorUDFMinuteString() throws HiveException {
     testVectorUDFMinute(TestType.STRING_LONG);
   }
 
@@ -578,7 +580,7 @@ public class TestVectorTimestampExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFMonth(VectorizedRowBatch batch, TestType testType) {
+  private void verifyUDFMonth(VectorizedRowBatch batch, TestType testType) throws HiveException {
     VectorExpression udf;
     if (testType == TestType.TIMESTAMP_LONG) {
       udf = new VectorUDFMonthTimestamp(0, 1);
@@ -605,7 +607,7 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void testVectorUDFMonth(TestType testType) {
+  private void testVectorUDFMonth(TestType testType) throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new Timestamp[] {new Timestamp(0)},
             VectorizedRowBatch.DEFAULT_SIZE, testType);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -647,12 +649,12 @@ public class TestVectorTimestampExpressions {
   }
 
   @Test
-  public void testVectorUDFMonthTimestamp() {
+  public void testVectorUDFMonthTimestamp() throws HiveException {
     testVectorUDFMonth(TestType.TIMESTAMP_LONG);
   }
 
   @Test
-  public void testVectorUDFMonthString() {
+  public void testVectorUDFMonthString() throws HiveException {
     testVectorUDFMonth(TestType.STRING_LONG);
   }
 
@@ -663,7 +665,7 @@ public class TestVectorTimestampExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFSecond(VectorizedRowBatch batch, TestType testType) {
+  private void verifyUDFSecond(VectorizedRowBatch batch, TestType testType) throws HiveException {
     VectorExpression udf;
     if (testType == TestType.TIMESTAMP_LONG) {
       udf = new VectorUDFSecondTimestamp(0, 1);
@@ -690,7 +692,7 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void testVectorUDFSecond(TestType testType) {
+  private void testVectorUDFSecond(TestType testType) throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new Timestamp[] {new Timestamp(0)},
             VectorizedRowBatch.DEFAULT_SIZE, testType);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -732,12 +734,12 @@ public class TestVectorTimestampExpressions {
   }
 
   @Test
-  public void testVectorUDFSecondLong() {
+  public void testVectorUDFSecondLong() throws HiveException {
     testVectorUDFSecond(TestType.TIMESTAMP_LONG);
   }
 
   @Test
-  public void testVectorUDFSecondString() {
+  public void testVectorUDFSecondString() throws HiveException {
     testVectorUDFSecond(TestType.STRING_LONG);
   }
 
@@ -749,7 +751,8 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void verifyUDFUnixTimeStamp(VectorizedRowBatch batch, TestType testType) {
+  private void verifyUDFUnixTimeStamp(VectorizedRowBatch batch, TestType testType)
+      throws HiveException {
     VectorExpression udf;
     if (testType == TestType.TIMESTAMP_LONG) {
       udf = new VectorUDFUnixTimeStampTimestamp(0, 1);
@@ -776,7 +779,7 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void testVectorUDFUnixTimeStamp(TestType testType) {
+  private void testVectorUDFUnixTimeStamp(TestType testType) throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new Timestamp[] {new Timestamp(0)},
             VectorizedRowBatch.DEFAULT_SIZE, testType);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -818,12 +821,12 @@ public class TestVectorTimestampExpressions {
   }
 
   @Test
-  public void testVectorUDFUnixTimeStampTimestamp() {
+  public void testVectorUDFUnixTimeStampTimestamp() throws HiveException {
     testVectorUDFUnixTimeStamp(TestType.TIMESTAMP_LONG);
   }
 
   @Test
-  public void testVectorUDFUnixTimeStampString() {
+  public void testVectorUDFUnixTimeStampString() throws HiveException {
     testVectorUDFUnixTimeStamp(TestType.STRING_LONG);
   }
 
@@ -834,7 +837,8 @@ public class TestVectorTimestampExpressions {
     Assert.assertEquals(res.get(), y);
   }
 
-  private void verifyUDFWeekOfYear(VectorizedRowBatch batch, TestType testType) {
+  private void verifyUDFWeekOfYear(VectorizedRowBatch batch, TestType testType)
+      throws HiveException {
     VectorExpression udf;
     if (testType == TestType.TIMESTAMP_LONG) {
       udf = new VectorUDFWeekOfYearTimestamp(0, 1);
@@ -858,7 +862,7 @@ public class TestVectorTimestampExpressions {
     }
   }
 
-  private void testVectorUDFWeekOfYear(TestType testType) {
+  private void testVectorUDFWeekOfYear(TestType testType) throws HiveException {
     VectorizedRowBatch batch = getVectorizedRowBatch(new Timestamp[] {new Timestamp(0)},
             VectorizedRowBatch.DEFAULT_SIZE, testType);
     Assert.assertTrue(((LongColumnVector) batch.cols[1]).noNulls);
@@ -900,16 +904,16 @@ public class TestVectorTimestampExpressions {
   }
 
   @Test
-  public void testVectorUDFWeekOfYearTimestamp() {
+  public void testVectorUDFWeekOfYearTimestamp() throws HiveException {
     testVectorUDFWeekOfYear(TestType.TIMESTAMP_LONG);
   }
 
   @Test
-  public void testVectorUDFWeekOfYearString() {
+  public void testVectorUDFWeekOfYearString() throws HiveException {
     testVectorUDFWeekOfYear(TestType.STRING_LONG);
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws HiveException {
     TestVectorTimestampExpressions self = new TestVectorTimestampExpressions();
     self.testVectorUDFYearTimestamp();
     self.testVectorUDFMonthTimestamp();
