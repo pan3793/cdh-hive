@@ -1059,6 +1059,9 @@ public class Commands {
     //When using -e, console reader is not initialized and command is always a single line
     int[] startQuote = {-1};
     line = HiveStringUtils.removeComments(line, startQuote);
+
+    Character mask = (System.getProperty("jline.terminal", "").equals("jline.UnsupportedTerminal")) ? null
+                       : jline.console.ConsoleReader.NULL_MASK;
     while (beeLine.getConsoleReader() != null && !(line.trim().endsWith(";")) && beeLine.getOpts().isAllowMultiLineCommand()) {
       StringBuilder prompt = new StringBuilder(beeLine.getPrompt());
       if (!beeLine.getOpts().isSilent()) {
@@ -1071,7 +1074,7 @@ public class Commands {
 
       String extra;
       if (beeLine.getOpts().isSilent() && beeLine.getOpts().getScriptFile() != null) {
-        extra = beeLine.getConsoleReader().readLine(null, jline.console.ConsoleReader.NULL_MASK);
+        extra = beeLine.getConsoleReader().readLine(null, mask);
       } else {
         extra = beeLine.getConsoleReader().readLine(prompt.toString());
       }
