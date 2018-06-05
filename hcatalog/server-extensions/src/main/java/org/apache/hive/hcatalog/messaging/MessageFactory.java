@@ -110,6 +110,15 @@ public abstract class MessageFactory {
   public abstract CreateDatabaseMessage buildCreateDatabaseMessage(Database db);
 
   /**
+   * Factory method for AlterDatabaseMessage.
+   * @param beforeDb The Database before alter.
+   * @param afterDb The Database after alter.
+   * @return AlterDatabaseMessage instance.
+   */
+  public abstract AlterDatabaseMessage buildAlterDatabaseMessage(Database beforeDb, Database afterDb);
+
+
+  /**
    * Factory method for DropDatabaseMessage.
    * @param db The Database being dropped.
    * @return DropDatabaseMessage instance.

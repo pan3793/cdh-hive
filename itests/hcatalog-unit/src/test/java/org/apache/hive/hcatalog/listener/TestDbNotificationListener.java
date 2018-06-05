@@ -70,6 +70,7 @@ import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.ql.Driver;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.hcatalog.common.HCatConstants;
+import org.apache.hadoop.hive.metastore.events.AlterDatabaseEvent;
 import org.apache.hadoop.hive.metastore.events.AddIndexEvent;
 import org.apache.hadoop.hive.metastore.events.AddPartitionEvent;
 import org.apache.hadoop.hive.metastore.events.AlterIndexEvent;
@@ -169,6 +170,10 @@ public class TestDbNotificationListener {
 
     public void onDropDatabase (DropDatabaseEvent dbEvent) throws MetaException {
       pushEventId(EventType.DROP_DATABASE, dbEvent);
+    }
+
+    public void onAlterDatabase (AlterDatabaseEvent dbEvent) throws MetaException {
+      pushEventId(EventType.ALTER_DATABASE, dbEvent);
     }
 
     public void onAddIndex(AddIndexEvent indexEvent) throws MetaException {
@@ -335,6 +340,47 @@ public class TestDbNotificationListener {
 
     rsp = msClient.getNextNotification(firstEventId, 0, null);
     assertEquals(1, rsp.getEventsSize());
+  }
+
+  @Test
+  public void alterDatabase() throws Exception {
+    String dbName = "alterdatabase";
+    Database db =
+        new Database(dbName, "", "file:/tmp/alterdatabase", null);
+    db.setOwnerName("me");
+
+    // Event 1
+    msClient.createDatabase(db);
+
+    // Event 2
+    db.setOwnerName("you");
+    db.setLocationUri("file:/tmp/alterdatabase_copy");
+    msClient.alterDatabase(dbName, db);
+
+    // Get notifications from metastore
+    NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
+    assertEquals(2, rsp.getEventsSize());
+    NotificationEvent event = rsp.getEvents().get(1);
+    assertEquals(firstEventId + 2, event.getEventId());
+    assertTrue(event.getEventTime() >= startTime);
+    assertEquals(HCatConstants.HCAT_ALTER_DATABASE_EVENT, event.getEventType());
+    assertEquals(dbName, event.getDbName());
+
+    // Verify the eventID was passed to the non-transactional listener
+    MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.ALTER_DATABASE, firstEventId + 2);
+    MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.CREATE_DATABASE, firstEventId + 1);
+
+    // When hive.metastore.transactional.event.listeners is set,
+    // a failed event should not create a new notification
+    DummyRawStoreFailEvent.setEventSucceed(false);
+    try {
+      msClient.alterDatabase(dbName, db);
+      fail("Error: alter database should've failed");
+    } catch (Exception ex) {
+      // expected
+    }
+    rsp = msClient.getNextNotification(firstEventId, 0, null);
+    assertEquals(2, rsp.getEventsSize());
   }
 
   @Test

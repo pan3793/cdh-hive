@@ -19,6 +19,7 @@
 
 package org.apache.hive.hcatalog.messaging.json;
 
+import org.apache.hive.hcatalog.messaging.AlterDatabaseMessage;
 import org.apache.hive.hcatalog.messaging.AddPartitionMessage;
 import org.apache.hive.hcatalog.messaging.AlterIndexMessage;
 import org.apache.hive.hcatalog.messaging.AlterPartitionMessage;
@@ -55,6 +56,16 @@ public class JSONMessageDeserializer extends MessageDeserializer {
     }
     catch (Exception exception) {
       throw new IllegalArgumentException("Could not construct JSONCreateDatabaseMessage.", exception);
+    }
+  }
+
+  @Override
+  public AlterDatabaseMessage getAlterDatabaseMessage(String messageBody) {
+    try {
+      return mapper.readValue(messageBody, JSONAlterDatabaseMessage.class);
+    } catch (Exception exception) {
+      throw new IllegalArgumentException("Could not construct JSONAlterDatabaseMessage.",
+          exception);
     }
   }
 

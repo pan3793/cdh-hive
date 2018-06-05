@@ -23,6 +23,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.events.AlterDatabaseEvent;
 import org.apache.hadoop.hive.metastore.events.AddIndexEvent;
 import org.apache.hadoop.hive.metastore.events.AlterIndexEvent;
 import org.apache.hadoop.hive.metastore.events.AddPartitionEvent;
@@ -119,6 +120,13 @@ public abstract class MetaStoreEventListener implements Configurable {
    * @throws MetaException
    */
   public void onDropDatabase (DropDatabaseEvent dbEvent) throws MetaException {
+  }
+
+  /**
+   * @param dbEvent alter database event
+   * @throws MetaException
+   */
+  public void onAlterDatabase(AlterDatabaseEvent dbEvent) throws MetaException {
   }
 
   /**
