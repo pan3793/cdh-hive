@@ -23,6 +23,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
 import org.apache.hadoop.hive.metastore.api.Index;
+import org.apache.hive.hcatalog.messaging.AlterDatabaseMessage;
 import org.apache.hive.hcatalog.messaging.AlterIndexMessage;
 import org.apache.hive.hcatalog.messaging.CreateFunctionMessage;
 import org.apache.hive.hcatalog.messaging.CreateIndexMessage;
@@ -84,6 +85,12 @@ public class JSONMessageFactory extends MessageFactory {
   public CreateDatabaseMessage buildCreateDatabaseMessage(Database db) {
     return new JSONCreateDatabaseMessage(HCAT_SERVER_URL, HCAT_SERVICE_PRINCIPAL, db.getName(),
         now());
+  }
+
+  @Override
+  public AlterDatabaseMessage buildAlterDatabaseMessage(Database beforeDb, Database afterDb) {
+    return new JSONAlterDatabaseMessage(HCAT_SERVER_URL, HCAT_SERVICE_PRINCIPAL,
+        beforeDb, afterDb, now());
   }
 
   @Override
@@ -184,6 +191,11 @@ public class JSONMessageFactory extends MessageFactory {
         return getPartitionKeyValues(table, partition);
       }
     }));
+  }
+
+  static String createDatabaseObjJson(Database dbObj) throws TException {
+    TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
+    return serializer.toString(dbObj, "UTF-8");
   }
 
   static String createFunctionObjJson(Function functionObj) throws TException {

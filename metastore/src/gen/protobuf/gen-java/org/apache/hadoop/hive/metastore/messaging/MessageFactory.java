@@ -32,6 +32,7 @@ public abstract class MessageFactory {
   public static final String ALTER_TABLE_EVENT = "ALTER_TABLE";
   public static final String DROP_TABLE_EVENT = "DROP_TABLE";
   public static final String CREATE_DATABASE_EVENT = "CREATE_DATABASE";
+  public static final String ALTER_DATABASE_EVENT = "ALTER_DATABASE";
   public static final String DROP_DATABASE_EVENT = "DROP_DATABASE";
   public static final String INSERT_EVENT = "INSERT";
   public static final String CREATE_FUNCTION_EVENT = "CREATE_FUNCTION";

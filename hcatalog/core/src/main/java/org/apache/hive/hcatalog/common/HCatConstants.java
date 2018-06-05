@@ -152,6 +152,7 @@ public final class HCatConstants {
   public static final String HCAT_DROP_TABLE_EVENT = "DROP_TABLE";
   public static final String HCAT_CREATE_DATABASE_EVENT = "CREATE_DATABASE";
   public static final String HCAT_DROP_DATABASE_EVENT = "DROP_DATABASE";
+  public static final String HCAT_ALTER_DATABASE_EVENT = "ALTER_DATABASE";
   public static final String HCAT_CREATE_FUNCTION_EVENT = "CREATE_FUNCTION";
   public static final String HCAT_DROP_FUNCTION_EVENT = "DROP_FUNCTION";
   public static final String HCAT_CREATE_INDEX_EVENT = "CREATE_INDEX";
