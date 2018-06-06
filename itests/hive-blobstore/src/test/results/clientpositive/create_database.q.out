@@ -68,7 +68,7 @@ PREHOOK: type: MSCK
 POSTHOOK: query: MSCK REPAIR TABLE events
 POSTHOOK: type: MSCK
 Partitions not in metastore:	events:dt=2010-12-08
-Repair: Added partition to metastore events:dt=2010-12-08
+#### A masked pattern was here ####
 PREHOOK: query: SHOW TABLES
 PREHOOK: type: SHOWTABLES
 PREHOOK: Input: database:db_with_location
