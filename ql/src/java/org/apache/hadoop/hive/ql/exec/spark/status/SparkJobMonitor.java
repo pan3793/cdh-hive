@@ -89,7 +89,7 @@ abstract class SparkJobMonitor {
 
   public abstract int startMonitor();
 
-  private void printStatusInPlace(Map<String, SparkStageProgress> progressMap) {
+  private void printStatusInPlace(Map<SparkStage, SparkStageProgress> progressMap) {
 
     StringBuilder reportBuffer = new StringBuilder();
 
@@ -105,11 +105,11 @@ abstract class SparkJobMonitor {
     reprintLineWithColorAsBold(HEADER, Ansi.Color.CYAN);
     reprintLine(SEPARATOR);
 
-    SortedSet<String> keys = new TreeSet<String>(progressMap.keySet());
+    SortedSet<SparkStage> keys = new TreeSet<SparkStage>(progressMap.keySet());
     int idx = 0;
     final int numKey = keys.size();
-    for (String s : keys) {
-      SparkStageProgress progress = progressMap.get(s);
+    for (SparkStage stage : keys) {
+      SparkStageProgress progress = progressMap.get(stage);
       final int complete = progress.getSucceededTaskCount();
       final int total = progress.getTotalTaskCount();
       final int running = progress.getRunningTaskCount();
@@ -117,6 +117,7 @@ abstract class SparkJobMonitor {
       sumTotal += total;
       sumComplete += complete;
 
+      String s = stage.toString();
       StageState state = total > 0 ? StageState.PENDING : StageState.FINISHED;
       if (complete > 0 || running > 0 || failed > 0) {
         if (!perfLogger.startTimeHasMethod(PerfLogger.SPARK_RUN_STAGE + s)) {
@@ -131,9 +132,8 @@ abstract class SparkJobMonitor {
         }
       }
 
-      int div = s.indexOf('_');
-      String attempt = div > 0 ? s.substring(div + 1) : "-";
-      String stageName = "Stage-" + (div > 0 ? s.substring(0, div) : s);
+      String attempt = String.valueOf(stage.getAttemptId());
+      String stageName = "Stage-" + String.valueOf(stage.getStageId());
       String nameWithProgress = getNameWithProgress(stageName, complete, total);
 
       final int pending = total - complete - running;
@@ -152,8 +152,8 @@ abstract class SparkJobMonitor {
     reprintLine(SEPARATOR);
   }
 
-  protected void printStatus(Map<String, SparkStageProgress> progressMap,
-      Map<String, SparkStageProgress> lastProgressMap) {
+  protected void printStatus(Map<SparkStage, SparkStageProgress> progressMap,
+      Map<SparkStage, SparkStageProgress> lastProgressMap) {
 
     // do not print duplicate status while still in middle of print interval.
     boolean isDuplicateState = isSameAsPreviousProgress(progressMap, lastProgressMap);
@@ -173,19 +173,20 @@ abstract class SparkJobMonitor {
     lastPrintTime = System.currentTimeMillis();
   }
 
-  private String getReport(Map<String, SparkStageProgress> progressMap) {
+  private String getReport(Map<SparkStage, SparkStageProgress> progressMap) {
     StringBuilder reportBuffer = new StringBuilder();
     SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
     String currentDate = dt.format(new Date());
     reportBuffer.append(currentDate + "\t");
 
-    SortedSet<String> keys = new TreeSet<String>(progressMap.keySet());
-    for (String s : keys) {
-      SparkStageProgress progress = progressMap.get(s);
+    SortedSet<SparkStage> keys = new TreeSet<SparkStage>(progressMap.keySet());
+    for (SparkStage stage : keys) {
+      SparkStageProgress progress = progressMap.get(stage);
       final int complete = progress.getSucceededTaskCount();
       final int total = progress.getTotalTaskCount();
       final int running = progress.getRunningTaskCount();
       final int failed = progress.getFailedTaskCount();
+      String s = stage.toString();
       String stageName = "Stage-" + s;
       if (total <= 0) {
         reportBuffer.append(String.format("%s: -/-\t", stageName));
@@ -234,8 +235,8 @@ abstract class SparkJobMonitor {
   }
 
   private boolean isSameAsPreviousProgress(
-      Map<String, SparkStageProgress> progressMap,
-      Map<String, SparkStageProgress> lastProgressMap) {
+      Map<SparkStage, SparkStageProgress> progressMap,
+      Map<SparkStage, SparkStageProgress> lastProgressMap) {
 
     if (lastProgressMap == null) {
       return false;
@@ -250,7 +251,7 @@ abstract class SparkJobMonitor {
         if (progressMap.size() != lastProgressMap.size()) {
           return false;
         }
-        for (String key : progressMap.keySet()) {
+        for (SparkStage key : progressMap.keySet()) {
           if (!lastProgressMap.containsKey(key)
               || !progressMap.get(key).equals(lastProgressMap.get(key))) {
             return false;

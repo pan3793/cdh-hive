@@ -51,7 +51,7 @@ public class RemoteSparkJobMonitor extends SparkJobMonitor {
     boolean running = false;
     boolean done = false;
     int rc = 0;
-    Map<String, SparkStageProgress> lastProgressMap = null;
+    Map<SparkStage, SparkStageProgress> lastProgressMap = null;
 
     perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.SPARK_RUN_JOB);
     perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.SPARK_SUBMIT_TO_RUNNING);
@@ -84,7 +84,7 @@ public class RemoteSparkJobMonitor extends SparkJobMonitor {
         case STARTED:
           JobExecutionStatus sparkJobState = sparkJobStatus.getState();
           if (sparkJobState == JobExecutionStatus.RUNNING) {
-            Map<String, SparkStageProgress> progressMap = sparkJobStatus.getSparkStageProgress();
+            Map<SparkStage, SparkStageProgress> progressMap = sparkJobStatus.getSparkStageProgress();
             if (!running) {
               perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.SPARK_SUBMIT_TO_RUNNING);
               printAppInfo();
@@ -110,7 +110,7 @@ public class RemoteSparkJobMonitor extends SparkJobMonitor {
           }
           break;
         case SUCCEEDED:
-          Map<String, SparkStageProgress> progressMap = sparkJobStatus.getSparkStageProgress();
+          Map<SparkStage, SparkStageProgress> progressMap = sparkJobStatus.getSparkStageProgress();
           printStatus(progressMap, lastProgressMap);
           lastProgressMap = progressMap;
           double duration = (System.currentTimeMillis() - startTime) / 1000.0;

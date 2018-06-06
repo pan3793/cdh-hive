@@ -36,6 +36,7 @@ import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.ql.exec.spark.Statistic.SparkStatisticsNames;
 
+import org.apache.hadoop.hive.ql.exec.spark.status.SparkStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -464,11 +465,11 @@ public class SparkTask extends Task<SparkWork> {
           stageIds.add(stageId);
         }
       }
-      Map<String, SparkStageProgress> progressMap = sparkJobStatus.getSparkStageProgress();
+      Map<SparkStage, SparkStageProgress> progressMap = sparkJobStatus.getSparkStageProgress();
       int sumTotal = 0;
       int sumComplete = 0;
       int sumFailed = 0;
-      for (String s : progressMap.keySet()) {
+      for (SparkStage s : progressMap.keySet()) {
         SparkStageProgress progress = progressMap.get(s);
         final int complete = progress.getSucceededTaskCount();
         final int total = progress.getTotalTaskCount();
