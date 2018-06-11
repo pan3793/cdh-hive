@@ -1014,6 +1014,7 @@ CREATE TABLE WRITE_SET (
 );
 
 :r 026-HIVE-16556.mssql.sql
+:r 027-HIVE-19605.mssql.sql
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
 -- Schema changes for CDH-64045.
 -- Table VERSION for classes [org.apache.hadoop.hive.metastore.model.MVersionTable]

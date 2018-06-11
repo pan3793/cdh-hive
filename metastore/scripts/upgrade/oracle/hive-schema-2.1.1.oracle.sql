@@ -804,6 +804,7 @@ CREATE INDEX CONSTRAINTS_PT_INDEX ON KEY_CONSTRAINTS(PARENT_TBL_ID);
 @hive-txn-schema-2.1.1.oracle.sql;
 
 @041-HIVE-16556.oracle.sql;
+@042-HIVE-19605.oracle.sql;
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
 -- Schema changes for CDH-64045.
 CREATE TABLE CDH_VERSION (

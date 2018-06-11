@@ -834,6 +834,7 @@ CREATE INDEX `CONSTRAINTS_PARENT_TABLE_ID_INDEX` ON KEY_CONSTRAINTS (`PARENT_TBL
 SOURCE hive-txn-schema-2.1.1.mysql.sql;
 
 SOURCE 041-HIVE-16556.mysql.sql;
+SOURCE 042-HIVE-19605.mysql.sql;
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
 -- Schema changes for CDH-64045 introduced directly above.
 -- Table structure for CDH_VERSION
