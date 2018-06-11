@@ -36,8 +36,8 @@ public class BoneCPDataSourceProvider implements DataSourceProvider {
   private static final Logger LOG = LoggerFactory.getLogger(BoneCPDataSourceProvider.class);
 
   public static final String BONECP = "bonecp";
-  private static final String CONNECTION_TIMEOUT_PROPERTY= BONECP + ".connectionTimeoutInMs";
-  private static final String PARTITION_COUNT_PROPERTY= BONECP + ".partitionCount";
+  private static final String CONNECTION_TIMEOUT_PROPERTY= "bonecp.connectionTimeoutInMs";
+  private static final String PARTITION_COUNT_PROPERTY= "bonecp.partitionCount";
 
   @Override
   public DataSource create(Configuration hdpConfig) throws SQLException {
@@ -81,7 +81,13 @@ public class BoneCPDataSourceProvider implements DataSourceProvider {
   public boolean supports(Configuration configuration) {
     String poolingType =
         configuration.get(
-            HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE.varname);
-    return BONECP.equalsIgnoreCase(poolingType);
+            HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE.varname).toLowerCase();
+    if (BONECP.equals(poolingType)) {
+      int boneCpPropsNr = DataSourceProvider.getPrefixedProperties(configuration, BONECP).size();
+      LOG.debug("Found " + boneCpPropsNr + " nr. of bonecp specific configurations");
+      return boneCpPropsNr > 0;
+    }
+    LOG.debug("Configuration requested " + poolingType + " pooling, BoneCpDSProvider exiting");
+    return false;
   }
 }

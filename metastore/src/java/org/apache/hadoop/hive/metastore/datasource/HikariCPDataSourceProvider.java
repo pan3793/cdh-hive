@@ -35,8 +35,8 @@ public class HikariCPDataSourceProvider implements DataSourceProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(HikariCPDataSourceProvider.class);
 
-  public static final String HIKARI = "hikaricp";
-  private static final String CONNECTION_TIMEOUT_PROPERTY= HIKARI + ".connectionTimeout";
+  public static final String HIKARI = "hikari";
+  private static final String CONNECTION_TIMEOUT_PROPERTY= "hikari.connectionTimeout";
 
   @Override
   public DataSource create(Configuration hdpConfig) throws SQLException {
@@ -74,8 +74,14 @@ public class HikariCPDataSourceProvider implements DataSourceProvider {
 
   @Override
   public boolean supports(Configuration configuration) {
-    String poolingType = configuration.get(HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE.varname);
-    return HIKARI.equalsIgnoreCase(poolingType);
+    String poolingType = configuration.get(HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE.varname).toLowerCase();
+    if (HIKARI.equals(poolingType)) {
+      int hikariPropsNr = DataSourceProvider.getPrefixedProperties(configuration, HIKARI).size();
+      LOG.debug("Found " + hikariPropsNr + " nr. of hikari specific configurations");
+      return hikariPropsNr > 0;
+    }
+    LOG.debug("Configuration requested " + poolingType + " pooling, HikariCpDSProvider exiting");
+    return false;
   }
 
   private Properties replacePrefix(Properties props) {
