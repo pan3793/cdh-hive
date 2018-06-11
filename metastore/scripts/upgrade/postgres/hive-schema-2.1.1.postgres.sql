@@ -1471,6 +1471,7 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 \i hive-txn-schema-2.1.1.postgres.sql;
 
 \i 040-HIVE-16556.postgres.sql;
+\i 041-HIVE-19605.postgres.sql;
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
 -- Schema changes for CDH-64045 introduced directly above.
 -- Table structure for CDH_VERSION

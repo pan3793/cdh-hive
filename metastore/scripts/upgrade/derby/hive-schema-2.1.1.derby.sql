@@ -334,6 +334,7 @@ ALTER TABLE "APP"."SDS" ADD CONSTRAINT "SQL110318025505550" CHECK (IS_COMPRESSED
 RUN 'hive-txn-schema-2.1.1.derby.sql';
 
 RUN '041-HIVE-16556.derby.sql';
+RUN '042-HIVE-19605.derby.sql';
 -- Schema changes for HIVE-12274 induced directly above due to conversion to CLOB types
 -- Schema changes for CDH-64045.
 CREATE TABLE "APP"."CDH_VERSION" ("VER_ID" BIGINT NOT NULL, "SCHEMA_VERSION" VARCHAR(127) NOT NULL, "VERSION_COMMENT" VARCHAR(255));
