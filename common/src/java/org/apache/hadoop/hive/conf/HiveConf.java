@@ -739,13 +739,6 @@ public class HiveConf extends Configuration {
     METASTORE_CONNECTION_POOLING_TYPE("datanucleus.connectionPoolingType", "BONECP", new StringSet("BONECP", "DBCP",
       "HikariCP"),
         "Specify connection pool library for datanucleus"),
-    METASTORE_CONNECTION_POOLING_MAX_CONNECTIONS("datanucleus.connectionPool.maxPoolSize", 10,
-        "Specify the maximum number of connections in the connection pool. Note: The configured size will be used by\n" +
-        "2 connection pools (TxnHandler and ObjectStore). When configuring the max connection pool size, it is\n" +
-        "recommended to take into account the number of metastore instances and the number of HiveServer2 instances\n" +
-        "configured with embedded metastore. To get optimal performance, set config to meet the following condition\n"+
-        "(2 * pool_size * metastore_instances + 2 * pool_size * HS2_instances_with_embedded_metastore) = \n" +
-        "(2 * physical_core_count + hard_disk_count)."),
     // Workaround for DN bug on Postgres:
     // http://www.datanucleus.org/servlet/forum/viewthread_thread,7985_offset
     METASTORE_DATANUCLEUS_INIT_COL_INFO("datanucleus.rdbms.initializeColumnInfo", "NONE",
@@ -3213,8 +3206,7 @@ public class HiveConf extends Configuration {
             "hive.spark.client.rpc.sasl.mechanisms," +
             "hadoop.bin.path," +
             "yarn.bin.path," +
-            "spark.home," +
-            "bonecp.",
+            "spark.home",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
         METASTOREPWD.varname + "," + HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname

@@ -18,6 +18,8 @@
 package org.apache.hadoop.hive.metastore.txn;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.jolbox.bonecp.BoneCPConfig;
+import com.jolbox.bonecp.BoneCPDataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -30,8 +32,6 @@ import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.metastore.HouseKeeperService;
 import org.apache.hadoop.hive.metastore.Warehouse;
-import org.apache.hadoop.hive.metastore.datasource.BoneCPDataSourceProvider;
-import org.apache.hadoop.hive.metastore.datasource.DataSourceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
@@ -43,10 +43,12 @@ import org.apache.hadoop.hive.common.StringableMap;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConfUtil;
 import org.apache.hadoop.hive.metastore.api.*;
+import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.util.StringUtils;
 
 import javax.sql.DataSource;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -2932,15 +2934,30 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
   private static synchronized void setupJdbcConnectionPool(HiveConf conf) throws SQLException {
     if (connPool != null) return;
 
-    String driverUrl = DataSourceProvider.getMetastoreJdbcDriverUrl(conf);
-    String user = DataSourceProvider.getMetastoreJdbcUser(conf);
-    String passwd = DataSourceProvider.getMetastoreJdbcPasswd(conf);
+    String driverUrl = HiveConf.getVar(conf, HiveConf.ConfVars.METASTORECONNECTURLKEY);
+    String user = HiveConf.getVar(conf, HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME);
+    String passwd;
+    try {
+      passwd = ShimLoader.getHadoopShims().getPassword(conf,
+        HiveConf.ConfVars.METASTOREPWD.varname);
+    } catch (IOException err) {
+      throw new SQLException("Error getting metastore password", err);
+    }
     String connectionPooler = HiveConf.getVar(conf,
       HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE).toLowerCase();
 
     if ("bonecp".equals(connectionPooler)) {
+      BoneCPConfig config = new BoneCPConfig();
+      config.setJdbcUrl(driverUrl);
+      //if we are waiting for connection for 60s, something is really wrong
+      //better raise an error than hang forever
+      config.setConnectionTimeoutInMs(60000);
+      config.setMaxConnectionsPerPartition(10);
+      config.setPartitionCount(1);
+      config.setUser(user);
+      config.setPassword(passwd);
+      connPool = new BoneCPDataSource(config);
       doRetryOnConnPool = true;  // Enable retries to work around BONECP bug.
-      connPool = new BoneCPDataSourceProvider().create(conf);
     } else if ("dbcp".equals(connectionPooler)) {
       ObjectPool objectPool = new GenericObjectPool();
       ConnectionFactory connFactory = new DriverManagerConnectionFactory(driverUrl, user, passwd);
