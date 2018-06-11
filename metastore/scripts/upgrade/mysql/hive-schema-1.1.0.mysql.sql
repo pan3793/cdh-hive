@@ -826,6 +826,7 @@ SOURCE hive-txn-schema-0.13.0.mysql.sql;
 --  Cloudera specific metastore schema patches
 -- -------------------------------------------
 SOURCE 041-HIVE-16556.mysql.sql;
+SOURCE 042-HIVE-19605.mysql.sql;
 
 ALTER TABLE VERSION ADD COLUMN SCHEMA_VERSION_V2 VARCHAR(255);
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------

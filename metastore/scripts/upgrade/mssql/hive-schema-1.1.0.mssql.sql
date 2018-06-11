@@ -944,6 +944,7 @@ ALTER TABLE TXN_COMPONENTS  WITH CHECK ADD FOREIGN KEY(TC_TXNID) REFERENCES TXNS
 -- Cloudera specific metastore schema patches
 -- ------------------------------------------
 :r 026-HIVE-16556.mssql.sql
+:r 027-HIVE-19605.mssql.sql
 
 ALTER TABLE VERSION ADD SCHEMA_VERSION_V2 VARCHAR(255);
 -- -----------------------------------------------------------------------------------------------------------------------------------------

@@ -333,6 +333,7 @@ RUN 'hive-txn-schema-0.13.0.derby.sql';
 --- Cloudera specific metastore schema patches
 --- ------------------------------------------
 RUN '041-HIVE-16556.derby.sql';
+RUN '042-HIVE-19605.derby.sql';
 
 ALTER TABLE "APP".VERSION ADD COLUMN SCHEMA_VERSION_V2 VARCHAR(255);
 -- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------

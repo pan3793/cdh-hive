@@ -1492,6 +1492,7 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 -- Cloudera specific metastore schema patches
 -- ------------------------------------------
 \i 040-HIVE-16556.postgres.sql;
+\i 041-HIVE-19605.postgres.sql;
 
 ALTER TABLE "VERSION" ADD COLUMN "SCHEMA_VERSION_V2" VARCHAR(255);
 -- ------------------------------------------------------------------------------------------------------------------------------

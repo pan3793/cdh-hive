@@ -787,6 +787,7 @@ CREATE INDEX FUNC_RU_N49 ON FUNC_RU (FUNC_ID);
 -- Cloudera specific metastore schema patches
 -- ------------------------------------------
 @041-HIVE-16556.oracle.sql;
+@042-HIVE-19605.oracle.sql;
 
 ALTER TABLE VERSION ADD SCHEMA_VERSION_V2 VARCHAR2(255);
 -- -----------------------------------------------------------------
