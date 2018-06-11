@@ -18,6 +18,8 @@
 package org.apache.hadoop.hive.metastore.txn;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
@@ -30,7 +32,6 @@ import org.apache.hadoop.hive.metastore.HouseKeeperService;
 import org.apache.hadoop.hive.metastore.Warehouse;
 import org.apache.hadoop.hive.metastore.datasource.BoneCPDataSourceProvider;
 import org.apache.hadoop.hive.metastore.datasource.DataSourceProvider;
-import org.apache.hadoop.hive.metastore.datasource.HikariCPDataSourceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
@@ -1370,7 +1371,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
         lockInternal();
         dbConn = getDbConn(Connection.TRANSACTION_READ_COMMITTED);
         stmt = dbConn.createStatement();
-
+        
         long id = generateCompactionQueueId(stmt);
 
         StringBuilder buf = new StringBuilder("insert into COMPACTION_QUEUE (cq_id, cq_database, " +
@@ -1538,7 +1539,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
         if(rqst.isSetOperationType()) {
           ot = OpertaionType.fromDataOperationType(rqst.getOperationType());
         }
-
+        
         //what if a txn writes the same table > 1 time...(HIVE-9675) let's go with this for now, but really
         //need to not write this in the first place, i.e. make this delete not needed
         //see enqueueLockWithRetry() - that's where we write to TXN_COMPONENTS
@@ -2949,7 +2950,11 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
         new PoolableConnectionFactory(connFactory, objectPool, null, null, false, true);
       connPool = new PoolingDataSource(objectPool);
     } else if ("hikaricp".equals(connectionPooler)) {
-      connPool = new HikariCPDataSourceProvider().create(conf);
+      HikariConfig config = new HikariConfig();
+      config.setJdbcUrl(driverUrl);
+      config.setUsername(user);
+      config.setPassword(passwd);
+      connPool = new HikariDataSource(config);
     } else {
       throw new RuntimeException("Unknown JDBC connection pooling " + connectionPooler);
     }
