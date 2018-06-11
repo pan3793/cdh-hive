@@ -142,7 +142,6 @@ public class TestHiveConf {
     try {
       final String name = HiveConf.ConfVars.HIVE_CONF_HIDDEN_LIST.varname;
       conf.verifyAndSet(name, "");
-      conf.verifyAndSet(name + "postfix", "");
       Assert.fail("Setting config property " + name + " should fail");
     } catch (IllegalArgumentException e) {
       // the verifyAndSet in this case is expected to fail with the IllegalArgumentException

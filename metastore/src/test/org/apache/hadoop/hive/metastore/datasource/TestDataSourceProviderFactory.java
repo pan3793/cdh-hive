@@ -164,10 +164,4 @@ public class TestDataSourceProviderFactory {
     Assert.assertTrue(ds instanceof HikariDataSource);
     Assert.assertEquals(false, ((HikariDataSource)ds).isAllowPoolSuspension());
   }
-  @Test(expected = IllegalArgumentException.class)
-  public void testBoneCPConfigCannotBeSet() {
-    conf.addToRestrictList(BoneCPDataSourceProvider.BONECP);
-    conf.verifyAndSet(BoneCPDataSourceProvider.BONECP + ".disableJMX", "true");
-  }
-
 }
