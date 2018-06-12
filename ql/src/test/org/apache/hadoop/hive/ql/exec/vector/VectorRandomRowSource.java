@@ -899,6 +899,18 @@ public class VectorRandomRowSource {
     return hiveChar;
   }
 
+  public static String randomPrimitiveDateStringObject(Random r) {
+    Date randomDate = RandomTypeUtil.getRandDate(r);
+    String randomDateString = randomDate.toString();
+    return randomDateString;
+  }
+
+  public static String randomPrimitiveTimestampStringObject(Random r) {
+    Timestamp randomTimestamp = RandomTypeUtil.getRandTimestamp(r);
+    String randomTimestampString = randomTimestamp.toString();
+    return randomTimestampString;
+  }
+
   public static HiveChar getRandHiveChar(Random r, CharTypeInfo charTypeInfo) {
     return getRandHiveChar(r, charTypeInfo, "abcdefghijklmnopqrstuvwxyz");
   }

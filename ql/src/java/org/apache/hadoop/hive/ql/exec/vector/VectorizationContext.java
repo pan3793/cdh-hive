@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.exec.vector;
 
 import java.lang.reflect.Constructor;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -2175,6 +2176,64 @@ public class VectorizationContext {
     return createVectorExpression(cl, childrenAfterNot, VectorExpressionDescriptor.Mode.PROJECTION, returnType);
   }
 
+  private boolean isNullConst(ExprNodeDesc exprNodeDesc) {
+    //null constant could be typed so we need to check the value
+    if (exprNodeDesc instanceof ExprNodeConstantDesc &&
+        ((ExprNodeConstantDesc) exprNodeDesc).getValue() == null) {
+        return true;
+    }
+    return false;
+  }
+
+  private VectorExpression getWhenExpression(List<ExprNodeDesc> childExpr,
+      VectorExpressionDescriptor.Mode mode, TypeInfo returnType) throws HiveException {
+
+    if (mode != VectorExpressionDescriptor.Mode.PROJECTION) {
+      return null;
+    }
+    final int size = childExpr.size();
+
+    final ExprNodeDesc whenDesc = childExpr.get(0);
+    final ExprNodeDesc thenDesc = childExpr.get(1);
+    final ExprNodeDesc elseDesc;
+
+    if (size == 2) {
+      elseDesc = new ExprNodeConstantDesc(returnType, null);
+    } else if (size == 3) {
+      elseDesc = childExpr.get(2);
+    } else {
+      final GenericUDFWhen udfWhen = new GenericUDFWhen();
+      elseDesc = new ExprNodeGenericFuncDesc(returnType, udfWhen, udfWhen.getUdfName(),
+          childExpr.subList(2, childExpr.size()));
+    }
+
+    if (isNullConst(thenDesc)) {
+      final VectorExpression whenExpr = getVectorExpression(whenDesc, mode);
+      final VectorExpression elseExpr = getVectorExpression(elseDesc, mode);
+      final VectorExpression resultExpr = new IfExprNullColumn(
+          whenExpr.getOutputColumn(), elseExpr.getOutputColumn(),
+          ocm.allocateOutputColumn(returnType.getTypeName()));
+      resultExpr.setChildExpressions(new VectorExpression[] {whenExpr, elseExpr});
+      resultExpr.setOutputTypeInfo(returnType);
+      return resultExpr;
+    }
+    if (isNullConst(elseDesc)) {
+      final VectorExpression whenExpr = getVectorExpression(whenDesc, mode);
+      final VectorExpression thenExpr = getVectorExpression(thenDesc, mode);
+      final VectorExpression resultExpr = new IfExprColumnNull(
+          whenExpr.getOutputColumn(), thenExpr.getOutputColumn(),
+          ocm.allocateOutputColumn(returnType.getTypeName()));
+      resultExpr.setChildExpressions(new VectorExpression[] {whenExpr, thenExpr});
+      resultExpr.setOutputTypeInfo(returnType);
+      return resultExpr;
+    }
+    final GenericUDFIf genericUDFIf = new GenericUDFIf();
+    final List<ExprNodeDesc> ifChildExpr = Arrays.<ExprNodeDesc>asList(whenDesc, thenDesc, elseDesc);
+    final ExprNodeGenericFuncDesc exprNodeDesc =
+        new ExprNodeGenericFuncDesc(returnType, genericUDFIf, "if", ifChildExpr);
+    return getVectorExpression(exprNodeDesc, mode);
+  }
+
   /*
    * Return vector expression for a custom (i.e. not built-in) UDF.
    */
@@ -2317,20 +2376,20 @@ public class VectorizationContext {
 
   private Object getScalarValue(ExprNodeConstantDesc constDesc)
       throws HiveException {
-    if (constDesc.getTypeString().equalsIgnoreCase("String")) {
-      try {
-         byte[] bytes = ((String) constDesc.getValue()).getBytes("UTF-8");
-         return bytes;
-      } catch (Exception ex) {
-        throw new HiveException(ex);
-      }
-    } else if (constDesc.getTypeString().equalsIgnoreCase("boolean")) {
+    String typeString = constDesc.getTypeString();
+    if (typeString.equalsIgnoreCase("String")) {
+      return ((String) constDesc.getValue()).getBytes(StandardCharsets.UTF_8);
+    } else if (charTypePattern.matcher(typeString).matches()) {
+      return ((HiveChar) constDesc.getValue()).getStrippedValue().getBytes(StandardCharsets.UTF_8);
+    } else if (varcharTypePattern.matcher(typeString).matches()) {
+      return ((HiveVarchar) constDesc.getValue()).getValue().getBytes(StandardCharsets.UTF_8);
+    } else if (typeString.equalsIgnoreCase("boolean")) {
       if (constDesc.getValue().equals(Boolean.valueOf(true))) {
         return 1;
       } else {
         return 0;
       }
-    } else if (decimalTypePattern.matcher(constDesc.getTypeString()).matches()) {
+    } else if (decimalTypePattern.matcher(typeString).matches()) {
       return constDesc.getValue();
     } else {
       return constDesc.getValue();

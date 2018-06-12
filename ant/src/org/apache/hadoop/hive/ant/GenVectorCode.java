@@ -1370,17 +1370,6 @@ public class GenVectorCode extends Task {
 
   private void generateFilterTruncStringColumnBetween(String[] tdesc) throws IOException {
     String truncStringTypeName = tdesc[1];
-    String truncStringHiveType;
-    String truncStringHiveGetBytes;
-    if (truncStringTypeName == "Char") {
-      truncStringHiveType = "HiveChar";
-      truncStringHiveGetBytes = "getStrippedValue().getBytes()";
-    } else if (truncStringTypeName == "VarChar") {
-      truncStringHiveType = "HiveVarchar";
-      truncStringHiveGetBytes = "getValue().getBytes()";
-    } else {
-      throw new Error("Unsupported string type: " + truncStringTypeName);
-    }
     String optionalNot = tdesc[2];
     String className = "Filter" + truncStringTypeName + "Column" + (optionalNot.equals("!") ? "Not" : "")
         + "Between";
@@ -1388,8 +1377,6 @@ public class GenVectorCode extends Task {
     File templateFile = new File(joinPath(this.expressionTemplateDirectory, tdesc[0] + ".txt"));
     String templateString = readFile(templateFile);
     templateString = templateString.replaceAll("<TruncStringTypeName>", truncStringTypeName);
-    templateString = templateString.replaceAll("<TruncStringHiveType>", truncStringHiveType);
-    templateString = templateString.replaceAll("<TruncStringHiveGetBytes>", truncStringHiveGetBytes);
     templateString = templateString.replaceAll("<ClassName>", className);
     templateString = templateString.replaceAll("<OptionalNot>", optionalNot);
 
@@ -1848,17 +1835,6 @@ public class GenVectorCode extends Task {
   private void generateStringCompareTruncStringScalar(String[] tdesc, String className, String baseClassName)
       throws IOException {
     String truncStringTypeName = tdesc[1];
-    String truncStringHiveType;
-    String truncStringHiveGetBytes;
-    if (truncStringTypeName == "Char") {
-      truncStringHiveType = "HiveChar";
-      truncStringHiveGetBytes = "getStrippedValue().getBytes()";
-    } else if (truncStringTypeName == "VarChar") {
-      truncStringHiveType = "HiveVarchar";
-      truncStringHiveGetBytes = "getValue().getBytes()";
-    } else {
-      throw new Error("Unsupported string type: " + truncStringTypeName);
-    }
     String operatorSymbol = tdesc[3];
     // Read the template into a string;
     File templateFile = new File(joinPath(this.expressionTemplateDirectory, tdesc[0] + ".txt"));
@@ -1868,8 +1844,6 @@ public class GenVectorCode extends Task {
     templateString = templateString.replaceAll("<BaseClassName>", baseClassName);
     templateString = templateString.replaceAll("<OperatorSymbol>", operatorSymbol);
     templateString = templateString.replaceAll("<TruncStringTypeName>", truncStringTypeName);
-    templateString = templateString.replaceAll("<TruncStringHiveType>", truncStringHiveType);
-    templateString = templateString.replaceAll("<TruncStringHiveGetBytes>", truncStringHiveGetBytes);
     writeFile(templateFile.lastModified(), expressionOutputDirectory, expressionClassesDirectory,
         className, templateString);
   }
