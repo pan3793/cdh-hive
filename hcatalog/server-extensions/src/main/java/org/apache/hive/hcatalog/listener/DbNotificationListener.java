@@ -17,6 +17,7 @@
  */
 package org.apache.hive.hcatalog.listener;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.Index;
 import org.apache.hadoop.hive.metastore.events.AddIndexEvent;
@@ -151,7 +152,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
     Table before = tableEvent.getOldTable();
     Table after = tableEvent.getNewTable();
 
-    // Verify whether either the name of the db or table changed or location changed.
+    // Verify whether either the name of the db, the name of the table, the location or the object owner changed.
     if (before.getDbName() == null || after.getDbName() == null ||
         before.getTableName() == null || after.getTableName() == null) {
       return;
@@ -167,7 +168,9 @@ public class DbNotificationListener extends MetaStoreEventListener {
 
     if (before.getDbName().equals(after.getDbName()) &&
         before.getTableName().equals(after.getTableName()) &&
-        before.getSd().getLocation().equals(after.getSd().getLocation())) {
+        before.getSd().getLocation().equals(after.getSd().getLocation()) &&
+        before.getOwnerType() == after.getOwnerType() &&
+        StringUtils.equals(before.getOwner(), after.getOwner())) {
       // Nothing interesting changed
       return;
     }
