@@ -20,10 +20,6 @@ package org.apache.hadoop.hive.ql.exec.vector.expressions.gen;
 
 import org.apache.hadoop.hive.ql.exec.vector.expressions.gen.<BaseClassName>;
 
-import java.nio.charset.StandardCharsets;
-
-import org.apache.hadoop.hive.common.type.<TruncStringHiveType>;
-
 import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.StringExpr;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
@@ -39,10 +35,10 @@ public class <ClassName> extends <BaseClassName> {
 
   private static final long serialVersionUID = 1L;
 
-  public <ClassName>(<TruncStringHiveType> value, int colNum, int outputColumn) {
+  public <ClassName>(byte[] value, int colNum, int outputColumnNum) {
     this.colNum = colNum;
-    this.value = value.<TruncStringHiveGetBytes>;
-    this.outputColumn = outputColumn;
+    this.value = value;
+    this.outputColumn = outputColumnNum;
   }
 
   public <ClassName>() {

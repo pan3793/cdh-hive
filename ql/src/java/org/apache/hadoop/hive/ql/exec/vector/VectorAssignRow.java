@@ -356,53 +356,111 @@ public class VectorAssignRow {
           VectorizedBatchUtil.setNullColIsNullValue(batch.cols[projectionColumnNum], batchIndex);
           return;
         case BOOLEAN:
-          ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-              (((BooleanWritable) object).get() ? 1 : 0);
+          if (object instanceof Boolean) {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                (((Boolean) object) ? 1 : 0);
+          } else {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                (((BooleanWritable) object).get() ? 1 : 0);
+          }
           break;
         case BYTE:
-          ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-             ((ByteWritable) object).get();
+          if (object instanceof Byte) {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((Byte) object);
+          } else {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((ByteWritable) object).get();
+          }
           break;
         case SHORT:
-          ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-              ((ShortWritable) object).get();
+          if (object instanceof Short) {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((Short) object);
+          } else {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((ShortWritable) object).get();
+          }
           break;
         case INT:
-          ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-              ((IntWritable) object).get();
+          if (object instanceof Integer) {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((Integer) object);
+          } else {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((IntWritable) object).get();
+          }
           break;
         case LONG:
-          ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-              ((LongWritable) object).get();
+          if (object instanceof Long) {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((Long) object);
+          } else {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((LongWritable) object).get();
+          }
           break;
         case TIMESTAMP:
-          ((TimestampColumnVector) batch.cols[projectionColumnNum]).set(
-              batchIndex, ((TimestampWritable) object).getTimestamp());
+          if (object instanceof Timestamp) {
+            ((TimestampColumnVector) batch.cols[projectionColumnNum]).set(
+                batchIndex, ((Timestamp) object));
+          } else {
+            ((TimestampColumnVector) batch.cols[projectionColumnNum]).set(
+                batchIndex, ((TimestampWritable) object).getTimestamp());
+          }
           break;
         case DATE:
-          ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-             ((DateWritable) object).getDays();
+          if (object instanceof Date) {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                DateWritable.dateToDays((Date) object);
+          } else {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((DateWritable) object).getDays();
+          }
           break;
         case FLOAT:
-          ((DoubleColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-              ((FloatWritable) object).get();
+          if (object instanceof Float) {
+            ((DoubleColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((Float) object);
+          } else {
+            ((DoubleColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((FloatWritable) object).get();
+          }
           break;
         case DOUBLE:
-          ((DoubleColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-              ((DoubleWritable) object).get();
+          if (object instanceof Double) {
+            ((DoubleColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((Double) object);
+          } else {
+            ((DoubleColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((DoubleWritable) object).get();
+          }
           break;
         case BINARY:
           {
-            BytesWritable bw = (BytesWritable) object;
-            ((BytesColumnVector) batch.cols[projectionColumnNum]).setVal(
-                batchIndex, bw.getBytes(), 0, bw.getLength());
+            if (object instanceof byte[]) {
+              byte[] bytes = (byte[]) object;
+              ((BytesColumnVector) batch.cols[projectionColumnNum]).setVal(
+                  batchIndex, bytes, 0, bytes.length);
+            } else {
+              BytesWritable bw = (BytesWritable) object;
+              ((BytesColumnVector) batch.cols[projectionColumnNum]).setVal(
+                  batchIndex, bw.getBytes(), 0, bw.getLength());
+            }
           }
           break;
         case STRING:
           {
-            Text tw = (Text) object;
-            ((BytesColumnVector) batch.cols[projectionColumnNum]).setVal(
-                batchIndex, tw.getBytes(), 0, tw.getLength());
+            if (object instanceof String) {
+              String string = (String) object;
+              byte[] bytes = string.getBytes();
+              ((BytesColumnVector) batch.cols[projectionColumnNum]).setVal(
+                  batchIndex, bytes, 0, bytes.length);
+            } else {
+              Text tw = (Text) object;
+              ((BytesColumnVector) batch.cols[projectionColumnNum]).setVal(
+                  batchIndex, tw.getBytes(), 0, tw.getLength());
+            }
           }
           break;
         case VARCHAR:
@@ -454,12 +512,22 @@ public class VectorAssignRow {
           }
           break;
         case INTERVAL_YEAR_MONTH:
-          ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
-              ((HiveIntervalYearMonthWritable) object).getHiveIntervalYearMonth().getTotalMonths();
+          if (object instanceof HiveIntervalYearMonth) {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((HiveIntervalYearMonth) object).getTotalMonths();
+          } else {
+            ((LongColumnVector) batch.cols[projectionColumnNum]).vector[batchIndex] =
+                ((HiveIntervalYearMonthWritable) object).getHiveIntervalYearMonth().getTotalMonths();
+          }
           break;
         case INTERVAL_DAY_TIME:
-          ((IntervalDayTimeColumnVector) batch.cols[projectionColumnNum]).set(
-              batchIndex, ((HiveIntervalDayTimeWritable) object).getHiveIntervalDayTime());
+          if (object instanceof HiveIntervalDayTime) {
+            ((IntervalDayTimeColumnVector) batch.cols[projectionColumnNum]).set(
+                batchIndex, (HiveIntervalDayTime) object);
+          } else {
+            ((IntervalDayTimeColumnVector) batch.cols[projectionColumnNum]).set(
+                batchIndex, ((HiveIntervalDayTimeWritable) object).getHiveIntervalDayTime());
+          }
           break;
         default:
           throw new RuntimeException("Primitive category " + targetPrimitiveCategory.name() +
