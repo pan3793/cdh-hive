@@ -188,7 +188,12 @@ public class UDFToShort extends UDF {
     if (i == null) {
       return null;
     } else {
-      shortWritable.set((short) i.getSeconds());
+      final long longValue = i.getSeconds();
+      final short shortValue = (short) longValue;
+      if (shortValue != longValue) {
+        return null;
+      }
+      shortWritable.set(shortValue);
       return shortWritable;
     }
   }

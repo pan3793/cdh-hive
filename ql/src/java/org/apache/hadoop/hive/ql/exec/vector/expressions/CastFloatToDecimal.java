@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,26 +25,28 @@ import org.apache.hadoop.hive.ql.exec.vector.VectorExpressionDescriptor;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 
 /**
- * Cast input double to a decimal. Get target value scale from output column vector.
+ * Cast input float to a decimal. Get target value scale from output column vector.
  */
-public class CastDoubleToDecimal extends FuncDoubleToDecimal {
+public class CastFloatToDecimal extends FuncDoubleToDecimal {
 
   private static final long serialVersionUID = 1L;
 
-  public CastDoubleToDecimal() {
+  public CastFloatToDecimal() {
     super();
   }
 
-  public CastDoubleToDecimal(int inputColumn, int outputColumn) {
-    super(inputColumn, outputColumn);
+  public CastFloatToDecimal(int inputColumn, int outputColumnNum) {
+    super(inputColumn, outputColumnNum);
   }
 
   @Override
   protected void func(DecimalColumnVector outV, DoubleColumnVector inV, int i) {
-    String s = ((Double) inV.vector[i]).toString();
+    HiveDecimalWritable decWritable = outV.vector[i];
+
+    // TEMPORARY: In order to avoid a new version of storage-api, do the conversion here...
+    String s = Float.toString((float) inV.vector[i]);
     HiveDecimal result =
         HiveDecimal.enforcePrecisionScale(HiveDecimal.create(s), outV.precision, outV.scale);
-    HiveDecimalWritable decWritable = outV.vector[i];
     decWritable.set(result);
     if (result == null) {
       outV.isNull[i] = true;
