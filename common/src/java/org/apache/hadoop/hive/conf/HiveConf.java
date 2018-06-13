@@ -2705,6 +2705,10 @@ public class HiveConf extends Configuration {
         "1. chosen : use VectorUDFAdaptor for a small set of UDFs that were choosen for good performance\n" +
         "2. all    : use VectorUDFAdaptor for all UDFs"
     ),
+    HIVE_TEST_VECTOR_ADAPTOR_OVERRIDE("hive.test.vectorized.adaptor.override", false,
+        "internal use only, used to force always using the VectorUDFAdaptor.\n" +
+        "The default is false, of course",
+        true),
     HIVE_VECTORIZATION_USE_CHECKED_EXPRESSIONS("hive.vectorized.use.checked.expressions", false,
         "This flag should be set to true to use overflow checked vector expressions when available.\n" +
         "For example, arithmetic expressions which can overflow the output data type can be evaluated using\n" +

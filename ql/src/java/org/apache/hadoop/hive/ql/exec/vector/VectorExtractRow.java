@@ -150,6 +150,20 @@ public class VectorExtractRow {
   }
 
   /*
+   * Initialize using an ObjectInspector array and a column projection array.
+   */
+  public void init(TypeInfo[] typeInfos, int[] projectedColumns)
+      throws HiveException {
+
+    final int count = typeInfos.length;
+    allocateArrays(count);
+
+    for (int i = 0; i < count; i++) {
+      initEntry(i, projectedColumns[i], typeInfos[i]);
+    }
+  }
+
+  /*
    * Initialize using data type names.
    * No projection -- the column range 0 .. types.size()-1
    */

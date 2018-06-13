@@ -34,6 +34,7 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hive.common.type.HiveChar;
@@ -178,6 +179,8 @@ public class VectorizationContext {
   }
 
   private HiveVectorAdaptorUsageMode hiveVectorAdaptorUsageMode;
+  private boolean testVectorAdaptorOverride;
+
   //when set to true use the overflow checked vector expressions
   private boolean useCheckedVectorExpressions;
 
@@ -185,6 +188,10 @@ public class VectorizationContext {
 
   private void setHiveConfVars(HiveConf hiveConf) {
     hiveVectorAdaptorUsageMode = HiveVectorAdaptorUsageMode.getHiveConfValue(hiveConf);
+
+    testVectorAdaptorOverride =
+        HiveConf.getBoolVar(hiveConf, ConfVars.HIVE_TEST_VECTOR_ADAPTOR_OVERRIDE);
+
     useCheckedVectorExpressions =
         HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.HIVE_VECTORIZATION_USE_CHECKED_EXPRESSIONS);
     adaptorSuppressEvaluateExceptions =
@@ -194,6 +201,9 @@ public class VectorizationContext {
 
   private void copyHiveConfVars(VectorizationContext vContextEnvironment) {
     hiveVectorAdaptorUsageMode = vContextEnvironment.hiveVectorAdaptorUsageMode;
+    testVectorAdaptorOverride = vContextEnvironment.testVectorAdaptorOverride;
+    useCheckedVectorExpressions = vContextEnvironment.useCheckedVectorExpressions;
+    adaptorSuppressEvaluateExceptions = vContextEnvironment.adaptorSuppressEvaluateExceptions;
   }
 
   // Convenient constructor for initial batch creation takes
@@ -548,8 +558,12 @@ public class VectorizationContext {
         // cast to decimal.
         List<ExprNodeDesc> childExpressions = getChildExpressionsWithImplicitCast(expr.getGenericUDF(),
             exprDesc.getChildren(), exprDesc.getTypeInfo());
-        ve = getGenericUdfVectorExpression(expr.getGenericUDF(),
-            childExpressions, mode, exprDesc.getTypeInfo());
+
+        // Are we forcing the usage of VectorUDFAdaptor for test purposes?
+        if (!testVectorAdaptorOverride) {
+          ve = getGenericUdfVectorExpression(expr.getGenericUDF(),
+              childExpressions, mode, exprDesc.getTypeInfo());
+        }
         if (ve == null) {
           // Ok, no vectorized class available.  No problem -- try to use the VectorUDFAdaptor
           // when configured.
@@ -804,7 +818,7 @@ public class VectorizationContext {
     return HiveDecimalUtils.getPrecisionForType(typeInfo);
   }
 
-  private GenericUDF getGenericUDFForCast(TypeInfo castType) throws HiveException {
+  public static GenericUDF getGenericUDFForCast(TypeInfo castType) throws HiveException {
     UDF udfClass = null;
     GenericUDF genericUdf = null;
     switch (((PrimitiveTypeInfo) castType).getPrimitiveCategory()) {
@@ -865,8 +879,10 @@ public class VectorizationContext {
       if (udfClass == null) {
         throw new HiveException("Could not add implicit cast for type "+castType.getTypeName());
       }
-      genericUdf = new GenericUDFBridge();
-      ((GenericUDFBridge) genericUdf).setUdfClassName(udfClass.getClass().getName());
+      GenericUDFBridge genericUDFBridge = new GenericUDFBridge();
+      genericUDFBridge.setUdfClassName(udfClass.getClass().getName());
+      genericUDFBridge.setUdfName(udfClass.getClass().getSimpleName());
+      genericUdf = genericUDFBridge;
     }
     if (genericUdf instanceof SettableUDF) {
       ((SettableUDF) genericUdf).setTypeInfo(castType);
@@ -1898,7 +1914,9 @@ public class VectorizationContext {
     }
     if (isIntFamily(inputType)) {
       return createVectorExpression(CastLongToDecimal.class, childExpr, VectorExpressionDescriptor.Mode.PROJECTION, returnType);
-    } else if (isFloatFamily(inputType)) {
+    } else if (inputType.equals("float")) {
+      return createVectorExpression(CastFloatToDecimal.class, childExpr, VectorExpressionDescriptor.Mode.PROJECTION, returnType);
+    } else if (inputType.equals("double")) {
       return createVectorExpression(CastDoubleToDecimal.class, childExpr, VectorExpressionDescriptor.Mode.PROJECTION, returnType);
     } else if (decimalTypePattern.matcher(inputType).matches()) {
       return createVectorExpression(CastDecimalToDecimal.class, childExpr, VectorExpressionDescriptor.Mode.PROJECTION,

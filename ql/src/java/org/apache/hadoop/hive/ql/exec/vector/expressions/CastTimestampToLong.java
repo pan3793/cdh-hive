@@ -23,12 +23,15 @@ import java.util.Arrays;
 import org.apache.hadoop.hive.ql.exec.vector.*;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
+import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 
 public class CastTimestampToLong extends VectorExpression {
   private static final long serialVersionUID = 1L;
 
   private int colNum;
   private int outputColumn;
+  private transient PrimitiveCategory integerPrimitiveCategory;
 
   public CastTimestampToLong(int colNum, int outputColumn) {
     this();
@@ -38,6 +41,36 @@ public class CastTimestampToLong extends VectorExpression {
 
   public CastTimestampToLong() {
     super();
+  }
+
+  private void setIntegerFromTimestamp(TimestampColumnVector inputColVector,
+      LongColumnVector outputColVector, int batchIndex) {
+
+    final long longValue = inputColVector.getTimestampAsLong(batchIndex);
+
+    boolean isInRange;
+    switch (integerPrimitiveCategory) {
+    case BYTE:
+      isInRange = ((byte) longValue) == longValue;
+      break;
+    case SHORT:
+      isInRange = ((short) longValue) == longValue;
+      break;
+    case INT:
+      isInRange = ((int) longValue) == longValue;
+      break;
+    case LONG:
+      isInRange = true;
+      break;
+    default:
+      throw new RuntimeException("Unexpected integer primitive category " + integerPrimitiveCategory);
+    }
+    if (isInRange) {
+      outputColVector.vector[batchIndex] = longValue;
+    } else {
+      outputColVector.isNull[batchIndex] = true;
+      outputColVector.noNulls = false;
+    }
   }
 
   @Override
@@ -53,7 +86,6 @@ public class CastTimestampToLong extends VectorExpression {
     boolean[] inputIsNull = inputColVector.isNull;
     boolean[] outputIsNull = outputColVector.isNull;
     int n = batch.size;
-    long[] outputVector = outputColVector.vector;
 
     // return immediately if batch is empty
     if (n == 0) {
@@ -66,7 +98,7 @@ public class CastTimestampToLong extends VectorExpression {
     if (inputColVector.isRepeating) {
       if (inputColVector.noNulls || !inputIsNull[0]) {
         outputIsNull[0] = false;
-        outputVector[0] = inputColVector.getTimestampAsLong(0);
+        setIntegerFromTimestamp(inputColVector, outputColVector, 0);
       } else {
         outputIsNull[0] = true;
         outputColVector.noNulls = false;
@@ -85,12 +117,12 @@ public class CastTimestampToLong extends VectorExpression {
            final int i = sel[j];
            // Set isNull before call in case it changes it mind.
            outputIsNull[i] = false;
-           outputVector[i] =  inputColVector.getTimestampAsLong(i);
+           setIntegerFromTimestamp(inputColVector, outputColVector, i);
          }
         } else {
           for(int j = 0; j != n; j++) {
             final int i = sel[j];
-            outputVector[i] =  inputColVector.getTimestampAsLong(i);
+            setIntegerFromTimestamp(inputColVector, outputColVector, i);
           }
         }
       } else {
@@ -102,7 +134,7 @@ public class CastTimestampToLong extends VectorExpression {
           outputColVector.noNulls = true;
         }
         for(int i = 0; i != n; i++) {
-          outputVector[i] =  inputColVector.getTimestampAsLong(i);
+          setIntegerFromTimestamp(inputColVector, outputColVector, i);
         }
       }
     } else /* there are NULLs in the inputColVector */ {
@@ -115,20 +147,20 @@ public class CastTimestampToLong extends VectorExpression {
         for(int j = 0; j != n; j++) {
           int i = sel[j];
           if (!inputIsNull[i]) {
-            inputIsNull[i] = false;
-            outputVector[i] =  inputColVector.getTimestampAsLong(i);
+            outputIsNull[i] = false;
+            setIntegerFromTimestamp(inputColVector, outputColVector, i);
           } else {
-            inputIsNull[i] = true;
+            outputIsNull[i] = true;
             outputColVector.noNulls = false;
           }
         }
       } else {
         for(int i = 0; i != n; i++) {
           if (!inputIsNull[i]) {
-            inputIsNull[i] = false;
-            outputVector[i] =  inputColVector.getTimestampAsLong(i);
+            outputIsNull[i] = false;
+            setIntegerFromTimestamp(inputColVector, outputColVector, i);
           } else {
-            inputIsNull[i] = true;
+            outputIsNull[i] = true;
             outputColVector.noNulls = false;
           }
         }
@@ -151,6 +183,20 @@ public class CastTimestampToLong extends VectorExpression {
 
   public void setOutputColumn(int outputColumn) {
     this.outputColumn = outputColumn;
+  }
+
+  /**
+   * This method is CDH specific override as a workaround to initialize the transient field
+   * This method is not present in upstream because upstream has a transientInit method which was
+   * introduced as part of a bigger feature. transientInit is used to initialize the transient fields
+   * in upstream. In case of CDH this method is equivalent since it re-initializes transient field
+   * whenever outputTypeInfo is set
+   * @param outputTypeInfo
+   */
+  @Override
+  public void setOutputTypeInfo(TypeInfo outputTypeInfo) {
+    this.outputTypeInfo = outputTypeInfo;
+    integerPrimitiveCategory = ((PrimitiveTypeInfo) outputTypeInfo).getPrimitiveCategory();
   }
 
   @Override
