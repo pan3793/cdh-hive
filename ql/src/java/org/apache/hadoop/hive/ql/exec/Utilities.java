@@ -912,7 +912,8 @@ public final class Utilities {
   private static class CommonTokenSerializer extends com.esotericsoftware.kryo.Serializer<CommonToken> {
     @Override
     public CommonToken read(Kryo kryo, Input input, Class<CommonToken> clazz) {
-      return new CommonToken(input.readInt(), input.readString());
+      return new CommonToken(
+          input.readInt(), StringInternUtils.internIfNotNull(input.readString()));
     }
 
     @Override

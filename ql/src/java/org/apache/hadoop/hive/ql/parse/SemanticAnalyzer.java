@@ -25,8 +25,6 @@ import java.io.Serializable;
 import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -54,8 +52,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.ObjectPair;
-import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.StatsSetupConst.StatDB;
+import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
@@ -210,7 +208,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.hive.shims.HadoopShims;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.Text;
@@ -303,6 +300,15 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
   /** Not thread-safe. */
   final ASTSearcher astSearcher = new ASTSearcher();
+
+  private static final CommonToken SELECTDI_TOKEN =
+      new ImmutableCommonToken(HiveParser.TOK_SELECTDI, "TOK_SELECTDI");
+  private static final CommonToken SELEXPR_TOKEN =
+      new ImmutableCommonToken(HiveParser.TOK_SELEXPR, "TOK_SELEXPR");
+  private static final CommonToken TABLEORCOL_TOKEN =
+      new ImmutableCommonToken(HiveParser.TOK_TABLE_OR_COL, "TOK_TABLE_OR_COL");
+  private static final CommonToken DOT_TOKEN =
+      new ImmutableCommonToken(HiveParser.DOT, ".");
 
   static class Phase1Ctx {
     String dest;
@@ -12430,9 +12436,10 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   protected boolean deleting() {
     return false;
   }
+
   public static ASTNode genSelectDIAST(RowResolver rr) {
     HashMap<String, LinkedHashMap<String, ColumnInfo>> map = rr.getRslvMap();
-    ASTNode selectDI = new ASTNode(new CommonToken(HiveParser.TOK_SELECTDI, "TOK_SELECTDI"));
+    ASTNode selectDI = new ASTNode(SELECTDI_TOKEN);
     for (String tabAlias : map.keySet()) {
       for (Entry<String, ColumnInfo> entry : map.get(tabAlias).entrySet()) {
         selectDI.addChild(buildSelExprSubTree(tabAlias, entry.getKey()));
@@ -12441,10 +12448,11 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     return selectDI;
   }
   private static ASTNode buildSelExprSubTree(String tableAlias, String col) {
-    ASTNode selexpr = new ASTNode(new CommonToken(HiveParser.TOK_SELEXPR, "TOK_SELEXPR"));
-    ASTNode tableOrCol = new ASTNode(new CommonToken(HiveParser.TOK_TABLE_OR_COL,
-        "TOK_TABLE_OR_COL"));
-    ASTNode dot = new ASTNode(new CommonToken(HiveParser.DOT, "."));
+    tableAlias = StringInternUtils.internIfNotNull(tableAlias);
+    col = StringInternUtils.internIfNotNull(col);
+    ASTNode selexpr = new ASTNode(SELEXPR_TOKEN);
+    ASTNode tableOrCol = new ASTNode(TABLEORCOL_TOKEN);
+    ASTNode dot = new ASTNode(DOT_TOKEN);
     tableOrCol.addChild(new ASTNode(new CommonToken(HiveParser.Identifier, tableAlias)));
     dot.addChild(tableOrCol);
     dot.addChild(new ASTNode(new CommonToken(HiveParser.Identifier, col)));

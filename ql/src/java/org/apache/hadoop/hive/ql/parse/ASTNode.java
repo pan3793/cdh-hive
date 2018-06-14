@@ -22,9 +22,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
+import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.ql.lib.Node;
 
 /**
@@ -39,17 +42,16 @@ public class ASTNode extends CommonTree implements Node,Serializable {
   private transient ASTNode rootNode;
   private transient boolean isValidASTStr;
 
+  private static final Interner<Token> TOKEN_CACHE = Interners.newWeakInterner();
+
   public ASTNode() {
   }
 
   /**
-   * Constructor.
-   *
-   * @param t
-   *          Token for the CommonTree Node
+   * @param t  Token for the CommonTree Node
    */
   public ASTNode(Token t) {
-    super(t);
+    super(internToken(t));
   }
 
   public ASTNode(ASTNode node) {
@@ -224,6 +226,13 @@ public class ASTNode extends CommonTree implements Node,Serializable {
   }
 
   @Override
+  protected List createChildrenList() {
+    // Measurements show that in most situations the number of children is small.
+    // Avoid wasting memory by creating ArrayList with the default capacity of 10.
+    return new ArrayList(2);
+  }
+
+  @Override
   public String toStringTree() {
 
     // The root might have changed because of tree modifications.
@@ -267,5 +276,17 @@ public class ASTNode extends CommonTree implements Node,Serializable {
     }
     endIndx =  rootNode.getMemoizedStringLen();
     return rootNode.getMemoizedSubString(startIndx, endIndx);
+  }
+
+  private static Token internToken(Token t) {
+    if (t == null) {
+      return null;
+    }
+    if (t instanceof ImmutableCommonToken) {
+      return TOKEN_CACHE.intern(t);
+    } else {
+      t.setText(StringInternUtils.internIfNotNull(t.getText()));
+      return t;
+    }
   }
 }
