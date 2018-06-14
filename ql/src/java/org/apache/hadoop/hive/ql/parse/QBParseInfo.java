@@ -30,6 +30,7 @@ import java.util.Set;
 import org.antlr.runtime.tree.Tree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.tableSpec;
 
 /**
@@ -140,7 +141,7 @@ public class QBParseInfo {
     destToWindowingExprs = new LinkedHashMap<String, LinkedHashMap<String, ASTNode>>();
     destToDistinctFuncExprs = new HashMap<String, List<ASTNode>>();
 
-    this.alias = alias;
+    this.alias = StringInternUtils.internIfNotNull(alias);
     this.isSubQ = isSubQ;
     outerQueryLimit = -1;
 
@@ -439,7 +440,7 @@ public class QBParseInfo {
   }
 
   public void setExprToColumnAlias(ASTNode expr, String alias) {
-    exprToColumnAlias.put(expr,  alias);
+    exprToColumnAlias.put(expr, StringInternUtils.internIfNotNull(alias));
   }
 
   public void setDestLimit(String dest, Integer limit) {
