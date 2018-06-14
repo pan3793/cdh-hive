@@ -40,13 +40,13 @@ DESCRIBE avro_extschema_literal;
 ALTER TABLE avro_extschema_literal UNSET TBLPROPERTIES ('avro.schema.literal');
 DESCRIBE avro_extschema_literal;
 
-dfs -cp ${system:hive.root}data/files/grad.avsc ${system:test.tmp.dir}/;
+dfs -cp ${system:hive.root}data/files/grad.avsc ${system:test.tmp.dir}/gradalter.avsc;
 dfs -cp ${system:hive.root}data/files/grad2.avsc ${system:test.tmp.dir}/;
 
 
 CREATE TABLE avro_extschema_url
  STORED AS AVRO
- TBLPROPERTIES ('avro.schema.url'='${system:test.tmp.dir}/grad.avsc');
+ TBLPROPERTIES ('avro.schema.url'='${system:test.tmp.dir}/gradalter.avsc');
 DESCRIBE avro_extschema_url;
 
 ALTER TABLE avro_extschema_url SET
@@ -72,7 +72,7 @@ DESCRIBE avro_extschema_url;
 CREATE TABLE avro_extschema_url_parted
  PARTITIONED BY (p1 string, p2 string)
  STORED AS AVRO
- TBLPROPERTIES ('avro.schema.url'='${system:test.tmp.dir}/grad.avsc');
+ TBLPROPERTIES ('avro.schema.url'='${system:test.tmp.dir}/gradalter.avsc');
 ALTER TABLE avro_extschema_url_parted
  ADD PARTITION (p1=2017, p2=11);
 ALTER TABLE avro_extschema_url_parted
