@@ -420,7 +420,7 @@ public class HBaseStore implements RawStore {
   }
 
   @Override
-  public boolean doesPartitionExist(String dbName, String tableName, List<String> part_vals) throws
+  public boolean doesPartitionExist(String dbName, String tableName, List<FieldSchema> partKeys, List<String> part_vals) throws
       MetaException, NoSuchObjectException {
     boolean commit = false;
     openTransaction();

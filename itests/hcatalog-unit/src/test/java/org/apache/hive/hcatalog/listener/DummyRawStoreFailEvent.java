@@ -34,6 +34,7 @@ import org.apache.hadoop.hive.metastore.api.AggrStats;
 import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
 import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
 import org.apache.hadoop.hive.metastore.api.Database;
+import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.FileMetadataExprType;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.HiveObjectPrivilege;
@@ -742,8 +743,9 @@ public class DummyRawStoreFailEvent implements RawStore, Configurable {
 
   @Override
   public boolean doesPartitionExist(String dbName, String tableName,
-                                    List<String> partVals) throws MetaException, NoSuchObjectException {
-    return objectStore.doesPartitionExist(dbName, tableName, partVals);
+                                    List<FieldSchema> partKeys, List<String> partVals)
+      throws MetaException, NoSuchObjectException {
+    return objectStore.doesPartitionExist(dbName, tableName, partKeys, partVals);
   }
 
   @Override

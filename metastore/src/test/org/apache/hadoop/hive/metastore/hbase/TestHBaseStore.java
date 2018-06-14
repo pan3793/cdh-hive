@@ -599,8 +599,8 @@ public class TestHBaseStore {
     Assert.assertEquals(1, p.getValuesSize());
     Assert.assertEquals("fred", p.getValues().get(0));
 
-    Assert.assertTrue(store.doesPartitionExist(DB, tableName, vals));
-    Assert.assertFalse(store.doesPartitionExist(DB, tableName, Arrays.asList("bob")));
+    Assert.assertTrue(store.doesPartitionExist(DB, tableName, table.getPartitionKeys(), vals));
+    Assert.assertFalse(store.doesPartitionExist(DB, tableName, table.getPartitionKeys(), Arrays.asList("bob")));
   }
 
   @Test
@@ -644,8 +644,8 @@ public class TestHBaseStore {
     Assert.assertEquals("fred", p.getValues().get(0));
     Assert.assertEquals(startTime + 10, p.getLastAccessTime());
 
-    Assert.assertTrue(store.doesPartitionExist(DB, tableName, vals));
-    Assert.assertFalse(store.doesPartitionExist(DB, tableName, Arrays.asList("bob")));
+    Assert.assertTrue(store.doesPartitionExist(DB, tableName, table.getPartitionKeys(), vals));
+    Assert.assertFalse(store.doesPartitionExist(DB, tableName, table.getPartitionKeys(), Arrays.asList("bob")));
   }
 
   @Test
