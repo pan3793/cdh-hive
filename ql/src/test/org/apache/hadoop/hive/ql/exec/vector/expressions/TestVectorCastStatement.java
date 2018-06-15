@@ -35,6 +35,7 @@ import org.apache.hadoop.hive.ql.exec.vector.VectorizationContext;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedBatchUtil;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx;
+import org.apache.hadoop.hive.ql.exec.vector.VectorRandomRowSource.GenerationSpec;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.IdentityExpression;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
@@ -251,21 +252,6 @@ public class TestVectorCastStatement {
     TypeInfo typeInfo = TypeInfoUtils.getTypeInfoFromTypeString(typeName);
     PrimitiveCategory primitiveCategory = ((PrimitiveTypeInfo) typeInfo).getPrimitiveCategory();
 
-    List<String> explicitTypeNameList = new ArrayList<String>();
-    explicitTypeNameList.add(typeName);
-
-    VectorRandomRowSource rowSource = new VectorRandomRowSource();
-
-    rowSource.initExplicitSchema(
-        random, explicitTypeNameList, /* maxComplexDepth */ 0, /* allowNull */ true);
-
-    List<String> columns = new ArrayList<String>();
-    columns.add("col0");
-    ExprNodeColumnDesc col1Expr = new ExprNodeColumnDesc(typeInfo, "col0", "table", false);
-
-    List<ExprNodeDesc> children = new ArrayList<ExprNodeDesc>();
-    children.add(col1Expr);
-
     //----------------------------------------------------------------------------------------------
 
     String targetTypeName;
@@ -283,52 +269,34 @@ public class TestVectorCastStatement {
 
     //----------------------------------------------------------------------------------------------
 
-    String[] columnNames = columns.toArray(new String[0]);
-
-    Object[][] randomRows = rowSource.randomRows(100000);
-
+    GenerationSpec generationSpec;
     if (needsValidDataTypeData(targetTypeInfo) &&
         (primitiveCategory == PrimitiveCategory.STRING ||
          primitiveCategory == PrimitiveCategory.CHAR ||
          primitiveCategory == PrimitiveCategory.VARCHAR)) {
-
-      // Regenerate string family with valid data for target data type.
-      final int rowCount = randomRows.length;
-      for (int i = 0; i < rowCount; i++) {
-        Object object = randomRows[i][0];
-        if (object == null) {
-          continue;
-        }
-        String string =
-            VectorRandomRowSource.randomPrimitiveObject(
-                random, (PrimitiveTypeInfo) targetTypeInfo).toString();
-        Object newObject;
-        switch (primitiveCategory) {
-        case STRING:
-          newObject = new Text(string);
-          break;
-        case CHAR:
-          {
-            HiveChar hiveChar =
-                new HiveChar(
-                    string, ((CharTypeInfo) typeInfo).getLength());
-            newObject = new HiveCharWritable(hiveChar);
-          }
-          break;
-        case VARCHAR:
-          {
-            HiveVarchar hiveVarchar =
-                new HiveVarchar(
-                    string, ((VarcharTypeInfo) typeInfo).getLength());
-            newObject = new HiveVarcharWritable(hiveVarchar);
-          }
-          break;
-        default:
-          throw new RuntimeException("Unexpected string family category " + primitiveCategory);
-        }
-        randomRows[i][0] = newObject;
-      }
+      generationSpec = GenerationSpec.createStringFamilyOtherTypeValue(typeInfo, targetTypeInfo);
+    } else {
+      generationSpec = GenerationSpec.createSameType(typeInfo);
     }
+
+    List<GenerationSpec> generationSpecList = new ArrayList<GenerationSpec>();
+    generationSpecList.add(generationSpec);
+
+    VectorRandomRowSource rowSource = new VectorRandomRowSource();
+
+    rowSource.initGenerationSpecSchema(
+        random, generationSpecList, /* maxComplexDepth */ 0, /* allowNull */ true);
+
+    List<String> columns = new ArrayList<String>();
+    columns.add("col0");
+    ExprNodeColumnDesc col1Expr = new ExprNodeColumnDesc(typeInfo, "col0", "table", false);
+
+    List<ExprNodeDesc> children = new ArrayList<ExprNodeDesc>();
+    children.add(col1Expr);
+
+    String[] columnNames = columns.toArray(new String[0]);
+
+    Object[][] randomRows = rowSource.randomRows(100000);
 
     VectorRandomBatchSource batchSource =
         VectorRandomBatchSource.createInterestingBatches(
