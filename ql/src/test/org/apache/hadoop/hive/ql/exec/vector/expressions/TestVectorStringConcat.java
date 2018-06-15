@@ -29,6 +29,8 @@ import org.apache.hadoop.hive.common.type.HiveVarchar;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.ExprNodeEvaluator;
 import org.apache.hadoop.hive.ql.exec.ExprNodeEvaluatorFactory;
+import org.apache.hadoop.hive.ql.exec.FunctionInfo;
+import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
 import org.apache.hadoop.hive.ql.exec.vector.VectorExtractRow;
 import org.apache.hadoop.hive.ql.exec.vector.VectorRandomBatchSource;
 import org.apache.hadoop.hive.ql.exec.vector.VectorRandomRowSource;
@@ -37,6 +39,7 @@ import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx;
 import org.apache.hadoop.hive.ql.exec.vector.VectorRandomRowSource.GenerationSpec;
 import org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpression;
+import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.ExprNodeColumnDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeConstantDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
@@ -66,45 +69,36 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class TestVectorDateAddSub {
+public class TestVectorStringConcat {
 
   @Test
-  public void testDate() throws Exception {
+  public void testString() throws Exception {
     Random random = new Random(12882);
 
-    doDateAddSubTests(random, "date", "smallint", true);
-    doDateAddSubTests(random, "date", "smallint", false);
-    doDateAddSubTests(random, "date", "int", true);
-    doDateAddSubTests(random, "date", "int", false);
+    doStringConcatTests(random, "string", "string");
   }
 
   @Test
-  public void testTimestamp() throws Exception {
+  public void testChar() throws Exception {
     Random random = new Random(12882);
 
-    doDateAddSubTests(random, "timestamp", "smallint", true);
-    doDateAddSubTests(random, "timestamp", "smallint", false);
-    doDateAddSubTests(random, "timestamp", "int", true);
-    doDateAddSubTests(random, "timestamp", "int", false);
+    doStringConcatTests(random, "char(20)", "char(10)");
+    doStringConcatTests(random, "char(20)", "string");
+    doStringConcatTests(random, "char(20)", "varchar(10)");
+    doStringConcatTests(random, "string", "char(10)");
   }
 
   @Test
-  public void testStringFamily() throws Exception {
+  public void testVarchar() throws Exception {
     Random random = new Random(12882);
 
-    doDateAddSubTests(random, "string", "smallint", true);
-    doDateAddSubTests(random, "string", "smallint", false);
-    doDateAddSubTests(random, "string", "int", true);
-    doDateAddSubTests(random, "string", "int", false);
-
-    doDateAddSubTests(random, "char(20)", "int", true);
-    doDateAddSubTests(random, "char(20)", "int", false);
-
-    doDateAddSubTests(random, "varchar(20)", "int", true);
-    doDateAddSubTests(random, "varchar(20)", "int", false);
+    doStringConcatTests(random, "varchar(20)", "varchar(10)");
+    doStringConcatTests(random, "varchar(20)", "string");
+    doStringConcatTests(random, "varchar(20)", "char(10)");
+    doStringConcatTests(random, "string", "varchar(10)");
   }
 
-  public enum DateAddSubTestMode {
+  public enum StringConcatTestMode {
     ROW_MODE,
     ADAPTOR,
     VECTOR_EXPRESSION;
@@ -120,59 +114,29 @@ public class TestVectorDateAddSub {
     static final int count = values().length;
   }
 
-  private void doDateAddSubTests(Random random, String dateTimeStringTypeName,
-      String integerTypeName, boolean isAdd)
+  private void doStringConcatTests(Random random, String stringTypeName1, String stringTypeName2)
           throws Exception {
     for (ColumnScalarMode columnScalarMode : ColumnScalarMode.values()) {
-      doDateAddSubTestsWithDiffColumnScalar(
-          random, dateTimeStringTypeName, integerTypeName, columnScalarMode, isAdd);
+      doStringConcatTestsWithDiffColumnScalar(
+          random, stringTypeName1, stringTypeName2, columnScalarMode);
     }
   }
 
-  private Object smallerRange(Random random,
-      PrimitiveCategory integerPrimitiveCategory, boolean wantWritable) {
-
-    switch (integerPrimitiveCategory) {
-    case SHORT:
-      {
-        short newRandomShort = (short) random.nextInt(20000);
-        if (wantWritable) {
-          return new ShortWritable(newRandomShort);
-        } else {
-          return newRandomShort;
-        }
-      }
-    case INT:
-      {
-        int newRandomInt = random.nextInt(40000);
-        if (wantWritable) {
-          return new IntWritable(newRandomInt);
-        } else {
-          return newRandomInt;
-        }
-      }
-    default:
-      throw new RuntimeException("Unsupported integer category " + integerPrimitiveCategory);
-    }
-  }
-
-  private void doDateAddSubTestsWithDiffColumnScalar(Random random, String dateTimeStringTypeName,
-      String integerTypeName, ColumnScalarMode columnScalarMode, boolean isAdd)
+  private void doStringConcatTestsWithDiffColumnScalar(Random random,
+      String stringTypeName1, String stringTypeName2, ColumnScalarMode columnScalarMode)
           throws Exception {
 
-    TypeInfo dateTimeStringTypeInfo =
-        TypeInfoUtils.getTypeInfoFromTypeString(dateTimeStringTypeName);
-    PrimitiveCategory dateTimeStringPrimitiveCategory =
-        ((PrimitiveTypeInfo) dateTimeStringTypeInfo).getPrimitiveCategory();
-    boolean isStringFamily =
-        (dateTimeStringPrimitiveCategory == PrimitiveCategory.STRING ||
-         dateTimeStringPrimitiveCategory == PrimitiveCategory.CHAR ||
-         dateTimeStringPrimitiveCategory == PrimitiveCategory.VARCHAR);
+    TypeInfo stringTypeInfo1 =
+        TypeInfoUtils.getTypeInfoFromTypeString(stringTypeName1);
+    PrimitiveCategory stringPrimitiveCategory1 =
+        ((PrimitiveTypeInfo) stringTypeInfo1).getPrimitiveCategory();
 
-    TypeInfo integerTypeInfo =
-        TypeInfoUtils.getTypeInfoFromTypeString(integerTypeName);
-    PrimitiveCategory integerPrimitiveCategory =
-        ((PrimitiveTypeInfo) integerTypeInfo).getPrimitiveCategory();
+    TypeInfo stringTypeInfo2 =
+        TypeInfoUtils.getTypeInfoFromTypeString(stringTypeName2);
+    PrimitiveCategory stringPrimitiveCategory2 =
+        ((PrimitiveTypeInfo) stringTypeInfo2).getPrimitiveCategory();
+
+    String functionName = "concat";
 
     List<GenerationSpec> generationSpecList = new ArrayList<GenerationSpec>();
 
@@ -181,48 +145,32 @@ public class TestVectorDateAddSub {
     ExprNodeDesc col1Expr;
     if (columnScalarMode == ColumnScalarMode.COLUMN_COLUMN ||
         columnScalarMode == ColumnScalarMode.COLUMN_SCALAR) {
-      if (!isStringFamily) {
-        generationSpecList.add(
-            GenerationSpec.createSameType(dateTimeStringTypeInfo));
-      } else {
-        generationSpecList.add(
-            GenerationSpec.createStringFamilyOtherTypeValue(
-                dateTimeStringTypeInfo, TypeInfoFactory.dateTypeInfo));
-      }
+      generationSpecList.add(
+          GenerationSpec.createSameType(stringTypeInfo1));
 
       String columnName = "col" + (columnNum++);
-      col1Expr = new ExprNodeColumnDesc(dateTimeStringTypeInfo, columnName, "table", false);
+      col1Expr = new ExprNodeColumnDesc(stringTypeInfo1, columnName, "table", false);
       columns.add(columnName);
     } else {
-      Object scalar1Object;
-      if (!isStringFamily) {
-        scalar1Object =
+      Object scalar1Object =
           VectorRandomRowSource.randomPrimitiveObject(
-              random, (PrimitiveTypeInfo) dateTimeStringTypeInfo);
-      } else {
-        scalar1Object =
-            VectorRandomRowSource.randomStringFamilyOtherTypeValue(
-                random, dateTimeStringTypeInfo, TypeInfoFactory.dateTypeInfo, false);
-      }
-      col1Expr = new ExprNodeConstantDesc(dateTimeStringTypeInfo, scalar1Object);
+              random, (PrimitiveTypeInfo) stringTypeInfo1);
+      col1Expr = new ExprNodeConstantDesc(stringTypeInfo1, scalar1Object);
     }
     ExprNodeDesc col2Expr;
     if (columnScalarMode == ColumnScalarMode.COLUMN_COLUMN ||
         columnScalarMode == ColumnScalarMode.SCALAR_COLUMN) {
       generationSpecList.add(
-          GenerationSpec.createSameType(integerTypeInfo));
+          GenerationSpec.createSameType(stringTypeInfo2));
 
       String columnName = "col" + (columnNum++);
-      col2Expr = new ExprNodeColumnDesc(integerTypeInfo, columnName, "table", false);
+      col2Expr = new ExprNodeColumnDesc(stringTypeInfo2, columnName, "table", false);
       columns.add(columnName);
     } else {
       Object scalar2Object =
           VectorRandomRowSource.randomPrimitiveObject(
-              random, (PrimitiveTypeInfo) integerTypeInfo);
-      scalar2Object =
-          smallerRange(
-              random, integerPrimitiveCategory, /* wantWritable */ false);
-      col2Expr = new ExprNodeConstantDesc(integerTypeInfo, scalar2Object);
+              random, (PrimitiveTypeInfo) stringTypeInfo2);
+      col2Expr = new ExprNodeConstantDesc(stringTypeInfo2, scalar2Object);
     }
 
     List<ExprNodeDesc> children = new ArrayList<ExprNodeDesc>();
@@ -240,20 +188,6 @@ public class TestVectorDateAddSub {
 
     Object[][] randomRows = rowSource.randomRows(100000);
 
-    if (columnScalarMode == ColumnScalarMode.COLUMN_COLUMN ||
-        columnScalarMode == ColumnScalarMode.SCALAR_COLUMN) {
-
-      // Fixup numbers to limit the range to 0 ... N-1.
-      for (int i = 0; i < randomRows.length; i++) {
-        Object[] row = randomRows[i];
-        if (row[columnNum - 1] != null) {
-          row[columnNum - 1] =
-              smallerRange(
-                  random, integerPrimitiveCategory, /* wantWritable */ true);
-        }
-      }
-    }
-
     VectorRandomBatchSource batchSource =
         VectorRandomBatchSource.createInterestingBatches(
             random,
@@ -261,7 +195,7 @@ public class TestVectorDateAddSub {
             randomRows,
             null);
 
-    String[] outputScratchTypeNames = new String[] { "date" };
+    String[] outputScratchTypeNames = new String[] { "string" };
 
     VectorizedRowBatchCtx batchContext =
         new VectorizedRowBatchCtx(
@@ -271,52 +205,54 @@ public class TestVectorDateAddSub {
             /* partitionColumnCount */ 0,
             outputScratchTypeNames);
 
+    GenericUDF genericUdf;
+    FunctionInfo funcInfo = null;
+    try {
+      funcInfo = FunctionRegistry.getFunctionInfo(functionName);
+    } catch (SemanticException e) {
+      Assert.fail("Failed to load " + functionName + " " + e);
+    }
+    genericUdf = funcInfo.getGenericUDF();
+
     final int rowCount = randomRows.length;
-    Object[][] resultObjectsArray = new Object[DateAddSubTestMode.count][];
-    for (int i = 0; i < DateAddSubTestMode.count; i++) {
+    Object[][] resultObjectsArray = new Object[StringConcatTestMode.count][];
+    for (int i = 0; i < StringConcatTestMode.count; i++) {
 
       Object[] resultObjects = new Object[rowCount];
       resultObjectsArray[i] = resultObjects;
 
-      GenericUDF udf =
-          (isAdd ? new GenericUDFDateAdd() : new GenericUDFDateSub());
-
-      ExprNodeGenericFuncDesc exprDesc =
-          new ExprNodeGenericFuncDesc(TypeInfoFactory.dateTypeInfo, udf, children);
-
-      DateAddSubTestMode dateAddSubTestMode = DateAddSubTestMode.values()[i];
-      switch (dateAddSubTestMode) {
+       StringConcatTestMode stringConcatTestMode = StringConcatTestMode.values()[i];
+      switch (stringConcatTestMode) {
       case ROW_MODE:
-        doRowDateAddSubTest(
-            dateTimeStringTypeInfo,
-            integerTypeInfo,
+        doRowStringConcatTest(
+            stringTypeInfo1,
+            stringTypeInfo2,
             columns,
             children,
-            isAdd,
-            exprDesc,
             randomRows,
             columnScalarMode,
             rowSource.rowStructObjectInspector(),
+            genericUdf,
             resultObjects);
         break;
       case ADAPTOR:
       case VECTOR_EXPRESSION:
-        doVectorDateAddSubTest(
-            dateTimeStringTypeInfo,
-            integerTypeInfo,
+        doVectorStringConcatTest(
+            stringTypeInfo1,
+            stringTypeInfo2,
             columns,
             rowSource.typeInfos(),
             children,
-            isAdd,
-            exprDesc,
-            dateAddSubTestMode,
+            stringConcatTestMode,
             columnScalarMode,
             batchSource,
             batchContext,
+            rowSource.rowStructObjectInspector(),
+            genericUdf,
             resultObjects);
         break;
       default:
-        throw new RuntimeException("Unexpected IF statement test mode " + dateAddSubTestMode);
+        throw new RuntimeException("Unexpected IF statement test mode " + stringConcatTestMode);
       }
     }
 
@@ -324,13 +260,12 @@ public class TestVectorDateAddSub {
       // Row-mode is the expected value.
       Object expectedResult = resultObjectsArray[0][i];
 
-      for (int v = 1; v < DateAddSubTestMode.count; v++) {
+      for (int v = 1; v < StringConcatTestMode.count; v++) {
         Object vectorResult = resultObjectsArray[v][i];
         if (expectedResult == null || vectorResult == null) {
           if (expectedResult != null || vectorResult != null) {
             Assert.fail(
-                "Row " + i + " " + DateAddSubTestMode.values()[v] +
-                " isAdd " + isAdd +
+                "Row " + i + " " + StringConcatTestMode.values()[v] +
                 " " + columnScalarMode +
                 " result is NULL " + (vectorResult == null) +
                 " does not match row-mode expected result is NULL " + (expectedResult == null) +
@@ -340,12 +275,11 @@ public class TestVectorDateAddSub {
 
           if (!expectedResult.equals(vectorResult)) {
             Assert.fail(
-                "Row " + i + " " + DateAddSubTestMode.values()[v] +
-                " isAdd " + isAdd +
+                "Row " + i + " " + StringConcatTestMode.values()[v] +
                 " " + columnScalarMode +
-                " result " + vectorResult.toString() +
+                " result \"" + vectorResult.toString() + "\"" +
                 " (" + vectorResult.getClass().getSimpleName() + ")" +
-                " does not match row-mode expected result " + expectedResult.toString() +
+                " does not match row-mode expected result \"" + expectedResult.toString() + "\"" +
                 " (" + expectedResult.getClass().getSimpleName() + ")" +
                 " row values " + Arrays.toString(randomRows[i]));
           }
@@ -354,28 +288,28 @@ public class TestVectorDateAddSub {
     }
   }
 
-  private void doRowDateAddSubTest(TypeInfo dateTimeStringTypeInfo, TypeInfo integerTypeInfo,
+  private void doRowStringConcatTest(TypeInfo stringTypeInfo, TypeInfo integerTypeInfo,
       List<String> columns, List<ExprNodeDesc> children,
-      boolean isAdd, ExprNodeGenericFuncDesc exprDesc,
       Object[][] randomRows, ColumnScalarMode columnScalarMode,
-      ObjectInspector rowInspector, Object[] resultObjects) throws Exception {
+      ObjectInspector rowInspector,
+      GenericUDF genericUdf, Object[] resultObjects) throws Exception {
 
     System.out.println(
-        "*DEBUG* dateTimeStringTypeInfo " + dateTimeStringTypeInfo.toString() +
+        "*DEBUG* stringTypeInfo " + stringTypeInfo.toString() +
         " integerTypeInfo " + integerTypeInfo +
-        " isAdd " + isAdd +
-        " dateAddSubTestMode ROW_MODE" +
+        " stringConcatTestMode ROW_MODE" +
         " columnScalarMode " + columnScalarMode +
-        " exprDesc " + exprDesc.toString());
+        " genericUdf " + genericUdf.toString());
+
+    ExprNodeGenericFuncDesc exprDesc =
+        new ExprNodeGenericFuncDesc(TypeInfoFactory.stringTypeInfo, genericUdf, children);
 
     ExprNodeEvaluator evaluator =
         ExprNodeEvaluatorFactory.get(exprDesc);
     evaluator.initialize(rowInspector);
 
-    ObjectInspector objectInspector =
-        TypeInfoUtils.getStandardWritableObjectInspectorFromTypeInfo(
-            TypeInfoFactory.dateTypeInfo);
-
+    ObjectInspector objectInspector = evaluator.getOutputOI();
+ 
     final int rowCount = randomRows.length;
     for (int i = 0; i < rowCount; i++) {
       Object[] row = randomRows[i];
@@ -389,39 +323,56 @@ public class TestVectorDateAddSub {
 
   private void extractResultObjects(VectorizedRowBatch batch, int rowIndex,
       VectorExtractRow resultVectorExtractRow, Object[] scrqtchRow,
-      TypeInfo targetTypeInfo, Object[] resultObjects, int outputColIndex) {
-
-    ObjectInspector objectInspector = TypeInfoUtils
-        .getStandardWritableObjectInspectorFromTypeInfo(targetTypeInfo);
+      ObjectInspector objectInspector, Object[] resultObjects) {
 
     boolean selectedInUse = batch.selectedInUse;
     int[] selected = batch.selected;
     for (int logicalIndex = 0; logicalIndex < batch.size; logicalIndex++) {
       final int batchIndex = (selectedInUse ? selected[logicalIndex] : logicalIndex);
-      Object extractedRow =
-          resultVectorExtractRow.extractRowColumn(batch, batchIndex, outputColIndex);
+      resultVectorExtractRow.extractRow(batch, batchIndex, scrqtchRow);
 
       Object copyResult =
           ObjectInspectorUtils.copyToStandardObject(
-              extractedRow, objectInspector, ObjectInspectorCopyOption.WRITABLE);
+              scrqtchRow[0], objectInspector, ObjectInspectorCopyOption.WRITABLE);
       resultObjects[rowIndex++] = copyResult;
     }
   }
 
-  private void doVectorDateAddSubTest(TypeInfo dateTimeStringTypeInfo, TypeInfo integerTypeInfo,
+  private void doVectorStringConcatTest(TypeInfo stringTypeInfo1, TypeInfo stringTypeInfo2,
       List<String> columns,
       TypeInfo[] typeInfos,
       List<ExprNodeDesc> children,
-      boolean isAdd, ExprNodeGenericFuncDesc exprDesc,
-      DateAddSubTestMode dateAddSubTestMode, ColumnScalarMode columnScalarMode,
+      StringConcatTestMode stringConcatTestMode, ColumnScalarMode columnScalarMode,
       VectorRandomBatchSource batchSource, VectorizedRowBatchCtx batchContext,
-      Object[] resultObjects)
+      ObjectInspector rowInspector,
+      GenericUDF genericUdf, Object[] resultObjects)
           throws Exception {
 
     HiveConf hiveConf = new HiveConf();
-    if (dateAddSubTestMode == DateAddSubTestMode.ADAPTOR) {
+    if (stringConcatTestMode == StringConcatTestMode.ADAPTOR) {
       hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_TEST_VECTOR_ADAPTOR_OVERRIDE, true);
     }
+
+    ExprNodeGenericFuncDesc exprDesc =
+        new ExprNodeGenericFuncDesc(TypeInfoFactory.stringTypeInfo, genericUdf, children);
+
+    //---------------------------------------
+    // Just so we can get the output type...
+
+    ExprNodeEvaluator evaluator =
+        ExprNodeEvaluatorFactory.get(exprDesc);
+    evaluator.initialize(rowInspector);
+
+    ObjectInspector objectInspector = evaluator.getOutputOI();
+    TypeInfo outputTypeInfo = TypeInfoUtils.getTypeInfoFromObjectInspector(objectInspector);
+
+    /*
+     * Again with correct output type...
+     */
+    exprDesc =
+        new ExprNodeGenericFuncDesc(outputTypeInfo, genericUdf, children);
+    //---------------------------------------
+
     VectorizationContext vectorizationContext =
         new VectorizationContext(
             "name",
@@ -432,16 +383,14 @@ public class TestVectorDateAddSub {
     VectorizedRowBatch batch = batchContext.createVectorizedRowBatch();
 
     VectorExtractRow resultVectorExtractRow = new VectorExtractRow();
-    List<String> rowTypeNames = new ArrayList<>(batchSource.getRowSource().typeNames());
-    rowTypeNames.add(TypeInfoFactory.dateTypeInfo.getTypeName());
-    resultVectorExtractRow.init(rowTypeNames);
+    resultVectorExtractRow.init(
+        new TypeInfo[] { outputTypeInfo }, new int[] { columns.size() });
     Object[] scrqtchRow = new Object[1];
 
     System.out.println(
-        "*DEBUG* dateTimeStringTypeInfo " + dateTimeStringTypeInfo.toString() +
-        " integerTypeInfo " + integerTypeInfo +
-        " isAdd " + isAdd +
-        " dateAddSubTestMode " + dateAddSubTestMode +
+        "*DEBUG* stringTypeInfo1 " + stringTypeInfo1.toString() +
+        " stringTypeInfo2 " + stringTypeInfo2.toString() +
+        " stringConcatTestMode " + stringConcatTestMode +
         " columnScalarMode " + columnScalarMode +
         " vectorExpression " + vectorExpression.toString());
 
@@ -453,7 +402,7 @@ public class TestVectorDateAddSub {
       }
       vectorExpression.evaluate(batch);
       extractResultObjects(batch, rowIndex, resultVectorExtractRow, scrqtchRow,
-          TypeInfoFactory.dateTypeInfo, resultObjects, vectorExpression.getOutputColumn());
+          objectInspector, resultObjects);
       rowIndex += batch.size;
     }
   }
