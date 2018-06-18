@@ -159,11 +159,13 @@ public class TestMetaStoreMetrics {
 
     //close one connection, verify still two left
     msc.close();
+    Thread.sleep(500);  // TODO Evil!  Need to figure out a way to remove this sleep.
     json = metrics.dumpJson();
     MetricsTestUtils.verifyMetricsJson(json, MetricsTestUtils.COUNTER, MetricsConstant.OPEN_CONNECTIONS, initialCount + 1);
 
     //close one connection, verify still one left
     msc2.close();
+    Thread.sleep(500);  // TODO Evil!  Need to figure out a way to remove this sleep.
     json = metrics.dumpJson();
     MetricsTestUtils.verifyMetricsJson(json, MetricsTestUtils.COUNTER, MetricsConstant.OPEN_CONNECTIONS, initialCount);
   }
