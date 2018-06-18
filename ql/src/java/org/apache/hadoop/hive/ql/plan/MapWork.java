@@ -189,6 +189,7 @@ public class MapWork extends BaseWork {
   }
 
   public void addPathToAlias(Path path, ArrayList<String> aliases){
+    StringInternUtils.internUriStringsInPath(path);
     pathToAliases.put(path, aliases);
   }
   
@@ -196,6 +197,7 @@ public class MapWork extends BaseWork {
     ArrayList<String> aliases = pathToAliases.get(path);
     if (aliases == null) {
       aliases = new ArrayList<>();
+      StringInternUtils.internUriStringsInPath(path);
       pathToAliases.put(path, aliases);
     }
     aliases.add(newAlias.intern());
@@ -250,6 +252,9 @@ public class MapWork extends BaseWork {
   }
 
   public void setPathToPartitionInfo(final LinkedHashMap<Path, PartitionDesc> pathToPartitionInfo) {
+    for (Path p : pathToPartitionInfo.keySet()) {
+      StringInternUtils.internUriStringsInPath(p);
+    }
     this.pathToPartitionInfo = pathToPartitionInfo;
   }
 
@@ -693,6 +698,10 @@ public class MapWork extends BaseWork {
     return eventSourceColumnTypeMap;
   }
 
+  public void setEventSourceColumnTypeMap(Map<String, List<String>> eventSourceColumnTypeMap) {
+    this.eventSourceColumnTypeMap = eventSourceColumnTypeMap;
+ }
+
   public Map<String, List<ExprNodeDesc>> getEventSourcePartKeyExprMap() {
     return eventSourcePartKeyExprMap;
   }
@@ -739,7 +748,7 @@ public class MapWork extends BaseWork {
 
   public void setIncludedBuckets(BitSet includedBuckets) {
     // see comment next to the field
-    this.includedBuckets = includedBuckets.toByteArray();
+    this.includedBuckets = includedBuckets == null ? null : includedBuckets.toByteArray();
   }
 
   public void setVectorizedRowBatch(VectorizedRowBatch vectorizedRowBatch) {
@@ -784,7 +793,8 @@ public class MapWork extends BaseWork {
   }
 
   public void setVectorizationEnabledConditionsMet(ArrayList<String> vectorizationEnabledConditionsMet) {
-    this.vectorizationEnabledConditionsMet = VectorizationCondition.addBooleans(vectorizationEnabledConditionsMet, true);
+    this.vectorizationEnabledConditionsMet = vectorizationEnabledConditionsMet == null ? null : VectorizationCondition.addBooleans(
+            vectorizationEnabledConditionsMet, true);
   }
 
   public List<String> getVectorizationEnabledConditionsMet() {
@@ -792,7 +802,8 @@ public class MapWork extends BaseWork {
   }
 
   public void setVectorizationEnabledConditionsNotMet(List<String> vectorizationEnabledConditionsNotMet) {
-    this.vectorizationEnabledConditionsNotMet = VectorizationCondition.addBooleans(vectorizationEnabledConditionsNotMet, false);
+    this.vectorizationEnabledConditionsNotMet = vectorizationEnabledConditionsNotMet == null ? null : VectorizationCondition.addBooleans(
+            vectorizationEnabledConditionsNotMet, false);
   }
 
   public List<String> getVectorizationEnabledConditionsNotMet() {
