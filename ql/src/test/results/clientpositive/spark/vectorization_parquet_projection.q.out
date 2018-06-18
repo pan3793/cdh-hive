@@ -412,7 +412,7 @@ STAGE PLANS:
                 enabled: true
                 enabledConditionsMet: hive.vectorized.use.vectorized.input.format IS true
                 inputFileFormats: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
-                notVectorizedReason: Select expression for SELECT operator: UDF GenericUDFIndex(Column[m1], Const string color) not supported
+                notVectorizedReason: Select expression for SELECT operator: Data type map<string,string> of Column[m1] not supported
                 vectorized: false
         Reducer 2 
             Execution mode: vectorized
