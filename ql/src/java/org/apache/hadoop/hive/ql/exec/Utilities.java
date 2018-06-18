@@ -383,7 +383,16 @@ public final class Utilities {
    * @throws RuntimeException if the configuration files are not proper or if plan can not be loaded
    */
   private static BaseWork getBaseWork(Configuration conf, String name) {
-    Path path = null;
+    Path path = getPlanPath(conf, name);
+    LOG.debug("PLAN PATH = {}", path);
+    if (path == null) {
+      return null;
+    }
+    BaseWork gWork = gWorkMap.get(conf).get(path);
+    if (gWork != null) {
+      LOG.debug("Found plan in cache for name: {}", name);
+      return gWork;
+    }
     InputStream in = null;
     Kryo kryo = SerializationUtilities.borrowKryo();
     try {
@@ -399,62 +408,53 @@ public final class Utilities {
           kryo.setClassLoader(newLoader);
         }
       }
-
-      path = getPlanPath(conf, name);
-      LOG.info("PLAN PATH = " + path);
-      assert path != null;
-      BaseWork gWork = gWorkMap.get(conf).get(path);
-      if (gWork == null) {
-        Path localPath = path;
-        LOG.debug("local path = " + localPath);
-        if (HiveConf.getBoolVar(conf, ConfVars.HIVE_RPC_QUERY_PLAN)) {
-          LOG.debug("Loading plan from string: "+path.toUri().getPath());
-          String planString = conf.getRaw(path.toUri().getPath());
-          if (planString == null) {
-            LOG.info("Could not find plan string in conf");
-            return null;
-          }
-          byte[] planBytes = Base64.decodeBase64(planString);
-          in = new ByteArrayInputStream(planBytes);
-          in = new InflaterInputStream(in);
-        } else {
-          LOG.debug("Open file to read in plan: " + localPath);
-          in = localPath.getFileSystem(conf).open(localPath);
+      Path localPath = path;
+      LOG.debug("local path = " + localPath);
+      if (HiveConf.getBoolVar(conf, ConfVars.HIVE_RPC_QUERY_PLAN)) {
+        LOG.debug("Loading plan from string: "+path.toUri().getPath());
+        String planString = conf.getRaw(path.toUri().getPath());
+        if (planString == null) {
+          LOG.info("Could not find plan string in conf");
+          return null;
         }
-
-        if(MAP_PLAN_NAME.equals(name)){
-          if (ExecMapper.class.getName().equals(conf.get(MAPRED_MAPPER_CLASS))){
-            gWork = SerializationUtilities.deserializePlan(kryo, in, MapWork.class);
-          } else if(MergeFileMapper.class.getName().equals(conf.get(MAPRED_MAPPER_CLASS))) {
-            gWork = SerializationUtilities.deserializePlan(kryo, in, MergeFileWork.class);
-          } else if(ColumnTruncateMapper.class.getName().equals(conf.get(MAPRED_MAPPER_CLASS))) {
-            gWork = SerializationUtilities.deserializePlan(kryo, in, ColumnTruncateWork.class);
-          } else if(PartialScanMapper.class.getName().equals(conf.get(MAPRED_MAPPER_CLASS))) {
-            gWork = SerializationUtilities.deserializePlan(kryo, in, PartialScanWork.class);
-          } else {
-            throw new RuntimeException("unable to determine work from configuration ."
-                + MAPRED_MAPPER_CLASS + " was "+ conf.get(MAPRED_MAPPER_CLASS)) ;
-          }
-        } else if (REDUCE_PLAN_NAME.equals(name)) {
-          if(ExecReducer.class.getName().equals(conf.get(MAPRED_REDUCER_CLASS))) {
-            gWork = SerializationUtilities.deserializePlan(kryo, in, ReduceWork.class);
-          } else {
-            throw new RuntimeException("unable to determine work from configuration ."
-                + MAPRED_REDUCER_CLASS +" was "+ conf.get(MAPRED_REDUCER_CLASS)) ;
-          }
-        } else if (name.contains(MERGE_PLAN_NAME)) {
-          if (name.startsWith(MAPNAME)) {
-            gWork = SerializationUtilities.deserializePlan(kryo, in, MapWork.class);
-          } else if (name.startsWith(REDUCENAME)) {
-            gWork = SerializationUtilities.deserializePlan(kryo, in, ReduceWork.class);
-          } else {
-            throw new RuntimeException("Unknown work type: " + name);
-          }
-        }
-        gWorkMap.get(conf).put(path, gWork);
-      } else if (LOG.isDebugEnabled()) {
-        LOG.debug("Found plan in cache for name: " + name);
+        byte[] planBytes = Base64.decodeBase64(planString);
+        in = new ByteArrayInputStream(planBytes);
+        in = new InflaterInputStream(in);
+      } else {
+        LOG.debug("Open file to read in plan: " + localPath);
+        in = localPath.getFileSystem(conf).open(localPath);
       }
+
+      if(MAP_PLAN_NAME.equals(name)){
+        if (ExecMapper.class.getName().equals(conf.get(MAPRED_MAPPER_CLASS))){
+          gWork = SerializationUtilities.deserializePlan(kryo, in, MapWork.class);
+        } else if(MergeFileMapper.class.getName().equals(conf.get(MAPRED_MAPPER_CLASS))) {
+          gWork = SerializationUtilities.deserializePlan(kryo, in, MergeFileWork.class);
+        } else if(ColumnTruncateMapper.class.getName().equals(conf.get(MAPRED_MAPPER_CLASS))) {
+          gWork = SerializationUtilities.deserializePlan(kryo, in, ColumnTruncateWork.class);
+        } else if(PartialScanMapper.class.getName().equals(conf.get(MAPRED_MAPPER_CLASS))) {
+          gWork = SerializationUtilities.deserializePlan(kryo, in, PartialScanWork.class);
+        } else {
+          throw new RuntimeException("unable to determine work from configuration ."
+              + MAPRED_MAPPER_CLASS + " was "+ conf.get(MAPRED_MAPPER_CLASS));
+        }
+      } else if (REDUCE_PLAN_NAME.equals(name)) {
+        if(ExecReducer.class.getName().equals(conf.get(MAPRED_REDUCER_CLASS))) {
+          gWork = SerializationUtilities.deserializePlan(kryo, in, ReduceWork.class);
+        } else {
+          throw new RuntimeException("unable to determine work from configuration ."
+              + MAPRED_REDUCER_CLASS +" was "+ conf.get(MAPRED_REDUCER_CLASS));
+        }
+      } else if (name.contains(MERGE_PLAN_NAME)) {
+        if (name.startsWith(MAPNAME)) {
+          gWork = SerializationUtilities.deserializePlan(kryo, in, MapWork.class);
+        } else if (name.startsWith(REDUCENAME)) {
+          gWork = SerializationUtilities.deserializePlan(kryo, in, ReduceWork.class);
+        } else {
+          throw new RuntimeException("Unknown work type: " + name);
+        }
+      }
+      gWorkMap.get(conf).put(path, gWork);
       return gWork;
     } catch (FileNotFoundException fnf) {
       // happens. e.g.: no reduce work.
