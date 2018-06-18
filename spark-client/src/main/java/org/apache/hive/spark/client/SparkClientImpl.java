@@ -494,6 +494,8 @@ class SparkClientImpl implements SparkClient {
             String errStr = errorMessages.isEmpty() ? "?" : Joiner.on(',').join(errorMessages);
             rpcServer.cancelClient(clientId, new RuntimeException("spark-submit process failed " +
 	                  "with exit code " + exitCode + " and error " + errStr));
+          } else {
+            LOG.info("Child process (spark-submit) exited successfully.");
           }
         } catch (InterruptedException ie) {
           LOG.warn("Thread waiting on the child process (spark-submit) is interrupted, killing the child process.");
