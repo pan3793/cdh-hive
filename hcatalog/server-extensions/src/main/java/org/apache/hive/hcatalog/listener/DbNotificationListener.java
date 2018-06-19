@@ -304,7 +304,12 @@ public class DbNotificationListener extends MetaStoreEventListener {
    * @throws MetaException
    */
   public void onAddIndex (AddIndexEvent indexEvent) throws MetaException {
-    // Sentry doesn't care about this one
+    Index index = indexEvent.getIndex();
+    NotificationEvent event = new NotificationEvent(0, now(),
+        HCatConstants.HCAT_CREATE_INDEX_EVENT,
+        msgFactory.buildCreateIndexMessage(index).toString());
+    event.setDbName(index.getDbName());
+    enqueue(event, indexEvent);
   }
 
   /**
@@ -312,7 +317,12 @@ public class DbNotificationListener extends MetaStoreEventListener {
    * @throws MetaException
    */
   public void onDropIndex (DropIndexEvent indexEvent) throws MetaException {
-    // Sentry doesn't care about this one
+    Index index = indexEvent.getIndex();
+    NotificationEvent event = new NotificationEvent(0, now(),
+        HCatConstants.HCAT_DROP_INDEX_EVENT,
+        msgFactory.buildDropIndexMessage(index).toString());
+    event.setDbName(index.getDbName());
+    enqueue(event, indexEvent);
   }
 
   /**
@@ -320,7 +330,13 @@ public class DbNotificationListener extends MetaStoreEventListener {
    * @throws MetaException
    */
   public void onAlterIndex (AlterIndexEvent indexEvent)  throws MetaException {
-    // Sentry doesn't care about this one
+    Index before = indexEvent.getOldIndex();
+    Index after = indexEvent.getNewIndex();
+    NotificationEvent event = new NotificationEvent(0, now(),
+        HCatConstants.HCAT_ALTER_INDEX_EVENT,
+        msgFactory.buildAlterIndexMessage(before, after).toString());
+    event.setDbName(before.getDbName());
+    enqueue(event, indexEvent);
   }
 
   @Override
