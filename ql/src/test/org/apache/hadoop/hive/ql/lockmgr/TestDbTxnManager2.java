@@ -387,6 +387,7 @@ public class TestDbTxnManager2 {
    * Note, here we don't need to worry about cleaning up TXNS table, since it's handled separately.
    * @throws Exception
    */
+  @Ignore("Not supported in CDH")
   @Test
   public void testMetastoreTablesCleanup() throws Exception {
     CommandProcessorResponse cpr = driver.run("create database if not exists temp");
