@@ -31,7 +31,7 @@ public class CastTimestampToLong extends VectorExpression {
 
   private int colNum;
   private int outputColumn;
-  private transient PrimitiveCategory integerPrimitiveCategory;
+  private PrimitiveCategory integerPrimitiveCategory;
 
   public CastTimestampToLong(int colNum, int outputColumn) {
     this();
