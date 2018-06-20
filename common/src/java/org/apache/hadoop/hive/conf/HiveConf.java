@@ -2740,6 +2740,12 @@ public class HiveConf extends Configuration {
 		"hive.vectorized.adaptor.suppress.evaluate.exceptions", false,
         "This flag should be set to true to suppress HiveException from the generic UDF function\n" +
 		"evaluate call and turn them into NULLs. Assume, by default, this is not needed"),
+    HIVE_VECTORIZED_IF_EXPR_MODE("hive.vectorized.if.expr.mode", "better", new StringSet("adaptor", "good", "better"),
+        "Specifies the extent to which SQL IF statements will be vectorized.\n" +
+        "0. adaptor: only use the VectorUDFAdaptor to vectorize IF statements\n" +
+        "1. good   : use regular vectorized IF expression classes that get good performance\n" +
+        "2. better : use vectorized IF expression classes that conditionally execute THEN/ELSE\n" +
+        "            expressions for better performance.\n"),
     HIVE_TYPE_CHECK_ON_INSERT("hive.typecheck.on.insert", true, "This property has been extended to control "
         + "whether to check, convert, and normalize partition value to conform to its column type in "
         + "partition operations including but not limited to insert, such as alter, describe etc."),
