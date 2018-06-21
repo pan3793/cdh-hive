@@ -19,10 +19,8 @@ package org.apache.hadoop.hive.cli;
 
 
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -57,6 +55,7 @@ import org.apache.hadoop.hive.ql.CommandNeedRetryException;
 import org.apache.hadoop.hive.ql.IDriver;
 import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse;
 import org.apache.hadoop.util.Shell;
+import org.junit.Test;
 
 
 // Cannot call class TestCliDriver since that's the name of the generated
@@ -356,6 +355,28 @@ public class TestCliDriverMethods extends TestCase {
       assertTrue(data.toString().contains("cannot recognize input near 'bla' 'bla' 'bla'"));
 
     }
+  }
+
+  @Test
+  public void testCommandSplits() {
+    // Test double quote in the string
+    String cmd1 = "insert into escape1 partition (ds='1', part='\"') values (\"!\")";
+    assertEquals(cmd1, CliDriver.splitSemiColon(cmd1).get(0));
+    assertEquals(cmd1, CliDriver.splitSemiColon(cmd1 + ";").get(0));
+
+    // Test escape
+    String cmd2 = "insert into escape1 partition (ds='1', part='\"\\'') values (\"!\")";
+    assertEquals(cmd2, CliDriver.splitSemiColon(cmd2).get(0));
+    assertEquals(cmd2, CliDriver.splitSemiColon(cmd2 + ";").get(0));
+
+    // Test multiple commands
+    List<String> results = CliDriver.splitSemiColon(cmd1 + ";" + cmd2);
+    assertEquals(cmd1, results.get(0));
+    assertEquals(cmd2, results.get(1));
+
+    results = CliDriver.splitSemiColon(cmd1 + ";" + cmd2 + ";");
+    assertEquals(cmd1, results.get(0));
+    assertEquals(cmd2, results.get(1));
   }
 
   private static void setEnv(String key, String value) throws Exception {
