@@ -249,7 +249,7 @@ STAGE PLANS:
                         className: VectorSelectOperator
                         native: true
                         projectedOutputColumns: [4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 3, 13, 14, 15, 16, 17]
-                        selectExpressions: VectorUDFUnixTimeStampTimestamp(col 1) -> 4:bigint, VectorUDFYearTimestamp(col 1, field YEAR) -> 5:int, VectorUDFMonthTimestamp(col 1, field MONTH) -> 6:int, VectorUDFDayOfMonthTimestamp(col 1, field DAY_OF_MONTH) -> 7:int, VectorUDFDayOfMonthTimestamp(col 1, field DAY_OF_MONTH) -> 8:int, VectorUDFWeekOfYearTimestamp(col 1, field WEEK_OF_YEAR) -> 9:int, VectorUDFHourTimestamp(col 1, field HOUR_OF_DAY) -> 10:int, VectorUDFMinuteTimestamp(col 1, field MINUTE) -> 11:int, VectorUDFSecondTimestamp(col 1, field SECOND) -> 12:int, IfExprTimestampColumnScalar(col 0:LONG, col 1:TIMESTAMP, val 1319-02-02 16:31:57.778) -> 13:timestamp, IfExprTimestampScalarColumn(col 0:LONG, val 2000-12-18 08:42:30.0005, col 1:TIMESTAMP) -> 14:timestamp, IfExprTimestampColumnColumn(col 0:LONG, col 1:TIMESTAMPcol 3:TIMESTAMP) -> 15:timestamp, VectorUDFAdaptor(if(cboolean1, ctimestamp1, null)) -> 16:timestamp, VectorUDFAdaptor(if(cboolean1, null, ctimestamp2)) -> 17:timestamp
+                        selectExpressions: VectorUDFUnixTimeStampTimestamp(col 1) -> 4:bigint, VectorUDFYearTimestamp(col 1, field YEAR) -> 5:int, VectorUDFMonthTimestamp(col 1, field MONTH) -> 6:int, VectorUDFDayOfMonthTimestamp(col 1, field DAY_OF_MONTH) -> 7:int, VectorUDFDayOfMonthTimestamp(col 1, field DAY_OF_MONTH) -> 8:int, VectorUDFWeekOfYearTimestamp(col 1, field WEEK_OF_YEAR) -> 9:int, VectorUDFHourTimestamp(col 1, field HOUR_OF_DAY) -> 10:int, VectorUDFMinuteTimestamp(col 1, field MINUTE) -> 11:int, VectorUDFSecondTimestamp(col 1, field SECOND) -> 12:int, IfExprTimestampColumnScalar(col 0:LONG, col 1:TIMESTAMP, val 1319-02-02 16:31:57.778) -> 13:timestamp, IfExprTimestampScalarColumn(col 0:LONG, val 2000-12-18 08:42:30.0005, col 1:TIMESTAMP) -> 14:timestamp, IfExprTimestampColumnColumn(col 0:LONG, col 1:TIMESTAMPcol 3:TIMESTAMP) -> 15:timestamp, IfExprColumnNull(col 0, col 1, null)(children: col 0, col 1) -> 16:timestamp, IfExprNullColumn(col 0, null, col 3)(children: col 0, col 3) -> 17:timestamp
                     Statistics: Num rows: 52 Data size: 3555 Basic stats: COMPLETE Column stats: NONE
                     Reduce Output Operator
                       key expressions: _col0 (type: bigint)
@@ -268,7 +268,7 @@ STAGE PLANS:
                 groupByVectorOutput: true
                 inputFileFormats: org.apache.hadoop.hive.ql.io.orc.OrcInputFormat
                 allNative: false
-                usesVectorUDFAdaptor: true
+                usesVectorUDFAdaptor: false
                 vectorized: true
         Reducer 2 
             Execution mode: vectorized
