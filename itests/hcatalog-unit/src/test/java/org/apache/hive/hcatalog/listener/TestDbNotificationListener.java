@@ -853,6 +853,7 @@ public class TestDbNotificationListener {
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_CREATE_INDEX_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
+    assertEquals(tableName.toLowerCase(), event.getTableName().toLowerCase());
     Index indexObj = getIndexObj(getJsonTree(event));
     assertEquals(dbName, indexObj.getDbName());
     assertEquals(indexName, indexObj.getIndexName());
@@ -912,6 +913,7 @@ public class TestDbNotificationListener {
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_DROP_INDEX_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
+    assertEquals(tableName.toLowerCase(), event.getTableName().toLowerCase());
     Index indexObj = getIndexObj(getJsonTree(event));
     assertEquals(dbName, indexObj.getDbName());
     assertEquals(indexName.toLowerCase(), indexObj.getIndexName());
@@ -975,6 +977,7 @@ public class TestDbNotificationListener {
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_ALTER_INDEX_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
+    assertEquals(tableName.toLowerCase(), event.getTableName().toLowerCase());
     Index indexObj = getIndexObj(getJsonTree(event), "afterIndexObjJson");
     assertEquals(dbName, indexObj.getDbName());
     assertEquals(indexName, indexObj.getIndexName());

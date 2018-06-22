@@ -309,6 +309,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
         HCatConstants.HCAT_CREATE_INDEX_EVENT,
         msgFactory.buildCreateIndexMessage(index).toString());
     event.setDbName(index.getDbName());
+    event.setTableName(index.getOrigTableName());
     enqueue(event, indexEvent);
   }
 
@@ -322,6 +323,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
         HCatConstants.HCAT_DROP_INDEX_EVENT,
         msgFactory.buildDropIndexMessage(index).toString());
     event.setDbName(index.getDbName());
+    event.setTableName(index.getOrigTableName());
     enqueue(event, indexEvent);
   }
 
@@ -336,6 +338,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
         HCatConstants.HCAT_ALTER_INDEX_EVENT,
         msgFactory.buildAlterIndexMessage(before, after).toString());
     event.setDbName(before.getDbName());
+    event.setTableName(before.getOrigTableName());
     enqueue(event, indexEvent);
   }
 
