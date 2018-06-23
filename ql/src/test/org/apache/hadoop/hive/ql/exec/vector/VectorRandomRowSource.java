@@ -443,7 +443,7 @@ public class VectorRandomRowSource {
     return getDecoratedTypeName(r, typeName, supportedTypes, allowedTypeNameSet, depth, maxDepth);
   }
 
-  private ObjectInspector getObjectInspector(TypeInfo typeInfo) {
+  public static ObjectInspector getObjectInspector(TypeInfo typeInfo) {
 
     final ObjectInspector objectInspector;
     switch (typeInfo.getCategory()) {
