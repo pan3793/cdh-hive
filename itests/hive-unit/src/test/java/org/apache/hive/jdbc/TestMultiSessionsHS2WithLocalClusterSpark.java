@@ -18,6 +18,9 @@
 
 package org.apache.hive.jdbc;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -72,14 +75,14 @@ public class TestMultiSessionsHS2WithLocalClusterSpark {
   private ExecutorService pool = null;
 
 
-  private static HiveConf createHiveConf() {
+  private static HiveConf createHiveConf() throws MalformedURLException {
+    String confDir = "../../data/conf/spark/standalone/hive-site.xml";
+    HiveConf.setHiveSiteLocation(new File(confDir).toURI().toURL());
     HiveConf conf = new HiveConf();
     conf.set("hive.exec.parallel", "true");
-    conf.set("hive.execution.engine", "spark");
-    conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer");
-    conf.set("spark.master", "local-cluster[2,2,1024]");
     conf.set("spark.deploy.defaultCores", "2");
-    conf.set("hive.spark.client.connect.timeout", "30000ms");
+    conf.set("spark.local.dir", Paths.get(System.getProperty("test.tmp.dir"),
+            "TestMultiSessionsHS2WithLocalClusterSpark-local-dir").toString());
     return conf;
   }
 
