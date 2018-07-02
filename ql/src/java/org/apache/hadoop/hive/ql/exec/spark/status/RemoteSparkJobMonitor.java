@@ -71,8 +71,6 @@ public class RemoteSparkJobMonitor extends SparkJobMonitor {
           if ((timeCount > monitorTimeoutInteval)) {
             HiveException he = new HiveException(ErrorMsg.SPARK_JOB_MONITOR_TIMEOUT,
                 Long.toString(timeCount));
-            console.printError(he.getMessage());
-            console.printError("Status: " + state);
             sparkJobStatus.setError(he);
             running = false;
             done = true;

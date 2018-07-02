@@ -130,12 +130,7 @@ public class SparkTask extends Task<SparkWork> {
       }
       sparkJobStatus.cleanup();
     } catch (Exception e) {
-      String msg = "Failed to execute spark task, with exception '" + Utilities.getNameMessage(e) + "'";
-
-      // Has to use full name to make sure it does not conflict with
-      // org.apache.commons.lang.StringUtils
-      console.printError(msg, "\n" + org.apache.hadoop.util.StringUtils.stringifyException(e));
-      LOG.error(msg, e);
+      LOG.error("Failed to execute Spark task \"" + getId() + "\"", e);
       setException(e);
       if (e instanceof HiveException) {
         HiveException he = (HiveException) e;
@@ -460,9 +455,9 @@ public class SparkTask extends Task<SparkWork> {
     while (error != null) {
       if (error instanceof OutOfMemoryError) {
         return true;
-      } else if (error instanceof SparkException) {
-        String sts = Throwables.getStackTraceAsString(error);
-        return sts.contains("Container killed by YARN for exceeding memory limits");
+      } else if (error.getMessage() != null && error.getMessage().contains("Container killed by " +
+              "YARN for exceeding memory limits")) {
+        return true;
       }
       error = error.getCause();
     }

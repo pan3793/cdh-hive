@@ -208,13 +208,19 @@ public class SparkSessionImpl implements SparkSession {
           return new HiveException(e, ErrorMsg.SPARK_CREATE_CLIENT_INVALID_RESOURCE_REQUEST,
               matchedString);
         } else {
-          return new HiveException(e, ErrorMsg.SPARK_CREATE_CLIENT_ERROR, sessionId);
+          return new HiveException(e, ErrorMsg.SPARK_CREATE_CLIENT_ERROR, sessionId,
+                  getRootCause(oe));
         }
       }
       e = e.getCause();
     }
 
-    return new HiveException(oe, ErrorMsg.SPARK_CREATE_CLIENT_ERROR, sessionId);
+    return new HiveException(oe, ErrorMsg.SPARK_CREATE_CLIENT_ERROR, sessionId, getRootCause(oe));
+  }
+
+  private String getRootCause(Throwable e) {
+    Throwable rootCause = Throwables.getRootCause(e);
+    return rootCause.getClass().getName() + ": " + rootCause.getMessage();
   }
 
   @VisibleForTesting

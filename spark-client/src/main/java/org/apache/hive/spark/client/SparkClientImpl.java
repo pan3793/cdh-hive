@@ -490,18 +490,18 @@ class SparkClientImpl implements SparkClient {
           try {
             int exitCode = child.waitFor();
             if (exitCode != 0) {
-              StringBuilder errStr = new StringBuilder();
+              List<String> errorMessages = new ArrayList<>();
               synchronized(childErrorLog) {
-                Iterator iter = childErrorLog.iterator();
-                while(iter.hasNext()){
-                  errStr.append(iter.next());
-                  errStr.append('\n');
+                for (String line : childErrorLog) {
+                  if (StringUtils.containsIgnoreCase(line, "Error")) {
+                    errorMessages.add("\"" + line + "\"");
+                  }
                 }
               }
 
-              LOG.warn("Child process exited with code {}", exitCode);
-              rpcServer.cancelClient(clientId,
-                  "Child process (spark-submit) exited before connecting back with error log " + errStr.toString());
+              String errStr = errorMessages.isEmpty() ? "?" : Joiner.on(',').join(errorMessages);
+              rpcServer.cancelClient(clientId, new RuntimeException("spark-submit process failed " +
+	                  "with exit code " + exitCode + " and error " + errStr));
             }
           } catch (InterruptedException ie) {
             LOG.warn("Thread waiting on the child process (spark-submit) is interrupted, killing the child process.");
