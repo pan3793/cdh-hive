@@ -24,7 +24,6 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
@@ -43,7 +42,6 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -123,7 +121,7 @@ class SparkClientImpl implements SparkClient {
         // Give up.
         LOG.warn("Interrupted before driver thread was finished.", ie);
       }
-      throw Throwables.propagate(e);
+      throw new RuntimeException(errorMsg, e);
     }
 
     LOG.info("Successfully connected to Remote Spark Driver at: " + this.driverRpc.getRemoteAddress());
@@ -484,18 +482,18 @@ class SparkClientImpl implements SparkClient {
         try {
           int exitCode = child.waitFor();
           if (exitCode != 0) {
-            StringBuilder errStr = new StringBuilder();
-            synchronized(childErrorLog) {
-              Iterator iter = childErrorLog.iterator();
-              while(iter.hasNext()){
-                errStr.append(iter.next());
-                errStr.append('\n');
+            List<String> errorMessages = new ArrayList<>();
+	          synchronized (childErrorLog) {
+              for (String line : childErrorLog) {
+                if (StringUtils.containsIgnoreCase(line, "Error")) {
+                  errorMessages.add("\"" + line + "\"");
+                }
               }
             }
 
-            LOG.warn("Child process exited with code {}", exitCode);
-            rpcServer.cancelClient(clientId,
-                "Child process (spark-submit) exited before connecting back with error log " + errStr.toString());
+            String errStr = errorMessages.isEmpty() ? "?" : Joiner.on(',').join(errorMessages);
+            rpcServer.cancelClient(clientId, new RuntimeException("spark-submit process failed " +
+	                  "with exit code " + exitCode + " and error " + errStr));
           }
         } catch (InterruptedException ie) {
           LOG.warn("Thread waiting on the child process (spark-submit) is interrupted, killing the child process.");

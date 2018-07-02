@@ -521,6 +521,8 @@ public class CliConfigs {
 
         includesFrom(testConfigProps, "spark.query.negative.files");
         includesFrom(testConfigProps, "spark.only.query.negative.files");
+        excludeQuery("spark_submit_negative_executor_cores.q");
+        excludeQuery("spark_submit_negative_executor_memory.q");
 
         setResultsDir("ql/src/test/results/clientnegative/spark");
         setLogDir("itests/qtest-spark/target/qfile-results/clientnegative/spark");

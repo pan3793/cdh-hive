@@ -1741,6 +1741,7 @@ public class QTestUtil {
   /* This list may be modified by specific cli drivers to mask strings that change on every test */
   private List<Pair<Pattern, String>> patternsWithMaskComments = new ArrayList<Pair<Pattern, String>>() {{
     add(toPatternPair("(pblob|s3.?|swift|wasb.?).*hive-staging.*","### BLOBSTORE_STAGING_PATH ###"));
+    add(toPatternPair("for Spark session.*?:","#SPARK_SESSION_ID#:"));
   }};
 
   private Pair<Pattern, String> toPatternPair(String patternStr, String maskComment) {
