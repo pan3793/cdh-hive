@@ -122,7 +122,7 @@ public class TableDesc implements Serializable, Cloneable {
 
   @Explain(displayName = "properties", explainLevels = { Level.EXTENDED })
   public Map getPropertiesExplain() {
-    return HiveStringUtils.getPropertiesExplain(getProperties());
+    return PlanUtils.getPropertiesExplain(getProperties());
   }
 
   public void setProperties(final Properties properties) {

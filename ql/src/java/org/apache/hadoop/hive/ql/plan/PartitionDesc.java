@@ -45,9 +45,7 @@ import org.apache.hadoop.hive.serde2.SerDeUtils;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hive.common.util.ReflectionUtil;
-import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.hadoop.hive.ql.plan.Explain.Level;
-
 
 /**
  * PartitionDesc.
@@ -211,7 +209,7 @@ public class PartitionDesc implements Serializable, Cloneable {
 
   @Explain(displayName = "properties", explainLevels = { Level.EXTENDED })
   public Map getPropertiesExplain() {
-    return HiveStringUtils.getPropertiesExplain(getProperties());
+    return PlanUtils.getPropertiesExplain(getProperties());
   }
 
   public void setProperties(final Properties properties) {

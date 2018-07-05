@@ -40,6 +40,7 @@ COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 bar	bar value
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 tmp	true
@@ -58,6 +59,7 @@ COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 bar	bar value
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 tmp	true
@@ -112,6 +114,7 @@ COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 bar	bar value
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 tmp	true
@@ -130,6 +133,7 @@ COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 bar	bar value1
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 tmp	true1
@@ -154,6 +158,7 @@ COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 bar	bar value1
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 tmp	true1

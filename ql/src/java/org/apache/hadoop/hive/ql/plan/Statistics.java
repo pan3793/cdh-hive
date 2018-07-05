@@ -41,17 +41,19 @@ public class Statistics implements Serializable {
 
   private long numRows;
   private long dataSize;
+  private long numErasureCodedFiles;
   private State basicStatsState;
   private Map<String, ColStatistics> columnStats;
   private State columnStatsState;
 
   public Statistics() {
-    this(0, 0);
+    this(0, 0, 0);
   }
 
-  public Statistics(long nr, long ds) {
+  public Statistics(long nr, long ds, long numEcFiles) {
     this.setNumRows(nr);
     this.setDataSize(ds);
+    this.numErasureCodedFiles = numEcFiles;
     this.basicStatsState = State.NONE;
     this.columnStats = null;
     this.columnStatsState = State.NONE;
@@ -109,6 +111,10 @@ public class Statistics implements Serializable {
     sb.append(numRows);
     sb.append(" Data size: ");
     sb.append(dataSize);
+    if (numErasureCodedFiles > 0) {
+      sb.append(" Erasure files: ");
+      sb.append(numErasureCodedFiles);
+    }
     sb.append(" Basic stats: ");
     sb.append(basicStatsState);
     sb.append(" Column stats: ");
@@ -148,7 +154,7 @@ public class Statistics implements Serializable {
 
   @Override
   public Statistics clone() throws CloneNotSupportedException {
-    Statistics clone = new Statistics(numRows, dataSize);
+    Statistics clone = new Statistics(numRows, dataSize, numErasureCodedFiles);
     clone.setBasicStatsState(basicStatsState);
     clone.setColumnStatsState(columnStatsState);
     if (columnStats != null) {

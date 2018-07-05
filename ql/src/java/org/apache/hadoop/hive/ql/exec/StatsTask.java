@@ -401,7 +401,7 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
 
     String aggKey = prefix.endsWith(Path.SEPARATOR) ? prefix : prefix + Path.SEPARATOR;
 
-    for (String statType : StatsSetupConst.statsRequireCompute) {
+    for (String statType : StatsSetupConst.STATS_REQUIRE_COMPUTE) {
       String value = statsAggregator.aggregateStats(aggKey, statType);
       if (value != null && !value.isEmpty()) {
         long longValue = Long.parseLong(value);
@@ -438,7 +438,7 @@ public class StatsTask extends Task<StatsWork> implements Serializable {
 
   private String toString(Map<String, String> parameters) {
     StringBuilder builder = new StringBuilder();
-    for (String statType : StatsSetupConst.supportedStats) {
+    for (String statType : StatsSetupConst.SUPPORTED_STATS) {
       String value = parameters.get(statType);
       if (value != null) {
         if (builder.length() > 0) {

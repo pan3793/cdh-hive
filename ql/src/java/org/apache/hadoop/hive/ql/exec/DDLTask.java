@@ -2381,7 +2381,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       String tbl_location = "  '" + HiveStringUtils.escapeHiveCommand(sd.getLocation()) + "'";
 
       // Table properties
-      duplicateProps.addAll(Arrays.asList(StatsSetupConst.TABLE_PARAMS_STATS_KEYS));
+      duplicateProps.addAll(StatsSetupConst.TABLE_PARAMS_STATS_KEYS);
       String tbl_properties = propertiesToString(tbl.getParameters(), duplicateProps);
 
       createTab_stmt.add(TEMPORARY, tbl_temp);
@@ -3289,7 +3289,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
           Map<String,String> tblProps = tbl.getParameters() == null ? new HashMap<String,String>() : tbl.getParameters();
           Map<String, Long> valueMap = new HashMap<>();
           Map<String, Boolean> stateMap = new HashMap<>();
-          for (String stat : StatsSetupConst.supportedStats) {
+          for (String stat : StatsSetupConst.SUPPORTED_STATS) {
             valueMap.put(stat, 0L);
             stateMap.put(stat, true);
           }
@@ -3298,7 +3298,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
           for (Partition partition : parts) {
             Map<String, String> props = partition.getParameters();
             Boolean state = StatsSetupConst.areBasicStatsUptoDate(props);
-            for (String stat : StatsSetupConst.supportedStats) {
+            for (String stat : StatsSetupConst.SUPPORTED_STATS) {
               stateMap.put(stat, stateMap.get(stat) && state);
               if (props != null && props.get(stat) != null) {
                 valueMap.put(stat, valueMap.get(stat) + Long.parseLong(props.get(stat)));
@@ -3306,7 +3306,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
             }
             numParts++;
           }
-          for (String stat : StatsSetupConst.supportedStats) {
+          for (String stat : StatsSetupConst.SUPPORTED_STATS) {
             StatsSetupConst.setBasicStatsState(tblProps, Boolean.toString(stateMap.get(stat)));
             tblProps.put(stat, valueMap.get(stat).toString());
           }
@@ -4637,7 +4637,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       return false;
     }
     boolean statsPresent = false;
-    for (String stat : StatsSetupConst.supportedStats) {
+    for (String stat : StatsSetupConst.SUPPORTED_STATS) {
       String statVal = props.get(stat);
       if (statVal != null && Long.parseLong(statVal) > 0) {
         statsPresent = true;

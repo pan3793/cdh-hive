@@ -305,6 +305,7 @@ class TextMetaDataFormatter implements MetaDataFormatter {
     long lastAccessTime = 0;
     long lastUpdateTime = 0;
     int numOfFiles = 0;
+    int numOfErasureCodedFiles = 0;
 
     boolean unknown = false;
     FileSystem fs = tblPath.getFileSystem(conf);
@@ -346,6 +347,9 @@ class TextMetaDataFormatter implements MetaDataFormatter {
               continue;
             }
             numOfFiles++;
+            if (currentStatus.isErasureCoded()) {
+              numOfErasureCodedFiles++;
+            }
             long fileLen = currentStatus.getLen();
             totalFileSize += fileLen;
             if (fileLen > maxFileSize) {
@@ -376,6 +380,12 @@ class TextMetaDataFormatter implements MetaDataFormatter {
     outStream.write("totalNumberFiles:".getBytes("UTF-8"));
     outStream.write((unknown ? unknownString : "" + numOfFiles).getBytes("UTF-8"));
     outStream.write(terminator);
+
+    if (numOfErasureCodedFiles > 0) {
+      outStream.write("totalNumberErasureCodedFiles:".getBytes("UTF-8"));
+      outStream.write((unknown ? unknownString : "" + numOfErasureCodedFiles).getBytes("UTF-8"));
+      outStream.write(terminator);
+    }
 
     for (int k = 0; k < indent; k++) {
       outStream.write(Utilities.INDENT.getBytes("UTF-8"));

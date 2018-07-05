@@ -1527,9 +1527,7 @@ public class StatsRulesProcFactory {
           newNumRows = StatsUtils.safeMult(StatsUtils.safeMult(maxRowCount, (numParents - 1)), joinFactor);
           newDataSize = StatsUtils.safeMult(StatsUtils.safeMult(maxDataSize, (numParents - 1)), joinFactor);
         }
-        Statistics wcStats = new Statistics();
-        wcStats.setNumRows(newNumRows);
-        wcStats.setDataSize(newDataSize);
+        Statistics wcStats = new Statistics(newNumRows, newDataSize, 0);
         jop.setStatistics(wcStats);
 
         if (LOG.isDebugEnabled()) {

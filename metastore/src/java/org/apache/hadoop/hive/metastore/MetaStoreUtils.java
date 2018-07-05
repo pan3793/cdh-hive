@@ -183,7 +183,7 @@ public class MetaStoreUtils {
    * @return True if the passed Parameters Map contains values for all "Fast Stats".
    */
   public static boolean containsAllFastStats(Map<String, String> partParams) {
-    for (String stat : StatsSetupConst.fastStats) {
+    for (String stat : StatsSetupConst.FAST_STATS) {
       if (!partParams.containsKey(stat)) {
         return false;
       }
@@ -254,15 +254,20 @@ public class MetaStoreUtils {
   public static void populateQuickStats(FileStatus[] fileStatus, Map<String, String> params) {
     int numFiles = 0;
     long tableSize = 0L;
+    int numErasureCodedFiles = 0;
     for (FileStatus status : fileStatus) {
       // don't take directories into account for quick stats
       if (!status.isDir()) {
         tableSize += status.getLen();
         numFiles += 1;
+        if (status.isErasureCoded()) {
+          numErasureCodedFiles++;
+        }
       }
     }
     params.put(StatsSetupConst.NUM_FILES, Integer.toString(numFiles));
     params.put(StatsSetupConst.TOTAL_SIZE, Long.toString(tableSize));
+    params.put(StatsSetupConst.NUM_ERASURE_CODED_FILES, Integer.toString(numErasureCodedFiles));
   }
 
   // check if stats need to be (re)calculated
@@ -302,7 +307,7 @@ public class MetaStoreUtils {
 
     // requires to calculate stats if new and old have different fast stats
     if ((oldPart != null) && (oldPart.getParameters() != null)) {
-      for (String stat : StatsSetupConst.fastStats) {
+      for (String stat : StatsSetupConst.FAST_STATS) {
         if (oldPart.getParameters().containsKey(stat)) {
           Long oldStat = Long.parseLong(oldPart.getParameters().get(stat));
           Long newStat = Long.parseLong(newPart.getParameters().get(stat));

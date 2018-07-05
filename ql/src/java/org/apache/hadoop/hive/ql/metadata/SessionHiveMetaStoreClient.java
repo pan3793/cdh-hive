@@ -177,7 +177,7 @@ public class SessionHiveMetaStoreClient extends HiveMetaStoreClient implements I
     Collections.sort(tableNames);
     return tableNames;
   }
-  
+
   @Override
   public List<TableMeta> getTableMeta(String dbPatterns, String tablePatterns, List<String> tableTypes)
       throws MetaException {
@@ -217,7 +217,7 @@ public class SessionHiveMetaStoreClient extends HiveMetaStoreClient implements I
     }
     return tableMetas;
   }
-  
+
   private boolean matchesAny(String string, List<Matcher> matchers) {
     for (Matcher matcher : matchers) {
       if (matcher.reset(string).matches()) {
@@ -577,7 +577,7 @@ public class SessionHiveMetaStoreClient extends HiveMetaStoreClient implements I
   public static Map<String, Table> getTempTablesForDatabase(String dbName) {
     return getTempTables().get(dbName);
   }
-  
+
   public static Map<String, Map<String, Table>> getTempTables() {
     SessionState ss = SessionState.get();
     if (ss == null) {

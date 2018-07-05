@@ -158,9 +158,9 @@ public class QTestUtil {
   private static final String BUILD_DIR_PROPERTY = "build.dir"; // typically target
 
   /**
-   * The Erasure Coding Policy to use in TestErasureCodingHDFSCliDriver.
+   * The default Erasure Coding Policy to use in Erasure Coding tests.
    */
-  private static final String DEFAULT_TEST_EC_POLICY = "RS-3-2-1024k";
+  public static final String DEFAULT_TEST_EC_POLICY = "RS-3-2-1024k";
 
   private String testWarehouse;
   private final String testFiles;

@@ -18,6 +18,7 @@ POSTHOOK: query: SHOW TBLPROPERTIES vt.testTable
 POSTHOOK: type: SHOW_TBLPROPERTIES
 COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0
@@ -39,6 +40,7 @@ a	1
 c	3
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0
@@ -58,6 +60,7 @@ POSTHOOK: type: SHOW_TBLPROPERTIES
 COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0
@@ -80,6 +83,7 @@ c	3
 d	4
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0
@@ -100,6 +104,7 @@ COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 c	3
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0
@@ -119,6 +124,7 @@ POSTHOOK: type: SHOW_TBLPROPERTIES
 COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0
@@ -142,6 +148,7 @@ c	3
 d	4
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0
@@ -163,6 +170,7 @@ a	1
 c	3
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0
@@ -183,6 +191,7 @@ COLUMN_STATS_ACCURATE	{"BASIC_STATS":"true"}
 a	1
 #### A masked pattern was here ####
 numFiles	0
+numFilesErasureCoded	0
 numRows	0
 rawDataSize	0
 totalSize	0

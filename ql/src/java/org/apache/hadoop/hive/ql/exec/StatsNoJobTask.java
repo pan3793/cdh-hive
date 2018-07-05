@@ -148,6 +148,7 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
         long rawDataSize = 0;
         long fileSize = 0;
         long numFiles = 0;
+        long numErasureCodedFiles = 0;
         FileSystem fs = dir.getFileSystem(conf);
         FileStatus[] fileList = HiveStatsUtils.getFileStatusRecurse(dir, -1, fs);
 
@@ -167,6 +168,9 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
               numRows += statsRR.getStats().getRowCount();
               fileSize += file.getLen();
               numFiles += 1;
+              if (file.isErasureCoded()) {
+                numErasureCodedFiles++;
+              }
               statsAvailable = true;
             }
             recordReader.close();
@@ -178,6 +182,7 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
           parameters.put(StatsSetupConst.RAW_DATA_SIZE, String.valueOf(rawDataSize));
           parameters.put(StatsSetupConst.TOTAL_SIZE, String.valueOf(fileSize));
           parameters.put(StatsSetupConst.NUM_FILES, String.valueOf(numFiles));
+          parameters.put(StatsSetupConst.NUM_ERASURE_CODED_FILES, String.valueOf(numErasureCodedFiles));
 
           partUpdates.put(tPart.getSd().getLocation(), new Partition(table, tPart));
 
@@ -208,7 +213,7 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
 
     private String toString(Map<String, String> parameters) {
       StringBuilder builder = new StringBuilder();
-      for (String statType : StatsSetupConst.supportedStats) {
+      for (String statType : StatsSetupConst.SUPPORTED_STATS) {
         String value = parameters.get(statType);
         if (value != null) {
           if (builder.length() > 0) {
@@ -243,6 +248,7 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
           long rawDataSize = 0;
           long fileSize = 0;
           long numFiles = 0;
+          long numErasureCodedFiles = 0;
           FileSystem fs = dir.getFileSystem(conf);
           FileStatus[] fileList = HiveStatsUtils.getFileStatusRecurse(dir, -1, fs);
 
@@ -266,6 +272,9 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
                   rawDataSize += statsRR.getStats().getRawDataSize();
                   fileSize += file.getLen();
                   numFiles += 1;
+                  if (file.isErasureCoded()) {
+                    numErasureCodedFiles++;
+                  }
                   statsAvailable = true;
                 }
                 recordReader.close();
@@ -278,6 +287,7 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
             parameters.put(StatsSetupConst.RAW_DATA_SIZE, String.valueOf(rawDataSize));
             parameters.put(StatsSetupConst.TOTAL_SIZE, String.valueOf(fileSize));
             parameters.put(StatsSetupConst.NUM_FILES, String.valueOf(numFiles));
+            parameters.put(StatsSetupConst.NUM_ERASURE_CODED_FILES, String.valueOf(numErasureCodedFiles));
             EnvironmentContext environmentContext = new EnvironmentContext();
             environmentContext.putToProperties(StatsSetupConst.STATS_GENERATED, StatsSetupConst.TASK);
 
@@ -366,7 +376,7 @@ public class StatsNoJobTask extends Task<StatsNoJobWork> implements Serializable
 
   private String toString(Map<String, String> parameters) {
     StringBuilder builder = new StringBuilder();
-    for (String statType : StatsSetupConst.supportedStats) {
+    for (String statType : StatsSetupConst.SUPPORTED_STATS) {
       String value = parameters.get(statType);
       if (value != null) {
         if (builder.length() > 0) {

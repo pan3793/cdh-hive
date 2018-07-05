@@ -193,7 +193,7 @@ public class StatsUtils {
       List<String> referencedColumns, boolean fetchColStats, boolean fetchPartStats)
       throws HiveException {
 
-    Statistics stats = new Statistics();
+    Statistics stats = null;
 
     float deserFactor =
         HiveConf.getFloatVar(conf, HiveConf.ConfVars.HIVE_STATS_DESERIALIZATION_FACTOR);
@@ -202,14 +202,16 @@ public class StatsUtils {
 
       long ds = getDataSize(conf, table);
       long nr = getNumRows(conf, schema, neededColumns, table, ds);
-      stats.setNumRows(nr);
       List<ColStatistics> colStats = Lists.newArrayList();
+
+      long numErasureCodedFiles = getErasureCodedFiles(table);
+
       if (fetchColStats) {
         colStats = getTableColumnStats(table, schema, neededColumns);
         long betterDS = getDataSizeFromColumnStats(nr, colStats);
         ds = betterDS < 1 ? ds : betterDS;
       }
-       stats.setDataSize(ds);
+      stats = new Statistics(nr, ds, numErasureCodedFiles);
       // infer if any column can be primary key based on column statistics
       inferAndSetPrimaryKey(stats.getNumRows(), colStats);
 
@@ -247,6 +249,10 @@ public class StatsUtils {
       ds = getSumIgnoreNegatives(dataSizes);
       ds = (long) (ds * deserFactor);
 
+      List<Long> erasureCodedFiles = getBasicStatForPartitions(table, partList.getNotDeniedPartns(),
+              StatsSetupConst.NUM_ERASURE_CODED_FILES);
+      long numErasureCodedFiles = getSumIgnoreNegatives(erasureCodedFiles);
+
       int avgRowSize = estimateRowSizeFromSchema(conf, schema, neededColumns);
       if (avgRowSize > 0) {
         setUnknownRcDsToAverage(rowCounts, dataSizes, avgRowSize);
@@ -261,8 +267,7 @@ public class StatsUtils {
       if (nr == 0) {
         nr = 1;
       }
-      stats.addToNumRows(nr);
-      stats.addToDataSize(ds);
+      stats = new Statistics(nr, ds, numErasureCodedFiles);
 
       // if at least a partition does not contain row count then mark basic stats state as PARTIAL
       if (containsNonPositives(rowCounts) &&
@@ -1439,6 +1444,14 @@ public class StatsUtils {
   }
 
   /**
+   * Get number of Erasure Coded files for a table
+   * @return count of EC files
+   */
+  public static long getErasureCodedFiles(Table table) {
+    return getBasicStatForTable(table, StatsSetupConst.NUM_ERASURE_CODED_FILES);
+  }
+
+  /**
    * Get basic stats of table
    * @param table
    *          - table
@@ -1556,7 +1569,7 @@ public class StatsUtils {
   }
 
   /**
-   * Get qualified column name from output key column names
+   * Get qualified column name from output key column names.
    * @param keyExprs
    *          - output key names
    * @return list of qualified names
