@@ -1,3 +1,5 @@
+set hive.combine.equivalent.work.optimization = true;
+
 -- SORT_QUERY_RESULTS
 
 explain

@@ -54,7 +54,7 @@ STAGE PLANS:
   Stage: Stage-1
     Spark
       Edges:
-        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 398), Map 10 (PARTITION-LEVEL SORT, 398)
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 398), Map 6 (PARTITION-LEVEL SORT, 398)
         Reducer 8 <- Map 10 (PARTITION-LEVEL SORT, 306), Map 7 (PARTITION-LEVEL SORT, 306)
         Reducer 3 <- Reducer 2 (GROUP, 219)
         Reducer 9 <- Reducer 8 (GROUP, 168)
@@ -77,6 +77,19 @@ STAGE PLANS:
                       Statistics: Num rows: 575995635 Data size: 50814502088 Basic stats: COMPLETE Column stats: NONE
                       value expressions: ss_item_sk (type: int), ss_customer_sk (type: int)
         Map 10 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and d_month_seq BETWEEN 1212 AND 1223) (type: boolean)
+                    Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+        Map 6 
             Map Operator Tree:
                 TableScan
                   alias: date_dim
