@@ -299,12 +299,12 @@ STAGE PLANS:
         Reducer 14 <- Map 13 (PARTITION-LEVEL SORT, 329), Map 19 (PARTITION-LEVEL SORT, 329)
         Reducer 15 <- Map 20 (PARTITION-LEVEL SORT, 336), Reducer 14 (PARTITION-LEVEL SORT, 336)
         Reducer 16 <- Map 21 (PARTITION-LEVEL SORT, 369), Reducer 15 (PARTITION-LEVEL SORT, 369)
-        Reducer 17 <- Map 11 (PARTITION-LEVEL SORT, 408), Reducer 16 (PARTITION-LEVEL SORT, 408)
+        Reducer 17 <- Map 22 (PARTITION-LEVEL SORT, 408), Reducer 16 (PARTITION-LEVEL SORT, 408)
         Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 432), Map 8 (PARTITION-LEVEL SORT, 432)
         Reducer 25 <- Map 24 (PARTITION-LEVEL SORT, 164), Map 29 (PARTITION-LEVEL SORT, 164)
-        Reducer 26 <- Map 20 (PARTITION-LEVEL SORT, 169), Reducer 25 (PARTITION-LEVEL SORT, 169)
-        Reducer 27 <- Map 11 (PARTITION-LEVEL SORT, 206), Reducer 26 (PARTITION-LEVEL SORT, 206)
-        Reducer 3 <- Map 20 (PARTITION-LEVEL SORT, 438), Reducer 2 (PARTITION-LEVEL SORT, 438)
+        Reducer 26 <- Map 30 (PARTITION-LEVEL SORT, 169), Reducer 25 (PARTITION-LEVEL SORT, 169)
+        Reducer 27 <- Map 32 (PARTITION-LEVEL SORT, 206), Reducer 26 (PARTITION-LEVEL SORT, 206)
+        Reducer 3 <- Map 9 (PARTITION-LEVEL SORT, 438), Reducer 2 (PARTITION-LEVEL SORT, 438)
         Reducer 4 <- Map 11 (PARTITION-LEVEL SORT, 531), Reducer 3 (PARTITION-LEVEL SORT, 531)
         Reducer 18 <- Reducer 17 (GROUP, 31)
         Reducer 28 <- Reducer 27 (GROUP, 16)
@@ -395,6 +395,19 @@ STAGE PLANS:
                       Map-reduce partition columns: cp_catalog_page_sk (type: int)
                       Statistics: Num rows: 46000 Data size: 21198808 Basic stats: COMPLETE Column stats: NONE
                       value expressions: cp_catalog_page_id (type: string)
+        Map 22 
+            Map Operator Tree:
+                TableScan
+                  alias: item
+                  Statistics: Num rows: 462000 Data size: 663560457 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (i_item_sk is not null and (i_current_price > 50)) (type: boolean)
+                    Statistics: Num rows: 154000 Data size: 221186819 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: i_item_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: i_item_sk (type: int)
+                      Statistics: Num rows: 154000 Data size: 221186819 Basic stats: COMPLETE Column stats: NONE
         Map 24 
             Map Operator Tree:
                 TableScan
@@ -423,6 +436,32 @@ STAGE PLANS:
                       Map-reduce partition columns: wr_item_sk (type: int), wr_order_number (type: int)
                       Statistics: Num rows: 14398467 Data size: 1325194184 Basic stats: COMPLETE Column stats: NONE
                       value expressions: wr_return_amt (type: decimal(7,2)), wr_net_loss (type: decimal(7,2))
+        Map 30 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and d_date BETWEEN 1998-08-04 AND 1998-09-03 00:00:00.0) (type: boolean)
+                    Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+        Map 32 
+            Map Operator Tree:
+                TableScan
+                  alias: item
+                  Statistics: Num rows: 462000 Data size: 663560457 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (i_item_sk is not null and (i_current_price > 50)) (type: boolean)
+                    Statistics: Num rows: 154000 Data size: 221186819 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: i_item_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: i_item_sk (type: int)
+                      Statistics: Num rows: 154000 Data size: 221186819 Basic stats: COMPLETE Column stats: NONE
         Map 8 
             Map Operator Tree:
                 TableScan
@@ -437,6 +476,19 @@ STAGE PLANS:
                       Map-reduce partition columns: sr_item_sk (type: int), sr_ticket_number (type: int)
                       Statistics: Num rows: 57591150 Data size: 4462194832 Basic stats: COMPLETE Column stats: NONE
                       value expressions: sr_return_amt (type: decimal(7,2)), sr_net_loss (type: decimal(7,2))
+        Map 9 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and d_date BETWEEN 1998-08-04 AND 1998-09-03 00:00:00.0) (type: boolean)
+                    Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
         Reducer 14 
             Reduce Operator Tree:
               Join Operator

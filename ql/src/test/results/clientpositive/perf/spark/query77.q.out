@@ -302,11 +302,11 @@ STAGE PLANS:
     Spark
       Edges:
         Reducer 10 <- Map 12 (PARTITION-LEVEL SORT, 36), Map 9 (PARTITION-LEVEL SORT, 36)
-        Reducer 15 <- Map 12 (PARTITION-LEVEL SORT, 306), Map 14 (PARTITION-LEVEL SORT, 306)
-        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 398), Map 12 (PARTITION-LEVEL SORT, 398)
-        Reducer 20 <- Map 12 (PARTITION-LEVEL SORT, 25), Map 19 (PARTITION-LEVEL SORT, 25)
-        Reducer 24 <- Map 12 (PARTITION-LEVEL SORT, 154), Map 23 (PARTITION-LEVEL SORT, 154)
-        Reducer 30 <- Map 12 (PARTITION-LEVEL SORT, 11), Map 29 (PARTITION-LEVEL SORT, 11)
+        Reducer 15 <- Map 14 (PARTITION-LEVEL SORT, 306), Map 18 (PARTITION-LEVEL SORT, 306)
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 398), Map 7 (PARTITION-LEVEL SORT, 398)
+        Reducer 20 <- Map 19 (PARTITION-LEVEL SORT, 25), Map 22 (PARTITION-LEVEL SORT, 25)
+        Reducer 24 <- Map 23 (PARTITION-LEVEL SORT, 154), Map 27 (PARTITION-LEVEL SORT, 154)
+        Reducer 30 <- Map 29 (PARTITION-LEVEL SORT, 11), Map 32 (PARTITION-LEVEL SORT, 11)
         Reducer 11 <- Reducer 10 (GROUP, 11)
         Reducer 16 <- Reducer 15 (GROUP, 168)
         Reducer 21 <- Reducer 20 (GROUP, 14)
@@ -361,6 +361,19 @@ STAGE PLANS:
                       Map-reduce partition columns: cs_sold_date_sk (type: int)
                       Statistics: Num rows: 287989836 Data size: 38999608952 Basic stats: COMPLETE Column stats: NONE
                       value expressions: cs_call_center_sk (type: int), cs_ext_sales_price (type: decimal(7,2)), cs_net_profit (type: decimal(7,2))
+        Map 18 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and d_date BETWEEN 1998-08-04 AND 1998-09-03 00:00:00.0) (type: boolean)
+                    Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
         Map 19 
             Map Operator Tree:
                 TableScan
@@ -375,6 +388,19 @@ STAGE PLANS:
                       Map-reduce partition columns: cr_returned_date_sk (type: int)
                       Statistics: Num rows: 28798881 Data size: 3057234680 Basic stats: COMPLETE Column stats: NONE
                       value expressions: cr_call_center_sk (type: int), cr_return_amount (type: decimal(7,2)), cr_net_loss (type: decimal(7,2))
+        Map 22 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and d_date BETWEEN 1998-08-04 AND 1998-09-03 00:00:00.0) (type: boolean)
+                    Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
         Map 23 
             Map Operator Tree:
                 TableScan
@@ -389,6 +415,19 @@ STAGE PLANS:
                       Map-reduce partition columns: ws_sold_date_sk (type: int)
                       Statistics: Num rows: 144002668 Data size: 19580198212 Basic stats: COMPLETE Column stats: NONE
                       value expressions: ws_web_page_sk (type: int), ws_ext_sales_price (type: decimal(7,2)), ws_net_profit (type: decimal(7,2))
+        Map 27 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and d_date BETWEEN 1998-08-04 AND 1998-09-03 00:00:00.0) (type: boolean)
+                    Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
         Map 29 
             Map Operator Tree:
                 TableScan
@@ -403,6 +442,32 @@ STAGE PLANS:
                       Map-reduce partition columns: wr_returned_date_sk (type: int)
                       Statistics: Num rows: 14398467 Data size: 1325194184 Basic stats: COMPLETE Column stats: NONE
                       value expressions: wr_web_page_sk (type: int), wr_return_amt (type: decimal(7,2)), wr_net_loss (type: decimal(7,2))
+        Map 32 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and d_date BETWEEN 1998-08-04 AND 1998-09-03 00:00:00.0) (type: boolean)
+                    Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+        Map 7 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and d_date BETWEEN 1998-08-04 AND 1998-09-03 00:00:00.0) (type: boolean)
+                    Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 36524 Data size: 40870356 Basic stats: COMPLETE Column stats: NONE
         Map 9 
             Map Operator Tree:
                 TableScan

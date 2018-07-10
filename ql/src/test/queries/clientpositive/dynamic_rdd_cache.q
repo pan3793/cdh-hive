@@ -5,6 +5,7 @@ SET hive.groupby.skewindata=false;
 SET mapred.reduce.tasks=31;
 SET hive.exec.compress.intermediate=true;
 SET hive.exec.compress.output=true;
+SET hive.combine.equivalent.work.optimization=true;
 
 -- JOIN TEST
 

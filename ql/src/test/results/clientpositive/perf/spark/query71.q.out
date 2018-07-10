@@ -82,8 +82,8 @@ STAGE PLANS:
   Stage: Stage-1
     Spark
       Edges:
-        Reducer 12 <- Map 10 (PARTITION-LEVEL SORT, 398), Map 11 (PARTITION-LEVEL SORT, 398)
-        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 154), Map 10 (PARTITION-LEVEL SORT, 154)
+        Reducer 12 <- Map 11 (PARTITION-LEVEL SORT, 398), Map 13 (PARTITION-LEVEL SORT, 398)
+        Reducer 2 <- Map 1 (PARTITION-LEVEL SORT, 154), Map 7 (PARTITION-LEVEL SORT, 154)
         Reducer 3 <- Map 14 (PARTITION-LEVEL SORT, 473), Reducer 12 (PARTITION-LEVEL SORT, 473), Reducer 2 (PARTITION-LEVEL SORT, 473), Reducer 9 (PARTITION-LEVEL SORT, 473)
         Reducer 4 <- Map 15 (PARTITION-LEVEL SORT, 518), Reducer 3 (PARTITION-LEVEL SORT, 518)
         Reducer 9 <- Map 10 (PARTITION-LEVEL SORT, 305), Map 8 (PARTITION-LEVEL SORT, 305)
@@ -132,6 +132,19 @@ STAGE PLANS:
                       Map-reduce partition columns: ss_sold_date_sk (type: int)
                       Statistics: Num rows: 575995635 Data size: 50814502088 Basic stats: COMPLETE Column stats: NONE
                       value expressions: ss_sold_time_sk (type: int), ss_item_sk (type: int), ss_ext_sales_price (type: decimal(7,2))
+        Map 13 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and (d_moy = 12) and (d_year = 2001)) (type: boolean)
+                    Statistics: Num rows: 18262 Data size: 20435178 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 18262 Data size: 20435178 Basic stats: COMPLETE Column stats: NONE
         Map 14 
             Map Operator Tree:
                 TableScan
@@ -160,6 +173,19 @@ STAGE PLANS:
                       Map-reduce partition columns: t_time_sk (type: int)
                       Statistics: Num rows: 86400 Data size: 40694400 Basic stats: COMPLETE Column stats: NONE
                       value expressions: t_hour (type: int), t_minute (type: int)
+        Map 7 
+            Map Operator Tree:
+                TableScan
+                  alias: date_dim
+                  Statistics: Num rows: 73049 Data size: 81741831 Basic stats: COMPLETE Column stats: NONE
+                  Filter Operator
+                    predicate: (d_date_sk is not null and (d_moy = 12) and (d_year = 2001)) (type: boolean)
+                    Statistics: Num rows: 18262 Data size: 20435178 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: d_date_sk (type: int)
+                      sort order: +
+                      Map-reduce partition columns: d_date_sk (type: int)
+                      Statistics: Num rows: 18262 Data size: 20435178 Basic stats: COMPLETE Column stats: NONE
         Map 8 
             Map Operator Tree:
                 TableScan
