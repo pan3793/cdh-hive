@@ -154,7 +154,7 @@ public class TestTablesCreateDropAlterTruncate extends MetaStoreClientTest {
     }
 
     // Create partitions for the partitioned table
-    for(int i=0; i < 3; i++) {
+    for(int i=0; i < 2; i++) {
       Partition partition =
           new PartitionBuilder()
               .fromTable(testTables[3])
@@ -162,6 +162,13 @@ public class TestTablesCreateDropAlterTruncate extends MetaStoreClientTest {
               .build();
       client.add_partition(partition);
     }
+    // Add an external partition too
+    new PartitionBuilder()
+        .fromTable(testTables[3])
+        .addValue("a2")
+        .setLocation(metaStore.getWarehouseRoot() + "/external/a2")
+        .addToTable(client);
+
     // Add data files to the partitioned table
     List<Partition> partitions =
         client.listPartitions(testTables[3].getDbName(), testTables[3].getTableName(), (short)-1);
@@ -519,6 +526,8 @@ public class TestTablesCreateDropAlterTruncate extends MetaStoreClientTest {
   @Test
   public void testDropTableDeleteDir() throws Exception {
     Table table = testTables[0];
+    Partition externalPartition = client.getPartition(partitionedTable.getDbName(),
+        partitionedTable.getTableName(), "test_part_col=a2");
 
     client.dropTable(table.getDbName(), table.getTableName(), true, false);
 
@@ -536,6 +545,9 @@ public class TestTablesCreateDropAlterTruncate extends MetaStoreClientTest {
 
     Assert.assertFalse("Table path should be removed",
         metaStore.isPathExists(new Path(partitionedTable.getSd().getLocation())));
+
+    Assert.assertFalse("Extra partition path should be removed",
+        metaStore.isPathExists(new Path(externalPartition.getSd().getLocation())));
   }
 
   @Test

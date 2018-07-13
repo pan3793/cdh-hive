@@ -419,6 +419,11 @@ public class HBaseStore implements RawStore {
     }
   }
 
+  public Map<String, String> getPartitionLocations(String dbName, String tblName,
+                                                   String baseLocationToNotShow, int max) {
+    throw new RuntimeException("getPartitionLocations is not implemented for HBase store");
+  }
+
   @Override
   public boolean doesPartitionExist(String dbName, String tableName, List<FieldSchema> partKeys, List<String> part_vals) throws
       MetaException, NoSuchObjectException {

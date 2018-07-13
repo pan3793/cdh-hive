@@ -17,9 +17,11 @@
  */
 package org.apache.hadoop.hive.metastore.client.builder;
 
+import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.thrift.TException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,5 +101,11 @@ public class PartitionBuilder extends StorageDescriptorBuilder<PartitionBuilder>
     if (values == null) throw new MetaException("You must provide partition values");
     return new Partition(values, dbName, tableName, createTime, lastAccessTime, buildSd(),
         partParams);
+  }
+
+  public Partition addToTable(IMetaStoreClient client) throws TException {
+    Partition p = build();
+    client.add_partition(p);
+    return p;
   }
 }
