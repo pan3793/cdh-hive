@@ -156,6 +156,20 @@ public interface RawStore extends Configurable {
   public abstract List<Partition> getPartitions(String dbName,
       String tableName, int max) throws MetaException, NoSuchObjectException;
 
+  /**
+   * Get the location for every partition of a given table. If a partition location is a child of
+   * baseLocationToNotShow then the partitionName is returned, but the only null location is
+   * returned.
+   * @param dbName database name.
+   * @param tblName table name.
+   * @param baseLocationToNotShow Partition locations which are child of this path are omitted, and
+   *     null value returned instead.
+   * @param max The maximum number of partition locations returned, or -1 for all
+   * @return The map of the partitionName, location pairs
+   */
+  Map<String, String> getPartitionLocations(String dbName, String tblName,
+                                            String baseLocationToNotShow, int max);
+
   public abstract void alterTable(String dbname, String name, Table newTable)
       throws InvalidObjectException, MetaException;
 

@@ -187,6 +187,7 @@ import org.apache.hadoop.hive.metastore.model.MTablePrivilege;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage.EventType;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.hadoop.hive.metastore.txn.TxnHandler;
+import org.apache.hadoop.hive.metastore.utils.SecurityUtils;
 import org.apache.hadoop.hive.serde2.Deserializer;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.shims.HadoopShims;
@@ -1187,7 +1188,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
               // For each partition in each table, drop the partitions and get a list of
               // partitions' locations which might need to be deleted
               partitionPaths = dropPartitionsAndGetLocations(ms, name, table.getTableName(),
-                  tablePath, table.getPartitionKeys(), deleteData && !isExternal(table));
+                  tablePath, deleteData && !isExternal(table));
 
               // Drop the table but not its data
               drop_table(name, table.getTableName(), false);
@@ -1675,7 +1676,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
         // Drop the partitions and get a list of locations which need to be deleted
         partPaths = dropPartitionsAndGetLocations(ms, dbname, name, tblPath,
-            tbl.getPartitionKeys(), deleteData && !isExternal);
+            deleteData && !isExternal);
         if (!ms.dropTable(dbname, name)) {
           String tableName = dbname + "." + name;
           throw new MetaException(indexName == null ? "Unable to drop table " + tableName:
@@ -1773,79 +1774,76 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     }
 
     /**
-     * Retrieves the partitions specified by partitionKeys. If checkLocation, for locations of
-     * partitions which may not be subdirectories of tablePath checks to make the locations are
-     * writable.
+     * Deletes the partitions specified by dbName, tableName. If checkLocation is true, for
+     * locations of partitions which may not be subdirectories of tablePath checks to make sure the
+     * locations are writable.
      *
      * Drops the metadata for each partition.
      *
      * Provides a list of locations of partitions which may not be subdirectories of tablePath.
      *
-     * @param ms
-     * @param dbName
-     * @param tableName
-     * @param tablePath
-     * @param partitionKeys
-     * @param checkLocation
+     * @param ms RawStore to use for metadata retrieval and delete
+     * @param dbName The dbName
+     * @param tableName The tableName
+     * @param tablePath The tablePath of which subdirectories does not have to be checked
+     * @param checkLocation Should we check the locations at all
      * @return
      * @throws MetaException
      * @throws IOException
-     * @throws InvalidInputException
-     * @throws InvalidObjectException
      * @throws NoSuchObjectException
      */
     private List<Path> dropPartitionsAndGetLocations(RawStore ms, String dbName,
-      String tableName, Path tablePath, List<FieldSchema> partitionKeys, boolean checkLocation)
-      throws MetaException, IOException, NoSuchObjectException, InvalidObjectException,
-      InvalidInputException {
+      String tableName, Path tablePath, boolean checkLocation)
+      throws MetaException, IOException, NoSuchObjectException {
       int partitionBatchSize = HiveConf.getIntVar(hiveConf,
-          ConfVars.METASTORE_BATCH_RETRIEVE_MAX);
-      Path tableDnsPath = null;
+          ConfVars.METASTORE_BATCH_RETRIEVE_TABLE_PARTITION_MAX);
+      String tableDnsPath = null;
       if (tablePath != null) {
-        tableDnsPath = wh.getDnsPath(tablePath);
+        tableDnsPath = wh.getDnsPath(tablePath).toString();
       }
       List<Path> partPaths = new ArrayList<Path>();
-      Table tbl = ms.getTable(dbName, tableName);
 
       // call dropPartition on each of the table's partitions to follow the
       // procedure for cleanly dropping partitions.
       while (true) {
-        List<Partition> partsToDelete = ms.getPartitions(dbName, tableName, partitionBatchSize);
-        if (partsToDelete == null || partsToDelete.isEmpty()) {
-          break;
+        Map<String, String> partitionLocations = ms.getPartitionLocations(dbName, tableName,
+            tableDnsPath, partitionBatchSize);
+        if (partitionLocations == null || partitionLocations.isEmpty()) {
+          // No more partitions left to drop. Return with the collected path list to delete.
+          return partPaths;
         }
-        List<String> partNames = new ArrayList<String>();
-        for (Partition part : partsToDelete) {
-          if (checkLocation && part.getSd() != null &&
-              part.getSd().getLocation() != null) {
 
-            Path partPath = wh.getDnsPath(new Path(part.getSd().getLocation()));
-            if (tableDnsPath == null ||
-                (partPath != null && !isSubdirectory(tableDnsPath, partPath))) {
-              if (!wh.isWritable(partPath.getParent())) {
-                throw new MetaException("Table metadata not deleted since the partition " +
-                    Warehouse.makePartName(partitionKeys, part.getValues()) +
-                    " has parent location " + partPath.getParent() + " which is not writable " +
-                    "by " + hiveConf.getUser());
+        if (checkLocation) {
+          for (String partName : partitionLocations.keySet()) {
+            String pathString = partitionLocations.get(partName);
+            if (pathString != null) {
+              Path partPath = wh.getDnsPath(new Path(pathString));
+              // Double check here. Maybe Warehouse.getDnsPath revealed relationship between the
+              // path objects
+              if (tableDnsPath == null ||
+                  !FileUtils.isSubdirectory(tableDnsPath, partPath.toString())) {
+                if (!wh.isWritable(partPath.getParent())) {
+                  throw new MetaException("Table metadata not deleted since the partition "
+                      + partName + " has parent location " + partPath.getParent()
+                      + " which is not writable by " + SecurityUtils.getUser());
+                }
+                partPaths.add(partPath);
               }
-              partPaths.add(partPath);
             }
           }
-          partNames.add(Warehouse.makePartName(tbl.getPartitionKeys(), part.getValues()));
         }
+
         for (MetaStoreEventListener listener : listeners) {
           //No drop part listener events fired for public listeners historically, for drop table case.
           //Limiting to internal listeners for now, to avoid unexpected calls for public listeners.
           if (listener instanceof HMSMetricsListener) {
-            for (Partition part : partsToDelete) {
+            for (@SuppressWarnings("unused") String part : partitionLocations.keySet()) {
               listener.onDropPartition(null);
             }
           }
         }
-        ms.dropPartitions(dbName, tableName, partNames);
+        ms.dropPartitions(dbName, tableName, new ArrayList<>(partitionLocations.keySet()));
       }
-
-      return partPaths;
     }
 
     @Override
@@ -4536,7 +4534,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
           // Drop the partitions and get a list of partition locations which need to be deleted
           partPaths = dropPartitionsAndGetLocations(ms, qualified[0], qualified[1], tblPath,
-              tbl.getPartitionKeys(), deleteData);
+              deleteData);
           if (!ms.dropTable(qualified[0], qualified[1])) {
             throw new MetaException("Unable to drop underlying data table "
                 + qualified[0] + "." + qualified[1] + " for index " + indexName);

@@ -54,6 +54,7 @@ public class MetaStoreFactoryForTests {
     // set some values to use for getting conf. vars
     HiveConf.setBoolVar(conf, HiveConf.ConfVars.METASTORE_METRICS, true);
     HiveConf.setIntVar(conf, HiveConf.ConfVars.METASTORE_BATCH_RETRIEVE_MAX, 2);
+    HiveConf.setIntVar(conf, HiveConf.ConfVars.METASTORE_BATCH_RETRIEVE_TABLE_PARTITION_MAX, 2);
     HiveConf.setIntVar(conf, HiveConf.ConfVars.METASTORE_LIMIT_PARTITION_REQUEST,
         DEFAULT_LIMIT_PARTITION_REQUEST);
     HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_EXPRESSION_PROXY_CLASS,

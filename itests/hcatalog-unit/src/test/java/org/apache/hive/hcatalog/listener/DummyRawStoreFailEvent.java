@@ -235,6 +235,11 @@ public class DummyRawStoreFailEvent implements RawStore, Configurable {
     return objectStore.getPartitions(dbName, tableName, max);
   }
 
+  public Map<String, String> getPartitionLocations(String dbName, String tblName,
+                                                   String baseLocationToNotShow, int max) {
+    return objectStore.getPartitionLocations(dbName, tblName, baseLocationToNotShow, max);
+  }
+
   @Override
   public void alterTable(String dbName, String name, Table newTable)
       throws InvalidObjectException, MetaException {
