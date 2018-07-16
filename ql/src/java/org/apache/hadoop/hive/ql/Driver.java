@@ -60,6 +60,7 @@ import org.apache.hadoop.hive.ql.exec.TaskFactory;
 import org.apache.hadoop.hive.ql.exec.TaskResult;
 import org.apache.hadoop.hive.ql.exec.TaskRunner;
 import org.apache.hadoop.hive.ql.exec.Utilities;
+import org.apache.hadoop.hive.ql.exec.spark.session.SparkSession;
 import org.apache.hadoop.hive.ql.history.HiveHistory.Keys;
 import org.apache.hadoop.hive.ql.hooks.Entity;
 import org.apache.hadoop.hive.ql.hooks.ExecuteWithHookContext;
@@ -499,6 +500,11 @@ public class Driver implements IDriver {
     LockedDriverState.setLockedDriverState(lDrvState);
 
     String queryId = queryState.getQueryId();
+
+    SparkSession ss = SessionState.get().getSparkSession();
+    if (ss != null) {
+      ss.onQuerySubmission(queryId);
+    }
 
     //save some info for webUI for use after plan is freed
     this.queryDisplay.setQueryStr(queryStr);
@@ -2063,6 +2069,10 @@ public class Driver implements IDriver {
       boolean isInterrupted = isInterrupted();
       if (isInterrupted && !deferClose) {
         closeInProcess(true);
+      }
+      SparkSession ss = SessionState.get().getSparkSession();
+      if (ss != null) {
+        ss.onQueryCompletion(queryId);
       }
       lDrvState.stateLock.lock();
       try {

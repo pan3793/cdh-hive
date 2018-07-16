@@ -3182,6 +3182,12 @@ public class HiveConf extends Configuration {
         "hive.spark.use.groupby.shuffle", true,
         "Spark groupByKey transformation has better performance but uses unbounded memory." +
             "Turn this off when there is a memory issue."),
+    SPARK_SESSION_TIMEOUT("hive.spark.session.timeout", "30m", new TimeValidator(TimeUnit.MINUTES,
+            30L, true, null, true), "Amount of time the Spark Remote Driver should wait for " +
+            " a Spark job to be submitted before shutting down. Minimum value is 30 minutes"),
+    SPARK_SESSION_TIMEOUT_PERIOD("hive.spark.session.timeout.period", "60s",
+            new TimeValidator(TimeUnit.SECONDS, 60L, true, null, true),
+            "How frequently to check for idle Spark sessions. Minimum value is 60 seconds."),
     NWAYJOINREORDER("hive.reorder.nway.joins", true,
       "Runs reordering of tables within single n-way join (i.e.: picks streamtable)"),
     HIVE_LOG_N_RECORDS("hive.log.every.n.records", 0L, new RangeValidator(0L, null),
