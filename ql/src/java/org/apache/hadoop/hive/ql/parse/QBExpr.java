@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.ql.parse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.hadoop.hive.common.StringInternUtils;
 
 /**
  * Implementation of the query block expression.
@@ -49,11 +50,11 @@ public class QBExpr {
   }
 
   public void setAlias(String alias) {
-    this.alias = alias;
+    this.alias = StringInternUtils.internIfNotNull(alias);
   }
 
   public QBExpr(String alias) {
-    this.alias = alias;
+    setAlias(alias);
   }
 
   public QBExpr(QB qb) {

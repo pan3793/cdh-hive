@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.AnalyzeRewriteContext;
 import org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.TableSpec;
+import org.apache.hadoop.hive.common.StringInternUtils;
 
 /**
  * Implementation of the parse information related to a query block.
@@ -145,7 +146,7 @@ public class QBParseInfo {
     destToWindowingExprs = new LinkedHashMap<String, LinkedHashMap<String, ASTNode>>();
     destToDistinctFuncExprs = new HashMap<String, List<ASTNode>>();
 
-    this.alias = alias;
+    this.alias = StringInternUtils.internIfNotNull(alias);
     this.isSubQ = isSubQ;
     outerQueryLimit = -1;
 
@@ -444,7 +445,7 @@ public class QBParseInfo {
   }
 
   public void setExprToColumnAlias(ASTNode expr, String alias) {
-    exprToColumnAlias.put(expr,  alias);
+    exprToColumnAlias.put(expr, StringInternUtils.internIfNotNull(alias));
   }
 
   public void setDestLimit(String dest, Integer offset, Integer limit) {
