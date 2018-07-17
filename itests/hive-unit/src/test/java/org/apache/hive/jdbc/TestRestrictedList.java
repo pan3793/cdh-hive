@@ -88,7 +88,7 @@ public class TestRestrictedList {
     addToExpectedRestrictedMap("hive.spark.client.rpc.sasl.mechanisms");
     addToExpectedRestrictedMap("spark.home");
     addToExpectedRestrictedMap("bonecp.test");
-    addToExpectedRestrictedMap("hikari.test");
+    addToExpectedRestrictedMap("hikaricp.test");
   }
 
   @AfterClass
