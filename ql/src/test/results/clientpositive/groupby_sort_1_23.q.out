@@ -2590,7 +2590,7 @@ STAGE PLANS:
               name: default.t1
             name: default.t1
       Truncated Path -> Alias:
-        /t1 [null-subquery1:$hdt$_0-subquery1:$hdt$_0:$hdt$_0:t1, null-subquery2:$hdt$_0-subquery2:$hdt$_0:$hdt$_0:t1]
+        /t1 [$hdt$_0-subquery1:$hdt$_0:$hdt$_0:t1, $hdt$_0-subquery2:$hdt$_0:$hdt$_0:t1]
 
   Stage: Stage-7
     Conditional Operator
@@ -3013,7 +3013,7 @@ STAGE PLANS:
               name: default.t1
             name: default.t1
       Truncated Path -> Alias:
-        /t1 [null-subquery2:$hdt$_0-subquery2:$hdt$_0:$hdt$_0:t1]
+        /t1 [$hdt$_0-subquery2:$hdt$_0:$hdt$_0:t1]
       Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
@@ -3209,7 +3209,7 @@ STAGE PLANS:
               name: default.t1
             name: default.t1
       Truncated Path -> Alias:
-        /t1 [null-subquery1:$hdt$_0-subquery1:$hdt$_0:$hdt$_0:$hdt$_0:t1]
+        /t1 [$hdt$_0-subquery1:$hdt$_0:$hdt$_0:$hdt$_0:t1]
 #### A masked pattern was here ####
 
   Stage: Stage-8

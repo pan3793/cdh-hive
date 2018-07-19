@@ -60,10 +60,10 @@ STAGE PLANS:
         a 
           Fetch Operator
             limit: -1
-        c-subquery1:a-subquery1:src13 
+        c:a-subquery1:src13 
           Fetch Operator
             limit: -1
-        c-subquery2:a-subquery2:src14 
+        c:a-subquery2:src14 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
@@ -78,7 +78,7 @@ STAGE PLANS:
                 keys:
                   0 key (type: string)
                   1 key (type: string)
-        c-subquery1:a-subquery1:src13 
+        c:a-subquery1:src13 
           TableScan
             alias: src13
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
@@ -95,7 +95,7 @@ STAGE PLANS:
                     keys:
                       0 _col6 (type: string)
                       1 _col1 (type: string)
-        c-subquery2:a-subquery2:src14 
+        c:a-subquery2:src14 
           TableScan
             alias: src14
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE

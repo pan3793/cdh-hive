@@ -762,7 +762,7 @@ STAGE PLANS:
                   value expressions: _col0 (type: bigint)
                   auto parallelism: false
       Path -> Alias:
-        -mr-10004default.src{} [null-subquery1:_u1-subquery1:src]
+        -mr-10004default.src{} [_u1-subquery1:src]
       Path -> Partition:
         -mr-10004default.src{} 
           Partition
@@ -808,7 +808,7 @@ STAGE PLANS:
               name: default.src
             name: default.src
       Truncated Path -> Alias:
-        -mr-10004default.src{} [null-subquery1:_u1-subquery1:src]
+        -mr-10004default.src{} [_u1-subquery1:src]
       Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
@@ -1143,10 +1143,10 @@ STAGE PLANS:
               name: default.srcpart
             name: default.srcpart
       Truncated Path -> Alias:
-        /srcpart/ds=2008-04-08/hr=11 [null-subquery2:_u1-subquery2:srcpart]
-        /srcpart/ds=2008-04-08/hr=12 [null-subquery2:_u1-subquery2:srcpart]
-        /srcpart/ds=2008-04-09/hr=11 [null-subquery2:_u1-subquery2:srcpart]
-        /srcpart/ds=2008-04-09/hr=12 [null-subquery2:_u1-subquery2:srcpart]
+        /srcpart/ds=2008-04-08/hr=11 [_u1-subquery2:srcpart]
+        /srcpart/ds=2008-04-08/hr=12 [_u1-subquery2:srcpart]
+        /srcpart/ds=2008-04-09/hr=11 [_u1-subquery2:srcpart]
+        /srcpart/ds=2008-04-09/hr=12 [_u1-subquery2:srcpart]
       Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
@@ -1743,7 +1743,7 @@ STAGE PLANS:
                 tag: 0
                 auto parallelism: false
       Path -> Alias:
-        -mr-10004default.src{} [null-subquery2:a-subquery2:src]
+        -mr-10004default.src{} [a-subquery2:src]
       Path -> Partition:
         -mr-10004default.src{} 
           Partition
@@ -1789,7 +1789,7 @@ STAGE PLANS:
               name: default.src
             name: default.src
       Truncated Path -> Alias:
-        -mr-10004default.src{} [null-subquery2:a-subquery2:src]
+        -mr-10004default.src{} [a-subquery2:src]
       Needs Tagging: true
       Reduce Operator Tree:
         Join Operator
@@ -1882,7 +1882,7 @@ STAGE PLANS:
                     GatherStats: false
                     MultiFileSpray: false
       Path -> Alias:
-        -mr-10003default.src{} [null-subquery1:a-subquery1:src]
+        -mr-10003default.src{} [a-subquery1:src]
 #### A masked pattern was here ####
       Path -> Partition:
         -mr-10003default.src{} 
@@ -1949,7 +1949,7 @@ STAGE PLANS:
                 serialization.lib org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
               serde: org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe
       Truncated Path -> Alias:
-        -mr-10003default.src{} [null-subquery1:a-subquery1:src]
+        -mr-10003default.src{} [a-subquery1:src]
 #### A masked pattern was here ####
 
   Stage: Stage-0

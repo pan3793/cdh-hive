@@ -900,7 +900,7 @@ STAGE PLANS:
     Map Reduce
       Map Operator Tree:
           TableScan
-            alias: null-subquery1:$hdt$_0-subquery1:$hdt$_0:$hdt$_0:default__lineitem_ix_lineitem_ix_lshipdate_idx__
+            alias: $hdt$_0-subquery1:$hdt$_0:$hdt$_0:default__lineitem_ix_lineitem_ix_lshipdate_idx__
             Statistics: Num rows: 95 Data size: 8960 Basic stats: COMPLETE Column stats: NONE
             Select Operator
               expressions: l_shipdate (type: string), _count_of_l_shipdate (type: bigint)

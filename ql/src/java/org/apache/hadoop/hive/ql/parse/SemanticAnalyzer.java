@@ -437,6 +437,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       throws SemanticException {
     doPhase1QBExpr(ast, qbexpr, id, alias, false);
   }
+
   @SuppressWarnings("nls")
   public void doPhase1QBExpr(ASTNode ast, QBExpr qbexpr, String id, String alias, boolean insideView)
       throws SemanticException {
@@ -457,16 +458,16 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       qbexpr.setOpcode(QBExpr.Opcode.UNION);
       // query 1
       assert (ast.getChild(0) != null);
-      QBExpr qbexpr1 = new QBExpr(alias + "-subquery1");
-      doPhase1QBExpr((ASTNode) ast.getChild(0), qbexpr1, id + "-subquery1",
-          alias + "-subquery1", insideView);
+      QBExpr qbexpr1 = new QBExpr(alias + SUBQUERY_TAG_1);
+      doPhase1QBExpr((ASTNode) ast.getChild(0), qbexpr1, id,
+          alias + SUBQUERY_TAG_1, insideView);
       qbexpr.setQBExpr1(qbexpr1);
 
       // query 2
-      assert (ast.getChild(0) != null);
-      QBExpr qbexpr2 = new QBExpr(alias + "-subquery2");
-      doPhase1QBExpr((ASTNode) ast.getChild(1), qbexpr2, id + "-subquery2",
-          alias + "-subquery2", insideView);
+      assert (ast.getChild(1) != null);
+      QBExpr qbexpr2 = new QBExpr(alias + SUBQUERY_TAG_2);
+      doPhase1QBExpr((ASTNode) ast.getChild(1), qbexpr2, id,
+          alias + SUBQUERY_TAG_2, insideView);
       qbexpr.setQBExpr2(qbexpr2);
     }
       break;

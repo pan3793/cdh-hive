@@ -115,11 +115,11 @@ STAGE PLANS:
   Stage: Stage-10
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        null-subquery2:c-subquery2:a 
+        c-subquery2:a 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        null-subquery2:c-subquery2:a 
+        c-subquery2:a 
           TableScan
             alias: a
             Statistics: Num rows: 1 Data size: 30 Basic stats: COMPLETE Column stats: NONE

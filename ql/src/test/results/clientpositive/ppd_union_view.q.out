@@ -290,8 +290,8 @@ STAGE PLANS:
               name: default.t1_old
             name: default.t1_old
       Truncated Path -> Alias:
-        /t1_mapping/ds=2011-10-13 [t1-subquery2:subq-subquery2:t1_mapping]
-        /t1_old/ds=2011-10-13 [t1-subquery2:subq-subquery2:t1_old]
+        /t1_mapping/ds=2011-10-13 [t1:subq-subquery2:t1_mapping]
+        /t1_old/ds=2011-10-13 [t1:subq-subquery2:t1_old]
       Needs Tagging: true
       Reduce Operator Tree:
         Join Operator
@@ -621,7 +621,7 @@ STAGE PLANS:
               name: default.t1_new
             name: default.t1_new
       Truncated Path -> Alias:
-        /t1_new/ds=2011-10-15 [null-subquery1:$hdt$_0-subquery1:t1_new]
+        /t1_new/ds=2011-10-15 [$hdt$_0-subquery1:t1_new]
 #### A masked pattern was here ####
 
   Stage: Stage-0
