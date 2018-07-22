@@ -6681,7 +6681,7 @@ STAGE PLANS:
   Stage: Stage-8
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_1:dst_union22_delta 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_1:dst_union22_delta 
           Fetch Operator
             limit: -1
             Partition Description:
@@ -6730,7 +6730,7 @@ STAGE PLANS:
                     name: default.dst_union22_delta
                   name: default.dst_union22_delta
       Alias -> Map Local Operator Tree:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_1:dst_union22_delta 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_1:dst_union22_delta 
           TableScan
             alias: dst_union22_delta
             Statistics: Num rows: 500 Data size: 16936 Basic stats: COMPLETE Column stats: NONE
@@ -6900,7 +6900,7 @@ STAGE PLANS:
               name: default.dst_union22_delta
             name: default.dst_union22_delta
       Truncated Path -> Alias:
-        /dst_union22/ds=1 [$hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:a]
+        /dst_union22/ds=1 [$hdt$_0:$hdt$_0-subquery2:$hdt$_0:a]
 
   Stage: Stage-2
     Map Reduce
@@ -7018,7 +7018,7 @@ STAGE PLANS:
               name: default.dst_union22_delta
             name: default.dst_union22_delta
       Truncated Path -> Alias:
-        /dst_union22_delta/ds=1 [$hdt$_0-subquery1:$hdt$_0-subquery1:dst_union22_delta]
+        /dst_union22_delta/ds=1 [$hdt$_0:$hdt$_0-subquery1:dst_union22_delta]
 #### A masked pattern was here ####
       Needs Tagging: false
       Reduce Operator Tree:
@@ -7226,8 +7226,8 @@ STAGE PLANS:
               name: default.dst_union22_delta
             name: default.dst_union22_delta
       Truncated Path -> Alias:
-        /dst_union22/ds=1 [$hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:a]
-        /dst_union22_delta/ds=1 [$hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_1:dst_union22_delta]
+        /dst_union22/ds=1 [$hdt$_0:$hdt$_0-subquery2:$hdt$_0:a]
+        /dst_union22_delta/ds=1 [$hdt$_0:$hdt$_0-subquery2:$hdt$_1:dst_union22_delta]
       Needs Tagging: true
       Reduce Operator Tree:
         Join Operator
@@ -8304,8 +8304,8 @@ STAGE PLANS:
               name: default.src3
             name: default.src3
       Truncated Path -> Alias:
-        /src2 [$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:src2]
-        /src3 [$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery2:$hdt$_0-subquery2:src3]
+        /src2 [$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery1:src2]
+        /src3 [$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery2:src3]
       Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
@@ -8446,7 +8446,7 @@ STAGE PLANS:
               name: default.src4
             name: default.src4
       Truncated Path -> Alias:
-        /src4 [$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery2:$hdt$_0-subquery2:src4]
+        /src4 [$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery2:src4]
 #### A masked pattern was here ####
       Needs Tagging: false
       Reduce Operator Tree:
@@ -8663,7 +8663,7 @@ STAGE PLANS:
               name: default.src5
             name: default.src5
       Truncated Path -> Alias:
-        /src5 [$hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:src5]
+        /src5 [$hdt$_0:$hdt$_0-subquery2:$hdt$_0:src5]
       Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
@@ -8908,8 +8908,8 @@ STAGE PLANS:
               name: default.src3
             name: default.src3
       Truncated Path -> Alias:
-        /src2 [$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:src2]
-        /src3 [$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery2:$hdt$_0-subquery2:src3]
+        /src2 [$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery1:src2]
+        /src3 [$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery2:src3]
       Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
@@ -8938,11 +8938,11 @@ STAGE PLANS:
   Stage: Stage-7
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_0:a 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_0:a 
           TableScan
             alias: a
             Statistics: Num rows: 309 Data size: 1482 Basic stats: COMPLETE Column stats: NONE
@@ -9135,7 +9135,7 @@ STAGE PLANS:
               name: default.src5
             name: default.src5
       Truncated Path -> Alias:
-        /src5 [$hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_1:b]
+        /src5 [$hdt$_0:$hdt$_0-subquery2:$hdt$_1:b]
 #### A masked pattern was here ####
       Needs Tagging: false
       Reduce Operator Tree:
@@ -9380,8 +9380,8 @@ STAGE PLANS:
               name: default.src3
             name: default.src3
       Truncated Path -> Alias:
-        /src2 [$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery1:src2]
-        /src3 [$hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0-subquery2:$hdt$_0-subquery2:src3]
+        /src2 [$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery1:src2]
+        /src3 [$hdt$_0:$hdt$_0-subquery1:$hdt$_0:$hdt$_0-subquery2:src3]
       Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
@@ -9522,11 +9522,11 @@ STAGE PLANS:
   Stage: Stage-8
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_0:$hdt$_0:a 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_0:$hdt$_0:a 
           TableScan
             alias: a
             Statistics: Num rows: 309 Data size: 1482 Basic stats: COMPLETE Column stats: NONE
@@ -9678,7 +9678,7 @@ STAGE PLANS:
               name: default.src5
             name: default.src5
       Truncated Path -> Alias:
-        /src5 [$hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:$hdt$_1:b]
+        /src5 [$hdt$_0:$hdt$_0-subquery2:$hdt$_0:$hdt$_1:b]
       Needs Tagging: false
       Reduce Operator Tree:
         Group By Operator
@@ -10009,11 +10009,11 @@ STAGE PLANS:
   Stage: Stage-6
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        a-subquery1:_u1-subquery1:a 
+        a:_u1-subquery1:a 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        a-subquery1:_u1-subquery1:a 
+        a:_u1-subquery1:a 
           TableScan
             alias: a
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
@@ -13698,11 +13698,11 @@ STAGE PLANS:
   Stage: Stage-6
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery1:$hdt$_0:a 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery1:$hdt$_0:a 
           TableScan
             alias: a
             Statistics: Num rows: 10 Data size: 70 Basic stats: COMPLETE Column stats: NONE
@@ -13839,11 +13839,11 @@ STAGE PLANS:
   Stage: Stage-6
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_0:a 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_0:a 
           TableScan
             alias: a
             Statistics: Num rows: 10 Data size: 70 Basic stats: COMPLETE Column stats: NONE
@@ -13980,11 +13980,11 @@ STAGE PLANS:
   Stage: Stage-6
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery1:$hdt$_0:a 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery1:$hdt$_0:a 
           TableScan
             alias: a
             Statistics: Num rows: 10 Data size: 70 Basic stats: COMPLETE Column stats: NONE
@@ -14121,11 +14121,11 @@ STAGE PLANS:
   Stage: Stage-6
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_0:a 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $hdt$_0-subquery2:$hdt$_0-subquery2:$hdt$_0:a 
+        $hdt$_0:$hdt$_0-subquery2:$hdt$_0:a 
           TableScan
             alias: a
             Statistics: Num rows: 10 Data size: 70 Basic stats: COMPLETE Column stats: NONE
@@ -14758,11 +14758,11 @@ STAGE PLANS:
   Stage: Stage-8
     Map Reduce Local Work
       Alias -> Map Local Tables:
-        $hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0:src10_1 
+        $hdt$_0:$hdt$_0-subquery1:$hdt$_0:src10_1 
           Fetch Operator
             limit: -1
       Alias -> Map Local Operator Tree:
-        $hdt$_0-subquery1:$hdt$_0-subquery1:$hdt$_0:src10_1 
+        $hdt$_0:$hdt$_0-subquery1:$hdt$_0:src10_1 
           TableScan
             alias: src10_1
             Statistics: Num rows: 10 Data size: 104 Basic stats: COMPLETE Column stats: NONE
