@@ -40,6 +40,7 @@ public class LoadTableDesc extends org.apache.hadoop.hive.ql.plan.LoadDesc
                                             //table specs are to be used
   // Need to remember whether this is an acid compliant operation, and if so whether it is an
   // insert, update, or delete.
+  private boolean inheritLocation = false; // A silly setting.
   private AcidUtils.Operation writeType;
 
   // TODO: the below seems like they should just be combined into partitionDesc
@@ -53,6 +54,7 @@ public class LoadTableDesc extends org.apache.hadoop.hive.ql.plan.LoadDesc
     this.dpCtx = o.dpCtx;
     this.lbCtx = o.lbCtx;
     this.inheritTableSpecs = o.inheritTableSpecs;
+    this.inheritLocation = o.inheritLocation;
     this.writeType = o.writeType;
     this.table = o.table;
     this.partitionSpec = o.partitionSpec;
@@ -163,8 +165,14 @@ public class LoadTableDesc extends org.apache.hadoop.hive.ql.plan.LoadDesc
     return inheritTableSpecs;
   }
 
+  public boolean getInheritLocation() {
+    return inheritLocation;
+  }
+
   public void setInheritTableSpecs(boolean inheritTableSpecs) {
-    this.inheritTableSpecs = inheritTableSpecs;
+    // Set inheritLocation if this is a set to true explicitly.
+    // TODO: Who actually need this? Might just be some pointless legacy code.
+    this.inheritTableSpecs = inheritLocation = inheritTableSpecs;
   }
 
   /**
