@@ -1476,10 +1476,10 @@ public class Hive {
 
   public void loadPartition(Path loadPath, String tableName,
       Map<String, String> partSpec, boolean replace,
-      boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
+      boolean inheritTableSpecs, boolean inheritLocation, boolean isSkewedStoreAsSubdir,
       boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask) throws HiveException {
     Table tbl = getTable(tableName);
-    loadPartition(loadPath, tbl, partSpec, replace, inheritTableSpecs,
+    loadPartition(loadPath, tbl, partSpec, replace, inheritTableSpecs, inheritLocation,
         isSkewedStoreAsSubdir, isSrcLocal, isAcid, hasFollowingStatsTask);
   }
 
@@ -1506,7 +1506,7 @@ public class Hive {
    */
   public Partition loadPartition(Path loadPath, Table tbl,
       Map<String, String> partSpec, boolean replace,
-      boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
+      boolean inheritTableSpecs, boolean inheritLocation, boolean isSkewedStoreAsSubdir,
       boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask) throws HiveException {
 
     Path tblDataLocationPath =  tbl.getDataLocation();
@@ -1525,11 +1525,8 @@ public class Hive {
       Path oldPartPath = (oldPart != null) ? oldPart.getDataLocation() : null;
       Path newPartPath = null;
 
-      if (inheritTableSpecs) {
-        Path partPath = new Path(tbl.getDataLocation(),
-            Warehouse.makePartPath(partSpec));
-        newPartPath = new Path(tblDataLocationPath.toUri().getScheme(), tblDataLocationPath.toUri().getAuthority(),
-            partPath.toUri().getPath());
+      if (inheritLocation) {
+        newPartPath = genPartPathFromTable(tbl, partSpec, tblDataLocationPath);
 
         if(oldPart != null) {
           /*
@@ -1546,7 +1543,8 @@ public class Hive {
           }
         }
       } else {
-        newPartPath = oldPartPath;
+        newPartPath = oldPartPath == null ? genPartPathFromTable(tbl, partSpec,
+                tblDataLocationPath) : oldPartPath;
       }
       perfLogger.PerfLogBegin("MoveTask", PerfLogger.FILE_MOVES);
       List<Path> newFiles = null;
@@ -1641,6 +1639,13 @@ public class Hive {
       LOG.error(StringUtils.stringifyException(e));
       throw new HiveException(e);
     }
+  }
+
+  private static Path genPartPathFromTable(Table tbl, Map<String, String> partSpec,
+                                           Path tblDataLocationPath) throws MetaException {
+    Path partPath = new Path(tbl.getDataLocation(), Warehouse.makePartPath(partSpec));
+    return new Path(tblDataLocationPath.toUri().getScheme(),
+            tblDataLocationPath.toUri().getAuthority(), partPath.toUri().getPath());
   }
 
   private void setStatsPropAndAlterPartition(boolean hasFollowingStatsTask, Table tbl,
@@ -1839,7 +1844,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
               // load the partition
               Partition newPartition = loadPartition(partPath, tbl, fullPartSpec,
-                  replace, true, listBucketingEnabled,
+                  replace, true, false, listBucketingEnabled,
                   false, isAcid, hasFollowingStatsTask);
               partitionsMap.put(fullPartSpec, newPartition);
 
