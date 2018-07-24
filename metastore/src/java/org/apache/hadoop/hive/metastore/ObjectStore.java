@@ -62,6 +62,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configurable;
@@ -1861,9 +1862,27 @@ public class ObjectStore implements RawStore, Configurable {
   }
 
   @Override
-  public void dropPartitions(String dbName, String tblName, List<String> partNames)
+  public void dropPartitions(String dbName, String tblName, final List<String> partNames)
       throws MetaException, NoSuchObjectException {
-    if (partNames.isEmpty()) return;
+    if (CollectionUtils.isEmpty(partNames)) {
+      return;
+    }
+    new GetListHelper<Void>(dbName, tblName, true, true) {
+      @Override
+      protected List<Void> getSqlResult(GetHelper<List<Void>> ctx) throws MetaException {
+        directSql.dropPartitionsViaSqlFilter(dbName, tblName, partNames);
+        return Collections.emptyList();
+      }
+      @Override
+      protected List<Void> getJdoResult(GetHelper<List<Void>> ctx) throws MetaException {
+        dropPartitionsViaJdo(dbName, tblName, partNames);
+        return Collections.emptyList();
+      }
+    }.run(false);
+  }
+
+  private void dropPartitionsViaJdo(String dbName, String tblName,
+      List<String> partNames) throws MetaException {
     boolean success = false;
     openTransaction();
     try {
@@ -1872,7 +1891,7 @@ public class ObjectStore implements RawStore, Configurable {
       dropPartitionAllColumnGrantsNoTxn(dbName, tblName, partNames);
       dropPartitionColumnStatisticsNoTxn(dbName, tblName, partNames);
 
-      // CDs are reused; go thry partition SDs, detach all CDs from SDs, then remove unused CDs.
+      // CDs are reused; go try partition SDs, detach all CDs from SDs, then remove unused CDs.
       for (MColumnDescriptor mcd : detachCdsFromSdsNoTxn(dbName, tblName, partNames)) {
         removeUnusedColumnDescriptor(mcd);
       }
