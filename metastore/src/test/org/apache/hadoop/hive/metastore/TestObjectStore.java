@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,10 +54,14 @@ import org.apache.hadoop.hive.metastore.api.Role;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.client.builder.DatabaseBuilder;
+import org.apache.hadoop.hive.metastore.client.builder.PartitionBuilder;
+import org.apache.hadoop.hive.metastore.client.builder.TableBuilder;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
+import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -430,6 +435,153 @@ public class TestObjectStore {
     objectStore.dropPartition(DB1, TABLE1, value2);
     objectStore.dropTable(DB1, TABLE1);
     objectStore.dropDatabase(DB1);
+  }
+
+  /**
+   * Checks if the JDO cache is able to handle directSQL partition drops in one session.
+   * @throws MetaException
+   * @throws InvalidObjectException
+   * @throws NoSuchObjectException
+   * @throws SQLException
+   */
+  @Test
+  public void testDirectSQLDropPartitionsCacheInSession()
+      throws TException {
+    createPartitionedTable();
+    // query the partitions with JDO
+    Deadline.startTimer("getPartition");
+    List<Partition> partitions = objectStore.getPartitionsInternal(DB1, TABLE1,
+        10, false, true);
+    Assert.assertEquals(3, partitions.size());
+
+    // drop partitions with directSql
+    objectStore.dropPartitionsInternal(DB1, TABLE1,
+        Arrays.asList("test_part_col=a0", "test_part_col=a1"), true, false);
+
+    // query the partitions with JDO, checking the cache is not causing any problem
+    partitions = objectStore.getPartitionsInternal(DB1, TABLE1,
+        10, false, true);
+    Assert.assertEquals(1, partitions.size());
+  }
+
+  /**
+   * Checks if the JDO cache is able to handle directSQL partition drops cross sessions.
+   * @throws MetaException
+   * @throws InvalidObjectException
+   * @throws NoSuchObjectException
+   * @throws SQLException
+   */
+  @Test
+  public void testDirectSQLDropPartitionsCacheCrossSession()
+      throws TException {
+    ObjectStore objectStore2 = new ObjectStore();
+    objectStore2.setConf(objectStore.getConf());
+
+    createPartitionedTable();
+    // query the partitions with JDO in the 1st session
+    Deadline.startTimer("getPartition");
+    List<Partition> partitions = objectStore.getPartitionsInternal(DB1, TABLE1,
+        10, false, true);
+    Assert.assertEquals(3, partitions.size());
+
+    // query the partitions with JDO in the 2nd session
+    partitions = objectStore2.getPartitionsInternal(DB1, TABLE1,10,
+        false, true);
+    Assert.assertEquals(3, partitions.size());
+
+    // drop partitions with directSql in the 1st session
+    objectStore.dropPartitionsInternal(DB1, TABLE1,
+        Arrays.asList("test_part_col=a0", "test_part_col=a1"), true, false);
+
+    // query the partitions with JDO in the 2nd session, checking the cache is not causing any
+    // problem
+    partitions = objectStore2.getPartitionsInternal(DB1, TABLE1,
+        10, false, true);
+    Assert.assertEquals(1, partitions.size());
+  }
+
+  /**
+   * Checks if the directSQL partition drop removes every connected data from the RDBMS tables.
+   * @throws MetaException
+   * @throws InvalidObjectException
+   * @throws NoSuchObjectException
+   * @throws SQLException
+   */
+  @Test
+  public void testDirectSQLDropParitionsCleanup() throws TException,
+      SQLException {
+
+    createPartitionedTable();
+
+    // drop the partitions
+    Deadline.startTimer("dropPartitions");
+    objectStore.dropPartitionsInternal(DB1, TABLE1,
+        Arrays.asList("test_part_col=a0", "test_part_col=a1", "test_part_col=a2"), true, false);
+
+    // Check, if every data is dropped connected to the partitions
+    checkBackendTableSize("PARTITIONS", 0);
+    checkBackendTableSize("PART_PRIVS", 0);
+    checkBackendTableSize("PART_COL_PRIVS", 0);
+    checkBackendTableSize("PART_COL_STATS", 0);
+    checkBackendTableSize("PARTITION_PARAMS", 0);
+    checkBackendTableSize("PARTITION_KEY_VALS", 0);
+    checkBackendTableSize("SD_PARAMS", 0);
+    checkBackendTableSize("BUCKETING_COLS", 0);
+    checkBackendTableSize("SKEWED_COL_NAMES", 0);
+    checkBackendTableSize("SDS", 1); // Table has an SDS
+    checkBackendTableSize("SORT_COLS", 0);
+    checkBackendTableSize("SERDE_PARAMS", 0);
+    checkBackendTableSize("SERDES", 1); // Table has a serde
+  }
+
+  /**
+   * Creates DB1 database, TABLE1 table with 3 partitions
+   * @throws MetaException
+   * @throws InvalidObjectException
+   */
+  private void createPartitionedTable() throws TException {
+    Database db1 = new DatabaseBuilder()
+        .setName(DB1)
+        .setDescription("description")
+        .setLocation("locationurl")
+        .build();
+    objectStore.createDatabase(db1);
+    Table tbl1 =
+        new TableBuilder()
+            .setDbName(DB1)
+            .setTableName(TABLE1)
+            .addCol("test_col1", "int")
+            .addCol("test_col2", "int")
+            .addPartCol("test_part_col", "int")
+            .build();
+    objectStore.createTable(tbl1);
+
+    // Create partitions for the partitioned table
+    for(int i=0; i < 3; i++) {
+      Partition part = new PartitionBuilder()
+          .fromTable(tbl1)
+          .addValue("a" + i)
+          .build();
+      objectStore.addPartition(part);
+    }
+  }
+
+  /**
+   * Checks if the HMS backend db row number is as expected. If they are not, an
+   * {@link AssertionError} is thrown.
+   * @param tableName The table in which we count the rows
+   * @param size The expected row number
+   * @throws SQLException If there is a problem connecting to / querying the backend DB
+   */
+  private void checkBackendTableSize(String tableName, int size) throws SQLException {
+    String connectionStr = HiveConf.getVar(objectStore.getConf(), HiveConf.ConfVars.METASTORECONNECTURLKEY);
+    Connection conn = DriverManager.getConnection(connectionStr);
+    Statement stmt = conn.createStatement();
+
+    ResultSet rs = stmt.executeQuery("SELECT COUNT(1) FROM " + tableName);
+    rs.next();
+    Assert.assertEquals(tableName + " table should contain " + size + " rows", size,
+        rs.getLong(1));
   }
 
   /**
