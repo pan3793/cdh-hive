@@ -71,6 +71,7 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class TestObjectStore {
   private ObjectStore objectStore = null;
+  private HiveConf conf;
 
   private static final String DB1 = "testobjectstoredb1";
   private static final String DB2 = "testobjectstoredb2";
@@ -114,7 +115,7 @@ public class TestObjectStore {
 
   @Before
   public void setUp() throws Exception {
-    HiveConf conf = new HiveConf();
+    conf = new HiveConf();
     conf.setVar(HiveConf.ConfVars.METASTORE_EXPRESSION_PROXY_CLASS, MockPartitionExpressionProxy.class.getName());
 
     objectStore = new ObjectStore();
@@ -174,6 +175,23 @@ public class TestObjectStore {
     objectStore.cleanNotificationEvents(1);
     eventResponse = objectStore.getNextNotification(new NotificationEventRequest());
     Assert.assertEquals(0, eventResponse.getEventsSize());
+  }
+
+  /**
+   * Test metastore configuration property METASTORE_MAX_EVENT_RESPONSE
+   */
+  @Test
+  public void testMaxEventResponse() throws InterruptedException, MetaException {
+    NotificationEvent event = new NotificationEvent(0, 0, EventMessage.EventType.CREATE_DATABASE.toString(), "");
+    HiveConf.setIntVar(conf, HiveConf.ConfVars.METASTORE_MAX_EVENT_RESPONSE, 1);
+    ObjectStore objs = new ObjectStore();
+    objs.setConf(conf);
+    // Verify if METASTORE_MAX_EVENT_RESPONSE will limit number of events to respond
+    for (int i = 0; i < 3; i++) {
+      objs.addNotificationEvent(event);
+    }
+    NotificationEventResponse eventResponse = objs.getNextNotification(new NotificationEventRequest());
+    Assert.assertEquals(1, eventResponse.getEventsSize());
   }
 
   /**

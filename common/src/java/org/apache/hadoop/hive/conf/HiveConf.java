@@ -959,6 +959,7 @@ public class HiveConf extends Configuration {
         "When used in conjunction with the org.apache.hadoop.hive.ql.parse.MetaDataExportListener pre event listener, \n" +
         "it is the location to which the metadata will be exported. The default is an empty string, which results in the \n" +
         "metadata being exported to the current user's home directory on HDFS."),
+    METASTORE_MAX_EVENT_RESPONSE("hive.metastore.max.event.response", 1000000, "The parameter will decide the maximum number of events that HMS will respond."),
     MOVE_EXPORTED_METADATA_TO_TRASH("hive.metadata.move.exported.metadata.to.trash", true,
         "When used in conjunction with the org.apache.hadoop.hive.ql.parse.MetaDataExportListener pre event listener, \n" +
         "this setting determines if the metadata that is exported will subsequently be moved to the user's trash directory \n" +
