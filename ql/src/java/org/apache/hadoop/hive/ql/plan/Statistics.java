@@ -54,9 +54,9 @@ public class Statistics implements Serializable {
     this.setNumRows(nr);
     this.setDataSize(ds);
     this.numErasureCodedFiles = numEcFiles;
-    this.basicStatsState = State.NONE;
     this.columnStats = null;
     this.columnStatsState = State.NONE;
+    updateBasicStatsState();
   }
 
   public long getNumRows() {
