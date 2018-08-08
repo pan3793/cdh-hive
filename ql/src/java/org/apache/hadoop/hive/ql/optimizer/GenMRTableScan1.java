@@ -70,6 +70,8 @@ public class GenMRTableScan1 implements NodeProcessor {
       Object... nodeOutputs) throws SemanticException {
     TableScanOperator op = (TableScanOperator) nd;
     GenMRProcContext ctx = (GenMRProcContext) opProcCtx;
+    ctx.reset();
+
     ParseContext parseCtx = ctx.getParseCtx();
     Class<? extends InputFormat> inputFormat = op.getConf().getTableMetadata()
         .getInputFormatClass();
