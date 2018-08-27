@@ -104,7 +104,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [null-subquery1:$hdt$_0-subquery1:src]
+              /src [$hdt$_0-subquery1:src]
         Map 2 
             Map Operator Tree:
                 TableScan
@@ -186,7 +186,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [null-subquery2:$hdt$_0-subquery2:src]
+              /src [$hdt$_0-subquery2:src]
 
   Stage: Stage-0
     Move Operator
@@ -326,7 +326,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [null-subquery1:$hdt$_0-subquery1:src]
+              /src [$hdt$_0-subquery1:src]
         Map 2 
             Map Operator Tree:
                 TableScan
@@ -408,7 +408,7 @@ STAGE PLANS:
                     name: default.src
                   name: default.src
             Truncated Path -> Alias:
-              /src [null-subquery2:$hdt$_0-subquery2:src]
+              /src [$hdt$_0-subquery2:src]
 
   Stage: Stage-6
     Conditional Operator
