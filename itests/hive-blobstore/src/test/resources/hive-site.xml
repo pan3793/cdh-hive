@@ -281,7 +281,7 @@
 
   <property>
     <name>hive.exim.uri.scheme.whitelist</name>
-    <value>hdfs,pfile,file,s3,s3a,pblob</value>
+    <value>hdfs,pfile,file,s3,s3a,pblob,abfs,abfss</value>
   </property>
 
   <!--
