@@ -77,7 +77,7 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>${jackson.version}</version>
+      <version>${jackson-mapper-asl.1.9.version}</version>
     </dependency>
       <dependency>
       <groupId>com.sun.jersey</groupId>
