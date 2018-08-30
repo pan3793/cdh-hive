@@ -41,4 +41,4 @@ rm -f execute-hive-ptest.sh
 
 curl -O http://github.mtv.cloudera.com/raw/CDH/hive-ptest-conf/master/bin/execute-hive-ptest.sh
 
-exec bash ./execute-hive-ptest.sh --branch $HIVE_BRANCH --ptest_branch $HIVE_BRANCH
+exec bash ./execute-hive-ptest.sh --branch $HIVE_BRANCH
