@@ -27,6 +27,7 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.session.SessionState;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -69,7 +70,7 @@ public class TestSparkSessionTimeout {
         HiveConf conf = new HiveConf();
         conf.setBoolVar(HiveConf.ConfVars.SPARK_OPTIMIZE_SHUFFLE_SERDE, false);
         conf.set("spark.local.dir", Paths.get(System.getProperty("test.tmp.dir"),
-                "TestSparkSessionTimeout-testMultiSparkSessionTimeout-local-dir").toString());
+                "TestSparkSessionTimeout-testMultiSessionSparkSessionTimeout-local-dir").toString());
 
         SessionState.start(conf);
 
@@ -83,6 +84,8 @@ public class TestSparkSessionTimeout {
   }
 
   @Test
+  @Ignore("This is a duplicate of testMultiSessionSparkSessionTimeout. It should be deleted " +
+          "upstream.")
   public void testMultiSparkSessionTimeout() throws ExecutionException, InterruptedException {
     List<Future<Void>> futures = new ArrayList<>();
     ExecutorService es = Executors.newFixedThreadPool(10);
