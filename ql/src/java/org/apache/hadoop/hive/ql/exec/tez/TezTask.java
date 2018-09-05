@@ -620,6 +620,16 @@ public class TezTask extends Task<TezWork> {
     }
 
     @Override
+    public String getDagIdentifierString() {
+      return null;
+    }
+
+    @Override
+    public String getSessionIdentifierString() {
+      return null;
+    }
+
+    @Override
     public String getExecutionContext() {
       return dagClient.getExecutionContext(); // Don't sync.
     }

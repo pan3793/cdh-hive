@@ -180,7 +180,7 @@
     <stax.version>1.0.1</stax.version>
     <slf4j.version>${cdh.slf4j.version}</slf4j.version>
     <ST4.version>4.0.4</ST4.version>
-    <tez.version>0.8.4</tez.version>
+    <tez.version>0.9.1</tez.version>
     <slider.version>0.90.2-incubating</slider.version>
     <super-csv.version>2.2.0</super-csv.version>
     <spark.version>${cdh.spark.version}</spark.version>
