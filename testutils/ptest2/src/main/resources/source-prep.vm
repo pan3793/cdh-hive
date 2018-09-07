@@ -102,11 +102,11 @@ cd $workingDir/
         fi
       done
     #end
-    mvn -B clean install -DskipTests -T 4 -q -Dmaven.repo.local=$workingDir/maven $mavenArgs $mavenBuildArgs
+    mvn -B clean install -DskipTests -q -Dmaven.repo.local=$workingDir/maven $mavenArgs $mavenBuildArgs
     if [[ -d "itests" ]]
     then
       cd itests
-      mvn -B clean install -DskipTests -T 4 -q -Dmaven.repo.local=$workingDir/maven $mavenArgs $mavenBuildArgs
+      mvn -B clean install -DskipTests -q -Dmaven.repo.local=$workingDir/maven $mavenArgs $mavenBuildArgs
     fi
   elif [[ "${buildTool}" == "ant" ]]
   then
@@ -120,3 +120,4 @@ cd $workingDir/
    date +"%Y-%m-%d %T.%3N"
 ) 2>&1 | tee $logDir/source-prep.txt
 exit ${PIPESTATUS[0]}
+
