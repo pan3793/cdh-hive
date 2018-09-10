@@ -46,6 +46,7 @@
         <exclude>commons-configuration:commons-configuration</exclude>
         <exclude>org.apache.hive:hive-jdbc:*:standalone</exclude>
         <exclude>org.apache.hive:hive-exec:*:core</exclude>
+        <exclude>org.apache.hive:hive-contrib</exclude>
       </excludes>
     </dependencySet>
     <dependencySet>
@@ -64,6 +65,15 @@
       <useStrictFiltering>true</useStrictFiltering>
       <includes>
         <include>org.apache.hive:hive-jdbc:*:standalone</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>contrib/</outputDirectory>
+      <unpack>false</unpack>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useStrictFiltering>true</useStrictFiltering>
+      <includes>
+        <include>org.apache.hive:hive-contrib</include>
       </includes>
     </dependencySet>
     <dependencySet>
