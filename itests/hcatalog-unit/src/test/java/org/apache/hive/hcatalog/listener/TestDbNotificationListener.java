@@ -27,6 +27,14 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -36,8 +44,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.thrift.TDeserializer;
-import org.apache.thrift.protocol.TJSONProtocol;
 import com.google.common.collect.ImmutableMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.cli.CliSessionState;
@@ -65,7 +71,10 @@ import org.apache.hadoop.hive.metastore.api.ResourceUri;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.messaging.AlterPartitionMessage;
+import org.apache.hadoop.hive.metastore.messaging.AlterTableMessage;
 import org.apache.hadoop.hive.metastore.events.AlterDatabaseEvent;
+import org.apache.hadoop.hive.metastore.messaging.json.JSONMessageFactory;
 import org.apache.hadoop.hive.metastore.events.AddIndexEvent;
 import org.apache.hadoop.hive.metastore.events.AddPartitionEvent;
 import org.apache.hadoop.hive.metastore.events.AlterIndexEvent;
@@ -88,6 +97,8 @@ import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.hcatalog.common.HCatConstants;
 import org.apache.hive.hcatalog.data.Pair;
 import org.junit.After;
+import org.apache.thrift.TDeserializer;
+import org.apache.thrift.protocol.TJSONProtocol;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -262,8 +273,11 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_CREATE_DATABASE_EVENT, event.getEventType());
     assertEquals("mydb", event.getDbName());
     assertNull(event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"CREATE_DATABASE\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"mydb\",\"timestamp\":[0-9]+}"));
+
+    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_CREATE_DATABASE_EVENT, jsonTree.get("eventType").asText());
+    assertEquals("mydb", jsonTree.get("db").asText());
+    assertEquals("file:/tmp", jsonTree.get("location").asText());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.CREATE_DATABASE, firstEventId + 1);
@@ -297,8 +311,10 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_DROP_DATABASE_EVENT, event.getEventType());
     assertEquals("dropdb", event.getDbName());
     assertNull(event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"DROP_DATABASE\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"dropdb\",\"timestamp\":[0-9]+}"));
+    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_DROP_DATABASE_EVENT, jsonTree.get("eventType").asText());
+    assertEquals("dropdb", jsonTree.get("db").asText());
+    assertEquals("file:/tmp", jsonTree.get("location").asText());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.DROP_DATABASE, firstEventId + 2);
@@ -324,31 +340,35 @@ public class TestDbNotificationListener {
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(new FieldSchema("col1", "int", "nocomment"));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
-        serde, null, null, emptyParameters);
-    Table table = new Table("mytable", "default", "me", startTime, startTime, 0, sd, null,
-        emptyParameters, null, null, null);
+    StorageDescriptor sd =
+        new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0, serde, null, null,
+            emptyParameters);
+    Table table =
+        new Table("mytable", "default", "me", startTime, startTime, 0, sd, null, emptyParameters,
+            null, null, null);
     msClient.createTable(table);
-
+    // Get the event
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
     assertEquals(1, rsp.getEventsSize());
-
     NotificationEvent event = rsp.getEvents().get(0);
     assertEquals(firstEventId + 1, event.getEventId());
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
     assertEquals("mytable", event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"CREATE_TABLE\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":\"mytable\",\"timestamp\":[0-9]+}"));
 
-    // Verify the eventID was passed to the non-transactional listener
-    MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.CREATE_TABLE, firstEventId + 1);
+    // Parse the message field
+    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, jsonTree.get("eventType").asText());
+    assertEquals("default", jsonTree.get("db").asText());
+    assertEquals("mytable", jsonTree.get("table").asText());
+    assertEquals("file:/tmp", jsonTree.get("location").asText());
+    Table tableObj = JSONMessageFactory.getTableObj(jsonTree);
+    assertEquals(table, tableObj);
 
-    // When hive.metastore.transactional.event.listeners is set,
-    // a failed event should not create a new notification
-    table = new Table("mytable2", "default", "me", startTime, startTime, 0, sd, null,
-                         emptyParameters, null, null, null);
+    table =
+        new Table("mytable2", "default", "me", startTime, startTime, 0, sd, null, emptyParameters,
+            null, null, null);
     DummyRawStoreFailEvent.setEventSucceed(false);
     try {
       msClient.createTable(table);
@@ -410,13 +430,14 @@ public class TestDbNotificationListener {
         serde, null, null, emptyParameters);
     Table table = new Table("alttable", "default", "me", startTime, startTime, 0, sd,
         new ArrayList<FieldSchema>(), emptyParameters, null, null, null);
+    // Event 1
     msClient.createTable(table);
-
     // Need to modify table location as well
     sd.setLocation("file:/tmp/0");
     cols.add(new FieldSchema("col2", "int", ""));
     table = new Table("alttable", "default", "me", startTime, startTime, 0, sd,
         new ArrayList<FieldSchema>(), emptyParameters, null, null, null);
+    // Event 2
     msClient.alter_table("default", "alttable", table);
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
@@ -428,9 +449,10 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
     assertEquals("alttable", event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"ALTER_TABLE\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":\"alttable\"," +
-        "\"timestamp\":[0-9]+}"));
+
+    AlterTableMessage alterTableMessage =
+        JSONMessageFactory.getInstance().getDeserializer().getAlterTableMessage(event.getMessage());
+    assertEquals(table, alterTableMessage.getTableObjAfter());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.ALTER_TABLE, firstEventId + 2);
@@ -470,9 +492,9 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
     assertEquals("droptable", event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"DROP_TABLE\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":" +
-        "\"droptable\",\"timestamp\":[0-9]+}"));
+    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, jsonTree.get("eventType").asText());
+    assertEquals("file:/tmp", jsonTree.get("location").asText());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.DROP_TABLE, firstEventId + 2);
@@ -520,9 +542,14 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
     assertEquals("addparttable", event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"ADD_PARTITION\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":" +
-        "\"addparttable\",\"timestamp\":[0-9]+,\"partitions\":\\[\\{\"ds\":\"today\"}]}"));
+
+    // Parse the message field
+    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, jsonTree.get("eventType").asText());
+    assertEquals("default", jsonTree.get("db").asText());
+    assertEquals("addparttable", jsonTree.get("table").asText());
+    List<Partition> partitionObjList = JSONMessageFactory.getPartitionObjList(jsonTree);
+    assertEquals(partition, partitionObjList.get(0));
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.ADD_PARTITION, firstEventId + 2);
@@ -575,10 +602,15 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_ALTER_PARTITION_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
     assertEquals("alterparttable", event.getTableName());
-    assertTrue(event.getMessage(),
-        event.getMessage().matches("\\{\"eventType\":\"ALTER_PARTITION\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":\"alterparttable\"," +
-        "\"timestamp\":[0-9]+,\"keyValues\":\\{\"ds\":\"today\"}}"));
+
+    // Parse the message field
+    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_ALTER_PARTITION_EVENT, jsonTree.get("eventType").asText());
+    assertEquals("default", jsonTree.get("db").asText());
+    assertEquals("alterparttable", jsonTree.get("table").asText());
+    AlterPartitionMessage alterPartitionMessage =
+        JSONMessageFactory.getInstance().getDeserializer().getAlterPartitionMessage(event.getMessage());
+    assertEquals(newPart, alterPartitionMessage.getPtnObjAfter());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.ADD_PARTITION, firstEventId + 2);
@@ -625,10 +657,10 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_DROP_PARTITION_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
     assertEquals("dropparttable", event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"DROP_PARTITION\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":" +
-        "\"dropparttable\",\"timestamp\":[0-9]+,\"partitions\":\\[\\{\"ds\":\"today\"}]}"));
-
+    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_DROP_PARTITION_EVENT, jsonTree.get("eventType").asText());
+    assertEquals("today", jsonTree.get("partitions").get(0).get("ds").asText());
+    assertEquals("file:/tmp", jsonTree.get("locations").get(0).asText());
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.DROP_PARTITION, firstEventId + 3);
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.ADD_PARTITION, firstEventId + 2);
@@ -702,9 +734,15 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
     assertEquals(tab2.getTableName(), event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"ADD_PARTITION\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":" +
-        "\"tab2\",\"timestamp\":[0-9]+,\"partitions\":\\[\\{\"part\":\"1\"}]}"));
+
+    // Parse the message field
+    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, jsonTree.get("eventType").asText());
+    assertEquals(dbName, jsonTree.get("db").asText());
+    assertEquals(tab2.getTableName(), jsonTree.get("table").asText());
+    List<Partition> partitionObjList = JSONMessageFactory.getPartitionObjList(jsonTree);
+    assertEquals(tab2.getTableName(), partitionObjList.get(0).getTableName());
+    assertEquals("file:/tmp/2/part=1", partitionObjList.get(0).getSd().getLocation());
 
     event = rsp.getEvents().get(1);
     assertEquals(firstEventId + 5, event.getEventId());
@@ -712,9 +750,10 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_DROP_PARTITION_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
     assertEquals(tab1.getTableName(), event.getTableName());
-    assertTrue(event.getMessage().matches("\\{\"eventType\":\"DROP_PARTITION\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":" +
-        "\"tab1\",\"timestamp\":[0-9]+,\"partitions\":\\[\\{\"part\":\"1\"}]}"));
+    jsonTree = JSONMessageFactory.getJsonTree(event);
+    assertEquals(HCatConstants.HCAT_DROP_PARTITION_EVENT, jsonTree.get("eventType").asText());
+    assertEquals("1", jsonTree.get("partitions").get(0).get("part").asText());
+    assertEquals("file:/tmp/1/part=1", jsonTree.get("locations").get(0).asText());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.DROP_PARTITION, firstEventId + 5);
@@ -743,7 +782,7 @@ public class TestDbNotificationListener {
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_CREATE_FUNCTION_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
-    Function funcObj = getFunctionObj(getJsonTree(event));
+    Function funcObj = JSONMessageFactory.getFunctionObj(JSONMessageFactory.getJsonTree(event));
     assertEquals(dbName, funcObj.getDbName());
     assertEquals(funcName, funcObj.getFunctionName());
     assertEquals(funcClass, funcObj.getClassName());
@@ -792,7 +831,7 @@ public class TestDbNotificationListener {
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_DROP_FUNCTION_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
-    Function funcObj = getFunctionObj(getJsonTree(event));
+    Function funcObj = JSONMessageFactory.getFunctionObj(JSONMessageFactory.getJsonTree(event));
     assertEquals(dbName, funcObj.getDbName());
     assertEquals(funcName, funcObj.getFunctionName());
     assertEquals(funcClass, funcObj.getClassName());
@@ -854,7 +893,7 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_CREATE_INDEX_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
     assertEquals(tableName.toLowerCase(), event.getTableName().toLowerCase());
-    Index indexObj = getIndexObj(getJsonTree(event));
+    Index indexObj = JSONMessageFactory.getIndexObj(JSONMessageFactory.getJsonTree(event));
     assertEquals(dbName, indexObj.getDbName());
     assertEquals(indexName, indexObj.getIndexName());
     assertEquals(tableName, indexObj.getOrigTableName());
@@ -914,7 +953,7 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_DROP_INDEX_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
     assertEquals(tableName.toLowerCase(), event.getTableName().toLowerCase());
-    Index indexObj = getIndexObj(getJsonTree(event));
+    Index indexObj = JSONMessageFactory.getIndexObj(JSONMessageFactory.getJsonTree(event));
     assertEquals(dbName, indexObj.getDbName());
     assertEquals(indexName.toLowerCase(), indexObj.getIndexName());
     assertEquals(tableName.toLowerCase(), indexObj.getOrigTableName());
@@ -978,7 +1017,7 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_ALTER_INDEX_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
     assertEquals(tableName.toLowerCase(), event.getTableName().toLowerCase());
-    Index indexObj = getIndexObj(getJsonTree(event), "afterIndexObjJson");
+    Index indexObj = JSONMessageFactory.getIndexObj(JSONMessageFactory.getJsonTree(event), "afterIndexObjJson");
     assertEquals(dbName, indexObj.getDbName());
     assertEquals(indexName, indexObj.getIndexName());
     assertEquals(tableName, indexObj.getOrigTableName());
@@ -1187,13 +1226,22 @@ public class TestDbNotificationListener {
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
 
-    assertEquals(2, rsp.getEventsSize());
+    assertEquals(5, rsp.getEventsSize());
     NotificationEvent event = rsp.getEvents().get(0);
     assertEquals(firstEventId + 1, event.getEventId());
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
     event = rsp.getEvents().get(1);
     assertEquals(firstEventId + 2, event.getEventId());
+    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
+    event = rsp.getEvents().get(2);
+    assertEquals(firstEventId + 3, event.getEventId());
+    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
+    event = rsp.getEvents().get(3);
+    assertEquals(firstEventId + 4, event.getEventId());
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
+    event = rsp.getEvents().get(4);
+    assertEquals(firstEventId + 5, event.getEventId());
+    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
   }
 
   @Test
@@ -1317,31 +1365,5 @@ public class TestDbNotificationListener {
     NotificationEventResponse rsp2 = msClient.getNextNotification(firstEventId, 0, null);
     LOG.info("second trigger done");
     assertEquals(0, rsp2.getEventsSize());
-  }
-
-  private ObjectNode getJsonTree(NotificationEvent event) throws Exception {
-    JsonParser jsonParser = (new JsonFactory()).createJsonParser(event.getMessage());
-    ObjectMapper mapper = new ObjectMapper();
-    return mapper.readValue(jsonParser, ObjectNode.class);
-  }
-
-  private Function getFunctionObj(JsonNode jsonTree) throws Exception {
-    TDeserializer deSerializer = new TDeserializer(new TJSONProtocol.Factory());
-    Function funcObj = new Function();
-    String tableJson = jsonTree.get("functionObjJson").asText();
-    deSerializer.deserialize(funcObj, tableJson, "UTF-8");
-    return funcObj;
-  }
-
-  private Index getIndexObj(JsonNode jsonTree) throws Exception {
-    return getIndexObj(jsonTree, "indexObjJson");
-  }
-
-  private Index getIndexObj(JsonNode jsonTree, String indexObjKey) throws Exception {
-    TDeserializer deSerializer = new TDeserializer(new TJSONProtocol.Factory());
-    Index indexObj = new Index();
-    String tableJson = jsonTree.get(indexObjKey).asText();
-    deSerializer.deserialize(indexObj, tableJson, "UTF-8");
-    return indexObj;
   }
 }
