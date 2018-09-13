@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.spark.client.rpc.RpcServer;
@@ -87,5 +88,10 @@ public final class SparkClientFactory {
     Preconditions.checkState(server != null,
             "Invalid state: Hive on Spark RPC Server has not been initialized");
     return new SparkClientImpl(server, sparkConf, hiveConf, sessionId);
+  }
+
+  @VisibleForTesting
+  public static int getServerPort() {
+    return server.getPort();
   }
 }
