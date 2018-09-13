@@ -1536,7 +1536,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         }
         if (HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.HIVESTATSAUTOGATHER) &&
             !MetaStoreUtils.isView(tbl)) {
-          MetaStoreUtils.updateTableStatsSlow(db, tbl, wh, madeDir, false);
+          if (tbl.getPartitionKeysSize() == 0)  { // Unpartitioned table
+            MetaStoreUtils.updateUnpartitionedTableStatsFast(db, tbl, wh, madeDir);
+          } else { // Partitioned table with no partitions.
+            MetaStoreUtils.updateUnpartitionedTableStatsFast(db, tbl, wh, true);
+          }
         }
 
         // set create time
