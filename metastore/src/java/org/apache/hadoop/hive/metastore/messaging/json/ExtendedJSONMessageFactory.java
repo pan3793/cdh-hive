@@ -136,8 +136,7 @@ public class ExtendedJSONMessageFactory extends MessageFactory {
     if (table != null && table.isSetSd()) {
       location = table.getSd().getLocation();
     }
-    return new ExtendedJSONDropTableMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, table.getDbName(),
-        table.getTableName(), now(), location);
+    return new ExtendedJSONDropTableMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, table, now(), location);
   }
 
   @Override

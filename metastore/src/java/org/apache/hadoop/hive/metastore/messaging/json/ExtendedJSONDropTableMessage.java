@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.metastore.messaging.json;
 
 
+import org.apache.hadoop.hive.metastore.api.Table;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 
@@ -31,6 +32,11 @@ public class ExtendedJSONDropTableMessage extends JSONDropTableMessage {
 
   public ExtendedJSONDropTableMessage(String server, String servicePrincipal, String db, String table, Long timestamp, String location) {
     super(server, servicePrincipal, db, table, timestamp);
+    this.location = location;
+  }
+  public ExtendedJSONDropTableMessage(String server, String servicePrincipal, Table tableObj,
+      Long timestamp, String location) {
+    super(server, servicePrincipal, tableObj, timestamp);
     this.location = location;
   }
 

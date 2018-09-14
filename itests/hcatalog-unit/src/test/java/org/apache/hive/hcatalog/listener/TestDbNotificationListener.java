@@ -73,6 +73,9 @@ import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.messaging.AlterPartitionMessage;
 import org.apache.hadoop.hive.metastore.messaging.AlterTableMessage;
+import org.apache.hadoop.hive.metastore.messaging.DropTableMessage;
+import org.apache.hadoop.hive.metastore.messaging.MessageDeserializer;
+import org.apache.hadoop.hive.metastore.messaging.MessageFactory;
 import org.apache.hadoop.hive.metastore.events.AlterDatabaseEvent;
 import org.apache.hadoop.hive.metastore.messaging.json.JSONMessageFactory;
 import org.apache.hadoop.hive.metastore.events.AddIndexEvent;
@@ -113,6 +116,7 @@ public class TestDbNotificationListener {
   private static Map<String, String> emptyParameters = new HashMap<String, String>();
   private static IMetaStoreClient msClient;
   private static IDriver driver;
+  private static MessageDeserializer md = null;
   private int startTime;
   private long firstEventId;
 
@@ -241,6 +245,7 @@ public class TestDbNotificationListener {
     SessionState.start(new CliSessionState(conf));
     msClient = new HiveMetaStoreClient(conf);
     driver = DriverFactory.newDriver(conf);
+    md = MessageFactory.getInstance().getDeserializer();
   }
 
   @Before
@@ -473,15 +478,19 @@ public class TestDbNotificationListener {
 
   @Test
   public void dropTable() throws Exception {
+    String defaultDbName = "default";
+    String tblName = "droptbl";
+    String tblName2 = "droptbl2";
+    String tblOwner = "me";
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(new FieldSchema("col1", "int", "nocomment"));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
     StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
         serde, null, null, emptyParameters);
-    Table table = new Table("droptable", "default", "me", startTime, startTime, 0, sd, null,
+    Table table = new Table(tblName, defaultDbName, tblOwner, startTime, startTime, 0, sd, null,
         emptyParameters, null, null, null);
     msClient.createTable(table);
-    msClient.dropTable("default", "droptable");
+    msClient.dropTable(defaultDbName, tblName);
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
     assertEquals(2, rsp.getEventsSize());
@@ -490,11 +499,19 @@ public class TestDbNotificationListener {
     assertEquals(firstEventId + 2, event.getEventId());
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
-    assertEquals("default", event.getDbName());
-    assertEquals("droptable", event.getTableName());
-    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
-    assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, jsonTree.get("eventType").asText());
-    assertEquals("file:/tmp", jsonTree.get("location").asText());
+    assertEquals(defaultDbName, event.getDbName());
+    assertEquals(tblName, event.getTableName());
+
+    // Parse the message field
+    DropTableMessage dropTblMsg = md.getDropTableMessage(event.getMessage());
+    assertEquals(defaultDbName, dropTblMsg.getDB());
+    assertEquals(tblName, dropTblMsg.getTable());
+    Table tableObj = dropTblMsg.getTableObj();
+    assertEquals(table.getDbName(), tableObj.getDbName());
+    assertEquals(table.getTableName(), tableObj.getTableName());
+    assertEquals(table.getOwner(), tableObj.getOwner());
+    assertEquals(table.getParameters(), tableObj.getParameters());
+
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.DROP_TABLE, firstEventId + 2);
@@ -502,12 +519,12 @@ public class TestDbNotificationListener {
 
     // When hive.metastore.transactional.event.listeners is set,
     // a failed event should not create a new notification
-    table = new Table("droptable2", "default", "me", startTime, startTime, 0, sd, null,
+    table = new Table(tblName2, defaultDbName, tblOwner, startTime, startTime, 0, sd, null,
                          emptyParameters, null, null, null);
     msClient.createTable(table);
     DummyRawStoreFailEvent.setEventSucceed(false);
     try {
-      msClient.dropTable("default", "droptable2");
+      msClient.dropTable(defaultDbName, tblName2);
     } catch (Exception ex) {
       // expected
     }

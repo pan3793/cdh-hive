@@ -19,7 +19,9 @@
 
 package org.apache.hadoop.hive.metastore.messaging.json;
 
+import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.messaging.DropTableMessage;
+import org.apache.thrift.TException;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -28,7 +30,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class JSONDropTableMessage extends DropTableMessage {
 
   @JsonProperty
-  String server, servicePrincipal, db, table;
+  String server, servicePrincipal, db, table, tableObjJson;
 
   @JsonProperty
   Long timestamp;
@@ -49,9 +51,25 @@ public class JSONDropTableMessage extends DropTableMessage {
     checkValid();
   }
 
+  public JSONDropTableMessage(String server, String servicePrincipal, Table tableObj,
+      Long timestamp) {
+    this(server, servicePrincipal, tableObj.getDbName(), tableObj.getTableName(), timestamp);
+    try {
+      this.tableObjJson = JSONMessageFactory.createTableObjJson(tableObj);
+    } catch (TException e) {
+      throw new IllegalArgumentException("Could not serialize: ", e);
+    }
+    checkValid();
+  }
+
   @Override
   public String getTable() {
     return table;
+  }
+
+  @Override
+  public Table getTableObj() throws Exception {
+    return (Table) JSONMessageFactory.getTObj(tableObjJson,Table.class);
   }
 
   @Override
