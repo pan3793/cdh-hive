@@ -134,7 +134,7 @@ limitations under the License.
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>${jackson-mapper-asl.1.9.version}</version>
+      <version>1.9.12</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
