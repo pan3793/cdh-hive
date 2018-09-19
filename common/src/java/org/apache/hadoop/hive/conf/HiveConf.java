@@ -821,6 +821,12 @@ public class HiveConf extends Configuration {
     METASTORE_EVENT_EXPIRY_DURATION("hive.metastore.event.expiry.duration", "0s",
         new TimeValidator(TimeUnit.SECONDS),
         "Duration after which events expire from events table"),
+    METASTORE_ALTER_NOTIFICATIONS_BASIC("hive.metastore.alter.notifications.basic",   true,
+        "Setting this config to true will only provide alter notifications in HMS if tableName,"
+            + " dbName, location or owner info changes. "
+            + "If this config is set to false, all the alter table/partition events for any attribute "
+            + "change will be enabled. Hence, setting the config to false will turn on a "
+            + "lot of additional alter notifications in HMS and it should be done only if necessary."),
     /**
      * This setting makes ExtendedJSONMessageFactory the default message factory in
      * HMS metastore. Earlier config hcatalog.message.factory.impl.json is no longer

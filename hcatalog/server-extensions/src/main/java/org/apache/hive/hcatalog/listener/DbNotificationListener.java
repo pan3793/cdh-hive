@@ -83,7 +83,8 @@ public class DbNotificationListener extends MetaStoreEventListener {
   // HiveConf rather than a Configuration.
   private HiveConf hiveConf;
   private MessageFactory msgFactory;
-  private boolean alterStatNotificationDisabled;
+  private final boolean alterStatNotificationDisabled;
+  private final boolean alterNotificationsBasic;
 
   private synchronized void init(HiveConf conf) throws MetaException {
     if (cleaner == null) {
@@ -101,6 +102,7 @@ public class DbNotificationListener extends MetaStoreEventListener {
     // actually passes a HiveConf, which we need.  So we'll do this ugly down cast.
     hiveConf = (HiveConf)config;
     init(hiveConf);
+    alterNotificationsBasic = HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC);
     alterStatNotificationDisabled =
         HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.METASTORE_DISABLE_STATS_NOTIFICATIONS);
     msgFactory = MessageFactory.getInstance();
@@ -169,6 +171,29 @@ public class DbNotificationListener extends MetaStoreEventListener {
     Table before = tableEvent.getOldTable();
     Table after = tableEvent.getNewTable();
 
+    if (alterNotificationsBasic) {
+      // Verify whether either the name of the db, the name of the table, the location or the object owner changed.
+      if (before.getDbName() == null || after.getDbName() == null || before.getTableName() == null
+          || after.getTableName() == null) {
+        return;
+      }
+
+      if (before.getSd() == null || after.getSd() == null) {
+        return;
+      }
+
+      if (before.getSd().getLocation() == null || after.getSd().getLocation() == null) {
+        return;
+      }
+
+      if (before.getDbName().equals(after.getDbName()) && before.getTableName().equals(after.getTableName()) && before
+          .getSd().getLocation().equals(after.getSd().getLocation()) && before.getOwnerType() == after.getOwnerType()
+          && StringUtils.equals(before.getOwner(), after.getOwner())) {
+        // Nothing interesting changed
+        return;
+      }
+    }
+
     NotificationEvent event =
         new NotificationEvent(0, now(), EventType.ALTER_TABLE.toString(), msgFactory
             .buildAlterTableMessage(before, after).toString());
@@ -223,6 +248,21 @@ public class DbNotificationListener extends MetaStoreEventListener {
 
     Partition before = partitionEvent.getOldPartition();
     Partition after = partitionEvent.getNewPartition();
+
+    if (alterNotificationsBasic) {
+      // Verify whether either the name of the db or table changed or location changed.
+      if (before.getSd() == null || after.getSd() == null) {
+        return;
+      }
+      if (before.getSd().getLocation() == null || after.getSd().getLocation() == null) {
+        return;
+      }
+
+      if (before.getDbName().equals(after.getDbName()) && before.getTableName().equals(after.getTableName()) && before
+          .getSd().getLocation().equals(after.getSd().getLocation())) {
+        return;
+      }
+    }
 
     NotificationEvent event =
         new NotificationEvent(0, now(), EventType.ALTER_PARTITION.toString(), msgFactory

@@ -1281,22 +1281,13 @@ public class TestDbNotificationListener {
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
 
-    assertEquals(5, rsp.getEventsSize());
+    assertEquals(2, rsp.getEventsSize());
     NotificationEvent event = rsp.getEvents().get(0);
     assertEquals(firstEventId + 1, event.getEventId());
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
     event = rsp.getEvents().get(1);
     assertEquals(firstEventId + 2, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(2);
-    assertEquals(firstEventId + 3, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(3);
-    assertEquals(firstEventId + 4, event.getEventId());
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(4);
-    assertEquals(firstEventId + 5, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
   }
 
   @Test
