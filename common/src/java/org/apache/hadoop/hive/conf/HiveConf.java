@@ -829,6 +829,9 @@ public class HiveConf extends Configuration {
     METASTORE_EVENT_MESSAGE_FACTORY("hive.metastore.event.message.factory",
         "org.apache.hadoop.hive.metastore.messaging.json.ExtendedJSONMessageFactory",
         "Factory class for making encoding and decoding messages in the events generated."),
+    METASTORE_DISABLE_STATS_NOTIFICATIONS(
+        "hive.metastore.disable.stats.notifications", false,
+        "Disable alter table/partition notifications created by stat changes"),
     METASTORE_EXECUTE_SET_UGI("hive.metastore.execute.setugi", true,
         "In unsecure mode, setting this property to true will cause the metastore to execute DFS operations using \n" +
         "the client's reported user and group permissions. Note that this property must be set on \n" +
