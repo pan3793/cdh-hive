@@ -42,6 +42,7 @@ import org.apache.hive.service.rpc.thrift.TColumnDesc;
 import org.apache.hive.service.rpc.thrift.TFetchOrientation;
 import org.apache.hive.service.rpc.thrift.TFetchResultsReq;
 import org.apache.hive.service.rpc.thrift.TFetchResultsResp;
+import org.apache.hive.service.rpc.thrift.TGetOperationStatusResp;
 import org.apache.hive.service.rpc.thrift.TGetResultSetMetadataReq;
 import org.apache.hive.service.rpc.thrift.TGetResultSetMetadataResp;
 import org.apache.hive.service.rpc.thrift.TOperationHandle;
@@ -76,6 +77,7 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
   private boolean emptyResultSet = false;
   private boolean isScrollable = false;
   private boolean fetchFirst = false;
+  private TGetOperationStatusResp operationStatus = null;
 
   private final TProtocolVersion protocol;
 
@@ -316,6 +318,7 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
     stmtHandle = null;
     sessHandle = null;
     isClosed = true;
+    operationStatus = null;
   }
 
   private void closeOperationHandle(TOperationHandle stmtHandle) throws SQLException {
@@ -347,13 +350,15 @@ public class HiveQueryResultSet extends HiveBaseResultSet {
       return false;
     }
 
-    /**
+    /*
      * Poll on the operation status, till the operation is complete.
      * We need to wait only for HiveStatement to complete.
      * HiveDatabaseMetaData which also uses this ResultSet returns only after the RPC is complete.
      */
-    if ((statement != null) && (statement instanceof HiveStatement)) {
-      ((HiveStatement) statement).waitForOperationToComplete();
+    // when isHasResultSet is set, the query transitioned from running -> complete and is not expected go back to
+    // running state when fetching results (implicit state transition)
+    if ((statement instanceof HiveStatement) && (operationStatus == null || !operationStatus.isHasResultSet())) {
+      operationStatus = ((HiveStatement) statement).waitForOperationToComplete();
     }
 
     try {
