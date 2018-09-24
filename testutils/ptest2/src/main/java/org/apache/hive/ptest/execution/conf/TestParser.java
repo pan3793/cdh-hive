@@ -49,8 +49,8 @@ public class TestParser {
   private static final Splitter TEST_SPLITTER = Splitter.onPattern("[, ]")
       .trimResults().omitEmptyStrings();
 
-  private static final String QTEST_MODULE_NAME = "qtest";
-  private static final String QTEST_SPARK_MODULE_NAME = "qtest-spark";
+  private static final String QTEST_MODULE_NAME = "itests/qtest";
+  private static final String QTEST_SPARK_MODULE_NAME = "itests/qtest-spark";
 
   private final AtomicInteger batchIdCounter;
 

@@ -29,6 +29,7 @@ limitations under the License.
     <log4j2.version>2.8.2</log4j2.version>
     <spring.framework.version>5.0.8.RELEASE</spring.framework.version>
     <jackson.version>2.9.5</jackson.version>
+    <jclouds.version>1.9.2</jclouds.version>
   </properties>
 
   <repositories>
@@ -89,32 +90,32 @@ limitations under the License.
     <dependency>
       <groupId>org.apache.jclouds</groupId>
       <artifactId>jclouds-core</artifactId>
-      <version>1.7.3</version>
+      <version>${jclouds.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds</groupId>
       <artifactId>jclouds-compute</artifactId>
-      <version>1.7.3</version>
+      <version>${jclouds.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>aws-ec2</artifactId>
-      <version>1.7.3</version>
+      <version>${jclouds.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.api</groupId>
       <artifactId>ec2</artifactId>
-      <version>1.7.3</version>
+      <version>${jclouds.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.driver</groupId>
       <artifactId>jclouds-sshj</artifactId>
-      <version>1.7.3</version>
+      <version>${jclouds.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.driver</groupId>
       <artifactId>jclouds-log4j</artifactId>
-      <version>1.7.3</version>
+      <version>${jclouds.version}</version>
       <exclusions>
         <exclusion>
           <groupId>log4j</groupId>
