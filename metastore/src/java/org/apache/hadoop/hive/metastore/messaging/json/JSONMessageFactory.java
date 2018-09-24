@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Iterables;
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.Index;
@@ -76,6 +77,9 @@ public class JSONMessageFactory extends MessageFactory {
   private static final Logger LOG = LoggerFactory.getLogger(JSONMessageFactory.class.getName());
 
   private static JSONMessageDeserializer deserializer = new JSONMessageDeserializer();
+
+  public static final boolean ADD_THRIFT_OBJECT =
+      HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.METASTORE_NOTIFICATIONS_ADD_THRIFT_OBJECTS);
 
   @Override
   public MessageDeserializer getDeserializer() {
@@ -198,21 +202,33 @@ public class JSONMessageFactory extends MessageFactory {
   }
 
   static String createTableObjJson(Table tableObj) throws TException {
+    if (!ADD_THRIFT_OBJECT) {
+      return null;
+    }
     TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
     return serializer.toString(tableObj, "UTF-8");
   }
 
   static String createPartitionObjJson(Partition partitionObj) throws TException {
+    if (!ADD_THRIFT_OBJECT) {
+      return null;
+    }
     TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
     return serializer.toString(partitionObj, "UTF-8");
   }
 
   static String createFunctionObjJson(Function functionObj) throws TException {
+    if (!ADD_THRIFT_OBJECT) {
+      return null;
+    }
     TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
     return serializer.toString(functionObj, "UTF-8");
   }
 
   static String createIndexObjJson(Index indexObj) throws TException {
+    if (!ADD_THRIFT_OBJECT) {
+      return null;
+    }
     TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
     return serializer.toString(indexObj, "UTF-8");
   }
@@ -251,6 +267,9 @@ public class JSONMessageFactory extends MessageFactory {
    *
    */
   public static TBase getTObj(String tSerialized, Class<? extends TBase> objClass) throws Exception {
+    if (tSerialized == null) {
+      return null;
+    }
     TDeserializer thriftDeSerializer = new TDeserializer(new TJSONProtocol.Factory());
     TBase obj = objClass.newInstance();
     thriftDeSerializer.deserialize(obj, tSerialized, "UTF-8");

@@ -838,6 +838,10 @@ public class HiveConf extends Configuration {
     METASTORE_DISABLE_STATS_NOTIFICATIONS(
         "hive.metastore.disable.stats.notifications", false,
         "Disable alter table/partition notifications created by stat changes"),
+    METASTORE_NOTIFICATIONS_ADD_THRIFT_OBJECTS("hive.metastore.notifications.add.thrift.objects", false,
+        "Setting this option to true will add the entire thrift Table/Partition objects to the HMS notifications. "
+            + "This will increase the message size of each notification so this should be"
+            + " set to true only if necessary."),
     METASTORE_EXECUTE_SET_UGI("hive.metastore.execute.setugi", true,
         "In unsecure mode, setting this property to true will cause the metastore to execute DFS operations using \n" +
         "the client's reported user and group permissions. Note that this property must be set on \n" +

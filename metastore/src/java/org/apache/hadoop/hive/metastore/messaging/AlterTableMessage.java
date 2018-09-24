@@ -20,6 +20,8 @@ package org.apache.hadoop.hive.metastore.messaging;
 
 import org.apache.hadoop.hive.metastore.api.Table;
 
+import static org.apache.hadoop.hive.metastore.messaging.json.JSONMessageFactory.ADD_THRIFT_OBJECT;
+
 public abstract class AlterTableMessage extends EventMessage {
 
   protected AlterTableMessage() {
@@ -37,18 +39,20 @@ public abstract class AlterTableMessage extends EventMessage {
     if (getTable() == null) {
       throw new IllegalStateException("Table name unset.");
     }
-    try {
-      if (getTableObjAfter() == null) {
-        throw new IllegalStateException("Table object(after) not set.");
-      }
-      if (getTableObjBefore() == null) {
-        throw new IllegalStateException("Table object(before) not set.");
-      }
-    } catch (Exception e) {
-      if (!(e instanceof IllegalStateException)) {
-        throw new IllegalStateException("Event not set up correctly", e);
-      } else {
-        throw (IllegalStateException) e;
+    if (ADD_THRIFT_OBJECT) {
+      try {
+        if (getTableObjAfter() == null) {
+          throw new IllegalStateException("Table object(after) not set.");
+        }
+        if (getTableObjBefore() == null) {
+          throw new IllegalStateException("Table object(before) not set.");
+        }
+      } catch (Exception e) {
+        if (!(e instanceof IllegalStateException)) {
+          throw new IllegalStateException("Event not set up correctly", e);
+        } else {
+          throw (IllegalStateException) e;
+        }
       }
     }
     return super.checkValid();

@@ -23,6 +23,8 @@ import org.apache.hadoop.hive.metastore.api.Table;
 
 import java.util.Map;
 
+import static org.apache.hadoop.hive.metastore.messaging.json.JSONMessageFactory.ADD_THRIFT_OBJECT;
+
 public abstract class AlterPartitionMessage extends EventMessage {
 
   protected AlterPartitionMessage() {
@@ -47,21 +49,23 @@ public abstract class AlterPartitionMessage extends EventMessage {
     if (getKeyValues() == null) {
       throw new IllegalStateException("Partition values unset");
     }
-    try {
-      if (getTableObj() == null) {
-        throw new IllegalStateException("Table object not set.");
-      }
-      if (getPtnObjAfter() == null) {
-        throw new IllegalStateException("Partition object(after) not set.");
-      }
-      if (getPtnObjBefore() == null) {
-        throw new IllegalStateException("Partition object(before) not set.");
-      }
-    } catch (Exception e) {
-      if (!(e instanceof IllegalStateException)) {
-        throw new IllegalStateException("Event not set up correctly", e);
-      } else {
-        throw (IllegalStateException) e;
+    if (ADD_THRIFT_OBJECT) {
+      try {
+        if (getTableObj() == null) {
+          throw new IllegalStateException("Table object not set.");
+        }
+        if (getPtnObjAfter() == null) {
+          throw new IllegalStateException("Partition object(after) not set.");
+        }
+        if (getPtnObjBefore() == null) {
+          throw new IllegalStateException("Partition object(before) not set.");
+        }
+      } catch (Exception e) {
+        if (!(e instanceof IllegalStateException)) {
+          throw new IllegalStateException("Event not set up correctly", e);
+        } else {
+          throw (IllegalStateException) e;
+        }
       }
     }
     return super.checkValid();
