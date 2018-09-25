@@ -1563,7 +1563,7 @@ public class Hive {
           newFiles = Collections.synchronizedList(new ArrayList<Path>());
         }
 
-        FileSystem fs = tbl.getDataLocation().getFileSystem(conf);
+        FileSystem fs = newPartPath.getFileSystem(conf);
         Hive.copyFiles(conf, loadPath, newPartPath, fs, isSrcLocal, isAcid, newFiles);
       }
       perfLogger.PerfLogEnd("MoveTask", PerfLogger.FILE_MOVES);

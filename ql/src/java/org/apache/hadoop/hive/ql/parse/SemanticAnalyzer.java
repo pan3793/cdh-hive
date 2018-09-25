@@ -6846,10 +6846,23 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         }
       }
 
-      // if the table is in a different dfs than the partition,
-      // replace the partition's dfs with the table's dfs.
-      dest_path = new Path(tabPath.toUri().getScheme(), tabPath.toUri()
-          .getAuthority(), partPath.toUri().getPath());
+      // Previous behavior (HIVE-1707) used to replace the partition's dfs with the table's dfs.
+      // The changes in HIVE-19891 appears to no longer support that behavior.
+      dest_path = partPath;
+
+      if (MetaStoreUtils.isArchived(dest_part.getTPartition())) {
+        try {
+          String conflictingArchive = ArchiveUtils.conflictingArchiveNameOrNull(
+                  db, dest_tab, dest_part.getSpec());
+          String message = String.format("Insert conflict with existing archive: %s",
+                  conflictingArchive);
+          throw new SemanticException(message);
+        } catch (SemanticException err) {
+          throw err;
+        } catch (HiveException err) {
+          throw new SemanticException(err);
+        }
+      }
 
       queryTmpdir = ctx.getTempDirForPath(dest_path, true);
       table_desc = Utilities.getTableDesc(dest_tab);
