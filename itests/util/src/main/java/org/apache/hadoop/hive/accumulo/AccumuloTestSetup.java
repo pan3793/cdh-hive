@@ -65,11 +65,22 @@ public class AccumuloTestSetup extends TestSetup {
       createAccumuloTable(miniCluster.getConnector("root", PASSWORD));
     }
 
+    updateConf(conf);
+  }
+
+  /**
+   * Update hiveConf with the Accumulo specific parameters
+   * @param conf The hiveconf to update
+   */
+  public void updateConf(HiveConf conf) {
     // Setup connection information
     conf.set(AccumuloConnectionParameters.USER_NAME, "root");
     conf.set(AccumuloConnectionParameters.USER_PASS, PASSWORD);
-    conf.set(AccumuloConnectionParameters.ZOOKEEPERS, miniCluster.getZooKeepers());
-    conf.set(AccumuloConnectionParameters.INSTANCE_NAME, miniCluster.getInstanceName());
+
+    if (miniCluster != null) {
+      conf.set(AccumuloConnectionParameters.ZOOKEEPERS, miniCluster.getZooKeepers());
+      conf.set(AccumuloConnectionParameters.INSTANCE_NAME, miniCluster.getInstanceName());
+    }
   }
 
   protected void createAccumuloTable(Connector conn) throws TableExistsException,

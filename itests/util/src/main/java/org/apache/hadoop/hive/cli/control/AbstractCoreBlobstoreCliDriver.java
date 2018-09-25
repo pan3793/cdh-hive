@@ -57,6 +57,7 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
     String cleanupScript = cliConfig.getCleanupScript();
     boolean useHBaseMetastore = cliConfig.getMetastoreType() == MetastoreType.hbase;
     String hadoopVer = cliConfig.getHadoopVersion();
+
     qt = new QTestUtil((cliConfig.getResultsDir()), (cliConfig.getLogDir()), miniMR, hiveConfDir,
         hadoopVer, initScript, cleanupScript, useHBaseMetastore, true);
 
@@ -64,9 +65,9 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
       fail(String.format("%s must be set. Try setting in blobstore-conf.xml",
           HCONF_TEST_BLOBSTORE_PATH));
     }
-
     // do a one time initialization
     setupUniqueTestPath();
+    qt.newSession();
     qt.cleanUp();
     qt.createSources();
   }
@@ -75,7 +76,7 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
   @Before
   public void setUp() {
     try {
-      qt.clearTestSideEffects();
+      qt.newSession();
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -88,6 +89,7 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
   @After
   public void tearDown() {
     try {
+      qt.clearTestSideEffects();
       qt.clearPostTestEffects();
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
@@ -109,7 +111,7 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
   static String debugHint = "\nSee ./itests/hive-blobstore/target/tmp/log/hive.log, "
       + "or check ./itests/hive-blobstore/target/surefire-reports/ for specific test cases logs.";
 
-  protected void runTestHelper(String tname, String fname, String fpath, boolean expectSuccess) throws Exception {
+  protected void runTestHelper(String tname, String fname, String fpath, boolean expectSuccess) {
     long startTime = System.currentTimeMillis();
     qt.getConf().set(HCONF_TEST_BLOBSTORE_PATH_UNIQUE, testBlobstorePathUnique);
     try {
@@ -121,7 +123,8 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
         System.err.println("Test " + fname + " skipped");
         return;
       }
-      qt.cliInit(fname, false);
+      qt.cliInit(fname);
+
       int ecode = qt.executeClient(fname);
       if ((ecode == 0) ^ expectSuccess) {
         qt.failed(ecode, fname, debugHint);

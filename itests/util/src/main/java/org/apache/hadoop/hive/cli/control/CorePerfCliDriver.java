@@ -63,28 +63,44 @@ public class CorePerfCliDriver extends CliAdapter{
           cleanupScript, false, false);
 
       // do a one time initialization
+      qt.newSession();
       qt.cleanUp();
       qt.createSources();
       // Manually modify the underlying metastore db to reflect statistics corresponding to
       // the 30TB TPCDS scale set. This way the optimizer will generate plans for a 30 TB set.
       QTestUtil.setupMetaStoreTableColumnStatsFor30TBTPCDSWorkload(qt.getConf());
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      throw new RuntimeException("Unexpected exception in static initialization: " + e.getMessage(),
-          e);
+      throw new RuntimeException("Unexpected exception in static initialization: " + e.getMessage(), e);
     }
   }
 
   @Override
   @AfterClass
-  public void shutdown() throws Exception {
-    qt.shutdown();
+  public void shutdown() {
+    try {
+      qt.shutdown();
+    } catch (Exception e) {
+      System.err.println("Exception: " + e.getMessage());
+      e.printStackTrace();
+      System.err.flush();
+      fail("Unexpected exception");
+    }
   }
 
   @Override
   public void setUp() {
+    try {
+      qt.newSession();
+    } catch (Exception e) {
+      System.err.println("Exception: " + e.getMessage());
+      e.printStackTrace();
+      System.err.flush();
+      fail("Unexpected exception");
+    }
   }
 
   @Override
@@ -116,8 +132,7 @@ public class CorePerfCliDriver extends CliAdapter{
       if (qt.shouldBeSkipped(fname)) {
         return;
       }
-
-      qt.cliInit(fname, false);
+      qt.cliInit(fname);
 
       int ecode = qt.executeClient(fname);
       if (ecode != 0) {

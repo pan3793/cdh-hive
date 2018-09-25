@@ -33,6 +33,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+
 public class CoreCompareCliDriver extends CliAdapter{
 
   private static QTestUtil qt;
@@ -40,11 +41,9 @@ public class CoreCompareCliDriver extends CliAdapter{
     super(testCliConfig);
   }
 
-
   @Override
   @BeforeClass
   public void beforeClass() {
-
     MiniClusterType miniMR = cliConfig.getClusterType();
     String hiveConfDir = cliConfig.getHiveConfDir();
     String initScript = cliConfig.getInitScript();
@@ -55,6 +54,7 @@ public class CoreCompareCliDriver extends CliAdapter{
       hiveConfDir, hadoopVer, initScript, cleanupScript, false, false);
 
       // do a one time initialization
+      qt.newSession();
       qt.cleanUp();
       qt.createSources();
 
@@ -131,13 +131,14 @@ public class CoreCompareCliDriver extends CliAdapter{
       if (qt.shouldBeSkipped(fname)) {
         return;
       }
+      qt.cliInit(fname);
 
       int ecode = 0;
       List<String> outputs = new ArrayList<>(versionFiles.size());
       for (String versionFile : versionFiles) {
         // 1 for "_" after tname; 3 for ".qv" at the end. Version is in between.
         String versionStr = versionFile.substring(tname.length() + 1, versionFile.length() - 3);
-        outputs.add(qt.cliInit(tname + "." + versionStr, false));
+        outputs.add(qt.cliInit(tname + "." + versionStr));
         // TODO: will this work?
         ecode = qt.executeClient(versionFile, fname);
         if (ecode != 0) {

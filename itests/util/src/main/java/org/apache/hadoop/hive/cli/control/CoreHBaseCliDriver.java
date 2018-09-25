@@ -17,7 +17,6 @@
  */
 package org.apache.hadoop.hive.cli.control;
 
-import static org.apache.hadoop.hive.cli.control.AbstractCliConfig.HIVE_ROOT;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -42,30 +41,30 @@ public class CoreHBaseCliDriver extends CliAdapter {
   @Override
   @BeforeClass
   public void beforeClass() {
-        MiniClusterType miniMR = cliConfig.getClusterType();
-        String initScript = cliConfig.getInitScript();
-        String cleanupScript =cliConfig.getCleanupScript();
+    MiniClusterType miniMR = cliConfig.getClusterType();
+    String initScript = cliConfig.getInitScript();
+    String cleanupScript = cliConfig.getCleanupScript();
 
-        try {
-          qt = new HBaseQTestUtil(cliConfig.getResultsDir(), cliConfig.getLogDir(), miniMR,
+    try {
+      qt = new HBaseQTestUtil(cliConfig.getResultsDir(), cliConfig.getLogDir(), miniMR,
           setup, initScript, cleanupScript);
-          qt.cleanUp(null);
-          qt.createSources(null);
+      qt.newSession();
+      qt.cleanUp(null);
+      qt.createSources(null);
 
-        } catch (Exception e) {
-          System.err.println("Exception: " + e.getMessage());
-          e.printStackTrace();
-          System.err.flush();
-          fail("Unexpected exception in static initialization: "+e.getMessage());
-        }
-
+    } catch (Exception e) {
+      System.err.println("Exception: " + e.getMessage());
+      e.printStackTrace();
+      System.err.flush();
+      throw new RuntimeException("Unexpected exception in static initialization: " + e.getMessage());
+    }
   }
 
   @Override
   @Before
   public void setUp() {
     try {
-      qt.clearTestSideEffects();
+      qt.newSession();
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -78,6 +77,7 @@ public class CoreHBaseCliDriver extends CliAdapter {
   public void tearDown() {
     try {
       qt.clearPostTestEffects();
+      qt.clearTestSideEffects();
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -90,7 +90,6 @@ public class CoreHBaseCliDriver extends CliAdapter {
   @AfterClass
   public void shutdown() throws Exception {
     try {
-      // FIXME: there were 2 afterclass methods...i guess this is the right order...maybe not
       qt.shutdown();
       setup.tearDown();
     } catch (Exception e) {
@@ -113,8 +112,7 @@ public class CoreHBaseCliDriver extends CliAdapter {
         System.err.println("Test " + fname + " skipped");
         return;
       }
-
-      qt.cliInit(fname, false);
+      qt.cliInit(fname);
 
       int ecode = qt.executeClient(fname);
       if (ecode != 0) {

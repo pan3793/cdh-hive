@@ -54,13 +54,14 @@ public class CoreParseNegative extends CliAdapter{
     try {
       String hadoopVer = cliConfig.getHadoopVersion();
       qt = new QTestUtil((cliConfig.getResultsDir()), (cliConfig.getLogDir()), miniMR, null,
-          hadoopVer,
-       initScript, cleanupScript, false, false);
+          hadoopVer, initScript, cleanupScript, false, false);
+      qt.newSession();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      throw new RuntimeException("Unexpected exception in static initialization",e);
+      throw new RuntimeException("Unexpected exception in static initialization", e);
     }
   }
 
@@ -104,6 +105,8 @@ public class CoreParseNegative extends CliAdapter{
         qt.init(fname);
         firstRun = false;
       }
+      qt.cliInit(fname);
+
       ASTNode tree = qt.parseQuery(fname);
       List<Task<? extends Serializable>> tasks = qt.analyzeAST(tree);
       fail("Unexpected success for query: " + fname + debugHint);

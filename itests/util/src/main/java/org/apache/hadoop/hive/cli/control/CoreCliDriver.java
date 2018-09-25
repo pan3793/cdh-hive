@@ -40,7 +40,7 @@ public class CoreCliDriver extends CliAdapter {
 
   private static final Logger LOG = LoggerFactory.getLogger(CoreCliDriver.class);
   private static QTestUtil qt;
-  
+
   public CoreCliDriver(AbstractCliConfig testCliConfig) {
     super(testCliConfig);
   }
@@ -56,6 +56,7 @@ public class CoreCliDriver extends CliAdapter {
     final String initScript = cliConfig.getInitScript();
     final String cleanupScript = cliConfig.getCleanupScript();
     final boolean useHBaseMetastore = cliConfig.getMetastoreType() == MetastoreType.hbase;
+
     try {
       final String hadoopVer = cliConfig.getHadoopVersion();
 
@@ -72,6 +73,7 @@ public class CoreCliDriver extends CliAdapter {
       new ElapsedTimeLoggingWrapper<Void>() {
         @Override
         public Void invokeInternal() throws Exception {
+          qt.newSession();
           qt.cleanUp();
           return null;
         }
@@ -89,7 +91,7 @@ public class CoreCliDriver extends CliAdapter {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      throw new RuntimeException("Unexpected exception in static initialization",e);
+      throw new RuntimeException("Unexpected exception in static initialization", e);
     }
   }
 
@@ -100,7 +102,7 @@ public class CoreCliDriver extends CliAdapter {
       new ElapsedTimeLoggingWrapper<Void>() {
         @Override
         public Void invokeInternal() throws Exception {
-          qt.clearTestSideEffects();
+          qt.newSession();
           return null;
         }
       }.invoke("PerTestSetup done.", LOG, false);
@@ -120,6 +122,7 @@ public class CoreCliDriver extends CliAdapter {
         @Override
         public Void invokeInternal() throws Exception {
           qt.clearPostTestEffects();
+          qt.clearTestSideEffects();
           return null;
         }
       }.invoke("PerTestTearDown done.", LOG, false);
@@ -170,8 +173,8 @@ public class CoreCliDriver extends CliAdapter {
         skipped = true;
         return;
       }
+      qt.cliInit(fname);
 
-      qt.cliInit(fname, false);
       int ecode = qt.executeClient(fname);
       if (ecode != 0) {
         failed = true;
