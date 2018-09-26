@@ -29,6 +29,7 @@ import org.apache.hadoop.hive.cli.control.AbstractCliConfig.MetastoreType;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
+import org.apache.hadoop.hive.ql.QTestArguments;
 import org.apache.hadoop.hive.ql.QTestProcessExecResult;
 import org.apache.hadoop.hive.ql.QTestUtil;
 import org.apache.hadoop.hive.ql.QTestUtil.MiniClusterType;
@@ -58,8 +59,18 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
     boolean useHBaseMetastore = cliConfig.getMetastoreType() == MetastoreType.hbase;
     String hadoopVer = cliConfig.getHadoopVersion();
 
-    qt = new QTestUtil((cliConfig.getResultsDir()), (cliConfig.getLogDir()), miniMR, hiveConfDir,
-        hadoopVer, initScript, cleanupScript, useHBaseMetastore, true);
+    qt = new QTestUtil(
+        QTestArguments.QTestArgumentsBuilder.instance()
+          .withOutDir(cliConfig.getResultsDir())
+          .withLogDir(cliConfig.getLogDir())
+          .withClusterType(miniMR)
+          .withConfDir(hiveConfDir)
+          .withHadoopVer(hadoopVer)
+          .withInitScript(initScript)
+          .withCleanupScript(cleanupScript)
+          .withHBaseMetastore(useHBaseMetastore)
+          .withLlapIo(true)
+          .build());
 
     if (Strings.isNullOrEmpty(qt.getConf().get(HCONF_TEST_BLOBSTORE_PATH))) {
       fail(String.format("%s must be set. Try setting in blobstore-conf.xml",

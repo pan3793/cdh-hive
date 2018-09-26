@@ -32,7 +32,6 @@ import org.junit.BeforeClass;
 public class CoreHBaseCliDriver extends CliAdapter {
 
   private HBaseQTestUtil qt;
-  private HBaseTestSetup setup = new HBaseTestSetup();
 
   public CoreHBaseCliDriver(AbstractCliConfig testCliConfig) {
     super(testCliConfig);
@@ -47,7 +46,8 @@ public class CoreHBaseCliDriver extends CliAdapter {
 
     try {
       qt = new HBaseQTestUtil(cliConfig.getResultsDir(), cliConfig.getLogDir(), miniMR,
-          setup, initScript, cleanupScript);
+          new HBaseTestSetup(), initScript, cleanupScript);
+
       qt.newSession();
       qt.cleanUp(null);
       qt.createSources(null);
@@ -91,7 +91,6 @@ public class CoreHBaseCliDriver extends CliAdapter {
   public void shutdown() throws Exception {
     try {
       qt.shutdown();
-      setup.tearDown();
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -101,7 +100,7 @@ public class CoreHBaseCliDriver extends CliAdapter {
   }
 
   @Override
-  public void runTest(String tname, String fname, String fpath) throws Exception {
+  public void runTest(String tname, String fname, String fpath) {
     long startTime = System.currentTimeMillis();
     try {
       System.err.println("Begin query: " + fname);

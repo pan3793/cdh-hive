@@ -32,7 +32,6 @@ import org.junit.Before;
 public class CoreHBaseNegativeCliDriver extends CliAdapter {
 
   private HBaseQTestUtil qt;
-  private static HBaseTestSetup setup = new HBaseTestSetup();
 
   public CoreHBaseNegativeCliDriver(AbstractCliConfig testCliConfig) {
     super(testCliConfig);
@@ -46,7 +45,7 @@ public class CoreHBaseNegativeCliDriver extends CliAdapter {
 
     try {
       qt = new HBaseQTestUtil(cliConfig.getResultsDir(), cliConfig.getLogDir(), miniMR,
-      setup, initScript, cleanupScript);
+          new HBaseTestSetup(), initScript, cleanupScript);
 
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
@@ -92,14 +91,12 @@ public class CoreHBaseNegativeCliDriver extends CliAdapter {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      fail("Unexpected exception in tearDown");
+      fail("Unexpected exception in shutdown");
     }
-    // closeHBaseConnections
-    setup.tearDown();
   }
 
   @Override
-  public void runTest(String tname, String fname, String fpath) throws Exception {
+  public void runTest(String tname, String fname, String fpath) {
     long startTime = System.currentTimeMillis();
     try {
       System.err.println("Begin query: " + fname);

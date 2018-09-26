@@ -36,8 +36,8 @@ import org.apache.hadoop.hbase.MiniHBaseCluster;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.hbase.util.FSUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.QTestUtil;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.zookeeper.Watcher;
 
@@ -45,7 +45,7 @@ import org.apache.zookeeper.Watcher;
  * HBaseTestSetup defines HBase-specific test fixtures which are
  * reused across testcases.
  */
-public class HBaseTestSetup {
+public class HBaseTestSetup extends QTestUtil.QTestSetup {
 
   private MiniHBaseCluster hbaseCluster;
   private HBaseTestingUtility util;
@@ -58,7 +58,9 @@ public class HBaseTestSetup {
     return this.hbaseConn;
   }
 
-  void preTest(HiveConf conf) throws Exception {
+  @Override
+  public void preTest(HiveConf conf) throws Exception {
+    super.preTest(conf);
 
     setUpFixtures(conf);
 
@@ -87,7 +89,6 @@ public class HBaseTestSetup {
     this.tearDown();
 
     // Fix needed due to dependency for hbase-mapreduce module
-    // Check CDH-59433 for details
     System.setProperty("org.apache.hadoop.hbase.shaded.io.netty.packagePrefix",
         "org.apache.hadoop.hbase.shaded.");
 
@@ -156,10 +157,10 @@ public class HBaseTestSetup {
     }
   }
 
+  @Override
   public void tearDown() throws Exception {
-    if (util != null) {
-      util.shutdownMiniHBaseCluster();
-      util.shutdownMiniDFSCluster();
+    if (hbaseCluster != null) {
+      util.shutdownMiniCluster();
       hbaseCluster = null;
     }
   }

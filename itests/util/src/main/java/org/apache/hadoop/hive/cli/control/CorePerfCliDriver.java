@@ -22,6 +22,7 @@ package org.apache.hadoop.hive.cli.control;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.hadoop.hive.ql.QTestArguments;
 import com.google.common.base.Strings;
 import org.apache.hadoop.hive.ql.QTestProcessExecResult;
 import org.apache.hadoop.hive.ql.QTestUtil;
@@ -56,11 +57,21 @@ public class CorePerfCliDriver extends CliAdapter{
     String hiveConfDir = cliConfig.getHiveConfDir();
     String initScript = cliConfig.getInitScript();
     String cleanupScript = cliConfig.getCleanupScript();
+    String hadoopVer = cliConfig.getHadoopVersion();
+
     try {
-      String hadoopVer = cliConfig.getHadoopVersion();
-      qt = new QTestUtil(cliConfig.getResultsDir(), cliConfig.getLogDir(), miniMR, hiveConfDir,
-          hadoopVer, initScript,
-          cleanupScript, false, false);
+      qt = new QTestUtil(
+          QTestArguments.QTestArgumentsBuilder.instance()
+            .withOutDir(cliConfig.getResultsDir())
+            .withLogDir(cliConfig.getLogDir())
+            .withClusterType(miniMR)
+            .withConfDir(hiveConfDir)
+            .withHadoopVer(hadoopVer)
+            .withInitScript(initScript)
+            .withCleanupScript(cleanupScript)
+            .withHBaseMetastore(false)
+            .withLlapIo(false)
+            .build());
 
       // do a one time initialization
       qt.newSession();
@@ -122,7 +133,7 @@ public class CorePerfCliDriver extends CliAdapter{
 
 
   @Override
-  public void runTest(String name, String fname, String fpath) throws Exception {
+  public void runTest(String name, String fname, String fpath) {
     long startTime = System.currentTimeMillis();
     try {
       System.err.println("Begin query: " + fname);

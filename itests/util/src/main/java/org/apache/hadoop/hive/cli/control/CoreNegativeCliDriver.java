@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.cli.control;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.hadoop.hive.ql.QTestArguments;
 import com.google.common.base.Strings;
 import org.apache.hadoop.hive.ql.QTestProcessExecResult;
 import org.apache.hadoop.hive.ql.QTestUtil;
@@ -41,11 +42,21 @@ public class CoreNegativeCliDriver extends CliAdapter{
     String hiveConfDir = cliConfig.getHiveConfDir();
     String initScript = cliConfig.getInitScript();
     String cleanupScript = cliConfig.getCleanupScript();
+    String hadoopVer = cliConfig.getHadoopVersion();
 
     try {
-      String hadoopVer = cliConfig.getHadoopVersion();
-      qt = new QTestUtil((cliConfig.getResultsDir()), (cliConfig.getLogDir()), miniMR,
-       hiveConfDir, hadoopVer, initScript, cleanupScript, false, false);
+      qt = new QTestUtil(
+          QTestArguments.QTestArgumentsBuilder.instance()
+            .withOutDir(cliConfig.getResultsDir())
+            .withLogDir(cliConfig.getLogDir())
+            .withClusterType(miniMR)
+            .withConfDir(hiveConfDir)
+            .withHadoopVer(hadoopVer)
+            .withInitScript(initScript)
+            .withCleanupScript(cleanupScript)
+            .withHBaseMetastore(false)
+            .withLlapIo(false)
+            .build());
       // do a one time initialization
       qt.newSession();
       qt.cleanUp();
@@ -87,7 +98,7 @@ public class CoreNegativeCliDriver extends CliAdapter{
 
   @Override
   @AfterClass
-  public void shutdown() throws Exception {
+  public void shutdown() {
     try {
       qt.shutdown();
     } catch (Exception e) {
@@ -96,13 +107,6 @@ public class CoreNegativeCliDriver extends CliAdapter{
       System.err.flush();
       fail("Unexpected exception in shutdown");
     }
-  }
-
-  /**
-   * Dummy last test. This is only meant to shutdown qt
-   */
-  public void testNegativeCliDriver_shutdown() {
-    System.err.println ("Cleaning up " + "$className");
   }
 
   static String debugHint = "\nSee ./ql/target/tmp/log/hive.log or ./itests/qtest/target/tmp/log/hive.log, "

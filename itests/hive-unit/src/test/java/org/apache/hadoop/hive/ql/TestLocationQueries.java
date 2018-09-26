@@ -90,7 +90,19 @@ public class TestLocationQueries extends BaseTestQueries {
         String hadoopVer, String locationSubdir)
       throws Exception
     {
-      super(outDir, logDir, miniMr, null, hadoopVer, "", "", false, false);
+      super(
+          QTestArguments.QTestArgumentsBuilder.instance()
+            .withOutDir(outDir)
+            .withLogDir(logDir)
+            .withClusterType(miniMr)
+            .withConfDir(null)
+            .withHadoopVer(hadoopVer)
+            .withInitScript("")
+            .withCleanupScript("")
+            .withHBaseMetastore(false)
+            .withLlapIo(false)
+            .build());
+
       this.locationSubdir = locationSubdir;
     }
   }

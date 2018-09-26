@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.hadoop.hive.ql.QTestArguments;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import org.apache.hadoop.hive.cli.control.AbstractCliConfig.MetastoreType;
@@ -51,21 +52,31 @@ public class CoreCliDriver extends CliAdapter {
     String message = "Starting " + CoreCliDriver.class.getName() + " run at " + System.currentTimeMillis();
     LOG.info(message);
     System.err.println(message);
-    final MiniClusterType miniMR =cliConfig.getClusterType();
-    final String hiveConfDir = cliConfig.getHiveConfDir();
-    final String initScript = cliConfig.getInitScript();
-    final String cleanupScript = cliConfig.getCleanupScript();
-    final boolean useHBaseMetastore = cliConfig.getMetastoreType() == MetastoreType.hbase;
+
+    MiniClusterType miniMR =cliConfig.getClusterType();
+    String hiveConfDir = cliConfig.getHiveConfDir();
+    String initScript = cliConfig.getInitScript();
+    String cleanupScript = cliConfig.getCleanupScript();
+    boolean useHBaseMetastore = cliConfig.getMetastoreType() == MetastoreType.hbase;
+    String hadoopVer = cliConfig.getHadoopVersion();
 
     try {
-      final String hadoopVer = cliConfig.getHadoopVersion();
-
       qt = new ElapsedTimeLoggingWrapper<QTestUtil>() {
         @Override
         public QTestUtil invokeInternal() throws Exception {
-          return new QTestUtil((cliConfig.getResultsDir()), (cliConfig.getLogDir()), miniMR,
-              hiveConfDir, hadoopVer, initScript, cleanupScript, useHBaseMetastore, true,
-              cliConfig.getFsType());
+          return new QTestUtil(
+              QTestArguments.QTestArgumentsBuilder.instance()
+                .withOutDir(cliConfig.getResultsDir())
+                .withLogDir(cliConfig.getLogDir())
+                .withClusterType(miniMR)
+                .withConfDir(hiveConfDir)
+                .withHadoopVer(hadoopVer)
+                .withInitScript(initScript)
+                .withCleanupScript(cleanupScript)
+                .withHBaseMetastore(useHBaseMetastore)
+                .withLlapIo(true)
+                .withFsType(cliConfig.getFsType())
+                .build());
         }
       }.invoke("QtestUtil instance created", LOG, true);
 
@@ -136,7 +147,7 @@ public class CoreCliDriver extends CliAdapter {
 
   @Override
   @AfterClass
-  public void shutdown() throws Exception {
+  public void shutdown() {
     try {
       new ElapsedTimeLoggingWrapper<Void>() {
         @Override
@@ -157,7 +168,7 @@ public class CoreCliDriver extends CliAdapter {
      + "or check ./ql/target/surefire-reports or ./itests/qtest/target/surefire-reports/ for specific test cases logs.";
 
   @Override
-  public void runTest(String tname, String fname, String fpath) throws Exception {
+  public void runTest(String tname, String fname, String fpath) {
     Stopwatch sw = new Stopwatch().start();
     boolean skipped = false;
     boolean failed = false;

@@ -206,7 +206,7 @@ public class QTestUtil {
 
   private final String initScript;
   private final String cleanupScript;
-  private boolean useHBaseMetastore = false;
+  private final boolean useHBaseMetastore;
 
   private HBaseTestingUtility utility;
 
@@ -469,37 +469,24 @@ public class QTestUtil {
     conf.setBoolVar(ConfVars.METASTORE_FASTPATH, true);
   }
 
-  public QTestUtil(String outDir, String logDir, MiniClusterType clusterType,
-                   String confDir, String hadoopVer, String initScript, String cleanupScript,
-                   boolean useHBaseMetastore, boolean withLlapIo) throws Exception {
-    this(outDir, logDir, clusterType, confDir, hadoopVer, initScript, cleanupScript,
-        useHBaseMetastore, withLlapIo, null);
-  }
-
-  public QTestUtil(String outDir, String logDir, MiniClusterType clusterType,
-      String confDir, String hadzoopVer, String initScript, String cleanupScript,
-      boolean useHBaseMetastore, boolean withLlapIo, FsType fsType)
-    throws Exception {
+  public QTestUtil(QTestArguments testArgs) throws Exception {
     LOG.info("Setting up QTestUtil with outDir={}, logDir={}, clusterType={}, confDir={}," +
         " hadoopVer={}, initScript={}, cleanupScript={}, useHbaseMetaStore={}, withLlapIo={}," +
-            " fsType={}"
-        , outDir, logDir, clusterType, confDir, hadoopVer, initScript, cleanupScript,
-        useHBaseMetastore, withLlapIo, fsType);
-    Preconditions.checkNotNull(clusterType, "ClusterType cannot be null");
-    if (fsType != null) {
-      this.fsType = fsType;
-    } else {
-      this.fsType = clusterType.getDefaultFsType();
-    }
-    this.outDir = outDir;
-    this.logDir = logDir;
-    this.useHBaseMetastore = useHBaseMetastore;
-    this.srcTables=getSrcTables();
+            " fsType={}",
+        testArgs.getOutDir(), testArgs.getLogDir(), testArgs.getClusterType(), testArgs.getConfDir(),
+            hadoopVer, testArgs.getInitScript(), testArgs.getCleanupScript(),
+            testArgs.isWithHBaseMetastore(), testArgs.isWithLlapIo(), testArgs.getFsType());
+    Preconditions.checkNotNull(testArgs.getClusterType(), "ClusterType cannot be null");
+    this.fsType = testArgs.getFsType();;
+    this.outDir = testArgs.getOutDir();
+    this.logDir = testArgs.getLogDir();
+    this.useHBaseMetastore = testArgs.isWithHBaseMetastore();
+    this.srcTables = getSrcTables();
     this.srcUDFs = getSrcUDFs();
 
     // HIVE-14443 move this fall-back logic to CliConfigs
-    if (confDir != null && !confDir.isEmpty()) {
-      HiveConf.setHiveSiteLocation(new URL("file://"+ new File(confDir).toURI().getPath() + "/hive-site.xml"));
+    if (testArgs.getConfDir() != null && !testArgs.getConfDir().isEmpty()) {
+      HiveConf.setHiveSiteLocation(new URL("file://"+ new File(testArgs.getConfDir()).toURI().getPath() + "/hive-site.xml"));
       System.out.println("Setting hive-site: "+HiveConf.getHiveSiteLocation());
     }
 
@@ -518,20 +505,20 @@ public class QTestUtil {
     qSortNHashQuerySet = new HashSet<String>();
     qNoSessionReuseQuerySet = new HashSet<String>();
     qJavaVersionSpecificOutput = new HashSet<String>();
-    this.clusterType = clusterType;
+    this.clusterType = testArgs.getClusterType();
 
     HadoopShims shims = ShimLoader.getHadoopShims();
 
     setupFileSystem(shims);
 
-    setup = new QTestSetup();
+    setup = testArgs.getQTestSetup();
     setup.preTest(conf);
 
-    setupMiniCluster(shims, confDir);
+    setupMiniCluster(shims, testArgs.getConfDir());
 
     initConf();
 
-    if (withLlapIo && (clusterType == MiniClusterType.none)) {
+    if (testArgs.isWithLlapIo() && (clusterType == MiniClusterType.none)) {
       LOG.info("initializing llap IO");
       LlapProxy.initializeLlapIo(conf);
     }
@@ -551,8 +538,8 @@ public class QTestUtil {
       scriptsDir = new File(".").getAbsolutePath() + "/data/scripts";
     }
 
-    this.initScript = scriptsDir + File.separator + initScript;
-    this.cleanupScript = scriptsDir + File.separator + cleanupScript;
+    this.initScript = scriptsDir + File.separator + testArgs.getInitScript();
+    this.cleanupScript = scriptsDir + File.separator + testArgs.getCleanupScript();
 
     overWrite = "true".equalsIgnoreCase(System.getProperty("test.output.overwrite"));
 
@@ -1931,10 +1918,19 @@ public class QTestUtil {
   {
     QTestUtil[] qt = new QTestUtil[qfiles.length];
     for (int i = 0; i < qfiles.length; i++) {
-      qt[i] = new QTestUtil(resDir, logDir, MiniClusterType.none, null, "0.20",
-        initScript == null ? defaultInitScript : initScript,
-        cleanupScript == null ? defaultCleanupScript : cleanupScript,
-        false, false);
+      qt[i] = new QTestUtil(
+          QTestArguments.QTestArgumentsBuilder.instance()
+            .withOutDir(resDir)
+            .withLogDir(logDir)
+            .withClusterType(MiniClusterType.none)
+            .withConfDir(null)
+            .withHadoopVer("0.20")
+            .withInitScript(initScript == null ? defaultInitScript : initScript)
+            .withCleanupScript(cleanupScript == null ? defaultCleanupScript : cleanupScript)
+            .withHBaseMetastore(false)
+            .withLlapIo(false)
+            .build());
+
       qt[i].addFile(qfiles[i], false);
       qt[i].clearTestSideEffects();
     }
