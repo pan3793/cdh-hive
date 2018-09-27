@@ -18,6 +18,8 @@ JOIN
 ON (x.key = Y.key)
 select sum(hash(Y.key,Y.value))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 FROM 
 (SELECT orcsrc.* FROM orcsrc sort by key) x
@@ -26,6 +28,8 @@ JOIN
 ON (x.key = Y.key)
 select sum(hash(Y.key,Y.value))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -367,6 +371,8 @@ LEFT OUTER JOIN
 ON (x.key = Y.key)
 select sum(hash(Y.key,Y.value))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 FROM 
 (SELECT orcsrc.* FROM orcsrc sort by key) x
@@ -375,6 +381,8 @@ LEFT OUTER JOIN
 ON (x.key = Y.key)
 select sum(hash(Y.key,Y.value))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -652,6 +660,8 @@ RIGHT OUTER JOIN
 ON (x.key = Y.key)
 select sum(hash(Y.key,Y.value))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 FROM 
 (SELECT orcsrc.* FROM orcsrc sort by key) x
@@ -660,6 +670,8 @@ RIGHT OUTER JOIN
 ON (x.key = Y.key)
 select sum(hash(Y.key,Y.value))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -940,6 +952,8 @@ JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 FROM 
 (SELECT orcsrc.* FROM orcsrc sort by key) x
@@ -951,6 +965,8 @@ JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -1458,6 +1474,8 @@ LEFT OUTER JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 FROM 
 (SELECT orcsrc.* FROM orcsrc sort by key) x
@@ -1469,6 +1487,8 @@ LEFT OUTER JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -1892,6 +1912,8 @@ LEFT OUTER JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 FROM 
 (SELECT orcsrc.* FROM orcsrc sort by key) x
@@ -1903,6 +1925,8 @@ LEFT OUTER JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -2263,6 +2287,8 @@ RIGHT OUTER JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 FROM 
 (SELECT orcsrc.* FROM orcsrc sort by key) x
@@ -2274,6 +2300,8 @@ RIGHT OUTER JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -2634,6 +2662,8 @@ RIGHT OUTER JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 FROM 
 (SELECT orcsrc.* FROM orcsrc sort by key) x
@@ -2645,6 +2675,8 @@ RIGHT OUTER JOIN
 ON (x.key = Z.key)
 select sum(hash(Y.key,Y.value))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orcsrc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]

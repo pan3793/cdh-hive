@@ -107,8 +107,12 @@ POSTHOOK: Input: default@tbl_pred
 62430
 PREHOOK: query: EXPLAIN SELECT SUM(HASH(t)) FROM tbl_pred
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT SUM(HASH(t)) FROM tbl_pred
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -155,8 +159,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN SELECT SUM(HASH(t)) FROM tbl_pred
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT SUM(HASH(t)) FROM tbl_pred
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -291,12 +299,16 @@ PREHOOK: query: EXPLAIN SELECT * FROM tbl_pred
   AND t > -2
   LIMIT 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM tbl_pred
   WHERE t IS NOT NULL
   AND t < 0
   AND t > -2
   LIMIT 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -338,12 +350,16 @@ PREHOOK: query: EXPLAIN SELECT * FROM tbl_pred
   AND t > -2
   LIMIT 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM tbl_pred
   WHERE t IS NOT NULL
   AND t < 0
   AND t > -2
   LIMIT 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -417,11 +433,15 @@ PREHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   AND s IS NOT NULL
   AND s LIKE 'bob%'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   WHERE t <=> -1
   AND s IS NOT NULL
   AND s LIKE 'bob%'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -459,11 +479,15 @@ PREHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   AND s IS NOT NULL
   AND s LIKE 'bob%'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   WHERE t <=> -1
   AND s IS NOT NULL
   AND s LIKE 'bob%'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -546,6 +570,8 @@ PREHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   AND t BETWEEN 25 AND 30
   SORT BY t,s
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   WHERE s IS NOT NULL
   AND s LIKE 'bob%'
@@ -553,6 +579,8 @@ POSTHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   AND t BETWEEN 25 AND 30
   SORT BY t,s
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -601,6 +629,8 @@ PREHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   AND t BETWEEN 25 AND 30
   SORT BY t,s
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   WHERE s IS NOT NULL
   AND s LIKE 'bob%'
@@ -608,6 +638,8 @@ POSTHOOK: query: EXPLAIN SELECT t, s FROM tbl_pred
   AND t BETWEEN 25 AND 30
   SORT BY t,s
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -719,6 +751,8 @@ PREHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   ORDER BY s DESC
   LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   WHERE d >= ROUND(9.99)
   AND d < 12
@@ -730,6 +764,8 @@ POSTHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   ORDER BY s DESC
   LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -787,6 +823,8 @@ PREHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   ORDER BY s DESC
   LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   WHERE d >= ROUND(9.99)
   AND d < 12
@@ -798,6 +836,8 @@ POSTHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   ORDER BY s DESC
   LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -965,6 +1005,8 @@ PREHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   SORT BY s DESC
   LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   WHERE t > 10
   AND t <> 101
@@ -978,6 +1020,8 @@ POSTHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   SORT BY s DESC
   LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -1063,6 +1107,8 @@ PREHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   SORT BY s DESC
   LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   WHERE t > 10
   AND t <> 101
@@ -1076,6 +1122,8 @@ POSTHOOK: query: EXPLAIN SELECT t, si, d, s FROM tbl_pred
   SORT BY s DESC
   LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -1168,6 +1216,8 @@ PREHOOK: query: EXPLAIN SELECT f, i, b FROM tbl_pred
   SORT BY f DESC
   LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT f, i, b FROM tbl_pred
   WHERE f IS NOT NULL
   AND f < 123.2
@@ -1187,6 +1237,8 @@ POSTHOOK: query: EXPLAIN SELECT f, i, b FROM tbl_pred
   SORT BY f DESC
   LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl_pred
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

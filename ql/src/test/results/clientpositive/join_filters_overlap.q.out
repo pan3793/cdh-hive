@@ -12,8 +12,12 @@ POSTHOOK: Lineage: a.key SIMPLE []
 POSTHOOK: Lineage: a.value SCRIPT []
 PREHOOK: query: explain extended select * from a left outer join a b on (a.key=b.key AND a.value=50 AND b.value=50) left outer join a c on (a.key=c.key AND a.value=60 AND c.value=60)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select * from a left outer join a b on (a.key=b.key AND a.value=50 AND b.value=50) left outer join a c on (a.key=c.key AND a.value=60 AND c.value=60)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -201,8 +205,12 @@ POSTHOOK: Input: default@a
 100	60	NULL	NULL	100	60
 PREHOOK: query: explain extended select * from a right outer join a b on (a.key=b.key AND a.value=50 AND b.value=50) left outer join a c on (b.key=c.key AND b.value=60 AND c.value=60)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select * from a right outer join a b on (a.key=b.key AND a.value=50 AND b.value=50) left outer join a c on (b.key=c.key AND b.value=60 AND c.value=60)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -390,8 +398,12 @@ NULL	NULL	100	40	NULL	NULL
 NULL	NULL	100	60	100	60
 PREHOOK: query: explain extended select * from a right outer join a b on (a.key=b.key AND a.value=50 AND b.value=50 AND b.value>10) left outer join a c on (b.key=c.key AND b.value=60 AND b.value>20 AND c.value=60)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select * from a right outer join a b on (a.key=b.key AND a.value=50 AND b.value=50 AND b.value>10) left outer join a c on (b.key=c.key AND b.value=60 AND b.value>20 AND c.value=60)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -579,8 +591,12 @@ NULL	NULL	100	40	NULL	NULL
 NULL	NULL	100	60	100	60
 PREHOOK: query: explain extended select * from a full outer join a b on (a.key=b.key AND a.value=50 AND b.value=50) left outer join a c on (b.key=c.key AND b.value=60 AND c.value=60) left outer join a d on (a.key=d.key AND a.value=40 AND d.value=40)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select * from a full outer join a b on (a.key=b.key AND a.value=50 AND b.value=50) left outer join a c on (b.key=c.key AND b.value=60 AND c.value=60) left outer join a d on (a.key=d.key AND a.value=40 AND d.value=40)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -780,8 +796,12 @@ NULL	NULL	100	40	NULL	NULL	NULL	NULL
 NULL	NULL	100	60	100	60	NULL	NULL
 PREHOOK: query: explain extended select * from a left outer join a b on (a.key=b.key AND a.value=50 AND b.value=50) left outer join a c on (a.key=c.key AND a.value=60 AND c.value=60) left outer join a d on (a.key=d.key AND a.value=40 AND d.value=40)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select * from a left outer join a b on (a.key=b.key AND a.value=50 AND b.value=50) left outer join a c on (a.key=c.key AND a.value=60 AND c.value=60) left outer join a d on (a.key=d.key AND a.value=40 AND d.value=40)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

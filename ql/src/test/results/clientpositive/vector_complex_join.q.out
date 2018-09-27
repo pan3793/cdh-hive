@@ -20,9 +20,15 @@ c0	c1
 PREHOOK: query: explain vectorization expression
 select * from alltypesorc join test where alltypesorc.cint=test.a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 select * from alltypesorc join test where alltypesorc.cint=test.a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 Explain
 PLAN VECTORIZATION:
   enabled: true
@@ -149,9 +155,15 @@ _col0
 PREHOOK: query: explain vectorization expression
 select *  from test2b join test2a on test2b.a = test2a.a[1]
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test2a
+PREHOOK: Input: default@test2b
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 select *  from test2b join test2a on test2b.a = test2a.a[1]
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test2a
+POSTHOOK: Input: default@test2b
+#### A masked pattern was here ####
 Explain
 PLAN VECTORIZATION:
   enabled: true

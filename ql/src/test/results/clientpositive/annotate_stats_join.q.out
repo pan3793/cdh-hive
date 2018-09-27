@@ -120,8 +120,14 @@ POSTHOOK: Input: default@loc
 #### A masked pattern was here ####
 PREHOOK: query: explain select * from emp e join dept d on (e.deptid = d.deptid)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp e join dept d on (e.deptid = d.deptid)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -187,8 +193,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp,dept where emp.deptid = dept.deptid and emp.lastname = dept.deptname
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp,dept where emp.deptid = dept.deptid and emp.lastname = dept.deptname
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -253,8 +265,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp e join dept d on (e.deptid = d.deptid and e.lastname = d.deptname)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp e join dept d on (e.deptid = d.deptid and e.lastname = d.deptname)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -319,8 +337,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp,dept where emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp,dept where emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -385,8 +409,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp e join dept d on (e.deptid = d.deptid) join emp e1 on (e.deptid = e1.deptid)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp e join dept d on (e.deptid = d.deptid) join emp e1 on (e.deptid = e1.deptid)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -470,8 +500,16 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp e join dept d  on (e.deptid = d.deptid) join loc l on (e.deptid = l.locid)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+PREHOOK: Input: default@loc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp e join dept d  on (e.deptid = d.deptid) join loc l on (e.deptid = l.locid)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+POSTHOOK: Input: default@loc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -555,8 +593,16 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp e join dept d on (e.deptid = d.deptid and e.lastname = d.deptname) join loc l on (e.deptid = l.locid and e.lastname = l.state)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+PREHOOK: Input: default@loc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp e join dept d on (e.deptid = d.deptid and e.lastname = d.deptname) join loc l on (e.deptid = l.locid and e.lastname = l.state)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+POSTHOOK: Input: default@loc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -639,8 +685,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp left outer join dept on emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp left outer join dept on emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -699,8 +751,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp left semi join dept on emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp left semi join dept on emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -770,8 +828,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp right outer join dept on emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp right outer join dept on emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -830,8 +894,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from emp full outer join dept on emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dept
+PREHOOK: Input: default@emp
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emp full outer join dept on emp.deptid = dept.deptid and emp.lastname = dept.deptname and dept.deptname = emp.lastname
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dept
+POSTHOOK: Input: default@emp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

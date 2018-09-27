@@ -140,6 +140,8 @@ SELECT
 FROM lineitem_test
 ORDER BY Quantity
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION DETAIL
 SELECT
    L_QUANTITY as Quantity,
@@ -182,6 +184,8 @@ SELECT
 FROM lineitem_test
 ORDER BY Quantity
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_test
+#### A masked pattern was here ####
 Explain
 PLAN VECTORIZATION:
   enabled: true
@@ -466,6 +470,8 @@ SELECT
 FROM lineitem_test
 ORDER BY Quantity
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION DETAIL
 SELECT
    L_QUANTITY as Quantity,
@@ -508,6 +514,8 @@ SELECT
 FROM lineitem_test
 ORDER BY Quantity
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_test
+#### A masked pattern was here ####
 Explain
 PLAN VECTORIZATION:
   enabled: true
@@ -814,6 +822,8 @@ SELECT
 FROM lineitem_test
 ORDER BY Quantity
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION DETAIL
 SELECT
    L_QUANTITY as Quantity,
@@ -856,6 +866,8 @@ SELECT
 FROM lineitem_test
 ORDER BY Quantity
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_test
+#### A masked pattern was here ####
 Explain
 PLAN VECTORIZATION:
   enabled: true

@@ -72,8 +72,16 @@ POSTHOOK: Lineage: tbl4.key EXPRESSION [(src)src.FieldSchema(name:key, type:stri
 POSTHOOK: Lineage: tbl4.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src c on c.value = a.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src c on c.value = a.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -177,8 +185,16 @@ POSTHOOK: Input: default@tbl2
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src d on d.value = a.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src d on d.value = a.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -282,8 +298,16 @@ POSTHOOK: Input: default@tbl2
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src h on h.value = a.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src h on h.value = a.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -387,8 +411,16 @@ POSTHOOK: Input: default@tbl2
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src c on c.key = a.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src c on c.key = a.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -492,8 +524,16 @@ POSTHOOK: Input: default@tbl2
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join tbl3 c on c.key = a.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+PREHOOK: Input: default@tbl3
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join tbl3 c on c.key = a.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+POSTHOOK: Input: default@tbl3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -560,8 +600,16 @@ POSTHOOK: Input: default@tbl3
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join tbl4 c on c.value = a.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+PREHOOK: Input: default@tbl4
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join tbl4 c on c.value = a.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+POSTHOOK: Input: default@tbl4
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -665,8 +713,16 @@ POSTHOOK: Input: default@tbl4
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src c on c.value = a.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src c on c.value = a.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -770,8 +826,16 @@ POSTHOOK: Input: default@tbl2
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src c on c.key = a.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join src c on c.key = a.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -875,8 +939,16 @@ POSTHOOK: Input: default@tbl2
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join tbl3 c on c.key = a.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+PREHOOK: Input: default@tbl3
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join tbl3 c on c.key = a.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+POSTHOOK: Input: default@tbl3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-7 is a root stage , consists of Stage-8, Stage-9, Stage-10, Stage-1
   Stage-8 has a backup stage: Stage-1
@@ -1208,8 +1280,16 @@ POSTHOOK: Input: default@tbl3
 2654
 PREHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join tbl4 c on c.value = a.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+PREHOOK: Input: default@tbl4
+#### A masked pattern was here ####
 POSTHOOK: query: explain select count(*) FROM tbl1 a JOIN tbl2 b ON a.key = b.key join tbl4 c on c.value = a.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+POSTHOOK: Input: default@tbl4
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

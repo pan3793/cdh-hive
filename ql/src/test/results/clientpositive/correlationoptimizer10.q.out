@@ -5,6 +5,9 @@ FROM
 LEFT SEMI JOIN src yy
 ON xx.key=yy.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.cnt
 FROM
@@ -12,6 +15,9 @@ FROM
 LEFT SEMI JOIN src yy
 ON xx.key=yy.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -192,6 +198,9 @@ FROM
 LEFT SEMI JOIN src yy
 ON xx.key=yy.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.cnt
 FROM
@@ -199,6 +208,9 @@ FROM
 LEFT SEMI JOIN src yy
 ON xx.key=yy.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -362,6 +374,9 @@ LEFT SEMI JOIN
        y.key > 20) yy
 ON xx.key=yy.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value
 FROM
@@ -373,6 +388,9 @@ LEFT SEMI JOIN
        y.key > 20) yy
 ON xx.key=yy.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-1 depends on stages: Stage-2
@@ -524,6 +542,9 @@ LEFT SEMI JOIN
        y.key > 20) yy
 ON xx.key=yy.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value
 FROM
@@ -535,6 +556,9 @@ LEFT SEMI JOIN
        y.key > 20) yy
 ON xx.key=yy.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -683,6 +707,8 @@ LEFT SEMI JOIN
  WHERE x.key < 200 AND x.key > 180) yy
 ON xx.key=yy.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value
 FROM
@@ -693,6 +719,8 @@ LEFT SEMI JOIN
  WHERE x.key < 200 AND x.key > 180) yy
 ON xx.key=yy.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-1 depends on stages: Stage-2
@@ -857,6 +885,8 @@ LEFT SEMI JOIN
  WHERE x.key < 200 AND x.key > 180) yy
 ON xx.key=yy.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value
 FROM
@@ -867,6 +897,8 @@ LEFT SEMI JOIN
  WHERE x.key < 200 AND x.key > 180) yy
 ON xx.key=yy.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

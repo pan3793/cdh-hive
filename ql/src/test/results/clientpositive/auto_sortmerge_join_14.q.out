@@ -37,9 +37,15 @@ POSTHOOK: Lineage: tbl2.value SIMPLE [(src)src.FieldSchema(name:value, type:stri
 PREHOOK: query: explain
 select count(*) FROM tbl1 a LEFT OUTER JOIN tbl2 b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(*) FROM tbl1 a LEFT OUTER JOIN tbl2 b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-4 is a root stage , consists of Stage-5, Stage-1
   Stage-5 has a backup stage: Stage-1
@@ -173,9 +179,15 @@ POSTHOOK: Lineage: tbl2.value SIMPLE [(src)src.FieldSchema(name:value, type:stri
 PREHOOK: query: explain
 select count(*) FROM tbl1 a RIGHT OUTER JOIN tbl2 b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(*) FROM tbl1 a RIGHT OUTER JOIN tbl2 b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-4 is a root stage , consists of Stage-5, Stage-1
   Stage-5 has a backup stage: Stage-1

@@ -64,9 +64,13 @@ orc_create_staging.str	orc_create_staging.mp	orc_create_staging.lst	orc_create_s
 PREHOOK: query: EXPLAIN
 SELECT * FROM orc_create_complex
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orc_create_complex
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM orc_create_complex
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orc_create_complex
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -112,9 +116,13 @@ line3	{"key31":"value31","key32":"value32","key33":"value33"}	["g","h","i"]	{"a"
 PREHOOK: query: EXPLAIN
 SELECT COUNT(*) FROM orc_create_complex
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orc_create_complex
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT COUNT(*) FROM orc_create_complex
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orc_create_complex
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -172,9 +180,13 @@ c0
 PREHOOK: query: EXPLAIN
 SELECT str FROM orc_create_complex ORDER BY str
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orc_create_complex
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT str FROM orc_create_complex ORDER BY str
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orc_create_complex
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage

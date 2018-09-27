@@ -1,7 +1,11 @@
 PREHOOK: query: explain analyze table src compute statistics for columns
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain analyze table src compute statistics for columns
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 depends on stages: Stage-0

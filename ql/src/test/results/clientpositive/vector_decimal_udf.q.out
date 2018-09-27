@@ -58,8 +58,12 @@ POSTHOOK: Lineage: decimal_udf.key EXPRESSION [(values__tmp__table__1)values__tm
 POSTHOOK: Lineage: decimal_udf.value EXPRESSION [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col2, type:string, comment:), ]
 PREHOOK: query: EXPLAIN SELECT key + key FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key + key FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -139,8 +143,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key + value FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key + value FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -220,8 +228,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key + (value/2) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key + (value/2) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -301,8 +313,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key + '1.0' FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key + '1.0' FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -382,8 +398,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key - key FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key - key FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -463,8 +483,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key - value FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key - value FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -544,8 +568,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key - (value/2) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key - (value/2) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -625,8 +653,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key - '1.0' FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key - '1.0' FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -706,8 +738,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key * key FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key * key FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -787,8 +823,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key, value FROM DECIMAL_UDF where key * value > 0
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key, value FROM DECIMAL_UDF where key * value > 0
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -855,8 +895,12 @@ POSTHOOK: Input: default@decimal_udf
 3.1400000000	4
 PREHOOK: query: EXPLAIN SELECT key * value FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key * value FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -936,8 +980,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key * (value/2) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key * (value/2) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1017,8 +1065,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key * '2.0' FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key * '2.0' FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1099,9 +1151,13 @@ NULL
 PREHOOK: query: EXPLAIN VECTORIZATION DETAIL
 SELECT key / 0 FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION DETAIL
 SELECT key / 0 FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -1210,8 +1266,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT key / key FROM DECIMAL_UDF WHERE key is not null and key <> 0
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key / key FROM DECIMAL_UDF WHERE key is not null and key <> 0
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1289,8 +1349,12 @@ POSTHOOK: Input: default@decimal_udf
 1.000000000000000000000000
 PREHOOK: query: EXPLAIN SELECT key / value FROM DECIMAL_UDF WHERE value is not null and value <> 0
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key / value FROM DECIMAL_UDF WHERE value is not null and value <> 0
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1358,8 +1422,12 @@ POSTHOOK: Input: default@decimal_udf
 1.122000000000000000000
 PREHOOK: query: EXPLAIN SELECT key / (value/2) FROM DECIMAL_UDF  WHERE value is not null and value <> 0
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key / (value/2) FROM DECIMAL_UDF  WHERE value is not null and value <> 0
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1427,8 +1495,12 @@ POSTHOOK: Input: default@decimal_udf
 2.244
 PREHOOK: query: EXPLAIN SELECT 1 + (key / '2.0') FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT 1 + (key / '2.0') FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1508,8 +1580,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT abs(key) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT abs(key) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1589,8 +1665,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT value, sum(key) / count(key), avg(key), sum(key) FROM DECIMAL_UDF GROUP BY value ORDER BY value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT value, sum(key) / count(key), avg(key), sum(key) FROM DECIMAL_UDF GROUP BY value ORDER BY value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -1694,8 +1774,12 @@ POSTHOOK: Input: default@decimal_udf
 NULL	NULL	NULL	NULL
 PREHOOK: query: EXPLAIN SELECT -key FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT -key FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1775,8 +1859,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT +key FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT +key FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -1843,8 +1931,12 @@ NULL
 NULL
 PREHOOK: query: EXPlAIN SELECT CEIL(key) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPlAIN SELECT CEIL(key) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1924,8 +2016,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT FLOOR(key) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT FLOOR(key) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2005,8 +2101,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT ROUND(key, 2) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT ROUND(key, 2) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2086,8 +2186,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT POWER(key, 2) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT POWER(key, 2) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2167,8 +2271,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT (key + 1) % (key / 2) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT (key + 1) % (key / 2) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2248,8 +2356,12 @@ NULL
 NULL
 PREHOOK: query: EXPLAIN SELECT value, stddev(key), variance(key) FROM DECIMAL_UDF GROUP BY value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT value, stddev(key), variance(key) FROM DECIMAL_UDF GROUP BY value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2327,8 +2439,12 @@ POSTHOOK: Input: default@decimal_udf
 NULL	NULL	NULL
 PREHOOK: query: EXPLAIN SELECT value, stddev_samp(key), var_samp(key) FROM DECIMAL_UDF GROUP BY value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT value, stddev_samp(key), var_samp(key) FROM DECIMAL_UDF GROUP BY value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2406,8 +2522,12 @@ POSTHOOK: Input: default@decimal_udf
 NULL	NULL	NULL
 PREHOOK: query: EXPLAIN SELECT histogram_numeric(key, 3) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT histogram_numeric(key, 3) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2463,8 +2583,12 @@ POSTHOOK: Input: default@decimal_udf
 [{"x":-1.2345678901234567E9,"y":1.0},{"x":-144.50057142857142,"y":35.0},{"x":1.2345678901234567E9,"y":1.0}]
 PREHOOK: query: EXPLAIN SELECT MIN(key) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT MIN(key) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2521,8 +2645,12 @@ POSTHOOK: Input: default@decimal_udf
 -1234567890.1234567890
 PREHOOK: query: EXPLAIN SELECT MAX(key) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT MAX(key) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2579,8 +2707,12 @@ POSTHOOK: Input: default@decimal_udf
 1234567890.1234567800
 PREHOOK: query: EXPLAIN SELECT COUNT(key) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT COUNT(key) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

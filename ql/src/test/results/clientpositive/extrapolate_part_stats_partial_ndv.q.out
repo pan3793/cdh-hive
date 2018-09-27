@@ -173,8 +173,20 @@ POSTHOOK: Input: default@loc_orc_1d
 zip                 	int                 	43201               	94087               	0                   	4                   	                    	                    	                    	                    	from deserializer   
 PREHOOK: query: explain extended select state,locid,cnt,zip from loc_orc_1d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_1d
+PREHOOK: Input: default@loc_orc_1d@year=2000
+PREHOOK: Input: default@loc_orc_1d@year=2001
+PREHOOK: Input: default@loc_orc_1d@year=2002
+PREHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state,locid,cnt,zip from loc_orc_1d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_1d
+POSTHOOK: Input: default@loc_orc_1d@year=2000
+POSTHOOK: Input: default@loc_orc_1d@year=2001
+POSTHOOK: Input: default@loc_orc_1d@year=2002
+POSTHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -460,8 +472,20 @@ POSTHOOK: Input: default@loc_orc_1d
 zip                 	int                 	43201               	94087               	0                   	4                   	                    	                    	                    	                    	from deserializer   
 PREHOOK: query: explain extended select state,locid,cnt,zip from loc_orc_1d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_1d
+PREHOOK: Input: default@loc_orc_1d@year=2000
+PREHOOK: Input: default@loc_orc_1d@year=2001
+PREHOOK: Input: default@loc_orc_1d@year=2002
+PREHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state,locid,cnt,zip from loc_orc_1d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_1d
+POSTHOOK: Input: default@loc_orc_1d@year=2000
+POSTHOOK: Input: default@loc_orc_1d@year=2001
+POSTHOOK: Input: default@loc_orc_1d@year=2002
+POSTHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -800,8 +824,34 @@ POSTHOOK: Input: default@loc_orc_2d
 cnt                 	decimal(10,0)       	10                  	100                 	0                   	2                   	                    	                    	                    	                    	from deserializer   
 PREHOOK: query: explain extended select state,locid,cnt,zip from loc_orc_2d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_2d
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2003
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2000
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2003
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2000
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state,locid,cnt,zip from loc_orc_2d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_2d
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2003
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2000
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2003
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2000
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2003
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

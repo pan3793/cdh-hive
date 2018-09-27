@@ -8,8 +8,12 @@ POSTHOOK: Output: database:default
 POSTHOOK: Output: default@TEST1
 PREHOOK: query: explain extended select max(ds) from TEST1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select max(ds) from TEST1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -92,8 +96,14 @@ POSTHOOK: Output: default@test1
 POSTHOOK: Output: default@test1@ds=1
 PREHOOK: query: explain extended select max(ds) from TEST1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+PREHOOK: Input: default@test1@ds=1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select max(ds) from TEST1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+POSTHOOK: Input: default@test1@ds=1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -220,8 +230,14 @@ POSTHOOK: Input: default@test1@ds=1
 1
 PREHOOK: query: explain extended select count(distinct ds) from TEST1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+PREHOOK: Input: default@test1@ds=1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select count(distinct ds) from TEST1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+POSTHOOK: Input: default@test1@ds=1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -349,8 +365,14 @@ POSTHOOK: Input: default@test1@ds=1
 1
 PREHOOK: query: explain extended select count(ds) from TEST1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+PREHOOK: Input: default@test1@ds=1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select count(ds) from TEST1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+POSTHOOK: Input: default@test1@ds=1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -486,9 +508,17 @@ POSTHOOK: Output: default@test1@ds=2
 PREHOOK: query: explain extended 
 select count(*) from TEST1 a2 join (select max(ds) m from TEST1) b on a2.ds=b.m
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+PREHOOK: Input: default@test1@ds=1
+PREHOOK: Input: default@test1@ds=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended 
 select count(*) from TEST1 a2 join (select max(ds) m from TEST1) b on a2.ds=b.m
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+POSTHOOK: Input: default@test1@ds=1
+POSTHOOK: Input: default@test1@ds=2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3
@@ -938,8 +968,18 @@ POSTHOOK: Output: default@test2
 POSTHOOK: Output: default@test2@ds=1/hr=3
 PREHOOK: query: explain extended select ds, count(distinct hr) from TEST2 group by ds
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test2
+PREHOOK: Input: default@test2@ds=1/hr=1
+PREHOOK: Input: default@test2@ds=1/hr=2
+PREHOOK: Input: default@test2@ds=1/hr=3
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select ds, count(distinct hr) from TEST2 group by ds
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test2
+POSTHOOK: Input: default@test2@ds=1/hr=1
+POSTHOOK: Input: default@test2@ds=1/hr=2
+POSTHOOK: Input: default@test2@ds=1/hr=3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1168,8 +1208,18 @@ POSTHOOK: Input: default@test2@ds=1/hr=3
 1	3
 PREHOOK: query: explain extended select ds, count(hr) from TEST2 group by ds
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test2
+PREHOOK: Input: default@test2@ds=1/hr=1
+PREHOOK: Input: default@test2@ds=1/hr=2
+PREHOOK: Input: default@test2@ds=1/hr=3
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select ds, count(hr) from TEST2 group by ds
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test2
+POSTHOOK: Input: default@test2@ds=1/hr=1
+POSTHOOK: Input: default@test2@ds=1/hr=2
+POSTHOOK: Input: default@test2@ds=1/hr=3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1399,8 +1449,16 @@ POSTHOOK: Input: default@test2@ds=1/hr=3
 #### A masked pattern was here ####
 PREHOOK: query: explain extended select max(ds) from TEST1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+PREHOOK: Input: default@test1@ds=1
+PREHOOK: Input: default@test1@ds=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select max(ds) from TEST1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+POSTHOOK: Input: default@test1@ds=1
+POSTHOOK: Input: default@test1@ds=2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1624,8 +1682,22 @@ POSTHOOK: Output: default@test2
 POSTHOOK: Output: default@test2@ds=01%3A10%3A20/hr=02
 PREHOOK: query: explain extended select ds, count(distinct hr) from TEST2 group by ds
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test2
+PREHOOK: Input: default@test2@ds=01%3A10%3A10/hr=01
+PREHOOK: Input: default@test2@ds=01%3A10%3A20/hr=02
+PREHOOK: Input: default@test2@ds=1/hr=1
+PREHOOK: Input: default@test2@ds=1/hr=2
+PREHOOK: Input: default@test2@ds=1/hr=3
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select ds, count(distinct hr) from TEST2 group by ds
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test2
+POSTHOOK: Input: default@test2@ds=01%3A10%3A10/hr=01
+POSTHOOK: Input: default@test2@ds=01%3A10%3A20/hr=02
+POSTHOOK: Input: default@test2@ds=1/hr=1
+POSTHOOK: Input: default@test2@ds=1/hr=2
+POSTHOOK: Input: default@test2@ds=1/hr=3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

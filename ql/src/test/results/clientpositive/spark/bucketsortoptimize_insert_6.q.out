@@ -60,12 +60,22 @@ SELECT a.key, a.key2, concat(a.value, b.value)
 FROM test_table1 a JOIN test_table2 b 
 ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT a.key, a.key2, concat(a.value, b.value) 
 FROM test_table1 a JOIN test_table2 b 
 ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3
@@ -240,6 +250,11 @@ FROM test_table1 a JOIN test_table2 b
 ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT subq1.key, subq1.key2, subq1.value from
@@ -249,6 +264,11 @@ FROM test_table1 a JOIN test_table2 b
 ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3
@@ -426,12 +446,22 @@ SELECT a.key2, a.key, concat(a.value, b.value)
 FROM test_table1 a JOIN test_table2 b 
 ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT a.key2, a.key, concat(a.value, b.value) 
 FROM test_table1 a JOIN test_table2 b 
 ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3
@@ -541,6 +571,11 @@ FROM test_table1 a JOIN test_table2 b
 ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT subq1.key2, subq1.key, subq1.value from
@@ -550,6 +585,11 @@ FROM test_table1 a JOIN test_table2 b
 ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3
@@ -662,6 +702,11 @@ ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 )subq2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT subq2.key, subq2.key2, subq2.value from
@@ -674,6 +719,11 @@ ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 )subq2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3
@@ -863,6 +913,11 @@ ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 )subq2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT subq2.k2, subq2.k1, subq2.value from
@@ -875,6 +930,11 @@ ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 )subq2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3
@@ -1074,6 +1134,11 @@ ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 )subq2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table4@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table4 PARTITION (ds = '1')
 SELECT subq2.k2, subq2.k1, subq2.value from
@@ -1086,6 +1151,11 @@ ON a.key = b.key and a.key2 = b.key2 WHERE a.ds = '1' and b.ds = '1'
 )subq1
 )subq2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table4@ds=1
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3

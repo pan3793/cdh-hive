@@ -77,6 +77,8 @@ Columns:p,val
 
 PREHOOK: query: EXPLAIN SELECT key FROM (SELECT key, val FROM T1) subq1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -107,6 +109,8 @@ Columns:key
 8
 PREHOOK: query: EXPLAIN SELECT k FROM (SELECT key as k, val as v FROM T1) subq1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -168,6 +172,8 @@ SELECT key as c FROM T1
 SELECT val as c FROM T1
 ) subq1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -246,6 +252,8 @@ SELECT key as c FROM T1
 SELECT key as c FROM T1
 ) subq1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -351,6 +359,9 @@ SELECT T1.key
 FROM T1 JOIN T2
 ON T1.key = T2.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -476,6 +487,9 @@ SELECT *
 FROM T1 JOIN T2
 ON T1.key = T2.key AND T1.val = 3 and T2.val = 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -572,6 +586,9 @@ JOIN
 ) subq2 
 ON subq1.val = subq2.val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -679,6 +696,10 @@ FROM
 JOIN T3
 ON T3.key = T4.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Input: default@t3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

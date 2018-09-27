@@ -17,9 +17,13 @@ POSTHOOK: Lineage: count_case_groupby.key SIMPLE [(values__tmp__table__1)values_
 PREHOOK: query: explain vectorization expression
 SELECT key, COUNT(CASE WHEN bool THEN 1 WHEN NOT bool THEN 0 ELSE NULL END) AS cnt_bool0_ok FROM count_case_groupby GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@count_case_groupby
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 SELECT key, COUNT(CASE WHEN bool THEN 1 WHEN NOT bool THEN 0 ELSE NULL END) AS cnt_bool0_ok FROM count_case_groupby GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@count_case_groupby
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]

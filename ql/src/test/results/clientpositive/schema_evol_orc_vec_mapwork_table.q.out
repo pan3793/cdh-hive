@@ -145,9 +145,13 @@ _col0	_col1	_col2	_col3
 PREHOOK: query: explain
 select insert_num,a,b from table_add_int_permute_select order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_add_int_permute_select
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,a,b from table_add_int_permute_select order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_add_int_permute_select
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -404,9 +408,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,a,b from table_add_int_string_permute_select order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_add_int_string_permute_select
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,a,b from table_add_int_string_permute_select order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_add_int_string_permute_select
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -664,9 +672,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_string_group_double order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_string_group_double
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_string_group_double order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_string_group_double
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -814,9 +826,13 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,c5,b from table_change_date_group_string_group_timestamp order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_date_group_string_group_timestamp
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,c5,b from table_change_date_group_string_group_timestamp order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_date_group_string_group_timestamp
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -991,9 +1007,13 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,c5,b from table_change_date_group_string_group_date order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_date_group_string_group_date
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,c5,b from table_change_date_group_string_group_date order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_date_group_string_group_date
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1139,9 +1159,13 @@ _col0	_col1	_col2	_col3	_col4	_col5
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_string order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_string
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_string order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_string
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1288,9 +1312,13 @@ _col0	_col1	_col2	_col3	_col4	_col5
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_char order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_char order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1437,9 +1465,13 @@ _col0	_col1	_col2	_col3	_col4	_col5
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_char_trunc order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char_trunc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_char_trunc order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_char_trunc
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1586,9 +1618,13 @@ _col0	_col1	_col2	_col3	_col4	_col5
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_varchar order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_varchar order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1735,9 +1771,13 @@ _col0	_col1	_col2	_col3	_col4	_col5
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_varchar_trunc order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_numeric_group_string_group_multi_ints_varchar_trunc order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_multi_ints_varchar_trunc
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1882,9 +1922,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_string order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_floating_string
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_string order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_string
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2029,9 +2073,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_char order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_floating_char
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_char order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_char
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2176,9 +2224,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_char_trunc order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_floating_char_trunc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_char_trunc order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_char_trunc
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2323,9 +2375,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_varchar order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_varchar order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2470,9 +2526,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_varchar_trunc order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar_trunc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_numeric_group_string_group_floating_varchar_trunc order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_numeric_group_string_group_floating_varchar_trunc
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2619,9 +2679,13 @@ _col0	_col1	_col2	_col3	_col4	_col5
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_string_group_string_group_string order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_string_group_string_group_string
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_string_group_string_group_string order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_string_group_string_group_string
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2766,9 +2830,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_string_group_string_group_char order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_string_group_string_group_char
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_string_group_string_group_char order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_string_group_string_group_char
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2913,9 +2981,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_string_group_string_group_varchar order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_string_group_string_group_varchar
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_string_group_string_group_varchar order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_string_group_string_group_varchar
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -3066,9 +3138,13 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,c5,c6,b from table_change_lower_to_higher_numeric_group_tinyint order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_tinyint
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,c5,c6,b from table_change_lower_to_higher_numeric_group_tinyint order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_tinyint
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -3217,9 +3293,13 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,c5,b from table_change_lower_to_higher_numeric_group_smallint order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_smallint
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,c5,b from table_change_lower_to_higher_numeric_group_smallint order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_smallint
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -3366,9 +3446,13 @@ _col0	_col1	_col2	_col3	_col4	_col5
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_lower_to_higher_numeric_group_int order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_int
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,c4,b from table_change_lower_to_higher_numeric_group_int order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_int
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -3513,9 +3597,13 @@ _col0	_col1	_col2	_col3	_col4
 PREHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_lower_to_higher_numeric_group_bigint order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_bigint
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,c3,b from table_change_lower_to_higher_numeric_group_bigint order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_bigint
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -3658,9 +3746,13 @@ _col0	_col1	_col2	_col3
 PREHOOK: query: explain
 select insert_num,c1,c2,b from table_change_lower_to_higher_numeric_group_decimal order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_decimal
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,c2,b from table_change_lower_to_higher_numeric_group_decimal order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_decimal
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -3801,9 +3893,13 @@ _col0	_col1	_col2
 PREHOOK: query: explain
 select insert_num,c1,b from table_change_lower_to_higher_numeric_group_float order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table_change_lower_to_higher_numeric_group_float
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,c1,b from table_change_lower_to_higher_numeric_group_float order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table_change_lower_to_higher_numeric_group_float
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage

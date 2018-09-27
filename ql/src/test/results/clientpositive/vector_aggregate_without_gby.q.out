@@ -33,8 +33,12 @@ POSTHOOK: Lineage: testvec.greg_dt SIMPLE [(values__tmp__table__1)values__tmp__t
 POSTHOOK: Lineage: testvec.id EXPRESSION [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 PREHOOK: query: explain vectorization select max(dt), max(greg_dt) from testvec where id=5
 PREHOOK: type: QUERY
+PREHOOK: Input: default@testvec
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select max(dt), max(greg_dt) from testvec where id=5
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@testvec
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]

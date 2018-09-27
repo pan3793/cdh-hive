@@ -57,9 +57,17 @@ POSTHOOK: Output: default@part3
 PREHOOK: query: explain select *
 from part p1 join part2 p2 join part3 p3 on p1.p_name = p2_name and p2_name = p3_name
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part
+PREHOOK: Input: default@part2
+PREHOOK: Input: default@part3
+#### A masked pattern was here ####
 POSTHOOK: query: explain select *
 from part p1 join part2 p2 join part3 p3 on p1.p_name = p2_name and p2_name = p3_name
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part
+POSTHOOK: Input: default@part2
+POSTHOOK: Input: default@part3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -154,9 +162,17 @@ STAGE PLANS:
 PREHOOK: query: explain select *
 from part p1 join part2 p2 join part3 p3 on p2_name = p1.p_name and p3_name = p2_name
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part
+PREHOOK: Input: default@part2
+PREHOOK: Input: default@part3
+#### A masked pattern was here ####
 POSTHOOK: query: explain select *
 from part p1 join part2 p2 join part3 p3 on p2_name = p1.p_name and p3_name = p2_name
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part
+POSTHOOK: Input: default@part2
+POSTHOOK: Input: default@part3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -252,9 +268,17 @@ Warning: Shuffle Join JOIN[13][tables = [p1, p2]] in Work 'Reducer 2' is a cross
 PREHOOK: query: explain select *
 from part p1 join part2 p2 join part3 p3 on p2_partkey + p_partkey = p1.p_partkey and p3_name = p2_name
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part
+PREHOOK: Input: default@part2
+PREHOOK: Input: default@part3
+#### A masked pattern was here ####
 POSTHOOK: query: explain select *
 from part p1 join part2 p2 join part3 p3 on p2_partkey + p_partkey = p1.p_partkey and p3_name = p2_name
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part
+POSTHOOK: Input: default@part2
+POSTHOOK: Input: default@part3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -353,9 +377,17 @@ Warning: Shuffle Join JOIN[10][tables = [$hdt$_0, $hdt$_1]] in Work 'Reducer 2' 
 PREHOOK: query: explain select *
 from part p1 join part2 p2 join part3 p3 on p2_partkey = 1 and p3_name = p2_name
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part
+PREHOOK: Input: default@part2
+PREHOOK: Input: default@part3
+#### A masked pattern was here ####
 POSTHOOK: query: explain select *
 from part p1 join part2 p2 join part3 p3 on p2_partkey = 1 and p3_name = p2_name
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part
+POSTHOOK: Input: default@part2
+POSTHOOK: Input: default@part3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
