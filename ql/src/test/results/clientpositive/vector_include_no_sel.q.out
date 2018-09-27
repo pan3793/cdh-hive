@@ -168,11 +168,17 @@ select count(1) from customer_demographics,store_sales
 where ((customer_demographics.cd_demo_sk = store_sales.ss_cdemo_sk and customer_demographics.cd_marital_status = 'M') or
        (customer_demographics.cd_demo_sk = store_sales.ss_cdemo_sk and customer_demographics.cd_marital_status = 'U'))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@customer_demographics
+PREHOOK: Input: default@store_sales
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(1) from customer_demographics,store_sales
 where ((customer_demographics.cd_demo_sk = store_sales.ss_cdemo_sk and customer_demographics.cd_marital_status = 'M') or
        (customer_demographics.cd_demo_sk = store_sales.ss_cdemo_sk and customer_demographics.cd_marital_status = 'U'))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@customer_demographics
+POSTHOOK: Input: default@store_sales
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-2 depends on stages: Stage-5

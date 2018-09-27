@@ -19,11 +19,15 @@ select key, value, `grouping__id`, grouping(key), grouping(value)
 from T1
 group by rollup(key, value)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, `grouping__id`, grouping(key), grouping(value)
 from T1
 group by rollup(key, value)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -101,11 +105,15 @@ select key, value, `grouping__id`, grouping(key), grouping(value)
 from T1
 group by cube(key, value)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, `grouping__id`, grouping(key), grouping(value)
 from T1
 group by cube(key, value)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -189,12 +197,16 @@ from T1
 group by cube(key, value)
 having grouping(key) = 1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value
 from T1
 group by cube(key, value)
 having grouping(key) = 1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -278,6 +290,8 @@ group by cube(key, value)
 having grouping(key) = 1 OR grouping(value) = 1
 order by x desc, case when x = 1 then key end
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, grouping(key)+grouping(value) as x
 from T1
@@ -285,6 +299,8 @@ group by cube(key, value)
 having grouping(key) = 1 OR grouping(value) = 1
 order by x desc, case when x = 1 then key end
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -395,11 +411,15 @@ select key, value, `grouping__id`, grouping(key), grouping(value)
 from T1
 group by rollup(key, value)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, `grouping__id`, grouping(key), grouping(value)
 from T1
 group by rollup(key, value)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -477,11 +497,15 @@ select key, value, `grouping__id`, grouping(key), grouping(value)
 from T1
 group by cube(key, value)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, `grouping__id`, grouping(key), grouping(value)
 from T1
 group by cube(key, value)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -565,12 +589,16 @@ from T1
 group by cube(key, value)
 having grouping(key) = 1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value
 from T1
 group by cube(key, value)
 having grouping(key) = 1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -651,6 +679,8 @@ group by cube(key, value)
 having grouping(key) = 1 OR grouping(value) = 1
 order by x desc, case when x = 1 then key end
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, grouping(key)+grouping(value) as x
 from T1
@@ -658,6 +688,8 @@ group by cube(key, value)
 having grouping(key) = 1 OR grouping(value) = 1
 order by x desc, case when x = 1 then key end
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

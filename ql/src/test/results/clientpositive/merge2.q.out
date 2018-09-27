@@ -10,10 +10,14 @@ PREHOOK: query: explain
 insert overwrite table test1
 select key, count(1) from src group by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@test1
 POSTHOOK: query: explain
 insert overwrite table test1
 select key, count(1) from src group by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@test1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -495,9 +499,17 @@ POSTHOOK: Lineage: test_src PARTITION(ds=102).value SIMPLE [(src)src.FieldSchema
 PREHOOK: query: explain 
 insert overwrite table test1 select key from test_src
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_src
+PREHOOK: Input: default@test_src@ds=101
+PREHOOK: Input: default@test_src@ds=102
+PREHOOK: Output: default@test1
 POSTHOOK: query: explain 
 insert overwrite table test1 select key from test_src
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_src
+POSTHOOK: Input: default@test_src@ds=101
+POSTHOOK: Input: default@test_src@ds=102
+POSTHOOK: Output: default@test1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -596,9 +608,17 @@ POSTHOOK: Lineage: test1.key SIMPLE [(test_src)test_src.FieldSchema(name:key, ty
 PREHOOK: query: explain
 insert overwrite table test1 select key from test_src
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_src
+PREHOOK: Input: default@test_src@ds=101
+PREHOOK: Input: default@test_src@ds=102
+PREHOOK: Output: default@test1
 POSTHOOK: query: explain
 insert overwrite table test1 select key from test_src
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_src
+POSTHOOK: Input: default@test_src@ds=101
+POSTHOOK: Input: default@test_src@ds=102
+POSTHOOK: Output: default@test1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5

@@ -72,6 +72,8 @@ select
 
 	from t
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
 	date '2012-01-01' +          (-dt*dt) day,
@@ -80,6 +82,8 @@ select
 
 	from t
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

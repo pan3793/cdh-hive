@@ -13,8 +13,12 @@ Possible options for the character set are 'US-ASCII', 'ISO-8859-1',
 is null, the result will also be null
 PREHOOK: query: explain select decode(binary('TestDecode1'), 'UTF-8')
 PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
 POSTHOOK: query: explain select decode(binary('TestDecode1'), 'UTF-8')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

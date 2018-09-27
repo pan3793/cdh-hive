@@ -65,8 +65,14 @@ POSTHOOK: Input: default@default__temp_temp_index__@foo=bar
 #### A masked pattern was here ####
 PREHOOK: query: EXPLAIN SELECT * FROM temp WHERE key  = 86 AND foo = 'bar'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@temp
+PREHOOK: Input: default@temp@foo=bar
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM temp WHERE key  = 86 AND foo = 'bar'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@temp
+POSTHOOK: Input: default@temp@foo=bar
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

@@ -41,6 +41,9 @@ FROM (
 insert overwrite table outputTbl1 select *
 insert overwrite table outputTbl2 select *
 PREHOOK: type: QUERY
+PREHOOK: Input: default@inputtbl1
+PREHOOK: Output: default@outputtbl1
+PREHOOK: Output: default@outputtbl2
 POSTHOOK: query: explain
 FROM (
   select * from(
@@ -52,6 +55,9 @@ FROM (
 insert overwrite table outputTbl1 select *
 insert overwrite table outputTbl2 select *
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@inputtbl1
+POSTHOOK: Output: default@outputtbl1
+POSTHOOK: Output: default@outputtbl2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-0 depends on stages: Stage-2
@@ -249,6 +255,8 @@ select avg(c) from(
   SELECT count(1) as c from src
 )subq
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select avg(c) from(
   SELECT count(1)-200 as c from src
@@ -256,6 +264,8 @@ select avg(c) from(
   SELECT count(1) as c from src
 )subq
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -383,6 +393,8 @@ select key, avg(c) over w from(
 )subq group by key, c
 WINDOW w AS (PARTITION BY key ORDER BY c ROWS UNBOUNDED PRECEDING)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, avg(c) over w from(
   SELECT key, count(1)*2 as c from src group by key
@@ -391,6 +403,8 @@ select key, avg(c) over w from(
 )subq group by key, c
 WINDOW w AS (PARTITION BY key ORDER BY c ROWS UNBOUNDED PRECEDING)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

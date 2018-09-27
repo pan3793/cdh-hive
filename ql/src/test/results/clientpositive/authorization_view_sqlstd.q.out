@@ -74,8 +74,14 @@ POSTHOOK: type: SHOW_GRANT
 default	vt1			user3	USER	INSERT	false	-1	user1
 PREHOOK: query: explain authorization select * from vt1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@vt1
+#### A masked pattern was here ####
 POSTHOOK: query: explain authorization select * from vt1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@vt1
+#### A masked pattern was here ####
 INPUTS: 
   default@vt1
   default@t1

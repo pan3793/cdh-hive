@@ -17,9 +17,13 @@ POSTHOOK: Output: default@t1
 PREHOOK: query: EXPLAIN
 SELECT a, b, count(*) from T1 group by a, b with cube
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT a, b, count(*) from T1 group by a, b with cube
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -101,9 +105,13 @@ STAGE PLANS:
 PREHOOK: query: EXPLAIN
 SELECT a, b, count(*) from T1 group by cube(a, b)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT a, b, count(*) from T1 group by cube(a, b)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -208,9 +216,13 @@ NULL	3	1
 PREHOOK: query: EXPLAIN
 SELECT a, b, sum(c) from T1 group by a, b with cube
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT a, b, sum(c) from T1 group by a, b with cube
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -337,9 +349,13 @@ POSTHOOK: Lineage: t2.d EXPRESSION [(t1)t1.FieldSchema(name:c, type:string, comm
 PREHOOK: query: EXPLAIN
 SELECT a, b, sum(c+d) from T2 group by a, b with cube
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT a, b, sum(c+d) from T2 group by a, b with cube
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

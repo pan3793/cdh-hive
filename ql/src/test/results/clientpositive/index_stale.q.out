@@ -46,8 +46,12 @@ POSTHOOK: Lineage: temp.key SIMPLE [(src)src.FieldSchema(name:key, type:string, 
 POSTHOOK: Lineage: temp.val SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 PREHOOK: query: EXPLAIN SELECT * FROM temp WHERE key  = 86
 PREHOOK: type: QUERY
+PREHOOK: Input: default@temp
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM temp WHERE key  = 86
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@temp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

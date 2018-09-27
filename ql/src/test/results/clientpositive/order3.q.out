@@ -23,8 +23,12 @@ POSTHOOK: Lineage: test.value1 EXPRESSION [(values__tmp__table__1)values__tmp__t
 POSTHOOK: Lineage: test.value2 SIMPLE [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col3, type:string, comment:), ]
 PREHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY FROM TEST T1 GROUP BY T1.KEY ORDER BY T1.KEY LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY FROM TEST T1 GROUP BY T1.KEY ORDER BY T1.KEY LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -109,8 +113,12 @@ POSTHOOK: Input: default@test
 3
 PREHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY, MAX(T1.VALUE1) AS MYVALUE1 FROM TEST T1 GROUP BY T1.KEY ORDER BY T1.KEY LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY, MAX(T1.VALUE1) AS MYVALUE1 FROM TEST T1 GROUP BY T1.KEY ORDER BY T1.KEY LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -199,8 +207,12 @@ POSTHOOK: Input: default@test
 3	3
 PREHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY, COUNT(T1.VALUE1) AS MYVALUE1, 'AAA' AS C FROM TEST T1 GROUP BY T1.KEY, 'AAA' ORDER BY T1.KEY, 'AAA' LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY, COUNT(T1.VALUE1) AS MYVALUE1, 'AAA' AS C FROM TEST T1 GROUP BY T1.KEY, 'AAA' ORDER BY T1.KEY, 'AAA' LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -289,8 +301,12 @@ POSTHOOK: Input: default@test
 3	6	AAA
 PREHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY FROM TEST T1 GROUP BY T1.KEY ORDER BY T1.KEY LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY FROM TEST T1 GROUP BY T1.KEY ORDER BY T1.KEY LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -375,8 +391,12 @@ POSTHOOK: Input: default@test
 3
 PREHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY, MAX(T1.VALUE1) AS MYVALUE1 FROM TEST T1 GROUP BY T1.KEY ORDER BY T1.KEY LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY, MAX(T1.VALUE1) AS MYVALUE1 FROM TEST T1 GROUP BY T1.KEY ORDER BY T1.KEY LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -465,8 +485,12 @@ POSTHOOK: Input: default@test
 3	3
 PREHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY, COUNT(T1.VALUE1) AS MYVALUE1, 'AAA' AS C FROM TEST T1 GROUP BY T1.KEY, 'AAA' ORDER BY T1.KEY, 'AAA' LIMIT 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT T1.KEY AS MYKEY, COUNT(T1.VALUE1) AS MYVALUE1, 'AAA' AS C FROM TEST T1 GROUP BY T1.KEY, 'AAA' ORDER BY T1.KEY, 'AAA' LIMIT 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

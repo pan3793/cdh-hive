@@ -32,6 +32,8 @@ select a.key as key, cast(b.val as bigint) as `values`
 FROM inputTbl1 a join inputTbl1 b on a.key=b.key
 )c
 PREHOOK: type: QUERY
+PREHOOK: Input: default@inputtbl1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: explain
 insert overwrite table outputTbl1
 SELECT * FROM
@@ -42,6 +44,8 @@ select a.key as key, cast(b.val as bigint) as `values`
 FROM inputTbl1 a join inputTbl1 b on a.key=b.key
 )c
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@inputtbl1
+POSTHOOK: Output: default@outputtbl1
 STAGE DEPENDENCIES:
   Stage-7 is a root stage
   Stage-1 depends on stages: Stage-7

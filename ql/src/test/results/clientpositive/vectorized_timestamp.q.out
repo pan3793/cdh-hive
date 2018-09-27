@@ -20,9 +20,13 @@ POSTHOOK: Lineage: test.ts EXPRESSION [(values__tmp__table__1)values__tmp__table
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT ts FROM test
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT ts FROM test
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -69,9 +73,13 @@ POSTHOOK: Input: default@test
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT MIN(ts), MAX(ts), MAX(ts) - MIN(ts) FROM test
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT MIN(ts), MAX(ts), MAX(ts) - MIN(ts) FROM test
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -144,9 +152,13 @@ POSTHOOK: Input: default@test
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT ts FROM test WHERE ts IN (timestamp '0001-01-01 00:00:00.000000000', timestamp '0002-02-02 00:00:00.000000000')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT ts FROM test WHERE ts IN (timestamp '0001-01-01 00:00:00.000000000', timestamp '0002-02-02 00:00:00.000000000')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -195,9 +207,13 @@ POSTHOOK: Input: default@test
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT ts FROM test
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT ts FROM test
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -263,9 +279,13 @@ POSTHOOK: Input: default@test
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT MIN(ts), MAX(ts), MAX(ts) - MIN(ts) FROM test
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT MIN(ts), MAX(ts), MAX(ts) - MIN(ts) FROM test
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -365,9 +385,13 @@ POSTHOOK: Input: default@test
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT ts FROM test WHERE ts IN (timestamp '0001-01-01 00:00:00.000000000', timestamp '0002-02-02 00:00:00.000000000')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT ts FROM test WHERE ts IN (timestamp '0001-01-01 00:00:00.000000000', timestamp '0002-02-02 00:00:00.000000000')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]

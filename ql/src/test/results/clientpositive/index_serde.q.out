@@ -108,8 +108,14 @@ POSTHOOK: Lineage: default__doctors_doctors_index__._offsets EXPRESSION [(doctor
 POSTHOOK: Lineage: default__doctors_doctors_index__.number SIMPLE [(doctors)doctors.FieldSchema(name:number, type:int, comment:Order of playing the role), ]
 PREHOOK: query: EXPLAIN SELECT * FROM doctors WHERE number > 6
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__doctors_doctors_index__
+PREHOOK: Input: default@doctors
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM doctors WHERE number > 6
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__doctors_doctors_index__
+POSTHOOK: Input: default@doctors
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-8 depends on stages: Stage-3 , consists of Stage-5, Stage-4, Stage-6

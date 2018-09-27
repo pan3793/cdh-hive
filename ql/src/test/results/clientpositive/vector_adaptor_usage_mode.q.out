@@ -127,6 +127,8 @@ select
   (c2 regexp 'val') = (c4 regexp 'val')
 from varchar_udf_1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 select
   c2 regexp 'val',
@@ -134,6 +136,8 @@ select
   (c2 regexp 'val') = (c4 regexp 'val')
 from varchar_udf_1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -192,6 +196,8 @@ select
   regexp_extract(c2, 'val_([0-9]+)', 1) = regexp_extract(c4, 'val_([0-9]+)', 1)
 from varchar_udf_1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 select
   regexp_extract(c2, 'val_([0-9]+)', 1),
@@ -199,6 +205,8 @@ select
   regexp_extract(c2, 'val_([0-9]+)', 1) = regexp_extract(c4, 'val_([0-9]+)', 1)
 from varchar_udf_1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -257,6 +265,8 @@ select
   regexp_replace(c2, 'val', 'replaced') = regexp_replace(c4, 'val', 'replaced')
 from varchar_udf_1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 select
   regexp_replace(c2, 'val', 'replaced'),
@@ -264,6 +274,8 @@ select
   regexp_replace(c2, 'val', 'replaced') = regexp_replace(c4, 'val', 'replaced')
 from varchar_udf_1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -322,6 +334,8 @@ select
   (c2 regexp 'val') = (c4 regexp 'val')
 from varchar_udf_1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 select
   c2 regexp 'val',
@@ -329,6 +343,8 @@ select
   (c2 regexp 'val') = (c4 regexp 'val')
 from varchar_udf_1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -387,6 +403,8 @@ select
   regexp_extract(c2, 'val_([0-9]+)', 1) = regexp_extract(c4, 'val_([0-9]+)', 1)
 from varchar_udf_1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 select
   regexp_extract(c2, 'val_([0-9]+)', 1),
@@ -394,6 +412,8 @@ select
   regexp_extract(c2, 'val_([0-9]+)', 1) = regexp_extract(c4, 'val_([0-9]+)', 1)
 from varchar_udf_1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -452,6 +472,8 @@ select
   regexp_replace(c2, 'val', 'replaced') = regexp_replace(c4, 'val', 'replaced')
 from varchar_udf_1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 select
   regexp_replace(c2, 'val', 'replaced'),
@@ -459,6 +481,8 @@ select
   regexp_replace(c2, 'val', 'replaced') = regexp_replace(c4, 'val', 'replaced')
 from varchar_udf_1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_udf_1
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -512,8 +536,12 @@ NULL	NULL	NULL
 replaced_238	replaced_238	true
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION  SELECT POWER(key, 2) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION  SELECT POWER(key, 2) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -601,6 +629,8 @@ SELECT
   log10(key), sqrt(key)
 FROM DECIMAL_UDF WHERE key = 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT
   exp(key), ln(key),
@@ -608,6 +638,8 @@ SELECT
   log10(key), sqrt(key)
 FROM DECIMAL_UDF WHERE key = 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -663,8 +695,12 @@ POSTHOOK: Input: default@decimal_udf
 22026.465794806718	2.302585092994046	2.302585092994046	1.0	1.0	1.0	1.0	3.1622776601683795
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION  SELECT POWER(key, 2) FROM DECIMAL_UDF
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION  SELECT POWER(key, 2) FROM DECIMAL_UDF
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -752,6 +788,8 @@ SELECT
   log10(key), sqrt(key)
 FROM DECIMAL_UDF WHERE key = 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT
   exp(key), ln(key),
@@ -759,6 +797,8 @@ SELECT
   log10(key), sqrt(key)
 FROM DECIMAL_UDF WHERE key = 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -815,9 +855,13 @@ POSTHOOK: Input: default@decimal_udf
 PREHOOK: query: explain vectorization expression
 SELECT key, COUNT(CASE WHEN bool THEN 1 WHEN NOT bool THEN 0 ELSE NULL END) AS cnt_bool0_ok FROM count_case_groupby GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@count_case_groupby
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 SELECT key, COUNT(CASE WHEN bool THEN 1 WHEN NOT bool THEN 0 ELSE NULL END) AS cnt_bool0_ok FROM count_case_groupby GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@count_case_groupby
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -895,9 +939,13 @@ key5	0
 PREHOOK: query: explain vectorization expression
 SELECT key, COUNT(CASE WHEN bool THEN 1 WHEN NOT bool THEN 0 ELSE NULL END) AS cnt_bool0_ok FROM count_case_groupby GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@count_case_groupby
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization expression
 SELECT key, COUNT(CASE WHEN bool THEN 1 WHEN NOT bool THEN 0 ELSE NULL END) AS cnt_bool0_ok FROM count_case_groupby GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@count_case_groupby
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]

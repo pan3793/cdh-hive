@@ -22,10 +22,14 @@ PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 FROM srcorc
 INSERT OVERWRITE TABLE dest1 SELECT DISTINCT substr(srcorc.value,5,1)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcorc
+PREHOOK: Output: default@dest1
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 FROM srcorc
 INSERT OVERWRITE TABLE dest1 SELECT DISTINCT substr(srcorc.value,5,1)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcorc
+POSTHOOK: Output: default@dest1
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]

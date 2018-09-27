@@ -59,6 +59,11 @@ FROM test_table1 a JOIN test_table2 b
 ON a.key = b.key WHERE a.ds = '1' and b.ds = '1'
 and (a.key = 0 or a.key = 5)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT a.key, concat(a.value, b.value) 
@@ -66,6 +71,11 @@ FROM test_table1 a JOIN test_table2 b
 ON a.key = b.key WHERE a.ds = '1' and b.ds = '1'
 and (a.key = 0 or a.key = 5)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -189,6 +199,11 @@ JOIN
 (select key, value from test_table2 where ds = '1' and (key = 0 or key = 5)) b 
 ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT a.key, concat(a.value, b.value) 
@@ -198,6 +213,11 @@ JOIN
 (select key, value from test_table2 where ds = '1' and (key = 0 or key = 5)) b 
 ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -326,6 +346,11 @@ JOIN
 ON a.key = b.key
 WHERE a.key = 0 or a.key = 5
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_table1
+PREHOOK: Input: default@test_table1@ds=1
+PREHOOK: Input: default@test_table2
+PREHOOK: Input: default@test_table2@ds=1
+PREHOOK: Output: default@test_table3@ds=1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE test_table3 PARTITION (ds = '1')
 SELECT a.key, concat(a.value, b.value) 
@@ -336,6 +361,11 @@ JOIN
 ON a.key = b.key
 WHERE a.key = 0 or a.key = 5
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_table1
+POSTHOOK: Input: default@test_table1@ds=1
+POSTHOOK: Input: default@test_table2
+POSTHOOK: Input: default@test_table2@ds=1
+POSTHOOK: Output: default@test_table3@ds=1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

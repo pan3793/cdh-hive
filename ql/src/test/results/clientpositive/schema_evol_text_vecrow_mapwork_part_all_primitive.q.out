@@ -98,9 +98,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,b from part_change_various_various_boolean order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_boolean
+PREHOOK: Input: default@part_change_various_various_boolean@part=1
+PREHOOK: Input: default@part_change_various_various_boolean@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,b from part_change_various_various_boolean order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_boolean
+POSTHOOK: Input: default@part_change_various_various_boolean@part=1
+POSTHOOK: Input: default@part_change_various_various_boolean@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -278,9 +286,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_tinyint order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_tinyint
+PREHOOK: Input: default@part_change_various_various_tinyint@part=1
+PREHOOK: Input: default@part_change_various_various_tinyint@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_tinyint order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_tinyint
+POSTHOOK: Input: default@part_change_various_various_tinyint@part=1
+POSTHOOK: Input: default@part_change_various_various_tinyint@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -459,9 +475,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_smallint order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_smallint
+PREHOOK: Input: default@part_change_various_various_smallint@part=1
+PREHOOK: Input: default@part_change_various_various_smallint@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_smallint order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_smallint
+POSTHOOK: Input: default@part_change_various_various_smallint@part=1
+POSTHOOK: Input: default@part_change_various_various_smallint@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -640,9 +664,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_int order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_int
+PREHOOK: Input: default@part_change_various_various_int@part=1
+PREHOOK: Input: default@part_change_various_various_int@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_int order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_int
+POSTHOOK: Input: default@part_change_various_various_int@part=1
+POSTHOOK: Input: default@part_change_various_various_int@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -821,9 +853,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_bigint order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_bigint
+PREHOOK: Input: default@part_change_various_various_bigint@part=1
+PREHOOK: Input: default@part_change_various_various_bigint@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_bigint order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_bigint
+POSTHOOK: Input: default@part_change_various_various_bigint@part=1
+POSTHOOK: Input: default@part_change_various_various_bigint@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1002,9 +1042,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_float order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_float
+PREHOOK: Input: default@part_change_various_various_float@part=1
+PREHOOK: Input: default@part_change_various_various_float@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_float order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_float
+POSTHOOK: Input: default@part_change_various_various_float@part=1
+POSTHOOK: Input: default@part_change_various_various_float@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1183,9 +1231,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_double order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_double
+PREHOOK: Input: default@part_change_various_various_double@part=1
+PREHOOK: Input: default@part_change_various_various_double@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_double order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_double
+POSTHOOK: Input: default@part_change_various_various_double@part=1
+POSTHOOK: Input: default@part_change_various_various_double@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1364,9 +1420,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_decimal order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_decimal
+PREHOOK: Input: default@part_change_various_various_decimal@part=1
+PREHOOK: Input: default@part_change_various_various_decimal@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,b from part_change_various_various_decimal order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_decimal
+POSTHOOK: Input: default@part_change_various_various_decimal@part=1
+POSTHOOK: Input: default@part_change_various_various_decimal@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1551,9 +1615,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_string order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_string
+PREHOOK: Input: default@part_change_various_various_string@part=1
+PREHOOK: Input: default@part_change_various_various_string@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_string order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_string
+POSTHOOK: Input: default@part_change_various_various_string@part=1
+POSTHOOK: Input: default@part_change_various_various_string@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1738,9 +1810,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_char order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_char
+PREHOOK: Input: default@part_change_various_various_char@part=1
+PREHOOK: Input: default@part_change_various_various_char@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_char order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_char
+POSTHOOK: Input: default@part_change_various_various_char@part=1
+POSTHOOK: Input: default@part_change_various_various_char@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -1925,9 +2005,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_char_trunc order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_char_trunc
+PREHOOK: Input: default@part_change_various_various_char_trunc@part=1
+PREHOOK: Input: default@part_change_various_various_char_trunc@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_char_trunc order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_char_trunc
+POSTHOOK: Input: default@part_change_various_various_char_trunc@part=1
+POSTHOOK: Input: default@part_change_various_various_char_trunc@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2112,9 +2200,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_varchar order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_varchar
+PREHOOK: Input: default@part_change_various_various_varchar@part=1
+PREHOOK: Input: default@part_change_various_various_varchar@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_varchar order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_varchar
+POSTHOOK: Input: default@part_change_various_various_varchar@part=1
+POSTHOOK: Input: default@part_change_various_various_varchar@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2299,9 +2395,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_varchar_trunc order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_varchar_trunc
+PREHOOK: Input: default@part_change_various_various_varchar_trunc@part=1
+PREHOOK: Input: default@part_change_various_various_varchar_trunc@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,b from part_change_various_various_varchar_trunc order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_varchar_trunc
+POSTHOOK: Input: default@part_change_various_various_varchar_trunc@part=1
+POSTHOOK: Input: default@part_change_various_various_varchar_trunc@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2483,9 +2587,17 @@ _col0	_col1	_col2	_col3	_col4	_col5	_col6	_col7	_col8	_col9	_col10	_col11	_col12
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,b from part_change_various_various_timestamp order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_timestamp
+PREHOOK: Input: default@part_change_various_various_timestamp@part=1
+PREHOOK: Input: default@part_change_various_various_timestamp@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,b from part_change_various_various_timestamp order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_timestamp
+POSTHOOK: Input: default@part_change_various_various_timestamp@part=1
+POSTHOOK: Input: default@part_change_various_various_timestamp@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2640,9 +2752,17 @@ _col0	_col1	_col2	_col3	_col4	_col5
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,b from part_change_various_various_date order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_various_various_date
+PREHOOK: Input: default@part_change_various_various_date@part=1
+PREHOOK: Input: default@part_change_various_various_date@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,b from part_change_various_various_date order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_various_various_date
+POSTHOOK: Input: default@part_change_various_various_date@part=1
+POSTHOOK: Input: default@part_change_various_various_date@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -2897,9 +3017,17 @@ same_type1_c_txt.insert_num	same_type1_c_txt.c1	same_type1_c_txt.c2	same_type1_c
 PREHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,b from part_change_same_type_different_params order by insert_num
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_change_same_type_different_params
+PREHOOK: Input: default@part_change_same_type_different_params@part=1
+PREHOOK: Input: default@part_change_same_type_different_params@part=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select insert_num,part,c1,c2,c3,c4,c5,c6,b from part_change_same_type_different_params order by insert_num
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_change_same_type_different_params
+POSTHOOK: Input: default@part_change_same_type_different_params@part=1
+POSTHOOK: Input: default@part_change_same_type_different_params@part=2
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage

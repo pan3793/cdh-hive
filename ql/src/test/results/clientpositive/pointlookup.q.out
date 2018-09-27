@@ -14,6 +14,8 @@ WHERE
     (key = '9'  AND value = 'val_9') OR
     (key = '10' AND value = 'val_10'))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT key
 FROM src
@@ -30,6 +32,8 @@ WHERE
     (key = '9'  AND value = 'val_9') OR
     (key = '10' AND value = 'val_10'))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -117,6 +121,8 @@ WHERE
     (key = '9'  AND value = 'val_9') OR
     (key = '10' AND value = 'val_10'))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT key
 FROM src
@@ -133,6 +139,8 @@ WHERE
     (key = '9'  AND value = 'val_9') OR
     (key = '10' AND value = 'val_10'))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -220,6 +228,8 @@ WHERE
     (key = '9'  AND value = 'val_9') OR
     (key = '10' AND value = 'val_10'))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT key
 FROM src
@@ -236,6 +246,8 @@ WHERE
     (key = '9'  AND value = 'val_9') OR
     (key = '10' AND value = 'val_10'))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

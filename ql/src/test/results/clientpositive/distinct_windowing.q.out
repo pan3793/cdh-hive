@@ -47,9 +47,13 @@ POSTHOOK: Output: default@over10k
 PREHOOK: query: explain
 select distinct first_value(t) over ( partition by si order by i ) from over10k limit 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@over10k
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select distinct first_value(t) over ( partition by si order by i ) from over10k limit 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@over10k
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -164,10 +168,14 @@ PREHOOK: query: explain
 select distinct last_value(i) over ( partition by si order by i )
 from over10k limit 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@over10k
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select distinct last_value(i) over ( partition by si order by i )
 from over10k limit 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@over10k
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -284,11 +292,15 @@ select distinct last_value(i) over ( partition by si order by i ),
                 first_value(t)  over ( partition by si order by i )
 from over10k limit 50
 PREHOOK: type: QUERY
+PREHOOK: Input: default@over10k
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select distinct last_value(i) over ( partition by si order by i ),
                 first_value(t)  over ( partition by si order by i )
 from over10k limit 50
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@over10k
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

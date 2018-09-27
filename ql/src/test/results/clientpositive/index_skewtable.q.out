@@ -63,8 +63,14 @@ POSTHOOK: Lineage: default__kv_kv_index__._offsets EXPRESSION [(kv)kv.FieldSchem
 POSTHOOK: Lineage: default__kv_kv_index__.value SIMPLE [(kv)kv.FieldSchema(name:value, type:string, comment:null), ]
 PREHOOK: query: EXPLAIN SELECT * FROM kv WHERE value > '15' ORDER BY value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__kv_kv_index__
+PREHOOK: Input: default@kv
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM kv WHERE value > '15' ORDER BY value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__kv_kv_index__
+POSTHOOK: Input: default@kv
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-8 depends on stages: Stage-3 , consists of Stage-5, Stage-4, Stage-6

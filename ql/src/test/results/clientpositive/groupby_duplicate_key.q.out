@@ -1,9 +1,13 @@
 PREHOOK: query: explain
 select distinct key, "" as dummy1, "" as dummy2 from src tablesample (10 rows)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select distinct key, "" as dummy1, "" as dummy2 from src tablesample (10 rows)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -76,10 +80,16 @@ PREHOOK: query: explain
 create table dummy as
 select distinct key, "X" as dummy1, "X" as dummy2 from src tablesample (10 rows)
 PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: default@src
+PREHOOK: Output: database:default
+PREHOOK: Output: default@dummy
 POSTHOOK: query: explain
 create table dummy as
 select distinct key, "X" as dummy1, "X" as dummy2 from src tablesample (10 rows)
 POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: default@src
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@dummy
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -181,9 +191,13 @@ POSTHOOK: Input: default@dummy
 PREHOOK: query: explain
 select max('pants'), max('pANTS') from src group by key limit 1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select max('pants'), max('pANTS') from src group by key limit 1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

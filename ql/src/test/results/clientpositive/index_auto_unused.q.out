@@ -18,8 +18,12 @@ POSTHOOK: Lineage: default__src_src_index__._offsets EXPRESSION [(src)src.FieldS
 POSTHOOK: Lineage: default__src_src_index__.key SIMPLE [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 PREHOOK: query: EXPLAIN SELECT * FROM src WHERE key > 80 AND key < 100
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM src WHERE key > 80 AND key < 100
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -82,8 +86,12 @@ POSTHOOK: Input: default@src
 98	val_98
 PREHOOK: query: EXPLAIN SELECT * FROM src WHERE key > 80 AND key < 100
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM src WHERE key > 80 AND key < 100
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -146,8 +154,12 @@ POSTHOOK: Input: default@src
 98	val_98
 PREHOOK: query: EXPLAIN SELECT * FROM src WHERE key < 10 OR key > 480
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM src WHERE key < 10 OR key > 480
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -247,8 +259,12 @@ POSTHOOK: Lineage: default__src_src_val_index__._offsets EXPRESSION [(src)src.Fi
 POSTHOOK: Lineage: default__src_src_val_index__.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 PREHOOK: query: EXPLAIN SELECT * FROM src WHERE key > 80 AND key < 100
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM src WHERE key > 80 AND key < 100
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -337,8 +353,14 @@ POSTHOOK: Lineage: default__srcpart_src_part_index__ PARTITION(ds=2008-04-08,hr=
 POSTHOOK: Lineage: default__srcpart_src_part_index__ PARTITION(ds=2008-04-08,hr=11).key SIMPLE [(srcpart)srcpart.FieldSchema(name:key, type:string, comment:default), ]
 PREHOOK: query: EXPLAIN SELECT * FROM srcpart WHERE ds='2008-04-09' AND hr=12 AND key < 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM srcpart WHERE ds='2008-04-09' AND hr=12 AND key < 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

@@ -77,9 +77,17 @@ Storage Desc Params:
 PREHOOK: query: explain
 analyze table analyze_srcpart_partial_scan PARTITION(ds='2008-04-08',hr=11) compute statistics partialscan
 PREHOOK: type: QUERY
+PREHOOK: Input: default@analyze_srcpart_partial_scan
+PREHOOK: Input: default@analyze_srcpart_partial_scan@ds=2008-04-08/hr=11
+PREHOOK: Output: default@analyze_srcpart_partial_scan
+PREHOOK: Output: default@analyze_srcpart_partial_scan@ds=2008-04-08/hr=11
 POSTHOOK: query: explain
 analyze table analyze_srcpart_partial_scan PARTITION(ds='2008-04-08',hr=11) compute statistics partialscan
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@analyze_srcpart_partial_scan
+POSTHOOK: Input: default@analyze_srcpart_partial_scan@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@analyze_srcpart_partial_scan
+POSTHOOK: Output: default@analyze_srcpart_partial_scan@ds=2008-04-08/hr=11
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-1 depends on stages: Stage-0, Stage-2

@@ -51,11 +51,15 @@ PREHOOK: query: explain vectorization select *
   where cint = 528534767
   limit 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select *
   from alltypes_parquet
   where cint = 528534767
   limit 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -137,6 +141,8 @@ PREHOOK: query: explain vectorization select ctinyint,
   from alltypes_parquet
   group by ctinyint
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select ctinyint,
   max(cint),
   min(csmallint),
@@ -146,6 +152,8 @@ POSTHOOK: query: explain vectorization select ctinyint,
   from alltypes_parquet
   group by ctinyint
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -366,11 +374,15 @@ PREHOOK: query: explain vectorization select *
   where cint = 528534767
   limit 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select *
   from alltypes_parquet
   where cint = 528534767
   limit 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -447,6 +459,8 @@ PREHOOK: query: explain vectorization select ctinyint,
   from alltypes_parquet
   group by ctinyint
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select ctinyint,
   max(cint),
   min(csmallint),
@@ -456,6 +470,8 @@ POSTHOOK: query: explain vectorization select ctinyint,
   from alltypes_parquet
   group by ctinyint
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -671,11 +687,15 @@ PREHOOK: query: explain vectorization select *
   where cint = 528534767
   limit 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select *
   from alltypes_parquet
   where cint = 528534767
   limit 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -757,6 +777,8 @@ PREHOOK: query: explain vectorization select ctinyint,
   from alltypes_parquet
   group by ctinyint
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select ctinyint,
   max(cint),
   min(csmallint),
@@ -766,6 +788,8 @@ POSTHOOK: query: explain vectorization select ctinyint,
   from alltypes_parquet
   group by ctinyint
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -1034,11 +1058,15 @@ PREHOOK: query: explain vectorization select *
   where cint = 528534767
   limit 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select *
   from alltypes_orc
   where cint = 528534767
   limit 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_orc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -1115,6 +1143,8 @@ PREHOOK: query: explain vectorization select ctinyint,
   from alltypes_orc
   group by ctinyint
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select ctinyint,
   max(cint),
   min(csmallint),
@@ -1124,6 +1154,8 @@ POSTHOOK: query: explain vectorization select ctinyint,
   from alltypes_orc
   group by ctinyint
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_orc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -1354,8 +1386,12 @@ POSTHOOK: Lineage: orctbl.t1 EXPRESSION [(values__tmp__table__1)values__tmp__tab
 POSTHOOK: Lineage: orctbl.t2 EXPRESSION [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col2, type:string, comment:), ]
 PREHOOK: query: explain vectorization select t1, t2, (t1+t2) from orcTbl where (t1+t2) > 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@orctbl
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization select t1, t2, (t1+t2) from orcTbl where (t1+t2) > 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@orctbl
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -1430,8 +1466,12 @@ POSTHOOK: Lineage: parquettbl.t1 EXPRESSION [(values__tmp__table__2)values__tmp_
 POSTHOOK: Lineage: parquettbl.t2 EXPRESSION [(values__tmp__table__2)values__tmp__table__2.FieldSchema(name:tmp_values_col2, type:string, comment:), ]
 PREHOOK: query: explain vectorization SELECT t1, t2, (t1 + t2) FROM parquetTbl WHERE (t1 + t2) > 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@parquettbl
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization SELECT t1, t2, (t1 + t2) FROM parquetTbl WHERE (t1 + t2) > 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@parquettbl
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
