@@ -16,8 +16,12 @@ Example:
   '902fbdd2b1df0c4f70b4a5d23525e932'
 PREHOOK: query: explain select md5('ABC')
 PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
 POSTHOOK: query: explain select md5('ABC')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

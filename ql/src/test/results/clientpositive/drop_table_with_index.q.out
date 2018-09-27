@@ -99,10 +99,14 @@ PREHOOK: query: explain select l_shipdate, count(l_shipdate)
 from aa
 group by l_shipdate
 PREHOOK: type: QUERY
+PREHOOK: Input: default@aa
+#### A masked pattern was here ####
 POSTHOOK: query: explain select l_shipdate, count(l_shipdate)
 from aa
 group by l_shipdate
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@aa
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

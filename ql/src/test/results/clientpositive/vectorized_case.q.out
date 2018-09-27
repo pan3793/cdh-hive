@@ -16,6 +16,8 @@ where csmallint = 418
 or csmallint = 12205
 or csmallint = 10583
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization detail
 select 
   csmallint,
@@ -34,6 +36,8 @@ where csmallint = 418
 or csmallint = 12205
 or csmallint = 10583
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -160,6 +164,8 @@ where csmallint = 418
 or csmallint = 12205
 or csmallint = 10583
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization detail
 select 
   csmallint,
@@ -178,6 +184,8 @@ where csmallint = 418
 or csmallint = 12205
 or csmallint = 10583
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]

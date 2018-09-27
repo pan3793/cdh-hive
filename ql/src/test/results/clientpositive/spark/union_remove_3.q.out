@@ -33,6 +33,8 @@ FROM (
   SELECT key, 3 as `values` from inputTbl1
 ) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@inputtbl1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: explain
 insert overwrite table outputTbl1
 SELECT *
@@ -44,6 +46,8 @@ FROM (
   SELECT key, 3 as `values` from inputTbl1
 ) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@inputtbl1
+POSTHOOK: Output: default@outputtbl1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

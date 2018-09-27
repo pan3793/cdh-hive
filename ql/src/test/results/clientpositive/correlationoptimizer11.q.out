@@ -37,6 +37,10 @@ WHERE x.partitionId = 1 AND
       y.partitionId = 2
 GROUP BY x.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_table
+PREHOOK: Input: default@part_table@partitionid=1
+PREHOOK: Input: default@part_table@partitionid=2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT x.key AS key, count(1) AS cnt
 FROM part_table x JOIN part_table y ON (x.key = y.key)
@@ -44,6 +48,10 @@ WHERE x.partitionId = 1 AND
       y.partitionId = 2
 GROUP BY x.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_table
+POSTHOOK: Input: default@part_table@partitionid=1
+POSTHOOK: Input: default@part_table@partitionid=2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -166,6 +174,10 @@ WHERE x.partitionId = 1 AND
       y.partitionId = 2
 GROUP BY x.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_table
+PREHOOK: Input: default@part_table@partitionid=1
+PREHOOK: Input: default@part_table@partitionid=2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT x.key AS key, count(1) AS cnt
 FROM part_table x JOIN part_table y ON (x.key = y.key)
@@ -173,6 +185,10 @@ WHERE x.partitionId = 1 AND
       y.partitionId = 2
 GROUP BY x.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_table
+POSTHOOK: Input: default@part_table@partitionid=1
+POSTHOOK: Input: default@part_table@partitionid=2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -274,6 +290,9 @@ WHERE x.partitionId = 2 AND
       y.partitionId = 2
 GROUP BY x.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_table
+PREHOOK: Input: default@part_table@partitionid=2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT x.key AS key, count(1) AS cnt
 FROM part_table x JOIN part_table y ON (x.key = y.key)
@@ -281,6 +300,9 @@ WHERE x.partitionId = 2 AND
       y.partitionId = 2
 GROUP BY x.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_table
+POSTHOOK: Input: default@part_table@partitionid=2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -414,6 +436,9 @@ WHERE x.partitionId = 2 AND
       y.partitionId = 2
 GROUP BY x.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part_table
+PREHOOK: Input: default@part_table@partitionid=2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT x.key AS key, count(1) AS cnt
 FROM part_table x JOIN part_table y ON (x.key = y.key)
@@ -421,6 +446,9 @@ WHERE x.partitionId = 2 AND
       y.partitionId = 2
 GROUP BY x.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part_table
+POSTHOOK: Input: default@part_table@partitionid=2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

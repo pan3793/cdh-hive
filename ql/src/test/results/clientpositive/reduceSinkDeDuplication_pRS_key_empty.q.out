@@ -33,6 +33,8 @@ select
   var_samp(substr(src.value,5)) as d
  from src)subq
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select compute_stats(a,16),compute_stats(b,16),compute_stats(c,16),compute_stats(d,16)
 from
 (
@@ -43,6 +45,8 @@ select
   var_samp(substr(src.value,5)) as d
  from src)subq
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -122,6 +126,8 @@ select
   var_samp(substr(src.value,5)) as d
  from src)subq
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select compute_stats(a,16),compute_stats(b,16),compute_stats(c,16),compute_stats(d,16)
 from
 (
@@ -132,6 +138,8 @@ select
   var_samp(substr(src.value,5)) as d
  from src)subq
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

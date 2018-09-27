@@ -19,6 +19,8 @@ REDUCE tmap.key, tmap.value
 USING 'python input20_script.py'
 AS (key STRING, value STRING)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@dest1
 POSTHOOK: query: EXPLAIN
 FROM (
   FROM src
@@ -32,6 +34,8 @@ REDUCE tmap.key, tmap.value
 USING 'python input20_script.py'
 AS (key STRING, value STRING)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@dest1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

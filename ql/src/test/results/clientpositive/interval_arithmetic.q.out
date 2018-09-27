@@ -30,6 +30,8 @@ select
 from interval_arithmetic_1
 limit 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
   dateval,
@@ -42,6 +44,8 @@ select
 from interval_arithmetic_1
 limit 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -111,6 +115,8 @@ select
 from interval_arithmetic_1
 limit 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
   dateval,
@@ -120,6 +126,8 @@ select
 from interval_arithmetic_1
 limit 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -186,6 +194,8 @@ select
 from interval_arithmetic_1
 limit 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
   tsval,
@@ -198,6 +208,8 @@ select
 from interval_arithmetic_1
 limit 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -265,6 +277,8 @@ select
 from interval_arithmetic_1
 limit 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
   interval '2-2' year to month + interval '3-3' year to month,
@@ -272,6 +286,8 @@ select
 from interval_arithmetic_1
 limit 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -322,6 +338,8 @@ select
 from interval_arithmetic_1
 limit 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
   dateval,
@@ -334,6 +352,8 @@ select
 from interval_arithmetic_1
 limit 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -404,6 +424,8 @@ select
 from interval_arithmetic_1
 limit 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
   dateval,
@@ -414,6 +436,8 @@ select
 from interval_arithmetic_1
 limit 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -482,6 +506,8 @@ select
 from interval_arithmetic_1
 limit 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
   tsval,
@@ -494,6 +520,8 @@ select
 from interval_arithmetic_1
 limit 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -561,6 +589,8 @@ select
 from interval_arithmetic_1
 limit 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select
   interval '99 11:22:33.123456789' day to second + interval '10 9:8:7.123456789' day to second,
@@ -568,6 +598,8 @@ select
 from interval_arithmetic_1
 limit 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@interval_arithmetic_1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

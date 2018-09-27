@@ -102,9 +102,13 @@ POSTHOOK: Input: default@emps
 PREHOOK: query: explain
 select * from emps where (empno+1,deptno) in ((1,2),(3,2))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@emps
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select * from emps where (empno+1,deptno) in ((1,2),(3,2))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@emps
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -140,9 +144,13 @@ STAGE PLANS:
 PREHOOK: query: explain 
 select * from emps where (empno+1,deptno) not in ((1,2),(3,2))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@emps
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 select * from emps where (empno+1,deptno) not in ((1,2),(3,2))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@emps
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -223,8 +231,12 @@ POSTHOOK: Input: default@emps
 2	5	22
 PREHOOK: query: explain select * from emps where ((empno*2)|1,deptno) in ((empno+1,2),(empno+2,2))
 PREHOOK: type: QUERY
+PREHOOK: Input: default@emps
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from emps where ((empno*2)|1,deptno) in ((empno+1,2),(empno+2,2))
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@emps
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

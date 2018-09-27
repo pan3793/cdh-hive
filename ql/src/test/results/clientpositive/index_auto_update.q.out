@@ -36,8 +36,14 @@ POSTHOOK: Lineage: default__temp_temp_index__._offsets EXPRESSION [(temp)temp.Fi
 POSTHOOK: Lineage: default__temp_temp_index__.key SIMPLE [(temp)temp.FieldSchema(name:key, type:string, comment:null), ]
 PREHOOK: query: EXPLAIN INSERT OVERWRITE TABLE temp SELECT * FROM src
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@temp
+PREHOOK: Output: default@temp
 POSTHOOK: query: EXPLAIN INSERT OVERWRITE TABLE temp SELECT * FROM src
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@temp
+POSTHOOK: Output: default@temp
 STAGE DEPENDENCIES:
   Stage-6 is a root stage
   Stage-12 depends on stages: Stage-6 , consists of Stage-9, Stage-8, Stage-10
@@ -191,8 +197,14 @@ POSTHOOK: Lineage: temp.key SIMPLE [(src)src.FieldSchema(name:key, type:string, 
 POSTHOOK: Lineage: temp.val SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 PREHOOK: query: EXPLAIN SELECT * FROM temp WHERE key  = 86
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__temp_temp_index__
+PREHOOK: Input: default@temp
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM temp WHERE key  = 86
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__temp_temp_index__
+POSTHOOK: Input: default@temp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-8 depends on stages: Stage-3 , consists of Stage-5, Stage-4, Stage-6

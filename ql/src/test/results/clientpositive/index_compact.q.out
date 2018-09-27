@@ -7,9 +7,11 @@ POSTHOOK: Input: default@srcpart
 PREHOOK: query: EXPLAIN
 CREATE INDEX srcpart_index_proj ON TABLE srcpart(key) as 'COMPACT' WITH DEFERRED REBUILD
 PREHOOK: type: CREATEINDEX
+PREHOOK: Input: default@srcpart
 POSTHOOK: query: EXPLAIN
 CREATE INDEX srcpart_index_proj ON TABLE srcpart(key) as 'COMPACT' WITH DEFERRED REBUILD
 POSTHOOK: type: CREATEINDEX
+POSTHOOK: Input: default@srcpart
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -135,9 +137,11 @@ POSTHOOK: Input: default@srcpart
 PREHOOK: query: EXPLAIN
 CREATE INDEX srcpart_index_proj ON TABLE srcpart(key) as 'COMPACT' WITH DEFERRED REBUILD
 PREHOOK: type: CREATEINDEX
+PREHOOK: Input: default@srcpart
 POSTHOOK: query: EXPLAIN
 CREATE INDEX srcpart_index_proj ON TABLE srcpart(key) as 'COMPACT' WITH DEFERRED REBUILD
 POSTHOOK: type: CREATEINDEX
+POSTHOOK: Input: default@srcpart
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

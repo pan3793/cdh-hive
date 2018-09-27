@@ -60,10 +60,14 @@ PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT acos(key), asin(key), atan(key), cos(key), sin(key), tan(key), radians(key)
 FROM DECIMAL_UDF2 WHERE key = 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT acos(key), asin(key), atan(key), cos(key), sin(key), tan(key), radians(key)
 FROM DECIMAL_UDF2 WHERE key = 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf2
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -140,11 +144,15 @@ SELECT SUM(HASH(*))
 FROM (SELECT acos(key), asin(key), atan(key), cos(key), sin(key), tan(key), radians(key)
 FROM DECIMAL_UDF2) q
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT SUM(HASH(*))
 FROM (SELECT acos(key), asin(key), atan(key), cos(key), sin(key), tan(key), radians(key)
 FROM DECIMAL_UDF2) q
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf2
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -249,6 +257,8 @@ SELECT
   log10(key), sqrt(key)
 FROM DECIMAL_UDF2 WHERE key = 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_udf2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT
   exp(key), ln(key),
@@ -256,6 +266,8 @@ SELECT
   log10(key), sqrt(key)
 FROM DECIMAL_UDF2 WHERE key = 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_udf2
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]

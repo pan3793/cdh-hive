@@ -3,11 +3,15 @@ SELECT src1.key, src2.value
 FROM src src1 JOIN src src2 ON (src1.key = src2.key)
 WHERE src1.key = 97
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT src1.key, src2.value
 FROM src src1 JOIN src src2 ON (src1.key = src2.key)
 WHERE src1.key = 97
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -123,6 +127,9 @@ b AS (
 )
 SELECT sum(hash(a.key, b.value)) FROM a JOIN b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@tmp
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 WITH a AS (
   SELECT src1.key, src2.value
@@ -136,6 +143,9 @@ b AS (
 )
 SELECT sum(hash(a.key, b.value)) FROM a JOIN b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@tmp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

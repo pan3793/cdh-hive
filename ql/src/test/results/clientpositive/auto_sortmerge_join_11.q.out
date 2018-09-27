@@ -99,8 +99,20 @@ POSTHOOK: type: LOAD
 POSTHOOK: Output: default@bucket_big@ds=2008-04-09
 PREHOOK: query: explain extended select count(*) FROM bucket_small a JOIN bucket_big b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@bucket_big
+PREHOOK: Input: default@bucket_big@ds=2008-04-08
+PREHOOK: Input: default@bucket_big@ds=2008-04-09
+PREHOOK: Input: default@bucket_small
+PREHOOK: Input: default@bucket_small@ds=2008-04-08
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select count(*) FROM bucket_small a JOIN bucket_big b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@bucket_big
+POSTHOOK: Input: default@bucket_big@ds=2008-04-08
+POSTHOOK: Input: default@bucket_big@ds=2008-04-09
+POSTHOOK: Input: default@bucket_small
+POSTHOOK: Input: default@bucket_small@ds=2008-04-08
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-2 depends on stages: Stage-5
@@ -415,8 +427,20 @@ POSTHOOK: Input: default@bucket_small@ds=2008-04-08
 38
 PREHOOK: query: explain extended select count(*) FROM bucket_small a JOIN bucket_big b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@bucket_big
+PREHOOK: Input: default@bucket_big@ds=2008-04-08
+PREHOOK: Input: default@bucket_big@ds=2008-04-09
+PREHOOK: Input: default@bucket_small
+PREHOOK: Input: default@bucket_small@ds=2008-04-08
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select count(*) FROM bucket_small a JOIN bucket_big b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@bucket_big
+POSTHOOK: Input: default@bucket_big@ds=2008-04-08
+POSTHOOK: Input: default@bucket_big@ds=2008-04-09
+POSTHOOK: Input: default@bucket_small
+POSTHOOK: Input: default@bucket_small@ds=2008-04-08
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-2 depends on stages: Stage-5
@@ -731,8 +755,20 @@ POSTHOOK: Input: default@bucket_small@ds=2008-04-08
 38
 PREHOOK: query: explain extended select /*+ mapjoin(a) */ count(*) FROM bucket_small a JOIN bucket_big b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@bucket_big
+PREHOOK: Input: default@bucket_big@ds=2008-04-08
+PREHOOK: Input: default@bucket_big@ds=2008-04-09
+PREHOOK: Input: default@bucket_small
+PREHOOK: Input: default@bucket_small@ds=2008-04-08
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /*+ mapjoin(a) */ count(*) FROM bucket_small a JOIN bucket_big b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@bucket_big
+POSTHOOK: Input: default@bucket_big@ds=2008-04-08
+POSTHOOK: Input: default@bucket_big@ds=2008-04-09
+POSTHOOK: Input: default@bucket_small
+POSTHOOK: Input: default@bucket_small@ds=2008-04-08
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3
@@ -1000,8 +1036,20 @@ POSTHOOK: Input: default@bucket_small@ds=2008-04-08
 38
 PREHOOK: query: explain extended select /* + MAPJOIN(a,b) */ count(*) FROM bucket_small a JOIN bucket_big b ON a.key = b.key JOIN bucket_big c ON a.key = c.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@bucket_big
+PREHOOK: Input: default@bucket_big@ds=2008-04-08
+PREHOOK: Input: default@bucket_big@ds=2008-04-09
+PREHOOK: Input: default@bucket_small
+PREHOOK: Input: default@bucket_small@ds=2008-04-08
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(a,b) */ count(*) FROM bucket_small a JOIN bucket_big b ON a.key = b.key JOIN bucket_big c ON a.key = c.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@bucket_big
+POSTHOOK: Input: default@bucket_big@ds=2008-04-08
+POSTHOOK: Input: default@bucket_big@ds=2008-04-09
+POSTHOOK: Input: default@bucket_small
+POSTHOOK: Input: default@bucket_small@ds=2008-04-08
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-4 is a root stage
   Stage-1 depends on stages: Stage-4

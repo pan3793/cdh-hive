@@ -3,11 +3,15 @@ select key, value, avg(key + 1) from src
 group by key, value
 order by key, value limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, avg(key + 1) from src
 group by key, value
 order by key, value limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -97,11 +101,15 @@ select key, value, avg(key + 1) from src
 group by key, value
 order by key, value desc limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, avg(key + 1) from src
 group by key, value
 order by key, value desc limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -191,11 +199,15 @@ select key, value, avg(key + 1) from src
 group by key, value
 order by key desc, value limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, avg(key + 1) from src
 group by key, value
 order by key desc, value limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -285,11 +297,15 @@ select key, value, avg(key + 1) from src
 group by value, key
 order by key, value limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, avg(key + 1) from src
 group by value, key
 order by key, value limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -379,11 +395,15 @@ select key, value, avg(key + 1) from src
 group by value, key
 order by key desc, value limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, avg(key + 1) from src
 group by value, key
 order by key desc, value limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -473,11 +493,15 @@ select key, value, avg(key + 1) from src
 group by value, key
 order by key desc limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, avg(key + 1) from src
 group by value, key
 order by key desc limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -567,11 +591,15 @@ select value, avg(key + 1) myavg from src
 group by value
 order by myavg, value desc limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select value, avg(key + 1) myavg from src
 group by value
 order by myavg, value desc limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -682,11 +710,15 @@ select key, value, avg(key + 1) from src
 group by value, key with rollup
 order by key, value limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, avg(key + 1) from src
 group by value, key with rollup
 order by key, value limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -771,11 +803,15 @@ select key, value, avg(key + 1) from src
 group by rollup(value, key)
 order by key, value limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select key, value, avg(key + 1) from src
 group by rollup(value, key)
 order by key, value limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

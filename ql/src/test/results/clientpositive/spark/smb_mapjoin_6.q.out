@@ -58,10 +58,16 @@ PREHOOK: query: explain
 insert overwrite table smb_join_results
 select /*+mapjoin(a)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@smb_bucket4_1
+PREHOOK: Input: default@smb_bucket4_2
+PREHOOK: Output: default@smb_join_results
 POSTHOOK: query: explain
 insert overwrite table smb_join_results
 select /*+mapjoin(a)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@smb_bucket4_1
+POSTHOOK: Input: default@smb_bucket4_2
+POSTHOOK: Output: default@smb_join_results
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1202,10 +1208,16 @@ PREHOOK: query: explain
 insert overwrite table smb_join_results
 select /*+mapjoin(b)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@smb_bucket4_1
+PREHOOK: Input: default@smb_bucket4_2
+PREHOOK: Output: default@smb_join_results
 POSTHOOK: query: explain
 insert overwrite table smb_join_results
 select /*+mapjoin(b)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@smb_bucket4_1
+POSTHOOK: Input: default@smb_bucket4_2
+POSTHOOK: Output: default@smb_join_results
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2362,10 +2374,16 @@ PREHOOK: query: explain
 insert overwrite table smb_join_results
 select /*+mapjoin(a)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key where a.key>1000
 PREHOOK: type: QUERY
+PREHOOK: Input: default@smb_bucket4_1
+PREHOOK: Input: default@smb_bucket4_2
+PREHOOK: Output: default@smb_join_results
 POSTHOOK: query: explain
 insert overwrite table smb_join_results
 select /*+mapjoin(a)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key where a.key>1000
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@smb_bucket4_1
+POSTHOOK: Input: default@smb_bucket4_2
+POSTHOOK: Output: default@smb_join_results
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2438,10 +2456,16 @@ PREHOOK: query: explain
 insert overwrite table smb_join_results
 select /*+mapjoin(b)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key where a.key>1000
 PREHOOK: type: QUERY
+PREHOOK: Input: default@smb_bucket4_1
+PREHOOK: Input: default@smb_bucket4_2
+PREHOOK: Output: default@smb_join_results
 POSTHOOK: query: explain
 insert overwrite table smb_join_results
 select /*+mapjoin(b)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key where a.key>1000
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@smb_bucket4_1
+POSTHOOK: Input: default@smb_bucket4_2
+POSTHOOK: Output: default@smb_join_results
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2513,9 +2537,15 @@ POSTHOOK: Lineage: smb_join_results.v2 SIMPLE [(smb_bucket4_2)b.FieldSchema(name
 PREHOOK: query: explain
 select /*+mapjoin(b,c)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key join smb_bucket4_2 c on b.key = c.key where a.key>1000
 PREHOOK: type: QUERY
+PREHOOK: Input: default@smb_bucket4_1
+PREHOOK: Input: default@smb_bucket4_2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select /*+mapjoin(b,c)*/ * from smb_bucket4_1 a join smb_bucket4_2 b on a.key = b.key join smb_bucket4_2 c on b.key = c.key where a.key>1000
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@smb_bucket4_1
+POSTHOOK: Input: default@smb_bucket4_2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

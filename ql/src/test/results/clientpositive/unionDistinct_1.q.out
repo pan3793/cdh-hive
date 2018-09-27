@@ -14,6 +14,8 @@ insert overwrite table tmptable
                                         UNION DISTINCT
                                             select 'tst3' as key, count(1) as value from src s3) unionsrc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@tmptable
 POSTHOOK: query: explain 
 insert overwrite table tmptable
   select unionsrc.key, unionsrc.value FROM (select 'tst1' as key, count(1) as value from src s1
@@ -22,6 +24,8 @@ insert overwrite table tmptable
                                         UNION DISTINCT
                                             select 'tst3' as key, count(1) as value from src s3) unionsrc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@tmptable
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-5
@@ -275,6 +279,8 @@ PREHOOK: query: explain
                                         UNION DISTINCT
                                             select 'tst3' as key, count(1) as value from src s3) unionsrc group by unionsrc.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select unionsrc.key, count(1) FROM (select 'tst1' as key, count(1) as value from src s1
                                         UNION DISTINCT  
@@ -282,6 +288,8 @@ POSTHOOK: query: explain
                                         UNION DISTINCT
                                             select 'tst3' as key, count(1) as value from src s3) unionsrc group by unionsrc.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-4
@@ -529,6 +537,10 @@ insert overwrite table tmptable12
                                         UNION DISTINCT
                                             select 'tst3' as key, count(1) as value from srcbucket s3) unionsrc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+PREHOOK: Input: default@srcbucket
+PREHOOK: Output: default@tmptable12
 POSTHOOK: query: explain 
 insert overwrite table tmptable12
   select unionsrc.key, unionsrc.value FROM (select 'tst1' as key, count(1) as value from src s1
@@ -537,6 +549,10 @@ insert overwrite table tmptable12
                                         UNION DISTINCT
                                             select 'tst3' as key, count(1) as value from srcbucket s3) unionsrc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+POSTHOOK: Input: default@srcbucket
+POSTHOOK: Output: default@tmptable12
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-5
@@ -791,10 +807,14 @@ PREHOOK: query: explain
   select unionsrc.key, unionsrc.value FROM (select s1.key as key, s1.value as value from src s1 UNION DISTINCT  
                                             select s2.key as key, s2.value as value from src s2) unionsrc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select unionsrc.key, unionsrc.value FROM (select s1.key as key, s1.value as value from src s1 UNION DISTINCT  
                                             select s2.key as key, s2.value as value from src s2) unionsrc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1186,12 +1206,18 @@ PREHOOK: query: explain
                                       select 'tst1' as key, cast(count(1) as string) as value from src s1) 
   unionsrc group by unionsrc.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select unionsrc.key, count(1) FROM (select s2.key as key, s2.value as value from src1 s2
                                         UNION DISTINCT  
                                       select 'tst1' as key, cast(count(1) as string) as value from src s1) 
   unionsrc group by unionsrc.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-2 depends on stages: Stage-3
@@ -1337,6 +1363,9 @@ PREHOOK: query: explain
                                         UNION DISTINCT  
                                             select s3.key as key, s3.value as value from src1 s3) unionsrc group by unionsrc.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select unionsrc.key, count(1) FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
                                         UNION DISTINCT  
@@ -1344,6 +1373,9 @@ POSTHOOK: query: explain
                                         UNION DISTINCT  
                                             select s3.key as key, s3.value as value from src1 s3) unionsrc group by unionsrc.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -1565,6 +1597,8 @@ SELECT count(1) FROM (
   SELECT key, value FROM src UNION DISTINCT
   SELECT key, value FROM src) src
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT count(1) FROM (
   SELECT key, value FROM src UNION DISTINCT
@@ -1597,6 +1631,8 @@ SELECT count(1) FROM (
   SELECT key, value FROM src UNION DISTINCT
   SELECT key, value FROM src) src
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -2909,6 +2945,9 @@ FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
 INSERT OVERWRITE TABLE DEST1 SELECT unionsrc.key, COUNT(DISTINCT SUBSTR(unionsrc.value,5)) GROUP BY unionsrc.key
 INSERT OVERWRITE TABLE DEST2 SELECT unionsrc.key, unionsrc.value, COUNT(DISTINCT SUBSTR(unionsrc.value,5)) GROUP BY unionsrc.key, unionsrc.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@dest1
+PREHOOK: Output: default@dest2
 POSTHOOK: query: explain 
 FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
                          UNION DISTINCT  
@@ -2916,6 +2955,9 @@ FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
 INSERT OVERWRITE TABLE DEST1 SELECT unionsrc.key, COUNT(DISTINCT SUBSTR(unionsrc.value,5)) GROUP BY unionsrc.key
 INSERT OVERWRITE TABLE DEST2 SELECT unionsrc.key, unionsrc.value, COUNT(DISTINCT SUBSTR(unionsrc.value,5)) GROUP BY unionsrc.key, unionsrc.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@dest1
+POSTHOOK: Output: default@dest2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2
@@ -3765,6 +3807,9 @@ FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
 INSERT OVERWRITE TABLE DEST118 SELECT unionsrc.key, unionsrc.value
 INSERT OVERWRITE TABLE DEST218 SELECT unionsrc.key, unionsrc.value, unionsrc.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@dest118
+PREHOOK: Output: default@dest218
 POSTHOOK: query: explain 
 FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
                          UNION DISTINCT  
@@ -3772,6 +3817,9 @@ FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
 INSERT OVERWRITE TABLE DEST118 SELECT unionsrc.key, unionsrc.value
 INSERT OVERWRITE TABLE DEST218 SELECT unionsrc.key, unionsrc.value, unionsrc.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@dest118
+POSTHOOK: Output: default@dest218
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2
@@ -4585,6 +4633,9 @@ FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
 INSERT OVERWRITE TABLE DEST119 SELECT unionsrc.key, count(unionsrc.value) group by unionsrc.key
 INSERT OVERWRITE TABLE DEST219 SELECT unionsrc.key, unionsrc.value, unionsrc.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@dest119
+PREHOOK: Output: default@dest219
 POSTHOOK: query: explain 
 FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
                          UNION DISTINCT  
@@ -4592,6 +4643,9 @@ FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
 INSERT OVERWRITE TABLE DEST119 SELECT unionsrc.key, count(unionsrc.value) group by unionsrc.key
 INSERT OVERWRITE TABLE DEST219 SELECT unionsrc.key, unionsrc.value, unionsrc.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@dest119
+POSTHOOK: Output: default@dest219
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2
@@ -5392,10 +5446,14 @@ PREHOOK: query: explain
   select count(1) FROM (select s1.key as key, s1.value as value from src s1 UNION DISTINCT  
                         select s2.key as key, s2.value as value from src s2) unionsrc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select count(1) FROM (select s1.key as key, s1.value as value from src s1 UNION DISTINCT  
                         select s2.key as key, s2.value as value from src s2) unionsrc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -5513,6 +5571,8 @@ JOIN
       select s4.key as key, s4.value as value from src s4 where s4.key < 10) unionsrc2
 ON (unionsrc1.key = unionsrc2.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 SELECT unionsrc1.key, unionsrc1.value, unionsrc2.key, unionsrc2.value
 FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
@@ -5524,6 +5584,8 @@ JOIN
       select s4.key as key, s4.value as value from src s4 where s4.key < 10) unionsrc2
 ON (unionsrc1.key = unionsrc2.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -5789,6 +5851,9 @@ FROM (
 ) union_output
 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src_thrift
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT key, count(1)
 FROM (
@@ -5804,6 +5869,9 @@ FROM (
 ) union_output
 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src_thrift
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -6652,6 +6720,11 @@ where a.k1 > 20
 )
 subq
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dst_union22
+PREHOOK: Input: default@dst_union22@ds=1
+PREHOOK: Input: default@dst_union22_delta
+PREHOOK: Input: default@dst_union22_delta@ds=1
+PREHOOK: Output: default@dst_union22@ds=2
 POSTHOOK: query: explain extended
 insert overwrite table dst_union22 partition (ds='2')
 select * from
@@ -6665,6 +6738,11 @@ where a.k1 > 20
 )
 subq
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dst_union22
+POSTHOOK: Input: default@dst_union22@ds=1
+POSTHOOK: Input: default@dst_union22_delta
+POSTHOOK: Input: default@dst_union22_delta@ds=1
+POSTHOOK: Output: default@dst_union22@ds=2
 STAGE DEPENDENCIES:
   Stage-7 is a root stage , consists of Stage-8, Stage-4
   Stage-8 has a backup stage: Stage-4
@@ -7645,6 +7723,8 @@ from (
   select key as key2, value as value2 from src) s
 order by s.key2, s.value2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select s.key2, s.value2
 from (
@@ -7654,6 +7734,8 @@ from (
   select key as key2, value as value2 from src) s
 order by s.key2, s.value2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -8136,6 +8218,11 @@ select s.key, s.count from (
   select key, count(1) as count from src5 where key < 10 group by key
 )s
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src2
+PREHOOK: Input: default@src3
+PREHOOK: Input: default@src4
+PREHOOK: Input: default@src5
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select s.key, s.count from (
   select key, count from src2  where key < 10
@@ -8147,6 +8234,11 @@ select s.key, s.count from (
   select key, count(1) as count from src5 where key < 10 group by key
 )s
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src2
+POSTHOOK: Input: default@src3
+POSTHOOK: Input: default@src4
+POSTHOOK: Input: default@src5
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -8743,6 +8835,11 @@ select s.key, s.count from (
   select a.key as key, b.count as count from src4 a join src5 b on a.key=b.key where a.key < 10
 )s
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src2
+PREHOOK: Input: default@src3
+PREHOOK: Input: default@src4
+PREHOOK: Input: default@src5
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select s.key, s.count from (
   select key, count from src2  where key < 10
@@ -8752,6 +8849,11 @@ select s.key, s.count from (
   select a.key as key, b.count as count from src4 a join src5 b on a.key=b.key where a.key < 10
 )s
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src2
+POSTHOOK: Input: default@src3
+POSTHOOK: Input: default@src4
+POSTHOOK: Input: default@src5
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1
@@ -9214,6 +9316,11 @@ select s.key, s.count from (
   select a.key as key, count(1) as count from src4 a join src5 b on a.key=b.key where a.key < 10 group by a.key
 )s
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src2
+PREHOOK: Input: default@src3
+PREHOOK: Input: default@src4
+PREHOOK: Input: default@src5
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select s.key, s.count from (
   select key, count from src2  where key < 10
@@ -9223,6 +9330,11 @@ select s.key, s.count from (
   select a.key as key, count(1) as count from src4 a join src5 b on a.key=b.key where a.key < 10 group by a.key
 )s
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src2
+POSTHOOK: Input: default@src3
+POSTHOOK: Input: default@src4
+POSTHOOK: Input: default@src5
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-5
@@ -9785,6 +9897,12 @@ FROM
   ) master_table
 ) a GROUP BY key, value
 PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Input: default@tmp_srcpart
+PREHOOK: Input: default@tmp_srcpart@ds=2008-04-08/hr=11
+PREHOOK: Output: database:default
+PREHOOK: Output: default@tmp_unionall
 POSTHOOK: query: explain
 create table tmp_unionall as
 SELECT count(1) as counts, key, value
@@ -9803,6 +9921,12 @@ FROM
   ) master_table
 ) a GROUP BY key, value
 POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@tmp_srcpart
+POSTHOOK: Input: default@tmp_srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@tmp_unionall
 STAGE DEPENDENCIES:
   Stage-4 is a root stage
   Stage-2 depends on stages: Stage-4
@@ -9978,6 +10102,10 @@ WHERE ds='2008-04-08' and hr='11'
 ) a
 group by key, value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcpart
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+PREHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT 
 count(1) as counts,
@@ -10000,6 +10128,10 @@ WHERE ds='2008-04-08' and hr='11'
 ) a
 group by key, value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcpart
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-6 is a root stage
   Stage-2 depends on stages: Stage-6
@@ -11255,8 +11387,16 @@ POSTHOOK: Lineage: jackson_sev_add.key SIMPLE [(src)src.FieldSchema(name:key, ty
 POSTHOOK: Lineage: jackson_sev_add.value SIMPLE [(src)src.FieldSchema(name:value, type:string, comment:default), ]
 PREHOOK: query: explain select b.* from jackson_sev_same a join (select * from dim_pho UNION DISTINCT select * from jackson_sev_add)b on a.key=b.key and b.key=97
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dim_pho
+PREHOOK: Input: default@jackson_sev_add
+PREHOOK: Input: default@jackson_sev_same
+#### A masked pattern was here ####
 POSTHOOK: query: explain select b.* from jackson_sev_same a join (select * from dim_pho UNION DISTINCT select * from jackson_sev_add)b on a.key=b.key and b.key=97
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dim_pho
+POSTHOOK: Input: default@jackson_sev_add
+POSTHOOK: Input: default@jackson_sev_same
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-5 depends on stages: Stage-2
@@ -11414,6 +11554,8 @@ select * from (
   ) subq
 ) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@union_subq_union
 POSTHOOK: query: explain
 insert overwrite table union_subq_union 
 select * from (
@@ -11427,6 +11569,8 @@ select * from (
   ) subq
 ) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@union_subq_union
 STAGE DEPENDENCIES:
   Stage-4 is a root stage
   Stage-5 depends on stages: Stage-4, Stage-6
@@ -11700,6 +11844,8 @@ select * from (
   ) subq
 ) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@union_subq_union29
 POSTHOOK: query: explain
 insert overwrite table union_subq_union29 
 select * from (
@@ -11713,6 +11859,8 @@ select * from (
   ) subq
 ) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@union_subq_union29
 STAGE DEPENDENCIES:
   Stage-4 is a root stage
   Stage-2 depends on stages: Stage-4
@@ -11916,6 +12064,8 @@ FROM (
   CLUSTER BY id
 ) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT *
 FROM (
@@ -11933,6 +12083,8 @@ FROM (
   CLUSTER BY id
 ) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-5
@@ -12280,6 +12432,8 @@ UNION DISTINCT
 select key, value from src
 ) aa
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@union_subq_union30
 POSTHOOK: query: explain
 insert overwrite table union_subq_union30 
 select * from (
@@ -12300,6 +12454,8 @@ UNION DISTINCT
 select key, value from src
 ) aa
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@union_subq_union30
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-6 depends on stages: Stage-5, Stage-7
@@ -12674,6 +12830,10 @@ insert overwrite table t3
 insert overwrite table t4
   select value, count(1) group by value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@t3
+PREHOOK: Output: default@t4
 POSTHOOK: query: explain
 from
 (select * from t1
@@ -12685,6 +12845,10 @@ insert overwrite table t3
 insert overwrite table t4
   select value, count(1) group by value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@t3
+POSTHOOK: Output: default@t4
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-0 depends on stages: Stage-2
@@ -12924,6 +13088,10 @@ insert overwrite table t5
 insert overwrite table t6
   select c1, sum(cnt) group by c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@t5
+PREHOOK: Output: default@t6
 POSTHOOK: query: explain
 from
 (
@@ -12936,6 +13104,10 @@ insert overwrite table t5
 insert overwrite table t6
   select c1, sum(cnt) group by c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@t5
+POSTHOOK: Output: default@t6
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2, Stage-7
@@ -13267,6 +13439,10 @@ insert overwrite table t7
 insert overwrite table t8
   select c1, count(1) group by c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@t7
+PREHOOK: Output: default@t8
 POSTHOOK: query: explain
 from
 (
@@ -13279,6 +13455,10 @@ insert overwrite table t7
 insert overwrite table t8
   select c1, count(1) group by c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@t7
+POSTHOOK: Output: default@t8
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2
@@ -13561,6 +13741,9 @@ UNION DISTINCT
 SELECT CAST(key AS BIGINT) AS key FROM t2) a
 ORDER BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM 
 (SELECT CAST(key AS DOUBLE) AS key FROM t1
@@ -13568,6 +13751,9 @@ UNION DISTINCT
 SELECT CAST(key AS BIGINT) AS key FROM t2) a
 ORDER BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -13683,12 +13869,18 @@ SELECT * FROM
 UNION DISTINCT
 SELECT CAST(key AS DOUBLE) AS key FROM t2) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM 
 (SELECT CAST(a.key AS BIGINT) AS key FROM t1 a JOIN t2 b ON a.key = b.key
 UNION DISTINCT
 SELECT CAST(key AS DOUBLE) AS key FROM t2) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-6 is a root stage
   Stage-2 depends on stages: Stage-6
@@ -13824,12 +14016,18 @@ SELECT * FROM
 UNION DISTINCT
 SELECT CAST(a.key AS BIGINT) AS key FROM t1 a JOIN t2 b ON a.key = b.key) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM 
 (SELECT CAST(key AS DOUBLE) AS key FROM t2
 UNION DISTINCT
 SELECT CAST(a.key AS BIGINT) AS key FROM t1 a JOIN t2 b ON a.key = b.key) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-6 is a root stage
   Stage-2 depends on stages: Stage-6
@@ -13965,12 +14163,18 @@ SELECT * FROM
 UNION DISTINCT
 SELECT CAST(key AS DOUBLE) AS key, CAST(key AS STRING) AS value FROM t2) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM 
 (SELECT CAST(a.key AS BIGINT) AS key, CAST(b.key AS STRING) AS value FROM t1 a JOIN t2 b ON a.key = b.key
 UNION DISTINCT
 SELECT CAST(key AS DOUBLE) AS key, CAST(key AS STRING) AS value FROM t2) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-6 is a root stage
   Stage-2 depends on stages: Stage-6
@@ -14106,12 +14310,18 @@ SELECT * FROM
 UNION DISTINCT
 SELECT CAST(a.key AS BIGINT) AS key, CAST(b.key AS VARCHAR(20)) AS value FROM t1 a JOIN t2 b ON a.key = b.key) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM 
 (SELECT CAST(key AS DOUBLE) AS key, CAST(key AS STRING) AS value FROM t2
 UNION DISTINCT
 SELECT CAST(a.key AS BIGINT) AS key, CAST(b.key AS VARCHAR(20)) AS value FROM t1 a JOIN t2 b ON a.key = b.key) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-6 is a root stage
   Stage-2 depends on stages: Stage-6
@@ -14262,6 +14472,8 @@ UNION DISTINCT
  	GROUP BY key
 )a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@test_src
 POSTHOOK: query: EXPLAIN INSERT OVERWRITE TABLE test_src 
 SELECT key, value FROM (
 	SELECT key, value FROM src 
@@ -14271,6 +14483,8 @@ UNION DISTINCT
  	GROUP BY key
 )a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@test_src
 STAGE DEPENDENCIES:
   Stage-4 is a root stage
   Stage-2 depends on stages: Stage-4
@@ -14426,6 +14640,8 @@ UNION DISTINCT
 	WHERE key = 0
 )a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@test_src
 POSTHOOK: query: EXPLAIN INSERT OVERWRITE TABLE test_src 
 SELECT key, value FROM (
 	SELECT key, cast(COUNT(*) as string) AS value FROM src
@@ -14435,6 +14651,8 @@ UNION DISTINCT
 	WHERE key = 0
 )a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@test_src
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -14686,6 +14904,11 @@ SELECT * FROM (
   SELECT key,value FROM (SELECT * FROM (SELECT * FROM src10_3) sub2 UNION DISTINCT SELECT * FROM src10_4 ) alias0
 ) alias1 order by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src10_1
+PREHOOK: Input: default@src10_2
+PREHOOK: Input: default@src10_3
+PREHOOK: Input: default@src10_4
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT * FROM (
   SELECT sub1.key,sub1.value FROM (SELECT * FROM src10_1) sub1 JOIN (SELECT * FROM src10_2) sub0 ON (sub0.key = sub1.key)
@@ -14693,6 +14916,11 @@ SELECT * FROM (
   SELECT key,value FROM (SELECT * FROM (SELECT * FROM src10_3) sub2 UNION DISTINCT SELECT * FROM src10_4 ) alias0
 ) alias1 order by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src10_1
+POSTHOOK: Input: default@src10_2
+POSTHOOK: Input: default@src10_3
+POSTHOOK: Input: default@src10_4
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-8 depends on stages: Stage-5
@@ -14906,6 +15134,11 @@ SELECT * FROM (
   SELECT key,value FROM (SELECT * FROM (SELECT * FROM src10_3) sub2 UNION DISTINCT SELECT * FROM src10_4 ) alias0
 ) alias1 order by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src10_1
+PREHOOK: Input: default@src10_2
+PREHOOK: Input: default@src10_3
+PREHOOK: Input: default@src10_4
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT * FROM (
   SELECT sub1.key,sub1.value FROM (SELECT * FROM src10_1) sub1 JOIN (SELECT * FROM src10_2) sub0 ON (sub0.key = sub1.key)
@@ -14913,6 +15146,11 @@ SELECT * FROM (
   SELECT key,value FROM (SELECT * FROM (SELECT * FROM src10_3) sub2 UNION DISTINCT SELECT * FROM src10_4 ) alias0
 ) alias1 order by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src10_1
+POSTHOOK: Input: default@src10_2
+POSTHOOK: Input: default@src10_3
+POSTHOOK: Input: default@src10_4
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-5
@@ -15149,12 +15387,16 @@ insert overwrite table tmptable
                                         UNION DISTINCT  
                                             select 'tst2' as key, count(1) as value from src s2) unionsrc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@tmptable
 POSTHOOK: query: explain 
 insert overwrite table tmptable
   select unionsrc.key, unionsrc.value FROM (select 'tst1' as key, count(1) as value from src s1
                                         UNION DISTINCT  
                                             select 'tst2' as key, count(1) as value from src s2) unionsrc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@tmptable
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-4
@@ -15323,11 +15565,15 @@ PREHOOK: query: explain
                                     UNION DISTINCT  
                                       select 'tst2' as key, count(1) as value from src s2) unionsrc group by unionsrc.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select unionsrc.key, count(1) FROM (select 'tst1' as key, count(1) as value from src s1
                                     UNION DISTINCT  
                                       select 'tst2' as key, count(1) as value from src s2) unionsrc group by unionsrc.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -15498,12 +15744,18 @@ insert overwrite table tmptable
                                         UNION DISTINCT  
                                             select s2.key as key, s2.value as value from src1 s2) unionsrc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+PREHOOK: Output: default@tmptable
 POSTHOOK: query: explain 
 insert overwrite table tmptable
   select unionsrc.key, unionsrc.value FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
                                         UNION DISTINCT  
                                             select s2.key as key, s2.value as value from src1 s2) unionsrc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+POSTHOOK: Output: default@tmptable
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -15662,11 +15914,17 @@ PREHOOK: query: explain
                                         UNION DISTINCT  
                                             select s2.key as key, s2.value as value from src1 s2) unionsrc group by unionsrc.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select unionsrc.key, count(1) FROM (select 'tst1' as key, cast(count(1) as string) as value from src s1
                                         UNION DISTINCT  
                                             select s2.key as key, s2.value as value from src1 s2) unionsrc group by unionsrc.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -15808,11 +16066,15 @@ PREHOOK: query: explain
                                             select s2.key as key, s2.value as value from src s2 UNION DISTINCT  
                                             select s3.key as key, s3.value as value from src s3) unionsrc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select unionsrc.key, unionsrc.value FROM (select s1.key as key, s1.value as value from src s1 UNION DISTINCT  
                                             select s2.key as key, s2.value as value from src s2 UNION DISTINCT  
                                             select s3.key as key, s3.value as value from src s3) unionsrc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -16254,11 +16516,15 @@ PREHOOK: query: explain
                         select s2.key as key, s2.value as value from src s2 UNION DISTINCT
                         select s3.key as key, s3.value as value from src s3) unionsrc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
   select count(1) FROM (select s1.key as key, s1.value as value from src s1 UNION DISTINCT  
                         select s2.key as key, s2.value as value from src s2 UNION DISTINCT
                         select s3.key as key, s3.value as value from src s3) unionsrc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

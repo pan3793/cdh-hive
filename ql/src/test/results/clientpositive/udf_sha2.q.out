@@ -13,8 +13,12 @@ Example: > SELECT sha2('ABC', 256);
  'b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78'
 PREHOOK: query: explain select sha2('ABC', 256)
 PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
 POSTHOOK: query: explain select sha2('ABC', 256)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

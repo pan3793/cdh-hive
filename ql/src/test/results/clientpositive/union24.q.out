@@ -57,6 +57,11 @@ select s.key, s.count from (
   select key, count(1) as count from src5 where key < 10 group by key
 )s
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src2
+PREHOOK: Input: default@src3
+PREHOOK: Input: default@src4
+PREHOOK: Input: default@src5
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select s.key, s.count from (
   select key, count from src2  where key < 10
@@ -68,6 +73,11 @@ select s.key, s.count from (
   select key, count(1) as count from src5 where key < 10 group by key
 )s
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src2
+POSTHOOK: Input: default@src3
+POSTHOOK: Input: default@src4
+POSTHOOK: Input: default@src5
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-2 depends on stages: Stage-5
@@ -546,6 +556,11 @@ select s.key, s.count from (
   select a.key as key, b.count as count from src4 a join src5 b on a.key=b.key where a.key < 10
 )s
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src2
+PREHOOK: Input: default@src3
+PREHOOK: Input: default@src4
+PREHOOK: Input: default@src5
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select s.key, s.count from (
   select key, count from src2  where key < 10
@@ -555,6 +570,11 @@ select s.key, s.count from (
   select a.key as key, b.count as count from src4 a join src5 b on a.key=b.key where a.key < 10
 )s
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src2
+POSTHOOK: Input: default@src3
+POSTHOOK: Input: default@src4
+POSTHOOK: Input: default@src5
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-4 is a root stage
   Stage-2 depends on stages: Stage-4
@@ -1007,6 +1027,11 @@ select s.key, s.count from (
   select a.key as key, count(1) as count from src4 a join src5 b on a.key=b.key where a.key < 10 group by a.key
 )s
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src2
+PREHOOK: Input: default@src3
+PREHOOK: Input: default@src4
+PREHOOK: Input: default@src5
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select s.key, s.count from (
   select key, count from src2  where key < 10
@@ -1016,6 +1041,11 @@ select s.key, s.count from (
   select a.key as key, count(1) as count from src4 a join src5 b on a.key=b.key where a.key < 10 group by a.key
 )s
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src2
+POSTHOOK: Input: default@src3
+POSTHOOK: Input: default@src4
+POSTHOOK: Input: default@src5
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-4 is a root stage
   Stage-5 depends on stages: Stage-4

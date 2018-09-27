@@ -58,6 +58,10 @@ from (
 INSERT OVERWRITE TABLE dest1 select key1, key2
 INSERT OVERWRITE TABLE dest2 select value1, value2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+PREHOOK: Output: default@dest1
+PREHOOK: Output: default@dest2
 POSTHOOK: query: explain 
 from (
   SELECT a.key key1, a.value value1, b.key key2, b.value value2 
@@ -66,6 +70,10 @@ from (
 INSERT OVERWRITE TABLE dest1 select key1, key2
 INSERT OVERWRITE TABLE dest2 select value1, value2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+POSTHOOK: Output: default@dest1
+POSTHOOK: Output: default@dest2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-0 depends on stages: Stage-2
@@ -234,6 +242,10 @@ from (
 INSERT OVERWRITE TABLE dest1 select key1, key2
 INSERT OVERWRITE TABLE dest2 select value1, value2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+PREHOOK: Output: default@dest1
+PREHOOK: Output: default@dest2
 POSTHOOK: query: explain 
 from (
   SELECT a.key key1, a.value value1, b.key key2, b.value value2 
@@ -242,6 +254,10 @@ from (
 INSERT OVERWRITE TABLE dest1 select key1, key2
 INSERT OVERWRITE TABLE dest2 select value1, value2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+POSTHOOK: Output: default@dest1
+POSTHOOK: Output: default@dest2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-0 depends on stages: Stage-2
@@ -410,6 +426,10 @@ from (
 INSERT OVERWRITE TABLE dest1 select key1, key2
 INSERT OVERWRITE TABLE dest2 select value1, value2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+PREHOOK: Output: default@dest1
+PREHOOK: Output: default@dest2
 POSTHOOK: query: explain 
 from (
   SELECT a.key key1, a.value value1, b.key key2, b.value value2 
@@ -418,6 +438,10 @@ from (
 INSERT OVERWRITE TABLE dest1 select key1, key2
 INSERT OVERWRITE TABLE dest2 select value1, value2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+POSTHOOK: Output: default@dest1
+POSTHOOK: Output: default@dest2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-0 depends on stages: Stage-2

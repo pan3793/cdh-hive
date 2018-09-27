@@ -3,11 +3,15 @@ PREHOOK: query: explain
 from src 
 where src.key in (select key from src s1 where s1.key > '9')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
  select * 
 from src 
 where src.key in (select key from src s1 where s1.key > '9')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -107,6 +111,8 @@ where b.key in
          where b.value = a.value and a.key > '9'
         )
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 select * 
 from src b 
@@ -116,6 +122,8 @@ where b.key in
          where b.value = a.value and a.key > '9'
         )
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -222,6 +230,8 @@ part where part.p_size in
 	 where r <= 2
 	)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select p_name, p_size 
 from 
@@ -231,6 +241,8 @@ part where part.p_size in
 	 where r <= 2
 	)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2
@@ -402,6 +414,8 @@ from part b where b.p_size in
 	 where r <= 2 and b.p_mfgr = a.p_mfgr
 	)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@part
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select p_mfgr, p_name, p_size 
 from part b where b.p_size in 
@@ -410,6 +424,8 @@ from part b where b.p_size in
 	 where r <= 2 and b.p_mfgr = a.p_mfgr
 	)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@part
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2
@@ -595,6 +611,8 @@ where b.key in
          where b.value = a.value and a.key > '9'
         )
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 select * 
 from src b 
@@ -604,6 +622,8 @@ where b.key in
          where b.value = a.value and a.key > '9'
         )
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-1 depends on stages: Stage-2
@@ -751,12 +771,16 @@ from (select distinct l_partkey as p_partkey from lineitem) p join lineitem li o
 where li.l_linenumber = 1 and
  li.l_orderkey in (select l_orderkey from lineitem where l_shipmode = 'AIR')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select p.p_partkey, li.l_suppkey 
 from (select distinct l_partkey as p_partkey from lineitem) p join lineitem li on p.p_partkey = li.l_partkey 
 where li.l_linenumber = 1 and
  li.l_orderkey in (select l_orderkey from lineitem where l_shipmode = 'AIR')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-4

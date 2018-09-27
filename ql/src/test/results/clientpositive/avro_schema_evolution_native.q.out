@@ -238,9 +238,17 @@ Storage Desc Params:
 PREHOOK: query: EXPLAIN
 SELECT * FROM episodes_partitioned WHERE doctor_pt > 6
 PREHOOK: type: QUERY
+PREHOOK: Input: default@episodes_partitioned
+PREHOOK: Input: default@episodes_partitioned@doctor_pt=11
+PREHOOK: Input: default@episodes_partitioned@doctor_pt=9
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM episodes_partitioned WHERE doctor_pt > 6
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@episodes_partitioned
+POSTHOOK: Input: default@episodes_partitioned@doctor_pt=11
+POSTHOOK: Input: default@episodes_partitioned@doctor_pt=9
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
@@ -327,9 +335,17 @@ episodes_partitioned.title	episodes_partitioned.air_date	episodes_partitioned.do
 PREHOOK: query: EXPLAIN
 SELECT * FROM episodes_partitioned WHERE doctor_pt > 6
 PREHOOK: type: QUERY
+PREHOOK: Input: default@episodes_partitioned
+PREHOOK: Input: default@episodes_partitioned@doctor_pt=11
+PREHOOK: Input: default@episodes_partitioned@doctor_pt=9
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM episodes_partitioned WHERE doctor_pt > 6
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@episodes_partitioned
+POSTHOOK: Input: default@episodes_partitioned@doctor_pt=11
+POSTHOOK: Input: default@episodes_partitioned@doctor_pt=9
+#### A masked pattern was here ####
 Explain
 STAGE DEPENDENCIES:
   Stage-1 is a root stage

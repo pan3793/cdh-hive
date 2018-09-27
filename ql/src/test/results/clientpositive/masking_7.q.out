@@ -14,8 +14,14 @@ POSTHOOK: Output: database:default
 POSTHOOK: Output: default@masking_test
 PREHOOK: query: explain select * from masking_test
 PREHOOK: type: QUERY
+PREHOOK: Input: default@masking_test
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from masking_test
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@masking_test
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -68,8 +74,14 @@ POSTHOOK: Input: default@src
 2	2_lav	12	NULL
 PREHOOK: query: explain select * from masking_test where key > 0
 PREHOOK: type: QUERY
+PREHOOK: Input: default@masking_test
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from masking_test where key > 0
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@masking_test
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -141,8 +153,14 @@ POSTHOOK: Output: database:default
 POSTHOOK: Output: default@masking_test
 PREHOOK: query: explain select * from masking_test
 PREHOOK: type: QUERY
+PREHOOK: Input: default@masking_test
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from masking_test
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@masking_test
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -195,8 +213,14 @@ POSTHOOK: Input: default@src
 2	12	NULL	12	12	12	12	12	12	12	12	12	12
 PREHOOK: query: explain select * from masking_test where key > 0
 PREHOOK: type: QUERY
+PREHOOK: Input: default@masking_test
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from masking_test where key > 0
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@masking_test
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

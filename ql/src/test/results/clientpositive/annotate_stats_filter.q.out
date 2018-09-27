@@ -54,8 +54,12 @@ POSTHOOK: Lineage: loc_orc.year SIMPLE [(loc_staging)loc_staging.FieldSchema(nam
 POSTHOOK: Lineage: loc_orc.zip SIMPLE [(loc_staging)loc_staging.FieldSchema(name:zip, type:bigint, comment:null), ]
 PREHOOK: query: explain select * from loc_orc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -75,8 +79,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where state='OH'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where state='OH'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -119,8 +127,12 @@ POSTHOOK: Input: default@loc_orc
 #### A masked pattern was here ####
 PREHOOK: query: explain select * from loc_orc where state='OH'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where state='OH'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -155,8 +167,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where state!='OH'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where state!='OH'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -191,8 +207,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where state<>'OH'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where state<>'OH'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -227,8 +247,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where zip is null
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where zip is null
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -263,8 +287,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where !(zip is not null)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where !(zip is not null)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -299,8 +327,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where zip is not null
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where zip is not null
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -335,8 +367,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where !(zip is null)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where !(zip is null)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -371,8 +407,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where !false
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where !false
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -392,8 +432,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where !true
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where !true
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -428,8 +472,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where true
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where true
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -449,8 +497,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where 'foo'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where 'foo'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -485,8 +537,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where true = true
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where true = true
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -506,8 +562,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where false = true
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where false = true
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -542,8 +602,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where 'foo' = 'bar'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where 'foo' = 'bar'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -578,8 +642,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where false
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where false
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -614,8 +682,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where state='OH' or state='CA'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where state='OH' or state='CA'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -650,8 +722,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where year=2001 and year is null
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where year=2001 and year is null
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -686,8 +762,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where year=2001 and state='OH' and state='FL'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where year=2001 and state='OH' and state='FL'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -722,8 +802,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where (year=2001 and year is null) or (state='CA')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where (year=2001 and year is null) or (state='CA')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -758,8 +842,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where (year=2001 or year is null) and (state='CA')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where (year=2001 or year is null) and (state='CA')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -794,8 +882,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where locid < 30
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where locid < 30
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -830,8 +922,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where locid > 30
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where locid > 30
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -866,8 +962,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where locid <= 30
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where locid <= 30
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -902,8 +1002,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where locid >= 30
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where locid >= 30
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -938,8 +1042,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where locid < 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where locid < 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -974,8 +1082,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where locid > 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where locid > 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1010,8 +1122,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where locid <= 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where locid <= 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1046,8 +1162,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from loc_orc where locid >= 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from loc_orc where locid >= 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

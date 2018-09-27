@@ -233,6 +233,8 @@ left outer join small_alltypesorc_a hd
   on hd.cbigint = c.cbigint
 ) t1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@small_alltypesorc_a
+#### A masked pattern was here ####
 POSTHOOK: query: explain vectorization detail
 select count(*), sum(t1.c_cbigint) from (select c.cbigint as c_cbigint
 from small_alltypesorc_a c
@@ -242,6 +244,8 @@ left outer join small_alltypesorc_a hd
   on hd.cbigint = c.cbigint
 ) t1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@small_alltypesorc_a
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]

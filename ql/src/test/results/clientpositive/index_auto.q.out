@@ -52,8 +52,12 @@ POSTHOOK: Input: default@default__src_src_index__
 #### A masked pattern was here ####
 PREHOOK: query: EXPLAIN SELECT key, value FROM src WHERE key > 80 AND key < 100
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key, value FROM src WHERE key > 80 AND key < 100
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -115,8 +119,14 @@ POSTHOOK: Input: default@src
 98	val_98
 PREHOOK: query: EXPLAIN SELECT key, value FROM src WHERE key > 80 AND key < 100
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__src_src_index__
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key, value FROM src WHERE key > 80 AND key < 100
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__src_src_index__
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-8 depends on stages: Stage-3 , consists of Stage-5, Stage-4, Stage-6

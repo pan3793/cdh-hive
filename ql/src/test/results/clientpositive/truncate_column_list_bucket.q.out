@@ -51,8 +51,14 @@ POSTHOOK: Input: default@test_tab
 POSTHOOK: Output: default@test_tab@part=1
 PREHOOK: query: EXPLAIN EXTENDED SELECT * FROM test_tab WHERE part = '1' AND key = '484'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_tab
+PREHOOK: Input: default@test_tab@part=1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED SELECT * FROM test_tab WHERE part = '1' AND key = '484'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_tab
+POSTHOOK: Input: default@test_tab@part=1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -131,8 +137,14 @@ POSTHOOK: Input: default@test_tab@part=1
 484	NULL	1
 PREHOOK: query: EXPLAIN EXTENDED SELECT * FROM test_tab WHERE part = '1' AND key = '0'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test_tab
+PREHOOK: Input: default@test_tab@part=1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED SELECT * FROM test_tab WHERE part = '1' AND key = '0'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test_tab
+POSTHOOK: Input: default@test_tab@part=1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

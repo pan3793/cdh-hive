@@ -114,8 +114,12 @@ POSTHOOK: Lineage: over1korc.t EXPRESSION [(values__tmp__table__1)values__tmp__t
 POSTHOOK: Lineage: over1korc.ts EXPRESSION [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col9, type:string, comment:), ]
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION SELECT t, si, i, b, f, d, bo, s, ts, `dec`, bin FROM over1korc ORDER BY t, si, i LIMIT 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION SELECT t, si, i, b, f, d, bo, s, ts, `dec`, bin FROM over1korc ORDER BY t, si, i LIMIT 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: false
   enabledConditionsNotMet: [hive.vectorized.execution.enabled IS false]
@@ -210,8 +214,12 @@ POSTHOOK: Input: default@over1korc
 -17045922556
 PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION select t, si, i, b, f, d, bo, s, ts, `dec`, bin FROM over1korc ORDER BY t, si, i LIMIT 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION select t, si, i, b, f, d, bo, s, ts, `dec`, bin FROM over1korc ORDER BY t, si, i LIMIT 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
@@ -336,10 +344,14 @@ PREHOOK: query: EXPLAIN VECTORIZATION EXPRESSION
 SELECT SUM(HASH(*))
 FROM (SELECT t, si, i, b, f, d, bo, s, ts, `dec`, bin FROM over1korc ORDER BY t, si, i) as q
 PREHOOK: type: QUERY
+PREHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN VECTORIZATION EXPRESSION 
 SELECT SUM(HASH(*))
 FROM (SELECT t, si, i, b, f, d, bo, s, ts, `dec`, bin FROM over1korc ORDER BY t, si, i) as q
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 PLAN VECTORIZATION:
   enabled: true
   enabledConditionsMet: [hive.vectorized.execution.enabled IS true]
