@@ -47,6 +47,10 @@ public class CoreHBaseNegativeCliDriver extends CliAdapter {
       qt = new HBaseQTestUtil(cliConfig.getResultsDir(), cliConfig.getLogDir(), miniMR,
           new HBaseTestSetup(), initScript, cleanupScript);
 
+      qt.newSession();
+      qt.cleanUp();
+      qt.createSources();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();

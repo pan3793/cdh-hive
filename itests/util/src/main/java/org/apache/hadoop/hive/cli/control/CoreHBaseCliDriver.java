@@ -49,8 +49,8 @@ public class CoreHBaseCliDriver extends CliAdapter {
           new HBaseTestSetup(), initScript, cleanupScript);
 
       qt.newSession();
-      qt.cleanUp(null);
-      qt.createSources(null);
+      qt.cleanUp();
+      qt.createSources();
 
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
@@ -88,7 +88,7 @@ public class CoreHBaseCliDriver extends CliAdapter {
 
   @Override
   @AfterClass
-  public void shutdown() throws Exception {
+  public void shutdown() {
     try {
       qt.shutdown();
     } catch (Exception e) {
