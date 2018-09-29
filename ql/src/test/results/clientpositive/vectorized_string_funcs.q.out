@@ -20,6 +20,8 @@ where cbigint % 237 = 0
 and length(substr(cstring1, 1, 2)) <= 2
 and cstring1 like '%'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 select 
    substr(cstring1, 1, 2)
@@ -42,6 +44,8 @@ where cbigint % 237 = 0
 and length(substr(cstring1, 1, 2)) <= 2
 and cstring1 like '%'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

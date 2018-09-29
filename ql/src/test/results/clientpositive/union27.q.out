@@ -30,8 +30,16 @@ POSTHOOK: Output: database:default
 POSTHOOK: Output: default@jackson_sev_add
 PREHOOK: query: explain select b.* from jackson_sev_same a join (select * from dim_pho union all select * from jackson_sev_add)b on a.key=b.key and b.key=97
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dim_pho
+PREHOOK: Input: default@jackson_sev_add
+PREHOOK: Input: default@jackson_sev_same
+#### A masked pattern was here ####
 POSTHOOK: query: explain select b.* from jackson_sev_same a join (select * from dim_pho union all select * from jackson_sev_add)b on a.key=b.key and b.key=97
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dim_pho
+POSTHOOK: Input: default@jackson_sev_add
+POSTHOOK: Input: default@jackson_sev_same
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

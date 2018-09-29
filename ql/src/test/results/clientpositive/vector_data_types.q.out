@@ -97,8 +97,12 @@ POSTHOOK: Lineage: over1korc.t SIMPLE [(over1k)over1k.FieldSchema(name:t, type:t
 POSTHOOK: Lineage: over1korc.ts SIMPLE [(over1k)over1k.FieldSchema(name:ts, type:timestamp, comment:null), ]
 PREHOOK: query: EXPLAIN SELECT t, si, i, b, f, d, bo, s, ts, dec, bin FROM over1korc ORDER BY i LIMIT 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT t, si, i, b, f, d, bo, s, ts, dec, bin FROM over1korc ORDER BY i LIMIT 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -182,8 +186,12 @@ POSTHOOK: Input: default@over1korc
 -17045922556
 PREHOOK: query: EXPLAIN select t, si, i, b, f, d, bo, s, ts, dec, bin FROM over1korc ORDER BY i LIMIT 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select t, si, i, b, f, d, bo, s, ts, dec, bin FROM over1korc ORDER BY i LIMIT 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@over1korc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

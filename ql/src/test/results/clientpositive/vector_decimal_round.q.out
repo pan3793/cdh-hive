@@ -31,9 +31,13 @@ POSTHOOK: Input: default@decimal_tbl_txt
 PREHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_txt order by dec
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_tbl_txt
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_txt order by dec
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_tbl_txt
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -85,9 +89,13 @@ POSTHOOK: Input: default@decimal_tbl_txt
 PREHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_txt order by round(dec, -1)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_tbl_txt
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_txt order by round(dec, -1)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_tbl_txt
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -165,9 +173,13 @@ POSTHOOK: Input: default@decimal_tbl_rc
 PREHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_rc order by dec
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_tbl_rc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_rc order by dec
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_tbl_rc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -219,9 +231,13 @@ POSTHOOK: Input: default@decimal_tbl_rc
 PREHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_rc order by round(dec, -1)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_tbl_rc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_rc order by round(dec, -1)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_tbl_rc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -299,9 +315,13 @@ POSTHOOK: Input: default@decimal_tbl_orc
 PREHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_orc order by dec
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_tbl_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_orc order by dec
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_tbl_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -354,9 +374,13 @@ POSTHOOK: Input: default@decimal_tbl_orc
 PREHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_orc order by round(dec, -1)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_tbl_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select dec, round(dec, -1) from decimal_tbl_orc order by round(dec, -1)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_tbl_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

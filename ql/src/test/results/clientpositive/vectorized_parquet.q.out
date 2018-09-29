@@ -51,11 +51,15 @@ PREHOOK: query: explain select *
   where cint = 528534767 
   limit 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * 
   from alltypes_parquet
   where cint = 528534767 
   limit 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -124,6 +128,8 @@ PREHOOK: query: explain select ctinyint,
   from alltypes_parquet
   group by ctinyint
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 POSTHOOK: query: explain select ctinyint, 
   max(cint), 
   min(csmallint), 
@@ -133,6 +139,8 @@ POSTHOOK: query: explain select ctinyint,
   from alltypes_parquet
   group by ctinyint
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypes_parquet
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

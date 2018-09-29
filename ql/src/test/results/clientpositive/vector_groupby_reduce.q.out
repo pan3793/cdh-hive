@@ -219,6 +219,8 @@ from
 group by ss_ticket_number
 limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@store_sales
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select 
   ss_ticket_number
@@ -227,6 +229,8 @@ from
 group by ss_ticket_number
 limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@store_sales
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -326,6 +330,8 @@ from
 group by ss_ticket_number
 limit 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@store_sales
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select 
     min(ss_ticket_number)
@@ -338,6 +344,8 @@ from
 group by ss_ticket_number
 limit 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@store_sales
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

@@ -1,7 +1,11 @@
 PREHOOK: query: explain extended select key from src
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select key from src
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -39,8 +43,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select a.key from src a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select a.key from src a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -81,8 +89,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select a.key from src tablesample(1 percent) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select a.key from src tablesample(1 percent) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -205,8 +217,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select key from src ('user.defined.key'='some.value')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select key from src ('user.defined.key'='some.value')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -249,8 +265,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select key from src ('user.defined.key'='some.value') tablesample(1 percent)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select key from src ('user.defined.key'='some.value') tablesample(1 percent)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -377,8 +397,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select a.key from src ('user.defined.key'='some.value') a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select a.key from src ('user.defined.key'='some.value') a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -424,8 +448,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select a.key from src ('user.defined.key'='some.value') tablesample(1 percent) a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select a.key from src ('user.defined.key'='some.value') tablesample(1 percent) a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

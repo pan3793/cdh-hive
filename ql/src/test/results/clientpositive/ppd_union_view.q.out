@@ -131,9 +131,23 @@ POSTHOOK: Output: default@t1
 PREHOOK: query: explain extended
 select * from t1 where ds = '2011-10-13'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t1_mapping
+PREHOOK: Input: default@t1_mapping@ds=2011-10-13
+PREHOOK: Input: default@t1_new
+PREHOOK: Input: default@t1_old
+PREHOOK: Input: default@t1_old@ds=2011-10-13
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select * from t1 where ds = '2011-10-13'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t1_mapping
+POSTHOOK: Input: default@t1_mapping@ds=2011-10-13
+POSTHOOK: Input: default@t1_new
+POSTHOOK: Input: default@t1_old
+POSTHOOK: Input: default@t1_old@ds=2011-10-13
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -429,9 +443,21 @@ key4	value4	2011-10-14
 PREHOOK: query: explain extended
 select * from t1 where ds = '2011-10-15'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t1_mapping
+PREHOOK: Input: default@t1_new
+PREHOOK: Input: default@t1_new@ds=2011-10-15
+PREHOOK: Input: default@t1_old
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select * from t1 where ds = '2011-10-15'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t1_mapping
+POSTHOOK: Input: default@t1_new
+POSTHOOK: Input: default@t1_new@ds=2011-10-15
+POSTHOOK: Input: default@t1_old
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

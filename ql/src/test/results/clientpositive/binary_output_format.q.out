@@ -35,6 +35,8 @@ SELECT TRANSFORM(*)
     RECORDREADER 'org.apache.hadoop.hive.ql.exec.BinaryRecordReader'
 FROM src
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@dest1
 POSTHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE dest1
 SELECT TRANSFORM(*)
@@ -48,6 +50,8 @@ SELECT TRANSFORM(*)
     RECORDREADER 'org.apache.hadoop.hive.ql.exec.BinaryRecordReader'
 FROM src
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@dest1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

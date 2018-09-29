@@ -1,0 +1,1 @@
+Authorization failed:No privilege 'Create' found for outputs { database:default}. Use SHOW GRANT to get more details.

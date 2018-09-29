@@ -19,11 +19,17 @@ from src
 insert overwrite table dest1 select key, count(distinct value) group by key
 insert overwrite table dest2 select key+key, count(distinct value) group by key+key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@dest1
+PREHOOK: Output: default@dest2
 POSTHOOK: query: explain
 from src
 insert overwrite table dest1 select key, count(distinct value) group by key
 insert overwrite table dest2 select key+key, count(distinct value) group by key+key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@dest1
+POSTHOOK: Output: default@dest2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-0 depends on stages: Stage-2

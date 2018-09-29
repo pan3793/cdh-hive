@@ -102,10 +102,14 @@ PREHOOK: query: explain
 select count(1)
 from lineitem_ix
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(1)
 from lineitem_ix
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -163,10 +167,16 @@ PREHOOK: query: explain
 select count(L_ORDERKEY)
 from lineitem_ix
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(L_ORDERKEY)
 from lineitem_ix
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -229,11 +239,15 @@ count(L_ORDERKEY), count(L_PARTKEY)
 from lineitem_ix
 group by L_ORDERKEY, L_PARTKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain select L_ORDERKEY+L_PARTKEY as keysum,
 count(L_ORDERKEY), count(L_PARTKEY)
 from lineitem_ix
 group by L_ORDERKEY, L_PARTKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -406,12 +420,16 @@ from  lineitem_ix
 where L_ORDERKEY = 7
 group by L_ORDERKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select L_ORDERKEY, count(L_ORDERKEY)
 from  lineitem_ix
 where L_ORDERKEY = 7
 group by L_ORDERKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -483,11 +501,15 @@ select L_ORDERKEY, count(1)
 from lineitem_ix
 group by L_ORDERKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select L_ORDERKEY, count(1)
 from lineitem_ix
 group by L_ORDERKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -578,10 +600,14 @@ PREHOOK: query: explain
 select count(L_ORDERKEY+1)
 from lineitem_ix
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(L_ORDERKEY+1)
 from lineitem_ix
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -642,11 +668,15 @@ select L_ORDERKEY, count(L_ORDERKEY+1)
 from lineitem_ix
 group by L_ORDERKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select L_ORDERKEY, count(L_ORDERKEY+1)
 from lineitem_ix
 group by L_ORDERKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -738,11 +768,15 @@ select L_ORDERKEY, count(L_ORDERKEY+1+L_ORDERKEY+2)
 from lineitem_ix
 group by L_ORDERKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select L_ORDERKEY, count(L_ORDERKEY+1+L_ORDERKEY+2)
 from lineitem_ix
 group by L_ORDERKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -834,11 +868,15 @@ select L_ORDERKEY, count(1+L_ORDERKEY+2)
 from lineitem_ix
 group by L_ORDERKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select L_ORDERKEY, count(1+L_ORDERKEY+2)
 from lineitem_ix
 group by L_ORDERKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -931,12 +969,16 @@ from lineitem_ix
 where L_ORDERKEY < 7
 group by L_ORDERKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select L_ORDERKEY as a, count(1) as b
 from lineitem_ix
 where L_ORDERKEY < 7
 group by L_ORDERKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1014,12 +1056,16 @@ from
 (select L_ORDERKEY, L_ORDERKEY+L_PARTKEY as keysum from lineitem_ix) tabA
 group by L_ORDERKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select L_ORDERKEY, count(keysum), sum(keysum)
 from
 (select L_ORDERKEY, L_ORDERKEY+L_PARTKEY as keysum from lineitem_ix) tabA
 group by L_ORDERKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1113,11 +1159,15 @@ select L_ORDERKEY, count(L_ORDERKEY), sum(L_ORDERKEY)
 from lineitem_ix
 group by L_ORDERKEY
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select L_ORDERKEY, count(L_ORDERKEY), sum(L_ORDERKEY)
 from lineitem_ix
 group by L_ORDERKEY
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1209,11 +1259,17 @@ select colA, count(colA)
 from (select L_ORDERKEY as colA from lineitem_ix) tabA
 group by colA
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select colA, count(colA)
 from (select L_ORDERKEY as colA from lineitem_ix) tabA
 group by colA
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1308,12 +1364,16 @@ from
 (select L_ORDERKEY+L_PARTKEY as keysum from lineitem_ix) tabA
 group by keysum
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select keysum, count(keysum)
 from
 (select L_ORDERKEY+L_PARTKEY as keysum from lineitem_ix) tabA
 group by keysum
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1482,12 +1542,16 @@ from
 (select L_ORDERKEY+1 as keysum from lineitem_ix) tabA
 group by keysum
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select keysum, count(keysum)
 from
 (select L_ORDERKEY+1 as keysum from lineitem_ix) tabA
 group by keysum
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1582,12 +1646,16 @@ from
 (select L_ORDERKEY+1 as keysum from lineitem_ix) tabA
 group by keysum
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select keysum, count(1)
 from
 (select L_ORDERKEY+1 as keysum from lineitem_ix) tabA
 group by keysum
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1682,12 +1750,16 @@ from
 (select L_ORDERKEY+1 as keysum from lineitem_ix where L_ORDERKEY = 7) tabA
 group by keysum
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select keysum, count(keysum)
 from
 (select L_ORDERKEY+1 as keysum from lineitem_ix where L_ORDERKEY = 7) tabA
 group by keysum
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1763,6 +1835,8 @@ from
 group by keysum) tabB
 group by ckeysum
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select ckeysum, count(ckeysum)
 from
@@ -1772,6 +1846,8 @@ from
 group by keysum) tabB
 group by ckeysum
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -1888,6 +1964,9 @@ where L_ORDERKEY < 7
 group by L_ORDERKEY)tabA
 group by keysum
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select keysum, count(keysum) as ckeysum
 from
@@ -1897,6 +1976,9 @@ where L_ORDERKEY < 7
 group by L_ORDERKEY)tabA
 group by keysum
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -2047,6 +2129,11 @@ group by key
 ) tabB
 on (tabA.b=tabB.b)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+PREHOOK: Input: default@default__src_src_key_idx__
+PREHOOK: Input: default@lineitem_ix
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select tabA.a, tabA.b, tabB.a, tabB.b
 from
@@ -2061,6 +2148,11 @@ group by key
 ) tabB
 on (tabA.b=tabB.b)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+POSTHOOK: Input: default@default__src_src_key_idx__
+POSTHOOK: Input: default@lineitem_ix
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -2789,6 +2881,11 @@ group by key
 ) tabB
 on (tabA.b=tabB.b and tabB.a < '2')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+PREHOOK: Input: default@default__src_src_key_idx__
+PREHOOK: Input: default@lineitem_ix
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select tabA.a, tabA.b, tabB.a, tabB.b
 from
@@ -2803,6 +2900,11 @@ group by key
 ) tabB
 on (tabA.b=tabB.b and tabB.a < '2')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+POSTHOOK: Input: default@default__src_src_key_idx__
+POSTHOOK: Input: default@lineitem_ix
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -3091,9 +3193,13 @@ POSTHOOK: Input: default@src
 PREHOOK: query: EXPLAIN
 select L_ORDERKEY FROM lineitem_ix GROUP BY L_ORDERKEY, L_ORDERKEY+1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 select L_ORDERKEY FROM lineitem_ix GROUP BY L_ORDERKEY, L_ORDERKEY+1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -3180,9 +3286,15 @@ POSTHOOK: Input: default@lineitem_ix
 PREHOOK: query: EXPLAIN
 select L_ORDERKEY, L_ORDERKEY+1, count(L_ORDERKEY) FROM lineitem_ix GROUP BY L_ORDERKEY, L_ORDERKEY+1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 select L_ORDERKEY, L_ORDERKEY+1, count(L_ORDERKEY) FROM lineitem_ix GROUP BY L_ORDERKEY, L_ORDERKEY+1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -3270,9 +3382,15 @@ POSTHOOK: Input: default@lineitem_ix
 PREHOOK: query: EXPLAIN
 select L_ORDERKEY+2, count(L_ORDERKEY) FROM lineitem_ix GROUP BY L_ORDERKEY+2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 select L_ORDERKEY+2, count(L_ORDERKEY) FROM lineitem_ix GROUP BY L_ORDERKEY+2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -3373,6 +3491,10 @@ group by L_PARTKEY
 ) tabA
 group by b
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_partkey_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select b, count(b) as ckeysum
 from
@@ -3389,6 +3511,10 @@ group by L_PARTKEY
 ) tabA
 group by b
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_orderkey_idx__
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_l_partkey_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -3593,6 +3719,8 @@ group by L_PARTKEY
 ) tabA
 group by a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select a, count(a) as ckeysum
 from
@@ -3609,6 +3737,8 @@ group by L_PARTKEY
 ) tabA
 group by a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -3789,6 +3919,8 @@ select case L_ORDERKEY when null then 1 else 1 END as a
 from lineitem_ix)tab
 group by a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select a, count(a)
 from (
@@ -3796,6 +3928,8 @@ select case L_ORDERKEY when null then 1 else 1 END as a
 from lineitem_ix)tab
 group by a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

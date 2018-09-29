@@ -38,10 +38,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM T1 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM T1 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -395,10 +399,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl2
 SELECT key, val, count(1) FROM T1 GROUP BY key, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl2
 POSTHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl2
 SELECT key, val, count(1) FROM T1 GROUP BY key, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl2
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -674,10 +682,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM (SELECT key, val FROM T1) subq1 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM (SELECT key, val FROM T1) subq1 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1078,10 +1090,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl1
 SELECT k, count(1) FROM (SELECT key as k, val as v FROM T1) subq1 GROUP BY k
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl1
 SELECT k, count(1) FROM (SELECT key as k, val as v FROM T1) subq1 GROUP BY k
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1492,10 +1508,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl3
 SELECT 1, key, count(1) FROM T1 GROUP BY 1, key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl3
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl3
 SELECT 1, key, count(1) FROM T1 GROUP BY 1, key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl3
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1776,10 +1796,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, 1, val, count(1) FROM T1 GROUP BY key, 1, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl4
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, 1, val, count(1) FROM T1 GROUP BY key, 1, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl4
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -2059,10 +2083,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl3
 SELECT key, key + 1, count(1) FROM T1 GROUP BY key, key + 1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl3
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl3
 SELECT key, key + 1, count(1) FROM T1 GROUP BY key, key + 1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl3
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -2353,12 +2381,16 @@ SELECT key + key, sum(cnt) from
 (SELECT key, count(1) as cnt FROM T1 GROUP BY key) subq1
 group by key + key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key + key, sum(cnt) from
 (SELECT key, count(1) as cnt FROM T1 GROUP BY key) subq1
 group by key + key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -2682,6 +2714,8 @@ SELECT key, count(1) FROM T1 GROUP BY key
 SELECT key, count(1) FROM T1 GROUP BY key
 ) subq1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT * FROM (
@@ -2690,6 +2724,8 @@ SELECT key, count(1) FROM T1 GROUP BY key
 SELECT key, count(1) FROM T1 GROUP BY key
 ) subq1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -3177,6 +3213,8 @@ SELECT key, count(1) FROM T1 GROUP BY key
 SELECT key + key as key, count(1) FROM T1 GROUP BY key + key
 ) subq1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl1
 SELECT * FROM (
@@ -3185,6 +3223,8 @@ SELECT key, count(1) FROM T1 GROUP BY key
 SELECT key + key as key, count(1) FROM T1 GROUP BY key + key
 ) subq1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -3862,6 +3902,8 @@ JOIN
 (SELECT key, count(1) as cnt FROM T1 GROUP BY key) subq2
 ON subq1.key = subq2.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT subq1.key, subq1.cnt+subq2.cnt FROM 
@@ -3870,6 +3912,8 @@ JOIN
 (SELECT key, count(1) as cnt FROM T1 GROUP BY key) subq2
 ON subq1.key = subq2.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -4176,6 +4220,8 @@ JOIN
 (SELECT key, val, count(1) FROM T1 GROUP BY key, val) subq2
 ON subq1.key = subq2.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED 
 SELECT * FROM 
 (SELECT key, count(1) FROM T1 GROUP BY key) subq1
@@ -4183,6 +4229,8 @@ JOIN
 (SELECT key, val, count(1) FROM T1 GROUP BY key, val) subq2
 ON subq1.key = subq2.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -4601,10 +4649,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM T2 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, count(1) FROM T2 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@outputtbl1
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -4884,10 +4936,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, 1, val, count(1) FROM T2 GROUP BY key, 1, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@outputtbl4
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, 1, val, count(1) FROM T2 GROUP BY key, 1, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@outputtbl4
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -5185,10 +5241,14 @@ PREHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl5
 SELECT key, 1, val, 2, count(1) FROM T2 GROUP BY key, 1, val, 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@outputtbl5
 POSTHOOK: query: EXPLAIN EXTENDED 
 INSERT OVERWRITE TABLE outputTbl5
 SELECT key, 1, val, 2, count(1) FROM T2 GROUP BY key, 1, val, 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@outputtbl5
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -5476,12 +5536,16 @@ SELECT key, constant, val, count(1) from
 (SELECT key, 1 as constant, val from T2)subq
 group by key, constant, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@outputtbl4
 POSTHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl4
 SELECT key, constant, val, count(1) from 
 (SELECT key, 1 as constant, val from T2)subq
 group by key, constant, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@outputtbl4
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -5800,6 +5864,8 @@ SELECT key, constant as constant2, val, 2 as constant3 from
 )subq2
 group by key, constant3, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@outputtbl4
 POSTHOOK: query: EXPLAIN EXTENDED
 INSERT OVERWRITE TABLE outputTbl4
 select key, constant3, val, count(1) from
@@ -5809,6 +5875,8 @@ SELECT key, constant as constant2, val, 2 as constant3 from
 )subq2
 group by key, constant3, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@outputtbl4
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -6168,11 +6236,17 @@ FROM T2
 INSERT OVERWRITE TABLE DEST1 SELECT key, count(1) GROUP BY key
 INSERT OVERWRITE TABLE DEST2 SELECT key, val, count(1) GROUP BY key, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@dest1
+PREHOOK: Output: default@dest2
 POSTHOOK: query: EXPLAIN
 FROM T2
 INSERT OVERWRITE TABLE DEST1 SELECT key, count(1) GROUP BY key
 INSERT OVERWRITE TABLE DEST2 SELECT key, val, count(1) GROUP BY key, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@dest1
+POSTHOOK: Output: default@dest2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2
@@ -6348,11 +6422,17 @@ FROM (select key, val from T2 where key = 8) x
 INSERT OVERWRITE TABLE DEST1 SELECT key, count(1) GROUP BY key
 INSERT OVERWRITE TABLE DEST2 SELECT key, val, count(1) GROUP BY key, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@dest1
+PREHOOK: Output: default@dest2
 POSTHOOK: query: EXPLAIN
 FROM (select key, val from T2 where key = 8) x
 INSERT OVERWRITE TABLE DEST1 SELECT key, count(1) GROUP BY key
 INSERT OVERWRITE TABLE DEST2 SELECT key, val, count(1) GROUP BY key, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@dest1
+POSTHOOK: Output: default@dest2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2

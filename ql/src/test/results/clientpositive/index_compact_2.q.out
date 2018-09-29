@@ -173,9 +173,11 @@ POSTHOOK: Input: default@srcpart_rc
 PREHOOK: query: EXPLAIN
 CREATE INDEX srcpart_rc_index ON TABLE srcpart_rc(key) as 'COMPACT' WITH DEFERRED REBUILD
 PREHOOK: type: CREATEINDEX
+PREHOOK: Input: default@srcpart_rc
 POSTHOOK: query: EXPLAIN
 CREATE INDEX srcpart_rc_index ON TABLE srcpart_rc(key) as 'COMPACT' WITH DEFERRED REBUILD
 POSTHOOK: type: CREATEINDEX
+POSTHOOK: Input: default@srcpart_rc
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

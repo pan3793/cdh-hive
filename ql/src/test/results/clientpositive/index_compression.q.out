@@ -18,8 +18,14 @@ POSTHOOK: Lineage: default__src_src_index__._offsets EXPRESSION [(src)src.FieldS
 POSTHOOK: Lineage: default__src_src_index__.key SIMPLE [(src)src.FieldSchema(name:key, type:string, comment:default), ]
 PREHOOK: query: EXPLAIN SELECT key, value FROM src WHERE key > 80 AND key < 100
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__src_src_index__
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key, value FROM src WHERE key > 80 AND key < 100
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__src_src_index__
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-8 depends on stages: Stage-3 , consists of Stage-5, Stage-4, Stage-6

@@ -22,6 +22,8 @@ WHERE  (((cstring2 IS NOT NULL)
                 AND (cdouble = 988888))))
 LIMIT 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT ctimestamp1,
        cdouble,
@@ -46,6 +48,8 @@ WHERE  (((cstring2 IS NOT NULL)
                 AND (cdouble = 988888))))
 LIMIT 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -176,6 +180,8 @@ WHERE  (((cstring2 IS NOT NULL)
                 AND (cdouble = 988888))))
 LIMIT 20
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT ctimestamp1,
        cdouble,
@@ -200,6 +206,8 @@ WHERE  (((cstring2 IS NOT NULL)
                 AND (cdouble = 988888))))
 LIMIT 20
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

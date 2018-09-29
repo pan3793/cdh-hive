@@ -144,8 +144,12 @@ POSTHOOK: type: LOAD
 POSTHOOK: Output: default@test4
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test1 R on L.key=R.key AND L.value=R.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test1 R on L.key=R.key AND L.value=R.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -390,8 +394,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test2 L join test2 R on L.key=R.key AND L.value=R.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test2
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test2 L join test2 R on L.key=R.key AND L.value=R.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test2
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -636,8 +644,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test1 R on L.key+L.key=R.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test1 R on L.key+L.key=R.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -866,8 +878,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test2 R on L.key=R.key AND L.value=R.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+PREHOOK: Input: default@test2
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test2 R on L.key=R.key AND L.value=R.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+POSTHOOK: Input: default@test2
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1101,8 +1119,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test3 R on L.key=R.key AND L.value=R.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+PREHOOK: Input: default@test3
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test3 R on L.key=R.key AND L.value=R.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+POSTHOOK: Input: default@test3
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1336,8 +1360,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test4 R on L.key=R.key AND L.value=R.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test1
+PREHOOK: Input: default@test4
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test1 L join test4 R on L.key=R.key AND L.value=R.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test1
+POSTHOOK: Input: default@test4
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1571,8 +1601,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test2 L join test3 R on L.key=R.key AND L.value=R.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test2
+PREHOOK: Input: default@test3
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test2 L join test3 R on L.key=R.key AND L.value=R.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test2
+POSTHOOK: Input: default@test3
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1806,8 +1842,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test2 L join test4 R on L.key=R.key AND L.value=R.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test2
+PREHOOK: Input: default@test4
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test2 L join test4 R on L.key=R.key AND L.value=R.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test2
+POSTHOOK: Input: default@test4
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -2041,8 +2083,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test3 L join test4 R on L.key=R.key AND L.value=R.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test3
+PREHOOK: Input: default@test4
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select /* + MAPJOIN(R) */ * from test3 L join test4 R on L.key=R.key AND L.value=R.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test3
+POSTHOOK: Input: default@test4
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

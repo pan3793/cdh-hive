@@ -10,8 +10,12 @@ POSTHOOK: type: DESCFUNCTION
 to_utc_timestamp(timestamp, string timezone) - Assumes given timestamp is in given timezone and converts to UTC (as of Hive 0.8.0)
 PREHOOK: query: explain select to_utc_timestamp('2012-02-11 10:30:00', 'PST')
 PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
 POSTHOOK: query: explain select to_utc_timestamp('2012-02-11 10:30:00', 'PST')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

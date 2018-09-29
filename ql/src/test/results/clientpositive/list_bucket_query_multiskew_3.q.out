@@ -199,9 +199,15 @@ Storage Desc Params:
 PREHOOK: query: explain extended
 select * from fact_daily where ds = '1' and  hr='1' and key='145'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@fact_daily
+PREHOOK: Input: default@fact_daily@ds=1/hr=1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select * from fact_daily where ds = '1' and  hr='1' and key='145'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@fact_daily
+POSTHOOK: Input: default@fact_daily@ds=1/hr=1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -314,9 +320,15 @@ POSTHOOK: Input: default@fact_daily@ds=1/hr=1
 PREHOOK: query: explain extended
 select count(*) from fact_daily where ds = '1' and  hr='1'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@fact_daily
+PREHOOK: Input: default@fact_daily@ds=1/hr=1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 select count(*) from fact_daily where ds = '1' and  hr='1'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@fact_daily
+POSTHOOK: Input: default@fact_daily@ds=1/hr=1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -469,9 +481,15 @@ POSTHOOK: Input: default@fact_daily@ds=1/hr=1
 PREHOOK: query: explain extended
 SELECT * FROM fact_daily WHERE ds='1' and hr='2' and (key='484' and value='val_484')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@fact_daily
+PREHOOK: Input: default@fact_daily@ds=1/hr=2
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 SELECT * FROM fact_daily WHERE ds='1' and hr='2' and (key='484' and value='val_484')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@fact_daily
+POSTHOOK: Input: default@fact_daily@ds=1/hr=2
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -589,9 +607,15 @@ POSTHOOK: Input: default@fact_daily@ds=1/hr=2
 PREHOOK: query: explain extended
 SELECT * FROM fact_daily WHERE ds='1' and hr='3' and (key='327' and value='val_327')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@fact_daily
+PREHOOK: Input: default@fact_daily@ds=1/hr=3
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 SELECT * FROM fact_daily WHERE ds='1' and hr='3' and (key='327' and value='val_327')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@fact_daily
+POSTHOOK: Input: default@fact_daily@ds=1/hr=3
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

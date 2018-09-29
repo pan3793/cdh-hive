@@ -86,8 +86,20 @@ age                 	int
 #### A masked pattern was here ####
 PREHOOK: query: EXPLAIN EXTENDED select * from test2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@test2
+PREHOOK: Input: default@test2@age=15
+PREHOOK: Input: default@test2@age=30
+PREHOOK: Input: default@test2@age=40
+PREHOOK: Input: default@test2@age=__HIVE_DEFAULT_PARTITION__
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED select * from test2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test2
+POSTHOOK: Input: default@test2@age=15
+POSTHOOK: Input: default@test2@age=30
+POSTHOOK: Input: default@test2@age=40
+POSTHOOK: Input: default@test2@age=__HIVE_DEFAULT_PARTITION__
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

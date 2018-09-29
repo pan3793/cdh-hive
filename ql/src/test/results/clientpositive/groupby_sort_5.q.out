@@ -38,10 +38,14 @@ PREHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, val, count(1) FROM T1 GROUP BY key, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, val, count(1) FROM T1 GROUP BY key, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -201,10 +205,14 @@ PREHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, val, count(1) FROM T1 GROUP BY key, val
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE outputTbl1
 SELECT key, val, count(1) FROM T1 GROUP BY key, val
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -372,10 +380,14 @@ PREHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE outputTbl2
 SELECT key, count(1) FROM T1 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Output: default@outputtbl2
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE outputTbl2
 SELECT key, count(1) FROM T1 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Output: default@outputtbl2
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

@@ -67,11 +67,23 @@ SELECT /*+ MAPJOIN(b) */ count(*)
 FROM srcbucket_mapjoin_part_1 a JOIN srcbucket_mapjoin_part_2 b
 ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcbucket_mapjoin_part_1
+PREHOOK: Input: default@srcbucket_mapjoin_part_1@part=1
+PREHOOK: Input: default@srcbucket_mapjoin_part_1@part=2
+PREHOOK: Input: default@srcbucket_mapjoin_part_2
+PREHOOK: Input: default@srcbucket_mapjoin_part_2@part=1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED
 SELECT /*+ MAPJOIN(b) */ count(*)
 FROM srcbucket_mapjoin_part_1 a JOIN srcbucket_mapjoin_part_2 b
 ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1@part=1
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1@part=2
+POSTHOOK: Input: default@srcbucket_mapjoin_part_2
+POSTHOOK: Input: default@srcbucket_mapjoin_part_2@part=1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -376,11 +388,21 @@ SELECT /*+ MAPJOIN(b) */ count(*)
 FROM srcbucket_mapjoin_part_1 a JOIN srcbucket_mapjoin_part_2 b
 ON a.key = b.key and a.part = '2'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcbucket_mapjoin_part_1
+PREHOOK: Input: default@srcbucket_mapjoin_part_1@part=2
+PREHOOK: Input: default@srcbucket_mapjoin_part_2
+PREHOOK: Input: default@srcbucket_mapjoin_part_2@part=1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED
 SELECT /*+ MAPJOIN(b) */ count(*)
 FROM srcbucket_mapjoin_part_1 a JOIN srcbucket_mapjoin_part_2 b
 ON a.key = b.key and a.part = '2'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1@part=2
+POSTHOOK: Input: default@srcbucket_mapjoin_part_2
+POSTHOOK: Input: default@srcbucket_mapjoin_part_2@part=1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -658,11 +680,21 @@ SELECT /*+ MAPJOIN(b) */ count(*)
 FROM srcbucket_mapjoin_part_1 a JOIN srcbucket_mapjoin_part_2 b
 ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcbucket_mapjoin_part_1
+PREHOOK: Input: default@srcbucket_mapjoin_part_1@part=2
+PREHOOK: Input: default@srcbucket_mapjoin_part_2
+PREHOOK: Input: default@srcbucket_mapjoin_part_2@part=1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED
 SELECT /*+ MAPJOIN(b) */ count(*)
 FROM srcbucket_mapjoin_part_1 a JOIN srcbucket_mapjoin_part_2 b
 ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1@part=2
+POSTHOOK: Input: default@srcbucket_mapjoin_part_2
+POSTHOOK: Input: default@srcbucket_mapjoin_part_2@part=1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -933,11 +965,21 @@ SELECT /*+ MAPJOIN(b) */ count(*)
 FROM srcbucket_mapjoin_part_1 a JOIN srcbucket_mapjoin_part_2 b
 ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcbucket_mapjoin_part_1
+PREHOOK: Input: default@srcbucket_mapjoin_part_1@part=2
+PREHOOK: Input: default@srcbucket_mapjoin_part_2
+PREHOOK: Input: default@srcbucket_mapjoin_part_2@part=1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED
 SELECT /*+ MAPJOIN(b) */ count(*)
 FROM srcbucket_mapjoin_part_1 a JOIN srcbucket_mapjoin_part_2 b
 ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1
+POSTHOOK: Input: default@srcbucket_mapjoin_part_1@part=2
+POSTHOOK: Input: default@srcbucket_mapjoin_part_2
+POSTHOOK: Input: default@srcbucket_mapjoin_part_2@part=1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

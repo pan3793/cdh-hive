@@ -33,9 +33,15 @@ POSTHOOK: Output: default@employee_part@employeesalary=4000.0
 PREHOOK: query: explain 
 analyze table Employee_Part partition (employeeSalary=2000.0) compute statistics for columns employeeID
 PREHOOK: type: QUERY
+PREHOOK: Input: default@employee_part
+PREHOOK: Input: default@employee_part@employeesalary=2000.0
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table Employee_Part partition (employeeSalary=2000.0) compute statistics for columns employeeID
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@employee_part
+POSTHOOK: Input: default@employee_part@employeesalary=2000.0
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage
@@ -85,9 +91,15 @@ STAGE PLANS:
 PREHOOK: query: explain extended
 analyze table Employee_Part partition (employeeSalary=2000.0) compute statistics for columns employeeID
 PREHOOK: type: QUERY
+PREHOOK: Input: default@employee_part
+PREHOOK: Input: default@employee_part@employeesalary=2000.0
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 analyze table Employee_Part partition (employeeSalary=2000.0) compute statistics for columns employeeID
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@employee_part
+POSTHOOK: Input: default@employee_part@employeesalary=2000.0
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_ANALYZE
@@ -233,9 +245,15 @@ POSTHOOK: Input: default@employee_part@employeesalary=2000.0
 PREHOOK: query: explain 
 analyze table Employee_Part partition (employeeSalary=4000.0) compute statistics for columns employeeID
 PREHOOK: type: QUERY
+PREHOOK: Input: default@employee_part
+PREHOOK: Input: default@employee_part@employeesalary=4000.0
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table Employee_Part partition (employeeSalary=4000.0) compute statistics for columns employeeID
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@employee_part
+POSTHOOK: Input: default@employee_part@employeesalary=4000.0
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage
@@ -285,9 +303,15 @@ STAGE PLANS:
 PREHOOK: query: explain extended
 analyze table Employee_Part partition (employeeSalary=4000.0) compute statistics for columns employeeID
 PREHOOK: type: QUERY
+PREHOOK: Input: default@employee_part
+PREHOOK: Input: default@employee_part@employeesalary=4000.0
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 analyze table Employee_Part partition (employeeSalary=4000.0) compute statistics for columns employeeID
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@employee_part
+POSTHOOK: Input: default@employee_part@employeesalary=4000.0
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_ANALYZE
@@ -433,9 +457,15 @@ POSTHOOK: Input: default@employee_part@employeesalary=4000.0
 PREHOOK: query: explain 
 analyze table Employee_Part partition (employeeSalary=2000.0) compute statistics for columns
 PREHOOK: type: QUERY
+PREHOOK: Input: default@employee_part
+PREHOOK: Input: default@employee_part@employeesalary=2000.0
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table Employee_Part partition (employeeSalary=2000.0) compute statistics for columns
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@employee_part
+POSTHOOK: Input: default@employee_part@employeesalary=2000.0
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage
@@ -513,9 +543,17 @@ employeeName        	string              	                    	                 
 PREHOOK: query: explain 
 analyze table Employee_Part  compute statistics for columns
 PREHOOK: type: QUERY
+PREHOOK: Input: default@employee_part
+PREHOOK: Input: default@employee_part@employeesalary=2000.0
+PREHOOK: Input: default@employee_part@employeesalary=4000.0
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table Employee_Part  compute statistics for columns
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@employee_part
+POSTHOOK: Input: default@employee_part@employeesalary=2000.0
+POSTHOOK: Input: default@employee_part@employeesalary=4000.0
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage
@@ -595,9 +633,17 @@ employeeID          	int                 	16                  	34               
 PREHOOK: query: explain 
 analyze table Employee_Part  compute statistics for columns
 PREHOOK: type: QUERY
+PREHOOK: Input: default@employee_part
+PREHOOK: Input: default@employee_part@employeesalary=2000.0
+PREHOOK: Input: default@employee_part@employeesalary=4000.0
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table Employee_Part  compute statistics for columns
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@employee_part
+POSTHOOK: Input: default@employee_part@employeesalary=2000.0
+POSTHOOK: Input: default@employee_part@employeesalary=4000.0
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage

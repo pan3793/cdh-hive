@@ -41,9 +41,13 @@ POSTHOOK: Output: default@uservisits_web_text_none
 PREHOOK: query: explain 
 analyze table UserVisits_web_text_none compute statistics for columns sourceIP, avgTimeOnSite, adRevenue
 PREHOOK: type: QUERY
+PREHOOK: Input: default@uservisits_web_text_none
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table UserVisits_web_text_none compute statistics for columns sourceIP, avgTimeOnSite, adRevenue
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@uservisits_web_text_none
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage
@@ -86,9 +90,13 @@ STAGE PLANS:
 PREHOOK: query: explain extended
 analyze table UserVisits_web_text_none compute statistics for columns sourceIP, avgTimeOnSite, adRevenue
 PREHOOK: type: QUERY
+PREHOOK: Input: default@uservisits_web_text_none
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 analyze table UserVisits_web_text_none compute statistics for columns sourceIP, avgTimeOnSite, adRevenue
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@uservisits_web_text_none
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_ANALYZE
@@ -218,9 +226,13 @@ POSTHOOK: Input: default@uservisits_web_text_none
 PREHOOK: query: explain 
 analyze table default.UserVisits_web_text_none compute statistics for columns
 PREHOOK: type: QUERY
+PREHOOK: Input: default@uservisits_web_text_none
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table default.UserVisits_web_text_none compute statistics for columns
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@uservisits_web_text_none
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage
@@ -318,9 +330,13 @@ POSTHOOK: Output: default@empty_tab
 PREHOOK: query: explain 
 analyze table empty_tab compute statistics for columns a,b,c,d,e
 PREHOOK: type: QUERY
+PREHOOK: Input: default@empty_tab
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table empty_tab compute statistics for columns a,b,c,d,e
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@empty_tab
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage
@@ -442,9 +458,13 @@ POSTHOOK: Input: database:default
 PREHOOK: query: explain 
 analyze table dummydb.UserVisits_in_dummy_db compute statistics for columns sourceIP, avgTimeOnSite, adRevenue
 PREHOOK: type: QUERY
+PREHOOK: Input: dummydb@uservisits_in_dummy_db
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table dummydb.UserVisits_in_dummy_db compute statistics for columns sourceIP, avgTimeOnSite, adRevenue
 POSTHOOK: type: QUERY
+POSTHOOK: Input: dummydb@uservisits_in_dummy_db
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage
@@ -487,9 +507,13 @@ STAGE PLANS:
 PREHOOK: query: explain extended
 analyze table dummydb.UserVisits_in_dummy_db compute statistics for columns sourceIP, avgTimeOnSite, adRevenue
 PREHOOK: type: QUERY
+PREHOOK: Input: dummydb@uservisits_in_dummy_db
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
 analyze table dummydb.UserVisits_in_dummy_db compute statistics for columns sourceIP, avgTimeOnSite, adRevenue
 POSTHOOK: type: QUERY
+POSTHOOK: Input: dummydb@uservisits_in_dummy_db
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_ANALYZE
@@ -620,9 +644,13 @@ POSTHOOK: Input: dummydb@uservisits_in_dummy_db
 PREHOOK: query: explain 
 analyze table dummydb.UserVisits_in_dummy_db compute statistics for columns
 PREHOOK: type: QUERY
+PREHOOK: Input: dummydb@uservisits_in_dummy_db
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 analyze table dummydb.UserVisits_in_dummy_db compute statistics for columns
 POSTHOOK: type: QUERY
+POSTHOOK: Input: dummydb@uservisits_in_dummy_db
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 is a root stage

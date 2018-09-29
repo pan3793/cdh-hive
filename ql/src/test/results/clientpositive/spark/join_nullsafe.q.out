@@ -16,8 +16,12 @@ POSTHOOK: type: LOAD
 POSTHOOK: Output: default@myinput1
 PREHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -101,8 +105,12 @@ NULL	NULL	48	NULL
 NULL	NULL	NULL	NULL
 PREHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value join myinput1 c on a.key=c.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value join myinput1 c on a.key=c.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -198,8 +206,12 @@ POSTHOOK: Input: default@myinput1
 100	100	100	100	100	100
 PREHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value join myinput1 c on a.key<=>c.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value join myinput1 c on a.key<=>c.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -314,8 +326,12 @@ NULL	NULL	NULL	NULL	NULL	35
 NULL	NULL	NULL	NULL	NULL	NULL
 PREHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value AND a.value=b.key join myinput1 c on a.key<=>c.key AND a.value=c.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value AND a.value=b.key join myinput1 c on a.key<=>c.key AND a.value=c.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -409,8 +425,12 @@ POSTHOOK: Input: default@myinput1
 NULL	10	10	NULL	NULL	10
 PREHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value AND a.value<=>b.key join myinput1 c on a.key<=>c.key AND a.value<=>c.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value AND a.value<=>b.key join myinput1 c on a.key<=>c.key AND a.value<=>c.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1540,8 +1560,12 @@ NULL	NULL	12	NULL
 NULL	NULL	NULL	NULL
 PREHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value AND a.key is NULL
 PREHOOK: type: QUERY
+PREHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from myinput1 a join myinput1 b on a.key<=>b.value AND a.key is NULL
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@myinput1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

@@ -63,8 +63,14 @@ POSTHOOK: Input: default@acid@ds=2008-04-08
 1001
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08
+PREHOOK: Output: default@acid@ds=2008-04-08
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08
+POSTHOOK: Output: default@acid@ds=2008-04-08
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -136,8 +142,14 @@ POSTHOOK: Input: default@acid@ds=2008-04-08
 1001
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds in ('2008-04-08')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08
+PREHOOK: Output: default@acid@ds=2008-04-08
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds in ('2008-04-08')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08
+POSTHOOK: Output: default@acid@ds=2008-04-08
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -297,8 +309,14 @@ POSTHOOK: Input: default@acid@ds=2008-04-08
 1001
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08
+PREHOOK: Output: default@acid@ds=2008-04-08
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08
+POSTHOOK: Output: default@acid@ds=2008-04-08
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -370,8 +388,14 @@ POSTHOOK: Input: default@acid@ds=2008-04-08
 1001
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds in ('2008-04-08')
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08
+PREHOOK: Output: default@acid@ds=2008-04-08
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds in ('2008-04-08')
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08
+POSTHOOK: Output: default@acid@ds=2008-04-08
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -537,8 +561,14 @@ POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
 501
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr=11
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=11
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr=11
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=11
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -611,8 +641,18 @@ POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
 501
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr>=11
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=12
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=12
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr>=11
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=12
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=12
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -785,8 +825,14 @@ POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
 501
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr=11
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=11
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr=11
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=11
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -859,8 +905,18 @@ POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
 501
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr>=11
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=12
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=12
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr>=11
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=12
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=12
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1033,8 +1089,14 @@ POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
 501
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr=11
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=11
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr=11
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=11
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1107,8 +1169,18 @@ POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
 501
 PREHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr>=11
 PREHOOK: type: QUERY
+PREHOOK: Input: default@acid
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Input: default@acid@ds=2008-04-08/hr=12
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=11
+PREHOOK: Output: default@acid@ds=2008-04-08/hr=12
 POSTHOOK: query: explain update acid set key = 'foo' where value = 'bar' and ds='2008-04-08' and hr>=11
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@acid
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Input: default@acid@ds=2008-04-08/hr=12
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@acid@ds=2008-04-08/hr=12
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

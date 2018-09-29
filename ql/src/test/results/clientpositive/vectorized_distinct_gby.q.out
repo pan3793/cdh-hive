@@ -18,8 +18,12 @@ POSTHOOK: Lineage: dtest.a SCRIPT []
 POSTHOOK: Lineage: dtest.b SIMPLE []
 PREHOOK: query: explain select sum(distinct a), count(distinct a) from dtest
 PREHOOK: type: QUERY
+PREHOOK: Input: default@dtest
+#### A masked pattern was here ####
 POSTHOOK: query: explain select sum(distinct a), count(distinct a) from dtest
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@dtest
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -78,8 +82,12 @@ POSTHOOK: Input: default@dtest
 300	1
 PREHOOK: query: explain select sum(distinct cint), count(distinct cint), avg(distinct cint), std(distinct cint) from alltypesorc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select sum(distinct cint), count(distinct cint), avg(distinct cint), std(distinct cint) from alltypesorc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

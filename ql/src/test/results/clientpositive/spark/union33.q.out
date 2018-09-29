@@ -15,6 +15,8 @@ UNION ALL
  	GROUP BY key
 )a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@test_src
 POSTHOOK: query: EXPLAIN INSERT OVERWRITE TABLE test_src 
 SELECT key, value FROM (
 	SELECT key, value FROM src 
@@ -24,6 +26,8 @@ UNION ALL
  	GROUP BY key
 )a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@test_src
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -168,6 +172,8 @@ UNION ALL
 	WHERE key = 0
 )a
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Output: default@test_src
 POSTHOOK: query: EXPLAIN INSERT OVERWRITE TABLE test_src 
 SELECT key, value FROM (
 	SELECT key, COUNT(*) AS value FROM src
@@ -177,6 +183,8 @@ UNION ALL
 	WHERE key = 0
 )a
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Output: default@test_src
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

@@ -2,9 +2,15 @@ Warning: Shuffle Join JOIN[8][tables = [$hdt$_0, $hdt$_1]] in Stage 'Stage-1:MAP
 PREHOOK: query: explain extended
  select * from (select a.key as ak, a.value as av, b.key as bk, b.value as bv from src a join src1 b where a.key = '429' ) c
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended
  select * from (select a.key as ak, a.value as av, b.key as bk, b.value as bv from src a join src1 b where a.key = '429' ) c
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -306,8 +312,12 @@ POSTHOOK: Input: default@src1
 429	val_429	98	val_98
 PREHOOK: query: explain extended select * from (select key-1 as key from srcbucket where key = 6) z
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcbucket
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select * from (select key-1 as key from srcbucket where key = 6) z
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcbucket
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -455,8 +465,12 @@ POSTHOOK: Input: default@srcbucket
 5
 PREHOOK: query: explain extended select y.key-1 as key from (select z.key-1 as key from (select key-1 as key from srcbucket where key = 6) z) y
 PREHOOK: type: QUERY
+PREHOOK: Input: default@srcbucket
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select y.key-1 as key from (select z.key-1 as key from (select key-1 as key from srcbucket where key = 6) z) y
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@srcbucket
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

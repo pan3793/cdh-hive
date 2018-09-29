@@ -9,9 +9,11 @@ POSTHOOK: Output: default@non_orc_table
 PREHOOK: query: explain
 insert into table non_orc_table values(1, 'one'),(1, 'one'), (2, 'two'),(3, 'three')
 PREHOOK: type: QUERY
+PREHOOK: Output: default@non_orc_table
 POSTHOOK: query: explain
 insert into table non_orc_table values(1, 'one'),(1, 'one'), (2, 'two'),(3, 'three')
 POSTHOOK: type: QUERY
+POSTHOOK: Output: default@non_orc_table
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

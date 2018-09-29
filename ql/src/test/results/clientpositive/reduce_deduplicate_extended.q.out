@@ -1,7 +1,11 @@
 PREHOOK: query: explain select key, sum(key) from (select * from src distribute by key sort by key, value) Q1 group by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, sum(key) from (select * from src distribute by key sort by key, value) Q1 group by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -49,8 +53,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select key, sum(key), lower(value) from (select * from src order by key) Q1 group by key, lower(value)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, sum(key), lower(value) from (select * from src order by key) Q1 group by key, lower(value)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -103,8 +111,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select key, sum(key), (X + 1) from (select key, (value + 1) as X from src order by key) Q1 group by key, (X + 1)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, sum(key), (X + 1) from (select key, (value + 1) as X from src order by key) Q1 group by key, (X + 1)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -157,8 +169,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select key, sum(key) as value from src group by key order by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, sum(key) as value from src group by key order by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -209,8 +225,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select src.key, sum(src.key) FROM src JOIN src1 ON src.key = src1.key group by src.key, src.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select src.key, sum(src.key) FROM src JOIN src1 ON src.key = src1.key group by src.key, src.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -310,8 +332,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select src.key, src.value FROM src JOIN src1 ON src.key = src1.key order by src.key, src.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select src.key, src.value FROM src JOIN src1 ON src.key = src1.key order by src.key, src.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -397,8 +425,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain from (select key, value from src group by key, value) s select s.key group by s.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain from (select key, value from src group by key, value) s select s.key group by s.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -455,8 +487,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select key, count(distinct value) from (select key, value from src group by key, value) t group by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, count(distinct value) from (select key, value from src group by key, value) t group by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2488,8 +2524,12 @@ POSTHOOK: Input: default@src
 98	1
 PREHOOK: query: explain select key, sum(key) from (select * from src distribute by key sort by key, value) Q1 group by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, sum(key) from (select * from src distribute by key sort by key, value) Q1 group by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2537,8 +2577,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select key, sum(key), lower(value) from (select * from src order by key) Q1 group by key, lower(value)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, sum(key), lower(value) from (select * from src order by key) Q1 group by key, lower(value)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2591,8 +2635,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select key, sum(key), (X + 1) from (select key, (value + 1) as X from src order by key) Q1 group by key, (X + 1)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, sum(key), (X + 1) from (select key, (value + 1) as X from src order by key) Q1 group by key, (X + 1)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2645,8 +2693,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select key, sum(key) as value from src group by key order by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, sum(key) as value from src group by key order by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2690,8 +2742,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select src.key, sum(src.key) FROM src JOIN src1 ON src.key = src1.key group by src.key, src.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select src.key, sum(src.key) FROM src JOIN src1 ON src.key = src1.key group by src.key, src.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -2784,8 +2842,14 @@ STAGE PLANS:
 
 PREHOOK: query: explain select src.key, src.value FROM src JOIN src1 ON src.key = src1.key order by src.key, src.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: explain select src.key, src.value FROM src JOIN src1 ON src.key = src1.key order by src.key, src.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -2871,8 +2935,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain from (select key, value from src group by key, value) s select s.key group by s.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain from (select key, value from src group by key, value) s select s.key group by s.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2924,8 +2992,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select key, count(distinct value) from (select key, value from src group by key, value) t group by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, count(distinct value) from (select key, value from src group by key, value) t group by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

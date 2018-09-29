@@ -73,6 +73,8 @@ public class ExplainSemanticAnalyzer extends BaseSemanticAnalyzer {
     BaseSemanticAnalyzer sem = SemanticAnalyzerFactory.get(conf, input);
     sem.analyze(input, ctx);
     sem.validate();
+    inputs = sem.getInputs();
+    outputs = sem.getOutputs();
 
     ctx.setResFile(ctx.getLocalTmpPath());
     List<Task<? extends Serializable>> tasks = sem.getRootTasks();

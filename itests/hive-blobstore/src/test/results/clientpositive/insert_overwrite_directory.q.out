@@ -56,8 +56,12 @@ k1
 k2
 PREHOOK: query: EXPLAIN EXTENDED INSERT OVERWRITE DIRECTORY '### test.blobstore.path ###/table1.dir/' SELECT * FROM table1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table1
+PREHOOK: Output: ### test.blobstore.path ###/table1.dir
 POSTHOOK: query: EXPLAIN EXTENDED INSERT OVERWRITE DIRECTORY '### test.blobstore.path ###/table1.dir/' SELECT * FROM table1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table1
+POSTHOOK: Output: ### test.blobstore.path ###/table1.dir
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -290,10 +294,16 @@ PREHOOK: query: EXPLAIN EXTENDED FROM table1
                  INSERT OVERWRITE DIRECTORY '### test.blobstore.path ###/table1.dir/' SELECT id
                  INSERT OVERWRITE DIRECTORY '### test.blobstore.path ###/table2.dir/' SELECT key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@table1
+PREHOOK: Output: ### test.blobstore.path ###/table1.dir
+PREHOOK: Output: ### test.blobstore.path ###/table2.dir
 POSTHOOK: query: EXPLAIN EXTENDED FROM table1
                  INSERT OVERWRITE DIRECTORY '### test.blobstore.path ###/table1.dir/' SELECT id
                  INSERT OVERWRITE DIRECTORY '### test.blobstore.path ###/table2.dir/' SELECT key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@table1
+POSTHOOK: Output: ### test.blobstore.path ###/table1.dir
+POSTHOOK: Output: ### test.blobstore.path ###/table2.dir
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

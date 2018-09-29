@@ -6,6 +6,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y DISTRIBUTE BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -14,6 +17,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y DISTRIBUTE BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -129,6 +135,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y SORT BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -137,6 +146,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y SORT BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -252,6 +264,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y DISTRIBUTE BY key SORT BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -260,6 +275,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y DISTRIBUTE BY key SORT BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -434,6 +452,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y DISTRIBUTE BY key SORT BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -442,6 +463,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y DISTRIBUTE BY key SORT BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -599,6 +623,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y DISTRIBUTE BY key SORT BY key DESC) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -607,6 +634,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y DISTRIBUTE BY key SORT BY key DESC) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -724,6 +754,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y ORDER BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -732,6 +765,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y ORDER BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -847,6 +883,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y Cluster BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -855,6 +894,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y Cluster BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -1029,6 +1071,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y Cluster BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -1037,6 +1082,9 @@ JOIN
 (SELECT y.key as key, y.value as value FROM src1 y Cluster BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1194,6 +1242,9 @@ JOIN
 (SELECT y.key as key, count(*) as value FROM src1 y GROUP BY y.key ORDER BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -1202,6 +1253,9 @@ JOIN
 (SELECT y.key as key, count(*) as value FROM src1 y GROUP BY y.key ORDER BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-3
@@ -1380,6 +1434,9 @@ JOIN
 (SELECT y.key as key, count(*) as value FROM src1 y GROUP BY y.key ORDER BY key) yy
 ON (xx.key=yy.key)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+PREHOOK: Input: default@src1
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT xx.key, xx.value, yy.key, yy.value
 FROM
@@ -1388,6 +1445,9 @@ JOIN
 (SELECT y.key as key, count(*) as value FROM src1 y GROUP BY y.key ORDER BY key) yy
 ON (xx.key=yy.key)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@src1
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

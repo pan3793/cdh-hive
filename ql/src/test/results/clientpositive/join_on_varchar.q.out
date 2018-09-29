@@ -55,9 +55,15 @@ POSTHOOK: Lineage: tbl2.c2 EXPRESSION []
 PREHOOK: query: explain
 select /*+ MAPJOIN(tbl2) */ c1,c2 from tbl1 join tbl2 on (c1 = c2) order by c1,c2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl1
+PREHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select /*+ MAPJOIN(tbl2) */ c1,c2 from tbl1 join tbl2 on (c1 = c2) order by c1,c2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl1
+POSTHOOK: Input: default@tbl2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-3 is a root stage
   Stage-1 depends on stages: Stage-3

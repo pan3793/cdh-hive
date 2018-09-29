@@ -95,6 +95,11 @@ JOIN
 (SELECT m.key, n.val FROM T3 m JOIN T4 n ON (m.key = n.key)) d
 ON b.key = d.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Input: default@t3
+PREHOOK: Input: default@t4
+PREHOOK: Output: default@dest_co1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE dest_co1
 SELECT b.key, d.val
@@ -104,6 +109,11 @@ JOIN
 (SELECT m.key, n.val FROM T3 m JOIN T4 n ON (m.key = n.key)) d
 ON b.key = d.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Input: default@t3
+POSTHOOK: Input: default@t4
+POSTHOOK: Output: default@dest_co1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1, Stage-5
@@ -287,6 +297,11 @@ JOIN
 (SELECT m.key, n.val FROM T3 m JOIN T4 n ON (m.key = n.key)) d
 ON b.key = d.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Input: default@t3
+PREHOOK: Input: default@t4
+PREHOOK: Output: default@dest_co2
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE dest_co2
 SELECT b.key, d.val
@@ -296,6 +311,11 @@ JOIN
 (SELECT m.key, n.val FROM T3 m JOIN T4 n ON (m.key = n.key)) d
 ON b.key = d.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Input: default@t3
+POSTHOOK: Input: default@t4
+POSTHOOK: Output: default@dest_co2
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -468,6 +488,11 @@ JOIN
 (SELECT m.key, n.val FROM T3 m JOIN T4 n ON (m.key = n.key)) d
 ON b.key = d.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Input: default@t3
+PREHOOK: Input: default@t4
+PREHOOK: Output: default@dest_co3
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE dest_co3
 SELECT b.key, d.val
@@ -477,6 +502,11 @@ JOIN
 (SELECT m.key, n.val FROM T3 m JOIN T4 n ON (m.key = n.key)) d
 ON b.key = d.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Input: default@t3
+POSTHOOK: Input: default@t4
+POSTHOOK: Output: default@dest_co3
 STAGE DEPENDENCIES:
   Stage-14 is a root stage
   Stage-10 depends on stages: Stage-14

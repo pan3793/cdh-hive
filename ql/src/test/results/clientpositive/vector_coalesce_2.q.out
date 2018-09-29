@@ -20,12 +20,16 @@ SELECT
 from str_str_orc
 GROUP BY str2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@str_str_orc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT
    str2, ROUND(sum(cast(COALESCE(str1, 0) as int))/60, 2) as result
 from str_str_orc
 GROUP BY str2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@str_str_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -98,10 +102,14 @@ PREHOOK: query: EXPLAIN
 SELECT COALESCE(str1, 0) as result
 from str_str_orc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@str_str_orc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT COALESCE(str1, 0) as result
 from str_str_orc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@str_str_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -151,12 +159,16 @@ SELECT
 from str_str_orc
 GROUP BY str2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@str_str_orc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT
    str2, ROUND(sum(cast(COALESCE(str1, 0) as int))/60, 2) as result
 from str_str_orc
 GROUP BY str2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@str_str_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -230,10 +242,14 @@ PREHOOK: query: EXPLAIN
 SELECT COALESCE(str1, 0) as result
 from str_str_orc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@str_str_orc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT COALESCE(str1, 0) as result
 from str_str_orc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@str_str_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

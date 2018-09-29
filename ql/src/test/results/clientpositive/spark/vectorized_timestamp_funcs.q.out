@@ -74,6 +74,8 @@ PREHOOK: query: EXPLAIN SELECT
 FROM alltypesorc_string
 ORDER BY c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT
   to_unix_timestamp(ctimestamp1) AS c1,
   year(ctimestamp1),
@@ -87,6 +89,8 @@ POSTHOOK: query: EXPLAIN SELECT
 FROM alltypesorc_string
 ORDER BY c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -217,6 +221,8 @@ PREHOOK: query: EXPLAIN SELECT
 FROM alltypesorc_string
 ORDER BY c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT
   to_unix_timestamp(stimestamp1) AS c1,
   year(stimestamp1),
@@ -230,6 +236,8 @@ POSTHOOK: query: EXPLAIN SELECT
 FROM alltypesorc_string
 ORDER BY c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -360,6 +368,8 @@ PREHOOK: query: EXPLAIN SELECT
 FROM alltypesorc_string
 ORDER BY c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT
   to_unix_timestamp(ctimestamp1) = to_unix_timestamp(stimestamp1) AS c1,
   year(ctimestamp1) = year(stimestamp1),
@@ -373,6 +383,8 @@ POSTHOOK: query: EXPLAIN SELECT
 FROM alltypesorc_string
 ORDER BY c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -503,6 +515,8 @@ PREHOOK: query: EXPLAIN SELECT
 FROM alltypesorc_wrong
 ORDER BY c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc_wrong
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT
   to_unix_timestamp(stimestamp1) AS c1,
   year(stimestamp1),
@@ -516,6 +530,8 @@ POSTHOOK: query: EXPLAIN SELECT
 FROM alltypesorc_wrong
 ORDER BY c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc_wrong
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -603,6 +619,8 @@ PREHOOK: query: EXPLAIN SELECT
   count(*)
 FROM alltypesorc_string
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT
   min(ctimestamp1),
   max(ctimestamp1),
@@ -610,6 +628,8 @@ POSTHOOK: query: EXPLAIN SELECT
   count(*)
 FROM alltypesorc_string
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -685,10 +705,14 @@ PREHOOK: query: EXPLAIN SELECT
   round(sum(ctimestamp1), 3)
 FROM alltypesorc_string
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT
   round(sum(ctimestamp1), 3)
 FROM alltypesorc_string
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -768,6 +792,8 @@ PREHOOK: query: EXPLAIN SELECT
   round(stddev_samp(ctimestamp1), 3)
 FROM alltypesorc_string
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT
   round(avg(ctimestamp1), 0),
   variance(ctimestamp1) between 8.97077295279421E19 and 8.97077295279422E19,
@@ -779,6 +805,8 @@ POSTHOOK: query: EXPLAIN SELECT
   round(stddev_samp(ctimestamp1), 3)
 FROM alltypesorc_string
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc_string
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

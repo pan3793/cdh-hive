@@ -2,10 +2,14 @@ PREHOOK: query: EXPLAIN SELECT cdouble, cstring1, cint, cfloat, csmallint, coale
 FROM alltypesorc
 WHERE (cdouble IS NULL) LIMIT 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT cdouble, cstring1, cint, cfloat, csmallint, coalesce(cdouble, cstring1, cint, cfloat, csmallint) 
 FROM alltypesorc
 WHERE (cdouble IS NULL) LIMIT 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -68,10 +72,14 @@ PREHOOK: query: EXPLAIN SELECT ctinyint, cdouble, cint, coalesce(ctinyint+10, (c
 FROM alltypesorc
 WHERE (ctinyint IS NULL) LIMIT 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT ctinyint, cdouble, cint, coalesce(ctinyint+10, (cdouble+log2(cint)), 0) 
 FROM alltypesorc
 WHERE (ctinyint IS NULL) LIMIT 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -134,10 +142,14 @@ PREHOOK: query: EXPLAIN SELECT cfloat, cbigint, coalesce(cfloat, cbigint, 0)
 FROM alltypesorc
 WHERE (cfloat IS NULL AND cbigint IS NULL) LIMIT 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT cfloat, cbigint, coalesce(cfloat, cbigint, 0) 
 FROM alltypesorc
 WHERE (cfloat IS NULL AND cbigint IS NULL) LIMIT 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -200,10 +212,14 @@ PREHOOK: query: EXPLAIN SELECT ctimestamp1, ctimestamp2, coalesce(ctimestamp1, c
 FROM alltypesorc 
 WHERE ctimestamp1 IS NOT NULL OR ctimestamp2 IS NOT NULL LIMIT 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT ctimestamp1, ctimestamp2, coalesce(ctimestamp1, ctimestamp2) 
 FROM alltypesorc 
 WHERE ctimestamp1 IS NOT NULL OR ctimestamp2 IS NOT NULL LIMIT 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

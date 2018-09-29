@@ -24,6 +24,8 @@ WHERE  ((ctinyint != 0)
                   AND (3569 >= cdouble)))))
 LIMIT 25
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT cboolean1,
        cbigint,
@@ -50,6 +52,8 @@ WHERE  ((ctinyint != 0)
                   AND (3569 >= cdouble)))))
 LIMIT 25
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -191,6 +195,8 @@ WHERE  ((ctinyint != 0)
                   AND (3569 >= cdouble)))))
 LIMIT 25
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT cboolean1,
        cbigint,
@@ -217,6 +223,8 @@ WHERE  ((ctinyint != 0)
                   AND (3569 >= cdouble)))))
 LIMIT 25
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

@@ -9,9 +9,13 @@ POSTHOOK: Output: default@INPUT4
 PREHOOK: query: EXPLAIN
 LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE INPUT4
 PREHOOK: type: LOAD
+#### A masked pattern was here ####
+PREHOOK: Output: default@input4
 POSTHOOK: query: EXPLAIN
 LOAD DATA LOCAL INPATH '../../data/files/kv1.txt' INTO TABLE INPUT4
 POSTHOOK: type: LOAD
+#### A masked pattern was here ####
+POSTHOOK: Output: default@input4
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
   Stage-1 depends on stages: Stage-0
@@ -41,9 +45,13 @@ POSTHOOK: Output: default@input4
 PREHOOK: query: EXPLAIN FORMATTED
 SELECT Input4Alias.VALUE, Input4Alias.KEY FROM INPUT4 AS Input4Alias
 PREHOOK: type: QUERY
+PREHOOK: Input: default@input4
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN FORMATTED
 SELECT Input4Alias.VALUE, Input4Alias.KEY FROM INPUT4 AS Input4Alias
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@input4
+#### A masked pattern was here ####
 {"STAGE PLANS":{"Stage-0":{"Fetch Operator":{"limit:":"-1","Processor Tree:":{"TableScan":{"alias:":"input4alias","children":{"Select Operator":{"expressions:":"value (type: string), key (type: string)","outputColumnNames:":["_col0","_col1"],"children":{"ListSink":{}},"Statistics:":"Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE"}},"Statistics:":"Num rows: 29 Data size: 5812 Basic stats: COMPLETE Column stats: NONE"}}}}},"STAGE DEPENDENCIES":{"Stage-0":{"ROOT STAGE":"TRUE"}}}
 PREHOOK: query: SELECT Input4Alias.VALUE, Input4Alias.KEY FROM INPUT4 AS Input4Alias
 PREHOOK: type: QUERY

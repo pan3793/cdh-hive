@@ -53,6 +53,10 @@ insert overwrite table t3
 insert overwrite table t4
   select value, count(1) group by value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@t3
+PREHOOK: Output: default@t4
 POSTHOOK: query: explain
 from
 (select * from t1
@@ -64,6 +68,10 @@ insert overwrite table t3
 insert overwrite table t4
   select value, count(1) group by value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@t3
+POSTHOOK: Output: default@t4
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-0 depends on stages: Stage-2
@@ -322,6 +330,10 @@ insert overwrite table t5
 insert overwrite table t6
   select c1, sum(cnt) group by c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@t5
+PREHOOK: Output: default@t6
 POSTHOOK: query: explain
 from
 (
@@ -334,6 +346,10 @@ insert overwrite table t5
 insert overwrite table t6
   select c1, sum(cnt) group by c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@t5
+POSTHOOK: Output: default@t6
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2, Stage-6
@@ -629,6 +645,10 @@ insert overwrite table t7
 insert overwrite table t8
   select c1, count(1) group by c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@t7
+PREHOOK: Output: default@t8
 POSTHOOK: query: explain
 from
 (
@@ -641,6 +661,10 @@ insert overwrite table t7
 insert overwrite table t8
   select c1, count(1) group by c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@t7
+POSTHOOK: Output: default@t8
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-3 depends on stages: Stage-2

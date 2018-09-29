@@ -10,8 +10,12 @@ POSTHOOK: Output: database:default
 POSTHOOK: Output: default@date_decimal_test
 PREHOOK: query: EXPLAIN SELECT cdate, cdecimal from date_decimal_test where cint IS NOT NULL AND cdouble IS NOT NULL LIMIT 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@date_decimal_test
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT cdate, cdecimal from date_decimal_test where cint IS NOT NULL AND cdouble IS NOT NULL LIMIT 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@date_decimal_test
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

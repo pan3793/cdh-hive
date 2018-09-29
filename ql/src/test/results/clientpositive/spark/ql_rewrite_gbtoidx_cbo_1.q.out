@@ -75,10 +75,14 @@ PREHOOK: query: explain select l_shipdate, count(l_shipdate)
 from lineitem_ix
 group by l_shipdate
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain select l_shipdate, count(l_shipdate)
 from lineitem_ix
 group by l_shipdate
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -246,10 +250,16 @@ PREHOOK: query: explain select l_shipdate, count(l_shipdate)
 from lineitem_ix
 group by l_shipdate
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_lshipdate_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain select l_shipdate, count(l_shipdate)
 from lineitem_ix
 group by l_shipdate
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_lshipdate_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -422,6 +432,8 @@ from lineitem_ix
 group by year(l_shipdate), month(l_shipdate)
 order by year, month
 PREHOOK: type: QUERY
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain select year(l_shipdate) as year,
         month(l_shipdate) as month,
         count(l_shipdate) as monthly_shipments
@@ -429,6 +441,8 @@ from lineitem_ix
 group by year(l_shipdate), month(l_shipdate)
 order by year, month
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -563,6 +577,9 @@ from lineitem_ix
 group by year(l_shipdate), month(l_shipdate)
 order by year, month
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_lshipdate_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain select year(l_shipdate) as year,
         month(l_shipdate) as month,
         count(l_shipdate) as monthly_shipments
@@ -570,6 +587,9 @@ from lineitem_ix
 group by year(l_shipdate), month(l_shipdate)
 order by year, month
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_lshipdate_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -719,6 +739,9 @@ lastyear.monthly_shipments as monthly_shipments_delta
         )  thisyear
   on lastyear.month = thisyear.month
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_lshipdate_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain select lastyear.month,
         thisyear.month,
         (thisyear.monthly_shipments - lastyear.monthly_shipments) /
@@ -739,6 +762,9 @@ lastyear.monthly_shipments as monthly_shipments_delta
         )  thisyear
   on lastyear.month = thisyear.month
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_lshipdate_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -876,12 +902,18 @@ union all
 select l_shipdate, l_orderkey as cnt
 from lineitem_ix) dummy
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__lineitem_ix_lineitem_ix_lshipdate_idx__
+PREHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 POSTHOOK: query: explain  select l_shipdate, cnt
 from (select l_shipdate, count(l_shipdate) as cnt from lineitem_ix group by l_shipdate
 union all
 select l_shipdate, l_orderkey as cnt
 from lineitem_ix) dummy
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__lineitem_ix_lineitem_ix_lshipdate_idx__
+POSTHOOK: Input: default@lineitem_ix
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -981,8 +1013,12 @@ POSTHOOK: Lineage: default__tbl_tbl_key_idx__._offsets EXPRESSION [(tbl)tbl.Fiel
 POSTHOOK: Lineage: default__tbl_tbl_key_idx__.key SIMPLE [(tbl)tbl.FieldSchema(name:key, type:int, comment:null), ]
 PREHOOK: query: EXPLAIN select key, count(key) from tbl where key = 1 group by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key, count(key) from tbl where key = 1 group by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1042,8 +1078,14 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select key, count(key) from tbl group by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__tbl_tbl_key_idx__
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key, count(key) from tbl group by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__tbl_tbl_key_idx__
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1100,8 +1142,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select count(1) from tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select count(1) from tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1152,8 +1198,14 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select count(key) from tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__tbl_tbl_key_idx__
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select count(key) from tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__tbl_tbl_key_idx__
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1206,8 +1258,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select key FROM tbl GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key FROM tbl GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1261,8 +1317,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select key FROM tbl GROUP BY value, key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key FROM tbl GROUP BY value, key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1320,8 +1380,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select key FROM tbl WHERE key = 3 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key FROM tbl WHERE key = 3 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1378,8 +1442,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select key FROM tbl WHERE value = 2 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key FROM tbl WHERE value = 2 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1436,8 +1504,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select key FROM tbl GROUP BY key, substr(key,2,3)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key FROM tbl GROUP BY key, substr(key,2,3)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1495,8 +1567,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select key, value FROM tbl GROUP BY value, key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key, value FROM tbl GROUP BY value, key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1554,8 +1630,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select key, value FROM tbl WHERE value = 1 GROUP BY key, value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select key, value FROM tbl WHERE value = 1 GROUP BY key, value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1612,8 +1692,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key FROM tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key FROM tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1667,8 +1751,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key FROM tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key FROM tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1722,8 +1810,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key FROM tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key FROM tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1777,8 +1869,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key, value FROM tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key, value FROM tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1832,8 +1928,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key, value FROM tbl WHERE value = 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key, value FROM tbl WHERE value = 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1890,8 +1990,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key, value FROM tbl WHERE value = 2 AND key = 3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key, value FROM tbl WHERE value = 2 AND key = 3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -1948,8 +2052,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key, value FROM tbl WHERE value = key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key, value FROM tbl WHERE value = key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2002,8 +2110,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key, substr(value,2,3) FROM tbl WHERE value = key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key, substr(value,2,3) FROM tbl WHERE value = key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2056,8 +2168,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select DISTINCT key, substr(value,2,3) FROM tbl
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select DISTINCT key, substr(value,2,3) FROM tbl
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2111,8 +2227,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN select * FROM (select DISTINCT key, value FROM tbl) v1 WHERE v1.value = 2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN select * FROM (select DISTINCT key, value FROM tbl) v1 WHERE v1.value = 2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2258,8 +2378,14 @@ POSTHOOK: Lineage: default__tblpart_tbl_part_index__ PARTITION(ds=2008-04-08,hr=
 POSTHOOK: Lineage: default__tblpart_tbl_part_index__ PARTITION(ds=2008-04-08,hr=11).key SIMPLE [(tblpart)tblpart.FieldSchema(name:key, type:int, comment:null), ]
 PREHOOK: query: EXPLAIN SELECT key, count(key) FROM tblpart WHERE ds='2008-04-09' AND hr=12 AND key < 10 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tblpart
+PREHOOK: Input: default@tblpart@ds=2008-04-09/hr=12
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key, count(key) FROM tblpart WHERE ds='2008-04-09' AND hr=12 AND key < 10 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tblpart
+POSTHOOK: Input: default@tblpart@ds=2008-04-09/hr=12
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2357,8 +2483,14 @@ POSTHOOK: Lineage: default__tblpart_tbl_part_index__ PARTITION(ds=2008-04-09,hr=
 POSTHOOK: Lineage: default__tblpart_tbl_part_index__ PARTITION(ds=2008-04-09,hr=12).key SIMPLE [(tblpart)tblpart.FieldSchema(name:key, type:int, comment:null), ]
 PREHOOK: query: EXPLAIN SELECT key, count(key) FROM tblpart WHERE ds='2008-04-09' AND hr=12 AND key < 10 GROUP BY key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__tblpart_tbl_part_index__@ds=2008-04-09/hr=12
+PREHOOK: Input: default@tblpart
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT key, count(key) FROM tblpart WHERE ds='2008-04-09' AND hr=12 AND key < 10 GROUP BY key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__tblpart_tbl_part_index__@ds=2008-04-09/hr=12
+POSTHOOK: Input: default@tblpart
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2467,8 +2599,12 @@ POSTHOOK: Lineage: default__tbl_tbl_key_idx__._offsets EXPRESSION [(tbl)tbl.Fiel
 POSTHOOK: Lineage: default__tbl_tbl_key_idx__.key SIMPLE [(tbl)tbl.FieldSchema(name:key, type:int, comment:null), ]
 PREHOOK: query: explain select key, count(key) from tbl group by key order by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, count(key) from tbl group by key order by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -2551,8 +2687,14 @@ POSTHOOK: Input: default@tbl
 7	1
 PREHOOK: query: explain select key, count(key) from tbl group by key order by key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__tbl_tbl_key_idx__
+PREHOOK: Input: default@tbl
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, count(key) from tbl group by key order by key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__tbl_tbl_key_idx__
+POSTHOOK: Input: default@tbl
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

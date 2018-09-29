@@ -1,9 +1,13 @@
 PREHOOK: query: explain
 select count(1) from src where (case key when '238' then true else false end)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(1) from src where (case key when '238' then true else false end)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -52,9 +56,13 @@ STAGE PLANS:
 PREHOOK: query: explain 
 select count(1) from src where (case key when '238' then 1=2 else 1=1 end)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 select count(1) from src where (case key when '238' then 1=2 else 1=1 end)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -103,9 +111,13 @@ STAGE PLANS:
 PREHOOK: query: explain 
 select count(1) from src where (case key when '238' then 1=2 else 1=31 end)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 select count(1) from src where (case key when '238' then 1=2 else 1=31 end)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -152,9 +164,13 @@ STAGE PLANS:
 PREHOOK: query: explain 
 select count(1) from src where (case key when '238' then true else 1=1 end)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 select count(1) from src where (case key when '238' then true else 1=1 end)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -200,9 +216,13 @@ STAGE PLANS:
 PREHOOK: query: explain
 select count(1) from src where (case key when '238' then 1=1 else 1=null end)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(1) from src where (case key when '238' then 1=1 else 1=null end)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -251,9 +271,13 @@ STAGE PLANS:
 PREHOOK: query: explain 
 select count(1) from src where (case key when '238' then null else 1=1 end)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain 
 select count(1) from src where (case key when '238' then null else 1=1 end)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

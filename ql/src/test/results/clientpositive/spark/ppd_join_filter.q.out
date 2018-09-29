@@ -11,6 +11,8 @@ group by key
 ) b
 on a.key=b.key and b.k1 < 5
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select a.key, b.k2, b.k3
 from src a
 join (
@@ -24,6 +26,8 @@ group by key
 ) b
 on a.key=b.key and b.k1 < 5
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -385,6 +389,8 @@ group by key
 ) b
 on a.key=b.key and b.k1 < 5
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select a.key, b.k2, b.k3
 from src a
 join (
@@ -398,6 +404,8 @@ group by key
 ) b
 on a.key=b.key and b.k1 < 5
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -759,6 +767,8 @@ group by key
 ) b
 on a.key=b.key and b.k1 < 5
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select a.key, b.k2, b.k3
 from src a
 join (
@@ -772,6 +782,8 @@ group by key
 ) b
 on a.key=b.key and b.k1 < 5
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1133,6 +1145,8 @@ group by key
 ) b
 on a.key=b.key and b.k1 < 5
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select a.key, b.k2, b.k3
 from src a
 join (
@@ -1146,6 +1160,8 @@ group by key
 ) b
 on a.key=b.key and b.k1 < 5
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

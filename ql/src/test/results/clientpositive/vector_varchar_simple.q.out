@@ -50,11 +50,15 @@ from varchar_2
 order by key asc
 limit 5
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_2
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, value
 from varchar_2
 order by key asc
 limit 5
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -141,11 +145,15 @@ from varchar_2
 order by key desc
 limit 5
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_2
+#### A masked pattern was here ####
 POSTHOOK: query: explain select key, value
 from varchar_2
 order by key desc
 limit 5
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -231,9 +239,13 @@ POSTHOOK: Output: default@varchar_3
 PREHOOK: query: explain
 insert into table varchar_3 select cint from alltypesorc limit 10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+PREHOOK: Output: default@varchar_3
 POSTHOOK: query: explain
 insert into table varchar_3 select cint from alltypesorc limit 10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+POSTHOOK: Output: default@varchar_3
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

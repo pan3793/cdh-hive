@@ -27,8 +27,14 @@ POSTHOOK: Output: default@B
 Warning: Shuffle Join JOIN[4][tables = [a, b]] in Work 'Reducer 2' is a cross product
 PREHOOK: query: explain select * from A join B
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+PREHOOK: Input: default@b
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from A join B
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+POSTHOOK: Input: default@b
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -89,8 +95,14 @@ STAGE PLANS:
 Warning: Shuffle Join JOIN[10][tables = [d1, d2, a]] in Work 'Reducer 3' is a cross product
 PREHOOK: query: explain select * from B d1 join B d2 on d1.key = d2.key join A
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+PREHOOK: Input: default@b
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from B d1 join B d2 on d1.key = d2.key join A
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+POSTHOOK: Input: default@b
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -188,11 +200,17 @@ PREHOOK: query: explain select * from A join
           from B d1 join B d2 on d1.key = d2.key 
           where 1 = 1 group by d1.key) od1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+PREHOOK: Input: default@b
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from A join 
          (select d1.key 
           from B d1 join B d2 on d1.key = d2.key 
           where 1 = 1 group by d1.key) od1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+POSTHOOK: Input: default@b
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -304,8 +322,14 @@ Warning: Shuffle Join JOIN[4][tables = [d1, d2]] in Work 'Reducer 2' is a cross 
 Warning: Shuffle Join JOIN[14][tables = [a, od1]] in Work 'Reducer 4' is a cross product
 PREHOOK: query: explain select * from A join (select d1.key from B d1 join B d2 where 1 = 1 group by d1.key) od1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+PREHOOK: Input: default@b
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from A join (select d1.key from B d1 join B d2 where 1 = 1 group by d1.key) od1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+POSTHOOK: Input: default@b
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -409,10 +433,16 @@ PREHOOK: query: explain select * from
 (select A.key from A group by key) ss join 
 (select d1.key from B d1 join B d2 on d1.key = d2.key where 1 = 1 group by d1.key) od1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+PREHOOK: Input: default@b
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from 
 (select A.key from A group by key) ss join 
 (select d1.key from B d1 join B d2 on d1.key = d2.key where 1 = 1 group by d1.key) od1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+POSTHOOK: Input: default@b
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

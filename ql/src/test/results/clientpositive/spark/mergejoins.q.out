@@ -40,8 +40,20 @@ POSTHOOK: Output: database:default
 POSTHOOK: Output: default@e
 PREHOOK: query: explain select * from a join b on a.val1=b.val1 join c on a.val1=c.val1 join d on a.val1=d.val1 join e on a.val2=e.val2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+PREHOOK: Input: default@b
+PREHOOK: Input: default@c
+PREHOOK: Input: default@d
+PREHOOK: Input: default@e
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from a join b on a.val1=b.val1 join c on a.val1=c.val1 join d on a.val1=d.val1 join e on a.val2=e.val2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+POSTHOOK: Input: default@b
+POSTHOOK: Input: default@c
+POSTHOOK: Input: default@d
+POSTHOOK: Input: default@e
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -174,8 +186,12 @@ STAGE PLANS:
 
 PREHOOK: query: explain select * from src a join src b on a.key=b.key left outer join src c on b.key=c.key and b.key<10
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from src a join src b on a.key=b.key left outer join src c on b.key=c.key and b.key<10
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

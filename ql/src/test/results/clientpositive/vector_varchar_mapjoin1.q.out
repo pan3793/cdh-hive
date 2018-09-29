@@ -120,8 +120,12 @@ POSTHOOK: Output: database:default
 POSTHOOK: Output: default@varchar_join1_str_orc
 PREHOOK: query: explain select * from varchar_join1_vc1_orc a join varchar_join1_vc1_orc b on (a.c2 = b.c2) order by a.c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_join1_vc1_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from varchar_join1_vc1_orc a join varchar_join1_vc1_orc b on (a.c2 = b.c2) order by a.c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_join1_vc1_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-2 depends on stages: Stage-5
@@ -208,8 +212,14 @@ POSTHOOK: Input: default@varchar_join1_vc1_orc
 3	 abc	3	 abc
 PREHOOK: query: explain select * from varchar_join1_vc1_orc a join varchar_join1_vc2_orc b on (a.c2 = b.c2) order by a.c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_join1_vc1_orc
+PREHOOK: Input: default@varchar_join1_vc2_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from varchar_join1_vc1_orc a join varchar_join1_vc2_orc b on (a.c2 = b.c2) order by a.c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_join1_vc1_orc
+POSTHOOK: Input: default@varchar_join1_vc2_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-2 depends on stages: Stage-5
@@ -298,8 +308,14 @@ POSTHOOK: Input: default@varchar_join1_vc2_orc
 3	 abc	3	 abc
 PREHOOK: query: explain select * from varchar_join1_vc1_orc a join varchar_join1_str_orc b on (a.c2 = b.c2) order by a.c1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@varchar_join1_str_orc
+PREHOOK: Input: default@varchar_join1_vc1_orc
+#### A masked pattern was here ####
 POSTHOOK: query: explain select * from varchar_join1_vc1_orc a join varchar_join1_str_orc b on (a.c2 = b.c2) order by a.c1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@varchar_join1_str_orc
+POSTHOOK: Input: default@varchar_join1_vc1_orc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-2 depends on stages: Stage-5

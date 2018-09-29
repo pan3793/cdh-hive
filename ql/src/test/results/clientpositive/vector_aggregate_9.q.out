@@ -104,9 +104,13 @@ POSTHOOK: Lineage: vectortab2korc.ts2 SIMPLE [(vectortab2k)vectortab2k.FieldSche
 PREHOOK: query: explain
 select min(dc), max(dc), sum(dc), avg(dc) from vectortab2korc
 PREHOOK: type: QUERY
+PREHOOK: Input: default@vectortab2korc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select min(dc), max(dc), sum(dc), avg(dc) from vectortab2korc
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@vectortab2korc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

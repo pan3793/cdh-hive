@@ -103,8 +103,20 @@ POSTHOOK: Input: default@loc_orc_1d
 state               	string              	                    	                    	0                   	6                   	3.0                 	3                   	                    	                    	from deserializer   
 PREHOOK: query: explain extended select state from loc_orc_1d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_1d
+PREHOOK: Input: default@loc_orc_1d@year=2000
+PREHOOK: Input: default@loc_orc_1d@year=2001
+PREHOOK: Input: default@loc_orc_1d@year=2002
+PREHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state from loc_orc_1d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_1d
+POSTHOOK: Input: default@loc_orc_1d@year=2000
+POSTHOOK: Input: default@loc_orc_1d@year=2001
+POSTHOOK: Input: default@loc_orc_1d@year=2002
+POSTHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -315,8 +327,20 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select state,locid from loc_orc_1d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_1d
+PREHOOK: Input: default@loc_orc_1d@year=2000
+PREHOOK: Input: default@loc_orc_1d@year=2001
+PREHOOK: Input: default@loc_orc_1d@year=2002
+PREHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state,locid from loc_orc_1d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_1d
+POSTHOOK: Input: default@loc_orc_1d@year=2000
+POSTHOOK: Input: default@loc_orc_1d@year=2001
+POSTHOOK: Input: default@loc_orc_1d@year=2002
+POSTHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -550,8 +574,20 @@ POSTHOOK: Input: default@loc_orc_1d@year=2003
 #### A masked pattern was here ####
 PREHOOK: query: explain extended select state from loc_orc_1d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_1d
+PREHOOK: Input: default@loc_orc_1d@year=2000
+PREHOOK: Input: default@loc_orc_1d@year=2001
+PREHOOK: Input: default@loc_orc_1d@year=2002
+PREHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state from loc_orc_1d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_1d
+POSTHOOK: Input: default@loc_orc_1d@year=2000
+POSTHOOK: Input: default@loc_orc_1d@year=2001
+POSTHOOK: Input: default@loc_orc_1d@year=2002
+POSTHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -762,8 +798,20 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select state,locid from loc_orc_1d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_1d
+PREHOOK: Input: default@loc_orc_1d@year=2000
+PREHOOK: Input: default@loc_orc_1d@year=2001
+PREHOOK: Input: default@loc_orc_1d@year=2002
+PREHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state,locid from loc_orc_1d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_1d
+POSTHOOK: Input: default@loc_orc_1d@year=2000
+POSTHOOK: Input: default@loc_orc_1d@year=2001
+POSTHOOK: Input: default@loc_orc_1d@year=2002
+POSTHOOK: Input: default@loc_orc_1d@year=2003
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1051,8 +1099,34 @@ POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2002
 #### A masked pattern was here ####
 PREHOOK: query: explain extended select state from loc_orc_2d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_2d
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2003
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2000
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2003
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2000
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state from loc_orc_2d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_2d
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2003
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2000
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2003
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2000
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2003
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -1575,8 +1649,34 @@ STAGE PLANS:
 
 PREHOOK: query: explain extended select state,locid from loc_orc_2d
 PREHOOK: type: QUERY
+PREHOOK: Input: default@loc_orc_2d
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=43201/year=2003
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2000
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=94086/year=2003
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2000
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2001
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2002
+PREHOOK: Input: default@loc_orc_2d@zip=94087/year=2003
+#### A masked pattern was here ####
 POSTHOOK: query: explain extended select state,locid from loc_orc_2d
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@loc_orc_2d
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=43201/year=2003
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2000
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=94086/year=2003
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2000
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2001
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2002
+POSTHOOK: Input: default@loc_orc_2d@zip=94087/year=2003
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

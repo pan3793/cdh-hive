@@ -104,9 +104,13 @@ POSTHOOK: Lineage: vectortab2korc.ts2 SIMPLE [(vectortab2k)vectortab2k.FieldSche
 PREHOOK: query: explain
 select s, t, max(b) from vectortab2korc group by s, t
 PREHOOK: type: QUERY
+PREHOOK: Input: default@vectortab2korc
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select s, t, max(b) from vectortab2korc group by s, t
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@vectortab2korc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

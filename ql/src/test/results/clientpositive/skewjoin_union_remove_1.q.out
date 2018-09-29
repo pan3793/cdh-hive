@@ -37,9 +37,15 @@ POSTHOOK: Output: default@t2
 PREHOOK: query: EXPLAIN
 SELECT * FROM T1 a JOIN T2 b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM T1 a JOIN T2 b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-3 is a root stage
@@ -166,9 +172,15 @@ POSTHOOK: Input: default@t2
 PREHOOK: query: EXPLAIN
 SELECT a.*, b.* FROM T1 a RIGHT OUTER JOIN T2 b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT a.*, b.* FROM T1 a RIGHT OUTER JOIN T2 b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-3 is a root stage
@@ -306,10 +318,16 @@ PREHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE DEST1
 SELECT * FROM T1 a JOIN T2 b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@dest1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE DEST1
 SELECT * FROM T1 a JOIN T2 b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@dest1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1, Stage-3
@@ -457,10 +475,16 @@ PREHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE DEST1
 SELECT * FROM T1 a RIGHT OUTER JOIN T2 b ON a.key = b.key
 PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+PREHOOK: Input: default@t2
+PREHOOK: Output: default@dest1
 POSTHOOK: query: EXPLAIN
 INSERT OVERWRITE TABLE DEST1
 SELECT * FROM T1 a RIGHT OUTER JOIN T2 b ON a.key = b.key
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+POSTHOOK: Input: default@t2
+POSTHOOK: Output: default@dest1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1, Stage-3

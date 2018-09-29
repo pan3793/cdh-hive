@@ -7,6 +7,8 @@ FROM (
 #### A masked pattern was here ####
  unioninput.*
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED
 FROM (
   FROM src select src.key, src.value WHERE src.key < 100
@@ -16,6 +18,8 @@ FROM (
 #### A masked pattern was here ####
  unioninput.*
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY
@@ -293,6 +297,8 @@ FROM (
 #### A masked pattern was here ####
 unioninput.*
 PREHOOK: type: QUERY
+PREHOOK: Input: default@src
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN EXTENDED
 FROM (
   FROM src select src.key, src.value WHERE src.key < 100
@@ -302,6 +308,8 @@ FROM (
 #### A masked pattern was here ####
 unioninput.*
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@src
+#### A masked pattern was here ####
 ABSTRACT SYNTAX TREE:
   
 TOK_QUERY

@@ -89,6 +89,13 @@ WHERE
   L.id = 4436
   and acct.brn is not null
 PREHOOK: type: QUERY
+PREHOOK: Input: default@a
+PREHOOK: Input: default@acct
+PREHOOK: Input: default@fr
+PREHOOK: Input: default@l
+PREHOOK: Input: default@la
+PREHOOK: Input: default@pi
+#### A masked pattern was here ####
 POSTHOOK: query: explain select
   acct.ACC_N,
   acct.brn
@@ -102,6 +109,13 @@ WHERE
   L.id = 4436
   and acct.brn is not null
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@a
+POSTHOOK: Input: default@acct
+POSTHOOK: Input: default@fr
+POSTHOOK: Input: default@l
+POSTHOOK: Input: default@la
+POSTHOOK: Input: default@pi
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -365,6 +379,11 @@ left outer join
 (select d01 from tabd ) td
 on (td.d01 = tc.c02)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@taba
+PREHOOK: Input: default@tabb
+PREHOOK: Input: default@tabc
+PREHOOK: Input: default@tabd
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select a01, * from
 (select a01, a02, a03 from taba) ta
@@ -380,6 +399,11 @@ left outer join
 (select d01 from tabd ) td
 on (td.d01 = tc.c02)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@taba
+POSTHOOK: Input: default@tabb
+POSTHOOK: Input: default@tabc
+POSTHOOK: Input: default@tabd
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -513,6 +537,11 @@ join
 (select d01 from tabd ) td
 on (td.d01 = tc.c02)
 PREHOOK: type: QUERY
+PREHOOK: Input: default@taba
+PREHOOK: Input: default@tabb
+PREHOOK: Input: default@tabc
+PREHOOK: Input: default@tabd
+#### A masked pattern was here ####
 POSTHOOK: query: explain select a01, * from
 (select a01, a02, a03 from taba) ta
 
@@ -527,6 +556,11 @@ join
 (select d01 from tabd ) td
 on (td.d01 = tc.c02)
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@taba
+POSTHOOK: Input: default@tabb
+POSTHOOK: Input: default@tabc
+POSTHOOK: Input: default@tabd
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

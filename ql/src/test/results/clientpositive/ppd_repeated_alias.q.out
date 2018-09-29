@@ -28,12 +28,18 @@ FROM pokes a LEFT OUTER JOIN pokes2 b
 ON a.foo=b.foo
 WHERE b.bar=3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@pokes
+PREHOOK: Input: default@pokes2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT a.foo as foo1, b.foo as foo2, b.bar
 FROM pokes a LEFT OUTER JOIN pokes2 b
 ON a.foo=b.foo
 WHERE b.bar=3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@pokes
+POSTHOOK: Input: default@pokes2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -96,6 +102,9 @@ SELECT * FROM
     ON a.foo=b.foo) a
 WHERE a.bar=3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@pokes
+PREHOOK: Input: default@pokes2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT * FROM
     (SELECT a.foo as foo1, b.foo as foo2, b.bar
@@ -103,6 +112,9 @@ SELECT * FROM
     ON a.foo=b.foo) a
 WHERE a.bar=3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@pokes
+POSTHOOK: Input: default@pokes2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -165,6 +177,9 @@ SELECT * FROM
     ON a.foo=b.foo) a
 WHERE a.bar=3
 PREHOOK: type: QUERY
+PREHOOK: Input: default@pokes
+PREHOOK: Input: default@pokes2
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 SELECT * FROM
     (SELECT a.foo as foo1, b.foo as foo2, a.bar
@@ -172,6 +187,9 @@ SELECT * FROM
     ON a.foo=b.foo) a
 WHERE a.bar=3
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@pokes
+POSTHOOK: Input: default@pokes2
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
@@ -232,8 +250,12 @@ STAGE PLANS:
 Warning: Shuffle Join JOIN[9][tables = [c, d]] in Stage 'Stage-2:MAPRED' is a cross product
 PREHOOK: query: explain select c.foo, d.bar from (select c.foo, b.bar, c.blah from pokes c left outer join pokes b on c.foo=b.foo) c left outer join pokes d where d.foo=1 and c.bar=2
 PREHOOK: type: QUERY
+PREHOOK: Input: default@pokes
+#### A masked pattern was here ####
 POSTHOOK: query: explain select c.foo, d.bar from (select c.foo, b.bar, c.blah from pokes c left outer join pokes b on c.foo=b.foo) c left outer join pokes d where d.foo=1 and c.bar=2
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@pokes
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1

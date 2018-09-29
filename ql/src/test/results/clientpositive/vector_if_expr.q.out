@@ -1,9 +1,13 @@
 PREHOOK: query: EXPLAIN
 SELECT cboolean1, IF (cboolean1, 'first', 'second') FROM alltypesorc WHERE cboolean1 IS NOT NULL AND cboolean1 ORDER BY cboolean1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT cboolean1, IF (cboolean1, 'first', 'second') FROM alltypesorc WHERE cboolean1 IS NOT NULL AND cboolean1 ORDER BY cboolean1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@alltypesorc
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

@@ -41,9 +41,13 @@ POSTHOOK: Output: default@DECIMAL_3
 PREHOOK: query: EXPLAIN
 SELECT * FROM DECIMAL_3 a JOIN DECIMAL_3 b ON (a.key = b.key) ORDER BY a.key, a.value, b.key, b.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_3
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM DECIMAL_3 a JOIN DECIMAL_3 b ON (a.key = b.key) ORDER BY a.key, a.value, b.key, b.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-2 depends on stages: Stage-1
@@ -200,9 +204,13 @@ POSTHOOK: Input: default@decimal_3
 PREHOOK: query: EXPLAIN
 SELECT * FROM DECIMAL_3 a JOIN DECIMAL_3 b ON (a.key = b.key) ORDER BY a.key, a.value, b.key, b.value
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal_3
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT * FROM DECIMAL_3 a JOIN DECIMAL_3 b ON (a.key = b.key) ORDER BY a.key, a.value, b.key, b.value
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal_3
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-5 is a root stage
   Stage-2 depends on stages: Stage-5

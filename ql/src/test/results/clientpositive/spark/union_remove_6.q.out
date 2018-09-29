@@ -39,6 +39,9 @@ FROM (
 insert overwrite table outputTbl1 select *
 insert overwrite table outputTbl2 select *
 PREHOOK: type: QUERY
+PREHOOK: Input: default@inputtbl1
+PREHOOK: Output: default@outputtbl1
+PREHOOK: Output: default@outputtbl2
 POSTHOOK: query: explain
 FROM (
   SELECT key, count(1) as values from inputTbl1 group by key
@@ -48,6 +51,9 @@ FROM (
 insert overwrite table outputTbl1 select *
 insert overwrite table outputTbl2 select *
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@inputtbl1
+POSTHOOK: Output: default@outputtbl1
+POSTHOOK: Output: default@outputtbl2
 STAGE DEPENDENCIES:
   Stage-2 is a root stage
   Stage-0 depends on stages: Stage-2

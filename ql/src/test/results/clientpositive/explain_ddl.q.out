@@ -40,8 +40,14 @@ POSTHOOK: Input: default@m1
 497
 PREHOOK: query: EXPLAIN CREATE TABLE M1 AS select * from src
 PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: default@src
+PREHOOK: Output: database:default
+PREHOOK: Output: default@M1
 POSTHOOK: query: EXPLAIN CREATE TABLE M1 AS select * from src
 POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: default@src
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@M1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -132,8 +138,14 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN CREATE TABLE M1 AS select * from M1
 PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: default@m1
+PREHOOK: Output: database:default
+PREHOOK: Output: default@M1
 POSTHOOK: query: EXPLAIN CREATE TABLE M1 AS select * from M1
 POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: default@m1
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@M1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -224,8 +236,16 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN CREATE TABLE M1 AS select * from V1
 PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: default@src
+PREHOOK: Input: default@v1
+PREHOOK: Output: database:default
+PREHOOK: Output: default@M1
 POSTHOOK: query: EXPLAIN CREATE TABLE M1 AS select * from V1
 POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: default@src
+POSTHOOK: Input: default@v1
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@M1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -316,8 +336,14 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN CREATE TABLE V1 AS select * from M1
 PREHOOK: type: CREATETABLE_AS_SELECT
+PREHOOK: Input: default@m1
+PREHOOK: Output: database:default
+PREHOOK: Output: default@V1
 POSTHOOK: query: EXPLAIN CREATE TABLE V1 AS select * from M1
 POSTHOOK: type: CREATETABLE_AS_SELECT
+POSTHOOK: Input: default@m1
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@V1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -408,8 +434,14 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN CREATE VIEW V1 AS select * from M1
 PREHOOK: type: CREATEVIEW
+PREHOOK: Input: default@m1
+PREHOOK: Output: database:default
+PREHOOK: Output: default@V1
 POSTHOOK: query: EXPLAIN CREATE VIEW V1 AS select * from M1
 POSTHOOK: type: CREATEVIEW
+POSTHOOK: Input: default@m1
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@V1
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -425,8 +457,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN CREATE TABLE M1 LIKE src
 PREHOOK: type: CREATETABLE
+PREHOOK: Output: database:default
+PREHOOK: Output: default@M1
 POSTHOOK: query: EXPLAIN CREATE TABLE M1 LIKE src
 POSTHOOK: type: CREATETABLE
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@M1
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -442,8 +478,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN CREATE TABLE M1 LIKE M1
 PREHOOK: type: CREATETABLE
+PREHOOK: Output: database:default
+PREHOOK: Output: default@M1
 POSTHOOK: query: EXPLAIN CREATE TABLE M1 LIKE M1
 POSTHOOK: type: CREATETABLE
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@M1
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -459,8 +499,12 @@ STAGE PLANS:
 
 PREHOOK: query: EXPLAIN DROP TABLE M1
 PREHOOK: type: DROPTABLE
+PREHOOK: Input: default@m1
+PREHOOK: Output: default@m1
 POSTHOOK: query: EXPLAIN DROP TABLE M1
 POSTHOOK: type: DROPTABLE
+POSTHOOK: Input: default@m1
+POSTHOOK: Output: default@m1
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -481,8 +525,12 @@ POSTHOOK: Input: default@m1
 497
 PREHOOK: query: EXPLAIN INSERT INTO M1 SELECT * FROM M1
 PREHOOK: type: QUERY
+PREHOOK: Input: default@m1
+PREHOOK: Output: default@m1
 POSTHOOK: query: EXPLAIN INSERT INTO M1 SELECT * FROM M1
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@m1
+POSTHOOK: Output: default@m1
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-7 depends on stages: Stage-1 , consists of Stage-4, Stage-3, Stage-5
@@ -576,8 +624,10 @@ POSTHOOK: Input: default@m1
 497
 PREHOOK: query: EXPLAIN TRUNCATE TABLE M1
 PREHOOK: type: TRUNCATETABLE
+PREHOOK: Output: default@m1
 POSTHOOK: query: EXPLAIN TRUNCATE TABLE M1
 POSTHOOK: type: TRUNCATETABLE
+POSTHOOK: Output: default@m1
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 

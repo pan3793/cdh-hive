@@ -40,8 +40,12 @@ POSTHOOK: Input: it@it__temp_temp_index__
 #### A masked pattern was here ####
 PREHOOK: query: EXPLAIN SELECT * FROM it.temp WHERE key  = 86
 PREHOOK: type: QUERY
+PREHOOK: Input: it@temp
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN SELECT * FROM it.temp WHERE key  = 86
 POSTHOOK: type: QUERY
+POSTHOOK: Input: it@temp
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

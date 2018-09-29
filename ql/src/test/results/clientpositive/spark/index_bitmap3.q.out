@@ -1,9 +1,11 @@
 PREHOOK: query: EXPLAIN
 CREATE INDEX src1_index ON TABLE src(key) as 'BITMAP' WITH DEFERRED REBUILD
 PREHOOK: type: CREATEINDEX
+PREHOOK: Input: default@src
 POSTHOOK: query: EXPLAIN
 CREATE INDEX src1_index ON TABLE src(key) as 'BITMAP' WITH DEFERRED REBUILD
 POSTHOOK: type: CREATEINDEX
+POSTHOOK: Input: default@src
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -13,9 +15,11 @@ STAGE PLANS:
 PREHOOK: query: EXPLAIN
 CREATE INDEX src2_index ON TABLE src(value) as 'BITMAP' WITH DEFERRED REBUILD
 PREHOOK: type: CREATEINDEX
+PREHOOK: Input: default@src
 POSTHOOK: query: EXPLAIN
 CREATE INDEX src2_index ON TABLE src(value) as 'BITMAP' WITH DEFERRED REBUILD
 POSTHOOK: type: CREATEINDEX
+POSTHOOK: Input: default@src
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
 
@@ -87,6 +91,9 @@ FROM (SELECT `_bucketname` AS bucketname, `_offset` AS offset, `_bitmaps` AS bit
    a.bucketname = b.bucketname AND a.offset = b.offset WHERE NOT
 EWAH_BITMAP_EMPTY(EWAH_BITMAP_AND(a.bitmaps, b.bitmaps)) GROUP BY a.bucketname
 PREHOOK: type: QUERY
+PREHOOK: Input: default@default__src_src1_index__
+PREHOOK: Input: default@default__src_src2_index__
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT a.bucketname AS `_bucketname`, COLLECT_SET(a.offset) as `_offsets`
 FROM (SELECT `_bucketname` AS bucketname, `_offset` AS offset, `_bitmaps` AS bitmaps FROM default__src_src1_index__
@@ -98,6 +105,9 @@ FROM (SELECT `_bucketname` AS bucketname, `_offset` AS offset, `_bitmaps` AS bit
    a.bucketname = b.bucketname AND a.offset = b.offset WHERE NOT
 EWAH_BITMAP_EMPTY(EWAH_BITMAP_AND(a.bitmaps, b.bitmaps)) GROUP BY a.bucketname
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@default__src_src1_index__
+POSTHOOK: Input: default@default__src_src2_index__
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

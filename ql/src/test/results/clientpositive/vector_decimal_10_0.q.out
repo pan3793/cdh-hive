@@ -35,9 +35,13 @@ POSTHOOK: Output: default@DECIMAL
 PREHOOK: query: EXPLAIN
 SELECT dec FROM DECIMAL order by dec
 PREHOOK: type: QUERY
+PREHOOK: Input: default@decimal
+#### A masked pattern was here ####
 POSTHOOK: query: EXPLAIN
 SELECT dec FROM DECIMAL order by dec
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@decimal
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1

@@ -16,9 +16,15 @@ POSTHOOK: Output: default@tst@d=2009-01-01
 PREHOOK: query: explain
 select count(1) from tst x where x.d='2009-01-01'
 PREHOOK: type: QUERY
+PREHOOK: Input: default@tst
+PREHOOK: Input: default@tst@d=2009-01-01
+#### A masked pattern was here ####
 POSTHOOK: query: explain
 select count(1) from tst x where x.d='2009-01-01'
 POSTHOOK: type: QUERY
+POSTHOOK: Input: default@tst
+POSTHOOK: Input: default@tst@d=2009-01-01
+#### A masked pattern was here ####
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
   Stage-0 depends on stages: Stage-1
