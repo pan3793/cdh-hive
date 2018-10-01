@@ -93,6 +93,7 @@ class MetaStoreDirectSql {
     ORACLE,
     MSSQL,
     DERBY,
+    POSTGRES,
     OTHER
   }
 
@@ -159,6 +160,8 @@ class MetaStoreDirectSql {
         dbType = DB.MSSQL;
       } else if (productName.contains("derby")) {
         dbType = DB.DERBY;
+      } else if (productName.contains("postgresql")) {
+        dbType = DB.POSTGRES;
       }
     }
     return dbType;
@@ -430,7 +433,7 @@ class MetaStoreDirectSql {
   public boolean generateSqlFilterForPushdown(
       Table table, ExpressionTree tree, SqlFilterForPushdown result) throws MetaException {
     // Derby and Oracle do not interpret filters ANSI-properly in some cases and need a workaround.
-    boolean dbHasJoinCastBug = (dbType == DB.DERBY || dbType == DB.ORACLE);
+    boolean dbHasJoinCastBug = (dbType == DB.DERBY || dbType == DB.ORACLE || dbType == DB.POSTGRES);
     result.table = table;
     result.filter = PartitionFilterGenerator.generateSqlFilter(
         table, tree, result.params, result.joins, dbHasJoinCastBug, defaultPartName, dbType);
