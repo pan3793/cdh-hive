@@ -24,6 +24,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.hadoop.hive.metastore.TableType;
+import org.apache.hive.hcatalog.messaging.AddPartitionMessage;
+import org.apache.hive.hcatalog.messaging.CreateTableMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -141,12 +144,13 @@ public class TestHCatClientNotification {
     assertEquals("hcatcreatetable", event.getTableName());
 
     // Parse the message field
-    ObjectNode jsonTree = getJsonTree(event);
-    assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, jsonTree.get("eventType").asText());
-    assertEquals("default", jsonTree.get("db").asText());
-    assertEquals("hcatcreatetable", jsonTree.get("table").asText());
-    Table tableObj = JSONMessageFactory.getTableObj(jsonTree);
-    assertEquals(table.toHiveTable(), tableObj);
+    CreateTableMessage createTableMessage = md.getCreateTableMessage(event.getMessage());
+    assertEquals(dbName, createTableMessage.getDB());
+    assertEquals(tableName, createTableMessage.getTable());
+
+    // fetch the table marked by the message and compare
+    HCatTable createdTable = hCatClient.getTable(dbName,tableName);
+    assertTrue(createdTable.diff(table).equals(HCatTable.NO_DIFF));
   }
 
   // TODO - Currently no way to test alter table, as this interface doesn't support alter table
@@ -169,6 +173,7 @@ public class TestHCatClientNotification {
     assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
     assertEquals(tableName, event.getTableName());
+
     DropTableMessage dropTableMessage = md.getDropTableMessage(event.getMessage());
     assertEquals(dbName, dropTableMessage.getDB());
     assertEquals(tableName, dropTableMessage.getTable());
@@ -200,18 +205,20 @@ public class TestHCatClientNotification {
     assertEquals(tableName, event.getTableName());
 
     // Parse the message field
-    ObjectNode jsonTree = getJsonTree(event);
-    assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, jsonTree.get("eventType").asText());
-    assertEquals("default", jsonTree.get("db").asText());
-    assertEquals("hcataddparttable", jsonTree.get("table").asText());
-    List<Partition> partitionObjList = JSONMessageFactory.getPartitionObjList(jsonTree);
-    HCatPartition hcatPart = new HCatPartition(table, partitionObjList.get(0));
-    assertEquals(part.getDatabaseName(), hcatPart.getDatabaseName());
-    assertEquals(part.getTableName(), hcatPart.getTableName());
-    assertEquals(part.getValues(), hcatPart.getValues());
-    assertEquals(part.getColumns(), hcatPart.getColumns());
-    assertEquals(part.getPartColumns(), hcatPart.getPartColumns());
-    assertEquals(part.getLocation(), hcatPart.getLocation());
+    AddPartitionMessage addPartitionMessage = md.getAddPartitionMessage(event.getMessage());
+    assertEquals(dbName, addPartitionMessage.getDB());
+    assertEquals(tableName, addPartitionMessage.getTable());
+    List<Map<String, String>> ptndescs = addPartitionMessage.getPartitions();
+
+    // fetch the partition referred to by the message and compare
+    HCatPartition addedPart = hCatClient.getPartition(dbName, tableName, ptndescs.get(0));
+
+    assertEquals(part.getDatabaseName(), addedPart.getDatabaseName());
+    assertEquals(part.getTableName(), addedPart.getTableName());
+    assertEquals(part.getValues(), addedPart.getValues());
+    assertEquals(part.getColumns(), addedPart.getColumns());
+    assertEquals(part.getPartColumns(), addedPart.getPartColumns());
+    assertEquals(part.getLocation(), addedPart.getLocation());
   }
 
   // TODO - currently no way to test alter partition, as HCatClient doesn't support it.
@@ -227,11 +234,7 @@ public class TestHCatClientNotification {
     String partName = "testpart";
     Map<String, String> partSpec = new HashMap<String, String>(1);
     partSpec.put(partColName, partName);
-    hCatClient.addPartition(
-        HCatAddPartitionDesc.create(
-            new HCatPartition(table, partSpec, null)
-        ).build()
-    );
+    hCatClient.addPartition(HCatAddPartitionDesc.create(new HCatPartition(table, partSpec, null)).build());
     hCatClient.dropPartitions(dbName, tableName, partSpec, false);
 
     List<HCatNotificationEvent> events = hCatClient.getNextNotification(firstEventId, 0, null);
@@ -241,7 +244,7 @@ public class TestHCatClientNotification {
     assertEquals(firstEventId + 3, event.getEventId());
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_DROP_PARTITION_EVENT, event.getEventType());
-    assertEquals("default", event.getDbName());
+    assertEquals(dbName, event.getDbName());
     assertEquals(tableName, event.getTableName());
 
     // Parse the message field
@@ -250,8 +253,8 @@ public class TestHCatClientNotification {
     assertEquals(tableName, dropPartitionMessage.getTable());
     List<Map<String, String>> droppedPartSpecs = dropPartitionMessage.getPartitions();
     assertNotNull(droppedPartSpecs);
-    assertEquals(1,droppedPartSpecs.size());
-    assertEquals(partSpec,droppedPartSpecs.get(0));
+    assertEquals(1, droppedPartSpecs.size());
+    assertEquals(partSpec, droppedPartSpecs.get(0));
   }
 
   @Test
