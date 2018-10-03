@@ -19,6 +19,7 @@ package org.apache.hive.jdbc.miniHS2;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics;
@@ -36,6 +37,7 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
 import org.apache.thrift.transport.TTransport;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -52,6 +54,11 @@ public class TestHs2ConnectionMetricsHttp extends Hs2ConnectionMetrics {
     Hs2ConnectionMetrics.setup();
   }
 
+  @AfterClass
+  public static void tearDown() {
+    Hs2ConnectionMetrics.tearDown();
+  }
+
   @Test
   public void testOpenConnectionMetrics() throws Exception {
     CodahaleMetrics metrics = (CodahaleMetrics) MetricsFactory.getInstance();
@@ -59,19 +66,24 @@ public class TestHs2ConnectionMetricsHttp extends Hs2ConnectionMetrics {
     TCLIService.Client httpClient = getHttpClient();
     TOpenSessionReq openSessionReq = new TOpenSessionReq();
     TOpenSessionResp tOpenSessionResp = httpClient.OpenSession(openSessionReq);
+    // wait a couple of sec to make sure the connection is closed
+    TimeUnit.SECONDS.sleep(3);
     verifyConnectionMetrics(metrics.dumpJson(), 0, 1);
     TSessionHandle sessionHandle = tOpenSessionResp.getSessionHandle();
 
     TCloseSessionReq closeSessionReq = new TCloseSessionReq(sessionHandle);
     httpClient.CloseSession(closeSessionReq);
+    TimeUnit.SECONDS.sleep(3);
     verifyConnectionMetrics(metrics.dumpJson(), 0, 2);
 
     tOpenSessionResp = httpClient.OpenSession(openSessionReq);
+    TimeUnit.SECONDS.sleep(3);
     verifyConnectionMetrics(metrics.dumpJson(), 0, 3);
     sessionHandle = tOpenSessionResp.getSessionHandle();
 
     closeSessionReq = new TCloseSessionReq(sessionHandle);
     httpClient.CloseSession(closeSessionReq);
+    TimeUnit.SECONDS.sleep(3);
     verifyConnectionMetrics(metrics.dumpJson(), 0, 4);
 
   }
