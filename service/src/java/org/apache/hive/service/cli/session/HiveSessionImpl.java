@@ -464,6 +464,11 @@ public class HiveSessionImpl implements HiveSession {
   }
 
   @Override
+  public HiveConf getSessionConf() throws HiveSQLException {
+	  return this.sessionConf;
+  }
+
+  @Override
   public OperationHandle executeStatement(String statement, Map<String, String> confOverlay) throws HiveSQLException {
     return executeStatementInternal(statement, confOverlay, false, 0);
   }

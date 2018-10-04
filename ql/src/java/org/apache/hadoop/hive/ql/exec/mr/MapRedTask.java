@@ -39,6 +39,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.Context;
 import org.apache.hadoop.hive.ql.DriverContext;
+import org.apache.hadoop.hive.ql.MapRedStats;
 import org.apache.hadoop.hive.ql.exec.Operator;
 import org.apache.hadoop.hive.ql.exec.SerializationUtilities;
 import org.apache.hadoop.hive.ql.exec.Utilities;
@@ -51,6 +52,8 @@ import org.apache.hadoop.hive.ql.session.SessionState.ResourceType;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.hive.common.util.StreamPrinter;
+import org.apache.hadoop.mapred.RunningJob;
+import org.json.JSONException;
 
 /**
  * Extension of ExecDriver:
@@ -472,6 +475,19 @@ public class MapRedTask extends ExecDriver implements Serializable {
       return getWork().getReduceWork() == null ? null : getWork().getReduceWork().getReducer();
     }
     return null;
+  }
+
+  public void updateWebUiStats(MapRedStats mapRedStats, RunningJob rj) {
+    if (queryDisplay != null &&
+        conf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_WEBUI_SHOW_STATS) &&
+        conf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_WEBUI_SHOW_GRAPH) &&
+        conf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_WEBUI_EXPLAIN_OUTPUT)) {
+      try {
+        queryDisplay.updateTaskStatistics(mapRedStats, rj, getId());
+      } catch (IOException | JSONException e) {
+        LOG.error(org.apache.hadoop.util.StringUtils.stringifyException(e), e);
+      }
+    }
   }
 
   @Override
