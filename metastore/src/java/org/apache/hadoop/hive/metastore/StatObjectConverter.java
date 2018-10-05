@@ -429,8 +429,14 @@ public class StatObjectConverter {
     } else if (colType.equals("date")) {
       DateColumnStatsData dateStats = new DateColumnStatsData();
       dateStats.setNumNulls(mStatsObj.getNumNulls());
-      dateStats.setHighValue(new Date(mStatsObj.getLongHighValue()));
-      dateStats.setLowValue(new Date(mStatsObj.getLongLowValue()));
+      Long highValue = mStatsObj.getLongHighValue();
+      if (highValue != null) {
+        dateStats.setHighValue(new Date(highValue));
+      }
+      Long lowValue = mStatsObj.getLongLowValue();
+      if (lowValue != null) {
+        dateStats.setLowValue(new Date(lowValue));
+      }
       dateStats.setNumDVs(mStatsObj.getNumDVs());
       colStatsData.setDateStats(dateStats);
     }
