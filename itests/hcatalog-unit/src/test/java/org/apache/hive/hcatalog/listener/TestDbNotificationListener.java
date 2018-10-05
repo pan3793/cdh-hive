@@ -283,7 +283,7 @@ public class TestDbNotificationListener {
   public void createDatabase() throws Exception {
     String dbName = "createdb";
     String dbName2 = "createdb2";
-    String dbLocationUri = "file:/tmp";
+    String dbLocationUri = testTempDir;
     String dbDescription = "no description";
     Database db = new Database(dbName, dbDescription, dbLocationUri, emptyParameters);
     msClient.createDatabase(db);
@@ -325,7 +325,7 @@ public class TestDbNotificationListener {
   public void dropDatabase() throws Exception {
     String dbName = "dropdb";
     String dbName2 = "dropdb2";
-    String dbLocationUri = "file:/tmp";
+    String dbLocationUri = testTempDir;
     String dbDescription = "no description";
     Database db = new Database(dbName, dbDescription, dbLocationUri, emptyParameters);
     msClient.createDatabase(db);
@@ -371,7 +371,7 @@ public class TestDbNotificationListener {
     String tblName = "createtable";
     String tblName2 = "createtable2";
     String tblOwner = "me";
-    String serdeLocation = "file:/tmp";
+    String serdeLocation = testTempDir;
     FieldSchema col1 = new FieldSchema("col1", "int", "no comment");
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(col1);
@@ -423,8 +423,9 @@ public class TestDbNotificationListener {
   @Test
   public void alterDatabase() throws Exception {
     String dbName = "alterdatabase";
+
     Database dbBefore =
-        new Database(dbName, "", "file:/tmp/alterdatabase", null);
+        new Database(dbName, "", Paths.get(testTempDir, "alterdatabase").toString(), null);
     dbBefore.setOwnerName("me");
 
     // Event 1
@@ -434,7 +435,7 @@ public class TestDbNotificationListener {
     Database dbAfter = dbBefore.deepCopy();
     // Event 2
     dbAfter.setOwnerName("you");
-    dbAfter.setLocationUri("file:/tmp/alterdatabase_copy");
+    dbAfter.setLocationUri(Paths.get(testTempDir, "alterdatabase_copy").toString());
     msClient.alterDatabase(dbName, dbAfter);
     dbAfter = msClient.getDatabase(dbName);
 
@@ -475,14 +476,14 @@ public class TestDbNotificationListener {
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(new FieldSchema("col1", "int", "nocomment"));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
+    StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 0,
         serde, null, null, emptyParameters);
     Table table = new Table("alttable", "default", "me", startTime, startTime, 0, sd,
         new ArrayList<FieldSchema>(), emptyParameters, null, null, null);
     // Event 1
     msClient.createTable(table);
     // Need to modify table location as well
-    sd.setLocation("file:/tmp/0");
+    sd.setLocation(Paths.get(testTempDir, "0").toString());
     cols.add(new FieldSchema("col2", "int", ""));
     table = new Table("alttable", "default", "me", startTime, startTime, 0, sd,
         new ArrayList<FieldSchema>(), emptyParameters, null, null, null);
@@ -528,7 +529,7 @@ public class TestDbNotificationListener {
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(new FieldSchema("col1", "int", "nocomment"));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
+    StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 0,
         serde, null, null, emptyParameters);
     Table table = new Table(tblName, defaultDbName, tblOwner, startTime, startTime, 0, sd, null,
         emptyParameters, null, null, null);
@@ -582,7 +583,7 @@ public class TestDbNotificationListener {
     String tblName = "addptn";
     String tblName2 = "addptn2";
     String tblOwner = "me";
-    String serdeLocation = "file:/tmp";
+    String serdeLocation = testTempDir;
     FieldSchema col1 = new FieldSchema("col1", "int", "no comment");
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(col1);
@@ -652,7 +653,7 @@ public class TestDbNotificationListener {
     List<FieldSchema> partCols = new ArrayList<FieldSchema>();
     partCols.add(new FieldSchema("ds", "string", ""));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
+    StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 0,
         serde, null, null, emptyParameters);
     Table table = new Table("alterparttable", "default", "me", startTime, startTime, 0, sd,
         partCols, emptyParameters, null, null, null);
@@ -662,7 +663,7 @@ public class TestDbNotificationListener {
         startTime, startTime, sd, emptyParameters);
     msClient.add_partition(partition);
     // Need to modify table location as well
-    sd.setLocation("file:/tmp/0");
+    sd.setLocation(Paths.get(testTempDir, "0").toString());
 
 
     Partition newPart = new Partition(Arrays.asList("today"), "default", "alterparttable",
@@ -711,7 +712,7 @@ public class TestDbNotificationListener {
     List<FieldSchema> partCols = new ArrayList<FieldSchema>();
     partCols.add(new FieldSchema("ds", "string", ""));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
+    StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 0,
         serde, null, null, emptyParameters);
     Table table = new Table("dropPartTable", dbName, "me", startTime, startTime, 0, sd, partCols,
         emptyParameters, null, null, null);
@@ -774,28 +775,33 @@ public class TestDbNotificationListener {
     List<FieldSchema> partCols = new ArrayList<FieldSchema>();
     partCols.add(new FieldSchema("part", "int", ""));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
-    StorageDescriptor sd1 = new StorageDescriptor(cols, "file:/tmp/1", "input", "output", false, 0,
-        serde, null, null, emptyParameters);
+    StorageDescriptor sd1 =
+        new StorageDescriptor(cols, Paths.get(testTempDir, "1").toString(), "input", "output", false, 0, serde, null,
+            null, emptyParameters);
     Table tab1 = new Table("tab1", dbName, "me", startTime, startTime, 0, sd1, partCols,
         emptyParameters, null, null, null);
     msClient.createTable(tab1);
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
     assertEquals(1, rsp.getEventsSize()); // add_table
 
-    StorageDescriptor sd2 = new StorageDescriptor(cols, "file:/tmp/2", "input", "output", false, 0,
-        serde, null, null, emptyParameters);
+    StorageDescriptor sd2 =
+        new StorageDescriptor(cols, Paths.get(testTempDir, "2").toString(), "input", "output", false, 0, serde, null,
+            null, emptyParameters);
     Table tab2 = new Table("tab2", dbName, "me", startTime, startTime, 0, sd2, partCols,
         emptyParameters, null, null, null); // add_table
     msClient.createTable(tab2);
     rsp = msClient.getNextNotification(firstEventId + 1, 0, null);
     assertEquals(1, rsp.getEventsSize());
 
-    StorageDescriptor sd1part = new StorageDescriptor(cols, "file:/tmp/1/part=1", "input", "output", false, 0,
-        serde, null, null, emptyParameters);
-    StorageDescriptor sd2part = new StorageDescriptor(cols, "file:/tmp/1/part=2", "input", "output", false, 0,
-        serde, null, null, emptyParameters);
-    StorageDescriptor sd3part = new StorageDescriptor(cols, "file:/tmp/1/part=3", "input", "output", false, 0,
-        serde, null, null, emptyParameters);
+    StorageDescriptor sd1part =
+        new StorageDescriptor(cols, Paths.get(testTempDir, "1", "part=1").toString(), "input", "output", false, 0,
+            serde, null, null, emptyParameters);
+    StorageDescriptor sd2part =
+        new StorageDescriptor(cols, Paths.get(testTempDir, "1", "part=2").toString(), "input", "output", false, 0,
+            serde, null, null, emptyParameters);
+    StorageDescriptor sd3part =
+        new StorageDescriptor(cols, Paths.get(testTempDir, "1", "part=3").toString(), "input", "output", false, 0,
+            serde, null, null, emptyParameters);
     Partition part1 = new Partition(Arrays.asList("1"), "default", tab1.getTableName(),
         startTime, startTime, sd1part, emptyParameters);
     Partition part2 = new Partition(Arrays.asList("2"), "default", tab1.getTableName(),
@@ -859,7 +865,7 @@ public class TestDbNotificationListener {
     String dbName = "default";
     String ownerName = "me";
     String funcClass = "o.a.h.h.myfunc";
-    String funcResource = "file:/tmp/somewhere";
+    String funcResource = Paths.get(testTempDir, "somewhere").toString();
     Function func = new Function(funcName, dbName, funcClass, ownerName, PrincipalType.USER,
         startTime, FunctionType.JAVA, Arrays.asList(new ResourceUri(ResourceType.JAR,
         funcResource)));
@@ -889,7 +895,7 @@ public class TestDbNotificationListener {
     DummyRawStoreFailEvent.setEventSucceed(false);
     func = new Function("createFunction2", dbName, "o.a.h.h.myfunc2", "me", PrincipalType.USER,
         startTime, FunctionType.JAVA, Arrays.asList(new ResourceUri(ResourceType.JAR,
-        "file:/tmp/somewhere2")));
+            Paths.get(testTempDir, "somewhere2").toString())));
     try {
       msClient.createFunction(func);
     } catch (Exception ex) {
@@ -907,7 +913,7 @@ public class TestDbNotificationListener {
     String dbName = "default";
     String ownerName = "me";
     String funcClass = "o.a.h.h.dropFunctionTest";
-    String funcResource = "file:/tmp/somewhere";
+    String funcResource = Paths.get(testTempDir, "somewhere").toString();
     Function func = new Function(funcName, dbName, funcClass, ownerName, PrincipalType.USER,
         startTime, FunctionType.JAVA, Arrays.asList(new ResourceUri(ResourceType.JAR,
         funcResource)));
@@ -938,7 +944,7 @@ public class TestDbNotificationListener {
     // a failed event should not create a new notification
     func = new Function("dropfunctiontest2", dbName, "o.a.h.h.dropFunctionTest2", "me",
                            PrincipalType.USER,  startTime, FunctionType.JAVA, Arrays.asList(
-        new ResourceUri(ResourceType.JAR, "file:/tmp/somewhere2")));
+        new ResourceUri(ResourceType.JAR, Paths.get(testTempDir, "somewhere2").toString())));
     msClient.createFunction(func);
     DummyRawStoreFailEvent.setEventSucceed(false);
     try {
@@ -964,7 +970,7 @@ public class TestDbNotificationListener {
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
     Map<String, String> params = new HashMap<String, String>();
     params.put("key", "value");
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 17,
+    StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 17,
         serde, Arrays.asList("bucketcol"), Arrays.asList(new Order("sortcol", 1)), params);
     Table table = new Table(tableName, dbName, "me", startTime, startTime, 0, sd, null,
         emptyParameters, null, null, null);
@@ -1023,7 +1029,7 @@ public class TestDbNotificationListener {
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
     Map<String, String> params = new HashMap<String, String>();
     params.put("key", "value");
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 17,
+    StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 17,
         serde, Arrays.asList("bucketcol"), Arrays.asList(new Order("sortcol", 1)), params);
     Table table = new Table(tableName, dbName, "me", startTime, startTime, 0, sd, null,
         emptyParameters, null, null, null);
@@ -1085,7 +1091,7 @@ public class TestDbNotificationListener {
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
     Map<String, String> params = new HashMap<String, String>();
     params.put("key", "value");
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 17,
+    StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 17,
         serde, Arrays.asList("bucketcol"), Arrays.asList(new Order("sortcol", 1)), params);
     Table table = new Table(tableName, dbName, "me", startTime, startTime, 0, sd, null,
         emptyParameters, null, null, null);
@@ -1231,11 +1237,11 @@ public class TestDbNotificationListener {
 
   @Test
   public void getOnlyMaxEvents() throws Exception {
-    Database db = new Database("db1", "no description", "file:/tmp", emptyParameters);
+    Database db = new Database("db1", "no description", testTempDir, emptyParameters);
     msClient.createDatabase(db);
-    db = new Database("db2", "no description", "file:/tmp", emptyParameters);
+    db = new Database("db2", "no description", testTempDir, emptyParameters);
     msClient.createDatabase(db);
-    db = new Database("db3", "no description", "file:/tmp", emptyParameters);
+    db = new Database("db3", "no description", testTempDir, emptyParameters);
     msClient.createDatabase(db);
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 2, null);
@@ -1246,9 +1252,9 @@ public class TestDbNotificationListener {
 
   @Test
   public void filter() throws Exception {
-    Database db = new Database("f1", "no description", "file:/tmp", emptyParameters);
+    Database db = new Database("f1", "no description", testTempDir, emptyParameters);
     msClient.createDatabase(db);
-    db = new Database("f2", "no description", "file:/tmp", emptyParameters);
+    db = new Database("f2", "no description", testTempDir, emptyParameters);
     msClient.createDatabase(db);
     msClient.dropDatabase("f2");
 
@@ -1266,9 +1272,9 @@ public class TestDbNotificationListener {
 
   @Test
   public void filterWithMax() throws Exception {
-    Database db = new Database("f10", "no description", "file:/tmp", emptyParameters);
+    Database db = new Database("f10", "no description", testTempDir, emptyParameters);
     msClient.createDatabase(db);
-    db = new Database("f11", "no description", "file:/tmp", emptyParameters);
+    db = new Database("f11", "no description", testTempDir, emptyParameters);
     msClient.createDatabase(db);
     msClient.dropDatabase("f11");
 
@@ -1470,7 +1476,7 @@ public class TestDbNotificationListener {
 
   @Test
   public void cleanupNotifs() throws Exception {
-    Database db = new Database("cleanup1","no description","file:/tmp", emptyParameters);
+    Database db = new Database("cleanup1", "no description", testTempDir, emptyParameters);
     msClient.createDatabase(db);
     msClient.dropDatabase("cleanup1");
 
