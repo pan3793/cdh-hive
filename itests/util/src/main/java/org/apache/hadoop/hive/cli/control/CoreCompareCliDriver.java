@@ -21,9 +21,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.hadoop.hive.ql.QTestArguments;
 import com.google.common.base.Strings;
@@ -38,6 +36,7 @@ import org.junit.BeforeClass;
 public class CoreCompareCliDriver extends CliAdapter{
 
   private static QTestUtil qt;
+
   public CoreCompareCliDriver(AbstractCliConfig testCliConfig) {
     super(testCliConfig);
   }
@@ -49,7 +48,6 @@ public class CoreCompareCliDriver extends CliAdapter{
     String hiveConfDir = cliConfig.getHiveConfDir();
     String initScript = cliConfig.getInitScript();
     String cleanupScript = cliConfig.getCleanupScript();
-    String hadoopVer = cliConfig.getHadoopVersion();
 
     try {
       qt = new QTestUtil(
@@ -58,7 +56,6 @@ public class CoreCompareCliDriver extends CliAdapter{
             .withLogDir(cliConfig.getLogDir())
             .withClusterType(miniMR)
             .withConfDir(hiveConfDir)
-            .withHadoopVer(hadoopVer)
             .withInitScript(initScript)
             .withCleanupScript(cleanupScript)
             .withHBaseMetastore(false)
@@ -74,7 +71,7 @@ public class CoreCompareCliDriver extends CliAdapter{
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      fail("Unexpected exception in static initialization");
+      throw new RuntimeException("Unexpected exception in static initialization", e);
     }
   }
 
@@ -83,6 +80,7 @@ public class CoreCompareCliDriver extends CliAdapter{
   public void setUp() {
     try {
       qt.clearTestSideEffects();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -96,6 +94,7 @@ public class CoreCompareCliDriver extends CliAdapter{
   public void tearDown() {
     try {
       qt.clearPostTestEffects();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -106,7 +105,7 @@ public class CoreCompareCliDriver extends CliAdapter{
 
   @Override
   @AfterClass
-  public void shutdown() throws Exception {
+  public void shutdown() {
     try {
       qt.shutdown();
     } catch (Exception e) {
@@ -117,13 +116,11 @@ public class CoreCompareCliDriver extends CliAdapter{
     }
   }
 
-  private Map<String, List<String>> versionFiles = new HashMap<>();
-
-  static String debugHint = "\nSee ./ql/target/tmp/log/hive.log or ./itests/qtest/target/tmp/log/hive.log, "
+  private static String debugHint = "\nSee ./ql/target/tmp/log/hive.log or ./itests/qtest/target/tmp/log/hive.log, "
      + "or check ./ql/target/surefire-reports or ./itests/qtest/target/surefire-reports/ for specific test cases logs.";
 
   @Override
-  public void runTest(String tname, String fname, String fpath) throws Exception {
+  public void runTest(String tname, String fname, String fpath) {
     final String queryDirectory = cliConfig.getQueryDirectory();
 
     long startTime = System.currentTimeMillis();
@@ -144,14 +141,14 @@ public class CoreCompareCliDriver extends CliAdapter{
         return;
       }
       qt.cliInit(fname);
-
       int ecode = 0;
+
       List<String> outputs = new ArrayList<>(versionFiles.size());
       for (String versionFile : versionFiles) {
         // 1 for "_" after tname; 3 for ".qv" at the end. Version is in between.
         String versionStr = versionFile.substring(tname.length() + 1, versionFile.length() - 3);
         outputs.add(qt.cliInit(tname + "." + versionStr));
-        // TODO: will this work?
+
         ecode = qt.executeClient(versionFile, fname);
         if (ecode != 0) {
           qt.failed(ecode, fname, debugHint);

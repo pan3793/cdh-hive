@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,9 +20,6 @@ import java.io.File;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-
 import org.apache.accumulo.core.client.AccumuloException;
 import org.apache.accumulo.core.client.AccumuloSecurityException;
 import org.apache.accumulo.core.client.BatchWriter;
@@ -34,32 +31,43 @@ import org.apache.accumulo.core.client.admin.TableOperations;
 import org.apache.accumulo.core.data.Mutation;
 import org.apache.accumulo.minicluster.MiniAccumuloCluster;
 import org.apache.accumulo.minicluster.MiniAccumuloConfig;
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.QTestUtil;
 
 /**
  * Start and stop an AccumuloMiniCluster for testing purposes
  */
-public class AccumuloTestSetup extends TestSetup {
+public class AccumuloTestSetup extends QTestUtil.QTestSetup {
+
   public static final String PASSWORD = "password";
   public static final String TABLE_NAME = "accumuloHiveTable";
 
-  protected MiniAccumuloCluster miniCluster;
+  private MiniAccumuloCluster miniCluster;
 
-  public AccumuloTestSetup(Test test) {
-    super(test);
+  public AccumuloTestSetup() {
   }
 
-  protected void setupWithHiveConf(HiveConf conf) throws Exception {
+  @Override
+  public void preTest(HiveConf conf) throws Exception {
+    super.preTest(conf);
+    setupWithHiveConf(conf);
+  }
+
+  private void setupWithHiveConf(HiveConf conf) throws Exception {
     if (null == miniCluster) {
       String testTmpDir = System.getProperty("test.tmp.dir");
       File tmpDir = new File(testTmpDir, "accumulo");
+
+      if (tmpDir.exists()) {
+        FileUtils.deleteDirectory(tmpDir);
+      }
 
       MiniAccumuloConfig cfg = new MiniAccumuloConfig(tmpDir, PASSWORD);
       cfg.setNumTservers(1);
 
       miniCluster = new MiniAccumuloCluster(cfg);
-
       miniCluster.start();
 
       createAccumuloTable(miniCluster.getConnector("root", PASSWORD));
@@ -72,7 +80,7 @@ public class AccumuloTestSetup extends TestSetup {
    * Update hiveConf with the Accumulo specific parameters
    * @param conf The hiveconf to update
    */
-  public void updateConf(HiveConf conf) {
+  private void updateConf(HiveConf conf) {
     // Setup connection information
     conf.set(AccumuloConnectionParameters.USER_NAME, "root");
     conf.set(AccumuloConnectionParameters.USER_PASS, PASSWORD);
@@ -83,7 +91,7 @@ public class AccumuloTestSetup extends TestSetup {
     }
   }
 
-  protected void createAccumuloTable(Connector conn) throws TableExistsException,
+  private void createAccumuloTable(Connector conn) throws TableExistsException,
       TableNotFoundException, AccumuloException, AccumuloSecurityException {
     TableOperations tops = conn.tableOperations();
     if (tops.exists(TABLE_NAME)) {
@@ -129,10 +137,11 @@ public class AccumuloTestSetup extends TestSetup {
   }
 
   @Override
-  protected void tearDown() throws Exception {
+  public void tearDown() throws Exception {
     if (null != miniCluster) {
       miniCluster.stop();
       miniCluster = null;
     }
+    super.tearDown();
   }
 }

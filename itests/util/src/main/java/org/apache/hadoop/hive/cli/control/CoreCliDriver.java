@@ -58,7 +58,6 @@ public class CoreCliDriver extends CliAdapter {
     String initScript = cliConfig.getInitScript();
     String cleanupScript = cliConfig.getCleanupScript();
     boolean useHBaseMetastore = cliConfig.getMetastoreType() == MetastoreType.hbase;
-    String hadoopVer = cliConfig.getHadoopVersion();
 
     try {
       qt = new ElapsedTimeLoggingWrapper<QTestUtil>() {
@@ -70,7 +69,6 @@ public class CoreCliDriver extends CliAdapter {
                 .withLogDir(cliConfig.getLogDir())
                 .withClusterType(miniMR)
                 .withConfDir(hiveConfDir)
-                .withHadoopVer(hadoopVer)
                 .withInitScript(initScript)
                 .withCleanupScript(cleanupScript)
                 .withHBaseMetastore(useHBaseMetastore)
@@ -117,6 +115,7 @@ public class CoreCliDriver extends CliAdapter {
           return null;
         }
       }.invoke("PerTestSetup done.", LOG, false);
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -137,6 +136,7 @@ public class CoreCliDriver extends CliAdapter {
           return null;
         }
       }.invoke("PerTestTearDown done.", LOG, false);
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -156,6 +156,7 @@ public class CoreCliDriver extends CliAdapter {
           return null;
         }
       }.invoke("Teardown done.", LOG, false);
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -164,7 +165,7 @@ public class CoreCliDriver extends CliAdapter {
     }
   }
 
-  static String debugHint = "\nSee ./ql/target/tmp/log/hive.log or ./itests/qtest/target/tmp/log/hive.log, "
+  private static String debugHint = "\nSee ./ql/target/tmp/log/hive.log or ./itests/qtest/target/tmp/log/hive.log, "
      + "or check ./ql/target/surefire-reports or ./itests/qtest/target/surefire-reports/ for specific test cases logs.";
 
   @Override
@@ -191,6 +192,7 @@ public class CoreCliDriver extends CliAdapter {
         failed = true;
         qt.failed(ecode, fname, debugHint);
       }
+
       QTestProcessExecResult result = qt.checkCliDriverResults(fname);
       if (result.getReturnCode() != 0) {
         failed = true;

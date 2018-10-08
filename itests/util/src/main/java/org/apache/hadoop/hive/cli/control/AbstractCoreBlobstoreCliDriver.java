@@ -51,36 +51,43 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
 
   @Override
   @BeforeClass
-  public void beforeClass() throws Exception {
+  public void beforeClass() {
     MiniClusterType miniMR = cliConfig.getClusterType();
     String hiveConfDir = cliConfig.getHiveConfDir();
     String initScript = cliConfig.getInitScript();
     String cleanupScript = cliConfig.getCleanupScript();
-    boolean useHBaseMetastore = cliConfig.getMetastoreType() == MetastoreType.hbase;
-    String hadoopVer = cliConfig.getHadoopVersion();
+    boolean useHBaseMetastore = cliConfig.getMetastoreType() == AbstractCliConfig.MetastoreType.hbase;
 
-    qt = new QTestUtil(
-        QTestArguments.QTestArgumentsBuilder.instance()
-          .withOutDir(cliConfig.getResultsDir())
-          .withLogDir(cliConfig.getLogDir())
-          .withClusterType(miniMR)
-          .withConfDir(hiveConfDir)
-          .withHadoopVer(hadoopVer)
-          .withInitScript(initScript)
-          .withCleanupScript(cleanupScript)
-          .withHBaseMetastore(useHBaseMetastore)
-          .withLlapIo(true)
-          .build());
+    try {
+      qt = new QTestUtil(
+          QTestArguments.QTestArgumentsBuilder.instance()
+            .withOutDir(cliConfig.getResultsDir())
+            .withLogDir(cliConfig.getLogDir())
+            .withClusterType(miniMR)
+            .withConfDir(hiveConfDir)
+            .withInitScript(initScript)
+            .withCleanupScript(cleanupScript)
+            .withHBaseMetastore(useHBaseMetastore)
+            .withLlapIo(true)
+            .build());
 
-    if (Strings.isNullOrEmpty(qt.getConf().get(HCONF_TEST_BLOBSTORE_PATH))) {
-      fail(String.format("%s must be set. Try setting in blobstore-conf.xml",
-          HCONF_TEST_BLOBSTORE_PATH));
+      if (Strings.isNullOrEmpty(qt.getConf().get(HCONF_TEST_BLOBSTORE_PATH))) {
+        fail(String.format("%s must be set. Try setting in blobstore-conf.xml",
+            HCONF_TEST_BLOBSTORE_PATH));
+      }
+
+      // do a one time initialization
+      setupUniqueTestPath();
+      qt.newSession();
+      qt.cleanUp();
+      qt.createSources();
+
+    } catch (Exception e) {
+      System.err.println("Exception: " + e.getMessage());
+      e.printStackTrace();
+      System.err.flush();
+      throw new RuntimeException("Unexpected exception in static initialization", e);
     }
-    // do a one time initialization
-    setupUniqueTestPath();
-    qt.newSession();
-    qt.cleanUp();
-    qt.createSources();
   }
 
   @Override
@@ -88,6 +95,7 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
   public void setUp() {
     try {
       qt.newSession();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -102,6 +110,7 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
     try {
       qt.clearTestSideEffects();
       qt.clearPostTestEffects();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -112,14 +121,22 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
 
   @Override
   @AfterClass
-  public void shutdown() throws Exception {
-    qt.shutdown();
-    String rmUniquePathCommand =
-        String.format("dfs -rm -r ${hiveconf:%s};", HCONF_TEST_BLOBSTORE_PATH_UNIQUE);
-    qt.executeAdhocCommand(rmUniquePathCommand);
+  public void shutdown() {
+    try {
+      qt.shutdown();
+      String rmUniquePathCommand =
+          String.format("dfs -rm -r ${hiveconf:%s};", HCONF_TEST_BLOBSTORE_PATH_UNIQUE);
+      qt.executeAdhocCommand(rmUniquePathCommand);
+
+    } catch (Exception e) {
+      System.err.println("Exception: " + e.getMessage());
+      e.printStackTrace();
+      System.err.flush();
+      fail("Unexpected exception in shutdown");
+    }
   }
 
-  static String debugHint = "\nSee ./itests/hive-blobstore/target/tmp/log/hive.log, "
+  private static String debugHint = "\nSee ./itests/hive-blobstore/target/tmp/log/hive.log, "
       + "or check ./itests/hive-blobstore/target/surefire-reports/ for specific test cases logs.";
 
   protected void runTestHelper(String tname, String fname, String fpath, boolean expectSuccess) {
@@ -140,6 +157,7 @@ public abstract class AbstractCoreBlobstoreCliDriver extends CliAdapter {
       if ((ecode == 0) ^ expectSuccess) {
         qt.failed(ecode, fname, debugHint);
       }
+
       QTestProcessExecResult result = qt.checkCliDriverResults(fname);
       if (result.getReturnCode() != 0) {
         String message = Strings.isNullOrEmpty(result.getCapturedOutput()) ?

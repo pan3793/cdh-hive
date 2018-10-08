@@ -55,7 +55,7 @@ public class CoreHBaseNegativeCliDriver extends CliAdapter {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      throw new RuntimeException("Unexpected exception in static initialization: " + e.getMessage());
+      throw new RuntimeException("Unexpected exception in static initialization: ", e);
     }
   }
 
@@ -64,6 +64,7 @@ public class CoreHBaseNegativeCliDriver extends CliAdapter {
   public void setUp() {
     try {
       qt.newSession();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -78,6 +79,7 @@ public class CoreHBaseNegativeCliDriver extends CliAdapter {
     try {
       qt.clearPostTestEffects();
       qt.clearTestSideEffects();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -88,9 +90,10 @@ public class CoreHBaseNegativeCliDriver extends CliAdapter {
 
   @Override
   @AfterClass
-  public void shutdown() throws Exception {
+  public void shutdown() {
     try {
       qt.shutdown();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -131,7 +134,5 @@ public class CoreHBaseNegativeCliDriver extends CliAdapter {
     System.err.println("Done query: " + fname + " elapsedTime=" + elapsedTime/1000 + "s");
     assertTrue("Test passed", true);
   }
-
-
 }
 

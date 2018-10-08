@@ -1,4 +1,3 @@
-package org.apache.hadoop.hive.cli.control;
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,7 +16,7 @@ package org.apache.hadoop.hive.cli.control;
  * limitations under the License.
  */
 
-
+package org.apache.hadoop.hive.cli.control;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -29,6 +28,7 @@ import org.apache.hadoop.hive.ql.QTestUtil;
 import org.apache.hadoop.hive.ql.QTestUtil.MiniClusterType;
 import org.junit.After;
 import org.junit.AfterClass;
+
 /**
  This is the TestPerformance Cli Driver for integrating performance regression tests
  as part of the Hive Unit tests.
@@ -53,11 +53,11 @@ public class CorePerfCliDriver extends CliAdapter{
   public void beforeClass() {
     System.setProperty("datanucleus.schema.autoCreateAll", "true");
     System.setProperty("hive.metastore.schema.verification", "false");
+
     MiniClusterType miniMR = cliConfig.getClusterType();
     String hiveConfDir = cliConfig.getHiveConfDir();
     String initScript = cliConfig.getInitScript();
     String cleanupScript = cliConfig.getCleanupScript();
-    String hadoopVer = cliConfig.getHadoopVersion();
 
     try {
       qt = new QTestUtil(
@@ -66,7 +66,6 @@ public class CorePerfCliDriver extends CliAdapter{
             .withLogDir(cliConfig.getLogDir())
             .withClusterType(miniMR)
             .withConfDir(hiveConfDir)
-            .withHadoopVer(hadoopVer)
             .withInitScript(initScript)
             .withCleanupScript(cleanupScript)
             .withHBaseMetastore(false)
@@ -79,7 +78,8 @@ public class CorePerfCliDriver extends CliAdapter{
       qt.createSources();
       // Manually modify the underlying metastore db to reflect statistics corresponding to
       // the 30TB TPCDS scale set. This way the optimizer will generate plans for a 30 TB set.
-      QTestUtil.setupMetaStoreTableColumnStatsFor30TBTPCDSWorkload(qt.getConf());
+      QTestUtil.setupMetaStoreTableColumnStatsFor30TBTPCDSWorkload(
+          qt.getConf());
 
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
@@ -94,6 +94,7 @@ public class CorePerfCliDriver extends CliAdapter{
   public void shutdown() {
     try {
       qt.shutdown();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -106,11 +107,12 @@ public class CorePerfCliDriver extends CliAdapter{
   public void setUp() {
     try {
       qt.newSession();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      fail("Unexpected exception");
+      fail("Unexpected exception in setUp");
     }
   }
 
@@ -119,6 +121,7 @@ public class CorePerfCliDriver extends CliAdapter{
   public void tearDown() {
     try {
       qt.clearPostTestEffects();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -127,10 +130,9 @@ public class CorePerfCliDriver extends CliAdapter{
     }
   }
 
-  static String debugHint =
+  private static String debugHint =
       "\nSee ./ql/target/tmp/log/hive.log or ./itests/qtest/target/tmp/log/hive.log, "
           + "or check ./ql/target/surefire-reports or ./itests/qtest/target/surefire-reports/ for specific test cases logs.";
-
 
   @Override
   public void runTest(String name, String fname, String fpath) {
@@ -149,6 +151,7 @@ public class CorePerfCliDriver extends CliAdapter{
       if (ecode != 0) {
         qt.failed(ecode, fname, debugHint);
       }
+
       QTestProcessExecResult result = qt.checkCliDriverResults(fname);
       if (result.getReturnCode() != 0) {
         String message = Strings.isNullOrEmpty(result.getCapturedOutput()) ?
@@ -163,6 +166,4 @@ public class CorePerfCliDriver extends CliAdapter{
     System.err.println("Done query: " + fname + " elapsedTime=" + elapsedTime / 1000 + "s");
     assertTrue("Test passed", true);
   }
-
-
 }

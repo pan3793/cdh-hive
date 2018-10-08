@@ -40,8 +40,7 @@ public class HBaseQTestUtil extends QTestUtil {
 
   public HBaseQTestUtil(
     String outDir, String logDir, MiniClusterType miniMr, HBaseTestSetup setup,
-    String initScript, String cleanupScript)
-    throws Exception {
+    String initScript, String cleanupScript) throws Exception {
 
     super(
         QTestArguments.QTestArgumentsBuilder.instance()
@@ -49,7 +48,6 @@ public class HBaseQTestUtil extends QTestUtil {
           .withLogDir(logDir)
           .withClusterType(miniMr)
           .withConfDir(null)
-          .withHadoopVer("0.20")
           .withInitScript(initScript)
           .withCleanupScript(cleanupScript)
           .withHBaseMetastore(false)
@@ -81,9 +79,10 @@ public class HBaseQTestUtil extends QTestUtil {
       admin = conn.getAdmin();
       admin.snapshot(HBASE_SRC_SNAPSHOT_NAME, TableName.valueOf(HBASE_SRC_NAME));
     } finally {
-      if (admin != null) admin.close();
+      if (admin != null) {
+        admin.close();
+      }
     }
-
     conf.setBoolean("hive.test.init.phase", false);
   }
 
@@ -99,8 +98,9 @@ public class HBaseQTestUtil extends QTestUtil {
       admin = conn.getAdmin();
       admin.deleteSnapshots(HBASE_SRC_SNAPSHOT_NAME);
     } finally {
-      if (admin != null) admin.close();
+      if (admin != null) {
+        admin.close();
+      }
     }
   }
-
 }

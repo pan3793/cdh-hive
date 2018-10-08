@@ -56,7 +56,7 @@ public class CoreHBaseCliDriver extends CliAdapter {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      throw new RuntimeException("Unexpected exception in static initialization: " + e.getMessage());
+      throw new RuntimeException("Unexpected exception in static initialization: ", e);
     }
   }
 
@@ -65,6 +65,7 @@ public class CoreHBaseCliDriver extends CliAdapter {
   public void setUp() {
     try {
       qt.newSession();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -78,6 +79,7 @@ public class CoreHBaseCliDriver extends CliAdapter {
     try {
       qt.clearPostTestEffects();
       qt.clearTestSideEffects();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -91,6 +93,7 @@ public class CoreHBaseCliDriver extends CliAdapter {
   public void shutdown() {
     try {
       qt.shutdown();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();

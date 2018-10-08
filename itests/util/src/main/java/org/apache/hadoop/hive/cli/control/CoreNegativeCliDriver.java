@@ -32,6 +32,7 @@ import org.junit.Before;
 public class CoreNegativeCliDriver extends CliAdapter{
 
   private QTestUtil qt;
+
   public CoreNegativeCliDriver(AbstractCliConfig testCliConfig) {
     super(testCliConfig);
   }
@@ -42,7 +43,6 @@ public class CoreNegativeCliDriver extends CliAdapter{
     String hiveConfDir = cliConfig.getHiveConfDir();
     String initScript = cliConfig.getInitScript();
     String cleanupScript = cliConfig.getCleanupScript();
-    String hadoopVer = cliConfig.getHadoopVersion();
 
     try {
       qt = new QTestUtil(
@@ -51,7 +51,6 @@ public class CoreNegativeCliDriver extends CliAdapter{
             .withLogDir(cliConfig.getLogDir())
             .withClusterType(miniMR)
             .withConfDir(hiveConfDir)
-            .withHadoopVer(hadoopVer)
             .withInitScript(initScript)
             .withCleanupScript(cleanupScript)
             .withHBaseMetastore(false)
@@ -66,7 +65,7 @@ public class CoreNegativeCliDriver extends CliAdapter{
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
       System.err.flush();
-      fail("Unexpected exception in static initialization");
+      throw new RuntimeException("Unexpected exception in static initialization", e);
     }
   }
 
@@ -75,6 +74,7 @@ public class CoreNegativeCliDriver extends CliAdapter{
   public void setUp() {
     try {
       qt.newSession();
+
     } catch (Throwable e) {
       e.printStackTrace();
       System.err.flush();
@@ -88,6 +88,7 @@ public class CoreNegativeCliDriver extends CliAdapter{
     try {
       qt.clearTestSideEffects();
       qt.clearPostTestEffects();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -101,6 +102,7 @@ public class CoreNegativeCliDriver extends CliAdapter{
   public void shutdown() {
     try {
       qt.shutdown();
+
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
       e.printStackTrace();
@@ -109,9 +111,8 @@ public class CoreNegativeCliDriver extends CliAdapter{
     }
   }
 
-  static String debugHint = "\nSee ./ql/target/tmp/log/hive.log or ./itests/qtest/target/tmp/log/hive.log, "
+  private static String debugHint = "\nSee ./ql/target/tmp/log/hive.log or ./itests/qtest/target/tmp/log/hive.log, "
      + "or check ./ql/target/surefire-reports or ./itests/qtest/target/surefire-reports/ for specific test cases logs.";
-
 
   @Override
   public void runTest(String tname, String fname, String fpath) throws Exception {
