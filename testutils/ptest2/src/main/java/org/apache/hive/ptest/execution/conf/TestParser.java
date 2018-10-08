@@ -51,6 +51,7 @@ public class TestParser {
 
   private static final String QTEST_MODULE_NAME = "itests/qtest";
   private static final String QTEST_SPARK_MODULE_NAME = "itests/qtest-spark";
+  private static final String QTEST_BLOBSTORE_MODULE_NAME = "itests/hive-blobstore";
 
   private final AtomicInteger batchIdCounter;
 
@@ -249,6 +250,8 @@ public class TestParser {
   private String getModuleName(String driverName) {
     if (driverName.toLowerCase().contains("spark")) {
       return QTEST_SPARK_MODULE_NAME;
+    } else if (driverName.toLowerCase().contains("blobstore")) {
+      return QTEST_BLOBSTORE_MODULE_NAME;
     } else {
       return QTEST_MODULE_NAME;
     }
