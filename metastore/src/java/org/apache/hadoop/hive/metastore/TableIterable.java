@@ -16,13 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hive.ql.metadata;
+package org.apache.hadoop.hive.metastore;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.thrift.TException;
 
@@ -66,12 +65,8 @@ public class TableIterable implements Iterable<Table> {
         // get the Table objects for this batch of table names and get iterator
         // on it
         try {
-          try {
-            batchIter = msc.getTableObjectsByName(dbname, nameBatch).iterator();
-          } catch (TException e) {
-            throw new HiveException(e);
-          }
-        } catch (HiveException e) {
+          batchIter = msc.getTableObjectsByName(dbname, nameBatch).iterator();
+        } catch (TException e) {
           throw new RuntimeException(e);
         }
       }

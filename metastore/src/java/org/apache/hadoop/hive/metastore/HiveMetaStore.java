@@ -1105,6 +1105,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
           if (tables != null && !tables.isEmpty()) {
             for (Table table : tables) {
+              if (MetaStoreUtils.isIndexTable(table)) {
+                // Ignore Index tables, those will be dropped with parent tables
+                continue;
+              }
 
               // If the table is not external and it might not be in a subdirectory of the database
               // add it's locations to the list of paths to delete
