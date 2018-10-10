@@ -740,7 +740,7 @@ public class HiveConf extends Configuration {
     METASTORE_CONNECTION_POOLING_TYPE("datanucleus.connectionPoolingType", "BONECP", new StringSet("BONECP", "DBCP",
       "HikariCP"),
         "Specify connection pool library for datanucleus"),
-    METASTORE_CONNECTION_POOLING_MAX_CONNECTIONS("datanucleus.connectionPool.maxPoolSize", 10,
+    METASTORE_CONNECTION_POOLING_MAX_CONNECTIONS("datanucleus.connectionPool.maxPoolSize", 30,
         "Specify the maximum number of connections in the connection pool. Note: The configured size will be used by\n" +
         "2 connection pools (TxnHandler and ObjectStore). When configuring the max connection pool size, it is\n" +
         "recommended to take into account the number of metastore instances and the number of HiveServer2 instances\n" +
