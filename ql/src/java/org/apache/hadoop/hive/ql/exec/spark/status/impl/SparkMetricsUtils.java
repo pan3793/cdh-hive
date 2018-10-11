@@ -44,6 +44,7 @@ public final class SparkMetricsUtils {
     results.put(SparkStatisticsNames.RESULT_SERIALIZATION_TIME, allMetrics.resultSerializationTime);
     if (allMetrics.inputMetrics != null) {
       results.put(SparkStatisticsNames.BYTES_READ, allMetrics.inputMetrics.bytesRead);
+      results.put(SparkStatisticsNames.BYTES_READ_EC, allMetrics.inputMetrics.bytesReadEC);
       results.put(SparkStatisticsNames.RECORDS_READ, allMetrics.inputMetrics.recordsRead);
     }
     if (allMetrics.shuffleReadMetrics != null) {

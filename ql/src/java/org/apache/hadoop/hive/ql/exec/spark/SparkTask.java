@@ -271,6 +271,13 @@ public class SparkTask extends Task<SparkWork> {
                         SparkStatisticsNames.RECORDS_READ) + separator;
       }
 
+      // Bytes Read EC
+      if (sparkStatisticGroup.containsSparkStatistic(SparkStatisticsNames.BYTES_READ_EC) ) {
+        metricsString += SparkStatisticsNames.BYTES_READ_EC + colon +
+                SparkMetricsUtils.getSparkStatisticAsLong(sparkStatisticGroup,
+                        SparkStatisticsNames.BYTES_READ_EC) + separator;
+      }
+
       // Shuffle Read Bytes / Shuffle Read Records
       if (sparkStatisticGroup.containsSparkStatistic(
               SparkStatisticsNames.SHUFFLE_TOTAL_BYTES_READ) &&

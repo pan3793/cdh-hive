@@ -36,6 +36,7 @@ public class SparkStatisticsNames {
 
   // Input Metrics
   public static final String BYTES_READ = "BytesRead";
+  public static final String BYTES_READ_EC = "BytesReadEC";
   public static final String RECORDS_READ = "RecordsRead";
 
   // Shuffle Read Metrics

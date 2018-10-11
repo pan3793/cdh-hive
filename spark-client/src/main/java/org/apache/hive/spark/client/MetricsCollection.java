@@ -155,6 +155,7 @@ public class MetricsCollection {
       // Input metrics.
       boolean hasInputMetrics = false;
       long bytesRead = 0L;
+      long bytesReadEC = 0L;
       long recordsRead = 0L;
 
       // Shuffle read metrics.
@@ -192,6 +193,7 @@ public class MetricsCollection {
         if (m.inputMetrics != null) {
           hasInputMetrics = true;
           bytesRead += m.inputMetrics.bytesRead;
+          bytesReadEC += m.inputMetrics.bytesReadEC;
           recordsRead += m.inputMetrics.recordsRead;
         }
 
@@ -220,7 +222,7 @@ public class MetricsCollection {
 
       InputMetrics inputMetrics = null;
       if (hasInputMetrics) {
-        inputMetrics = new InputMetrics(bytesRead, recordsRead);
+        inputMetrics = new InputMetrics(bytesRead, bytesReadEC, recordsRead);
       }
 
       ShuffleReadMetrics shuffleReadMetrics = null;

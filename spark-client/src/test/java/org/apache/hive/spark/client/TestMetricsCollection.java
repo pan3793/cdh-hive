@@ -97,9 +97,9 @@ public class TestMetricsCollection {
     long value = taskValue(1, 1, 1);
 
     Metrics metrics1 = new Metrics(value, value, value, value, value, value, value, value, value,
-            value, new InputMetrics(value, value), null, null, null);
+            value, new InputMetrics(value, value, value), null, null, null);
     Metrics metrics2 = new Metrics(value, value, value, value, value, value, value, value, value,
-            value, new InputMetrics(value, value), null, null, null);
+            value, new InputMetrics(value, value, value), null, null, null);
 
     collection.addMetrics(1, 1, 1, metrics1);
     collection.addMetrics(1, 1, 2, metrics2);
@@ -111,7 +111,7 @@ public class TestMetricsCollection {
   private Metrics makeMetrics(int jobId, int stageId, long taskId) {
     long value = 1000000 * jobId + 1000 * stageId + taskId;
     return new Metrics(value, value, value, value, value, value, value, value, value, value,
-      new InputMetrics(value, value),
+      new InputMetrics(value, value, value),
       new ShuffleReadMetrics((int) value, (int) value, value, value, value, value),
       new ShuffleWriteMetrics(value, value, value),
       new OutputMetrics(value, value));
@@ -162,6 +162,7 @@ public class TestMetricsCollection {
     assertEquals(expected, metrics.taskDurationTime);
 
     assertEquals(expected, metrics.inputMetrics.bytesRead);
+    assertEquals(expected, metrics.inputMetrics.bytesReadEC);
     assertEquals(expected, metrics.inputMetrics.recordsRead);
 
     assertEquals(expected, metrics.shuffleReadMetrics.remoteBlocksFetched);
