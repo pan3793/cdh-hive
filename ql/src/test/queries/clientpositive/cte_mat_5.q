@@ -9,7 +9,7 @@ insert into q1 values (5, 'A');
 use default;
 
 show tables in mydb;
-show tables;
+show tables 'q1';
 
 explain
 with q1 as (select * from src where key= '5')

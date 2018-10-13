@@ -21,7 +21,7 @@ show partitions alter2;
 
 -- Cleanup
 DROP TABLE alter2;
-SHOW TABLES;
+SHOW TABLES LIKE "alter*";
 
 -- Using non-default Database
 
