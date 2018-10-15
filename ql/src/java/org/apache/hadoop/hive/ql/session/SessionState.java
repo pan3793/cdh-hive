@@ -121,7 +121,7 @@ public class SessionState {
   protected ClassLoader parentLoader;
 
   // Session-scope compile lock.
-  private final ReentrantLock compileLock = new ReentrantLock();
+  private final ReentrantLock compileLock = new ReentrantLock(true);
 
   private static final Object ROOT_HDFS_DIR_LOCK  = new Object();
 
