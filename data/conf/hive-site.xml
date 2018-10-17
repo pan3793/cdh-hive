@@ -314,5 +314,11 @@
   <value>false</value>
 </property>
 
+  <!--The following conf set to true will add entire Table/Partition thrift object to HMS Notifications.
+      For details, refer to CDH-72820. -->
+<property>
+  <name>hive.metastore.notifications.add.thrift.objects</name>
+  <value>true</value>
+</property>
 
 </configuration>

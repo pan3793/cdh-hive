@@ -126,6 +126,10 @@ public class TestDbNotificationListener {
   private int startTime;
   private long firstEventId;
 
+  // The HiveConf used here is static, hence any config changed in a test should be explicitly reset to
+  // default value at the end of the test so that it will not affect subsequent tests.
+  private static HiveConf conf;
+
   /* This class is used to verify that HiveMetaStore calls the non-transactional listeners with the
     * current event ID set by the DbNotificationListener class */
   public static class MockMetaStoreEventListener extends MetaStoreEventListener {
@@ -225,7 +229,7 @@ public class TestDbNotificationListener {
   @SuppressWarnings("rawtypes")
   @BeforeClass
   public static void connectToMetastore() throws Exception {
-    HiveConf conf = new HiveConf();
+    conf = new HiveConf();
     conf.setVar(HiveConf.ConfVars.METASTORE_TRANSACTIONAL_EVENT_LISTENERS,
         DbNotificationListener.class.getName());
     conf.setVar(HiveConf.ConfVars.METASTORE_EVENT_LISTENERS, MockMetaStoreEventListener.class.getName());
@@ -356,8 +360,6 @@ public class TestDbNotificationListener {
     assertEquals(3, rsp.getEventsSize());
   }
 
-  @Ignore("CREATE TABLE test ignored as it checks for full thrift object, which is only added"
-      + " when hive.metastore.notifications.add.thrift.objects is set to true.")
   @Test
   public void createTable() throws Exception {
     String defaultDbName = "default";
@@ -454,8 +456,6 @@ public class TestDbNotificationListener {
     assertEquals(2, rsp.getEventsSize());
   }
 
-  @Ignore("ALTER TABLE test ignored as it checks for full thrift object, which is only added"
-      + " when hive.metastore.notifications.add.thrift.objects is set to true.")
   @Test
   public void alterTable() throws Exception {
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
@@ -505,8 +505,6 @@ public class TestDbNotificationListener {
     assertEquals(2, rsp.getEventsSize());
   }
 
-  @Ignore("DROP TABLE test ignored as it checks for full thrift object, which is only added"
-      + " when hive.metastore.notifications.add.thrift.objects is set to true.")
   @Test
   public void dropTable() throws Exception {
     String defaultDbName = "default";
@@ -564,8 +562,6 @@ public class TestDbNotificationListener {
     assertEquals(3, rsp.getEventsSize());
   }
 
-  @Ignore("ADD PARTITION test ignored as it checks for full thrift object, which is only added"
-      + " when hive.metastore.notifications.add.thrift.objects is set to true.")
   @Test
   public void addPartition() throws Exception {
     String defaultDbName = "default";
@@ -635,8 +631,6 @@ public class TestDbNotificationListener {
     assertEquals(2, rsp.getEventsSize());
   }
 
-  @Ignore("ALTER PARTITION test ignored as it checks for full thrift object, which is only added"
-      + " when hive.metastore.notifications.add.thrift.objects is set to true.")
   @Test
   public void alterPartition() throws Exception {
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
@@ -1422,4 +1416,77 @@ public class TestDbNotificationListener {
     LOG.info("second trigger done");
     assertEquals(0, rsp2.getEventsSize());
   }
+
+  /**
+   * This test is not available upstream as we have added CDH-specific flag
+   * to enable all alter notifications or only the ones Sentry cares about.
+   * Please refer JIRA CDH-72818 for information.
+   * @throws Exception
+   */
+  @Test
+  public void testAlterNotificationFlag() throws Exception {
+    // When METASTORE_ALTER_NOTIFICATIONS_BASIC is false, we will see additional alter_events.
+    // By default when it is true, alter notifications are created only
+    // if tableName, dbName, location or owner info changes.
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, false);
+
+    driver.run("create table tbl_test (c int)");
+    driver.run("insert into table tbl_test values (1),(2)");
+    driver.run("drop table tbl_test");
+
+    NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
+    // Event 1 = CREATE_TABLE, Event 2 = ALTER_TABLE (Marker stats), Event 3 = ALTER_TABLE (Stats update)
+    // Event 4 = DROP_TABLE
+    assertEquals(4, rsp.getEventsSize());
+    NotificationEvent event = rsp.getEvents().get(0);
+    assertEquals(firstEventId + 1, event.getEventId());
+    assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
+    event = rsp.getEvents().get(1);
+    assertEquals(firstEventId + 2, event.getEventId());
+    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
+    event = rsp.getEvents().get(2);
+    assertEquals(firstEventId + 3, event.getEventId());
+    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
+    event = rsp.getEvents().get(3);
+    assertEquals(firstEventId + 4, event.getEventId());
+    assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
+
+    // TearDown : Set config back to default value
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, true);
+  }
+
+  /**
+   * This test is not available upstream as we have added CDH-specific flag
+   * to enable/disable stats related Alter event notifications.
+   * Please refer JIRA CDH-72818 for information.
+   * @throws Exception
+   */
+  @Test
+  public void testDisableStatsNotificationsFlag() throws Exception {
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, false);
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_DISABLE_STATS_NOTIFICATIONS, true);
+
+    driver.run("create table tbl_flag_test (c int)");
+    driver.run("insert into table tbl_flag_test values (1),(2)");
+    driver.run("drop table tbl_flag_test");
+
+    NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
+    // Event 1 = CREATE_TABLE, Event 2 = ALTER_TABLE (Marker stats), (ALTER_TABLE for Stats update is disabled here)
+    // Event 3 = DROP_TABLE
+    assertEquals(3, rsp.getEventsSize());
+    NotificationEvent event = rsp.getEvents().get(0);
+    assertEquals(firstEventId + 1, event.getEventId());
+    assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
+    event = rsp.getEvents().get(1);
+    assertEquals(firstEventId + 2, event.getEventId());
+    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
+    event = rsp.getEvents().get(2);
+    assertEquals(firstEventId + 3, event.getEventId());
+    assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
+
+    // TearDown : Set configs back to default values
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, true);
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_DISABLE_STATS_NOTIFICATIONS, false);
+  }
+
 }
