@@ -38,8 +38,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
@@ -93,6 +95,8 @@ import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.hive.common.util.ReflectionUtil;
 
 import javax.annotation.Nullable;
+
+import static java.util.regex.Pattern.compile;
 
 public class MetaStoreUtils {
 
@@ -1983,4 +1987,40 @@ public class MetaStoreUtils {
     return metaException;
   }
 
+  /**
+   * filters a given map with predicate provided. All entries of map whose key matches with
+   * predicate will be removed. Expects map to be modifiable and does the operation on actual map,
+   * so does not return a copy of filtered map.
+   * @param map A map of String key-value pairs
+   * @param predicate Predicate with pattern to filter the map
+   */
+  public static <T> void filterMapKeys(Map<String, T> map, Predicate<String> predicate) {
+    if (map == null) {
+      return;
+    }
+    map.entrySet().removeIf(entry -> predicate.test(entry.getKey()));
+  }
+
+  /**
+   * filters a given map with list of predicates. All entries of map whose key matches with any
+   * predicate will be removed. Expects map to be modifiable and does the operation on actual map,
+   * so does not return a copy of filtered map.
+   * @param map A map of String key-value pairs
+   * @param predicates List of predicates with patterns to filter the map
+   */
+  public static <T> void filterMapkeys(Map<String, T> map, List<Predicate<String>> predicates) {
+    if (map == null) {
+      return;
+    }
+    filterMapKeys(map, predicates.stream().reduce(Predicate::or).orElse(x -> false));
+  }
+
+  /**
+   * Compile a list of regex patterns and collect them as Predicates.
+   * @param patterns List of regex patterns to be compiled
+   * @return a List of Predicate created by compiling the regex patterns
+   */
+  public static List<Predicate<String>> compilePatternsToPredicates(List<String> patterns) {
+    return patterns.stream().map(pattern -> compile(pattern).asPredicate()).collect(Collectors.toList());
+  }
 }

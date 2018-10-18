@@ -22,9 +22,11 @@ import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.Index;
+import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.messaging.AddPartitionMessage;
@@ -38,11 +40,19 @@ import org.apache.hadoop.hive.metastore.messaging.InsertMessage;
 import org.apache.hadoop.hive.metastore.messaging.MessageDeserializer;
 import org.apache.hadoop.hive.metastore.messaging.MessageFactory;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.PatternSyntaxException;
 
+
+/**
+ *  This class and the associated classes for extended messages should be removed from Hive
+ *  source code when Sentry is modified to handle the new message contents added as part of CDH-72576.
+ *  JIRA created for this change : CDH-74342.
+ */
 public class ExtendedJSONMessageFactory extends MessageFactory {
   private static final Log LOG = LogFactory.getLog(ExtendedJSONMessageFactory.class.getName());
   private static ExtendedJSONMessageDeserializer deserializer = new ExtendedJSONMessageDeserializer();
@@ -88,6 +98,21 @@ public class ExtendedJSONMessageFactory extends MessageFactory {
     return "0.1";
   }
 
+  public void init() throws MetaException {
+    super.init();
+
+    // Initialize the paramsFilter from JsonMessageFactory, as it will be used to filter parameters from Table and
+    // Partition objects if the config is set.
+    List<String> excludePatterns = Arrays.asList(
+        HiveConf.getTrimmedStringsVar(hiveConf, HiveConf.ConfVars.EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS));
+    try {
+      JSONMessageFactory.paramsFilter = MetaStoreUtils.compilePatternsToPredicates(excludePatterns);
+    } catch (PatternSyntaxException e) {
+      LOG.error("Regex pattern compilation failed. Verify that "
+          + HiveConf.ConfVars.EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS.varname + " has valid patterns.");
+      throw new MetaException("Regex pattern compilation failed. " + e.getMessage());
+    }
+  }
   public String getMessageFormat() {
     return "json";
   }

@@ -24,6 +24,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.Index;
+import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.util.ReflectionUtils;
@@ -78,18 +79,20 @@ public abstract class MessageFactory {
    */
   public static MessageFactory getInstance() {
     if (instance == null) {
-      instance =
-          getInstance(hiveConf.get(HiveConf.ConfVars.METASTORE_EVENT_MESSAGE_FACTORY.varname));
+      instance = getInstance(HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTORE_EVENT_MESSAGE_FACTORY));
     }
     return instance;
   }
 
   private static MessageFactory getInstance(String className) {
     try {
-      return (MessageFactory)ReflectionUtils.newInstance(JavaUtils.loadClass(className), hiveConf);
-    }
-    catch (ClassNotFoundException classNotFound) {
+      MessageFactory factory = (MessageFactory) ReflectionUtils.newInstance(JavaUtils.loadClass(className), hiveConf);
+      factory.init();
+      return factory;
+    } catch (ClassNotFoundException classNotFound) {
       throw new IllegalStateException("Could not construct MessageFactory implementation: ", classNotFound);
+    } catch (MetaException e) {
+      throw new IllegalStateException(e);
     }
   }
 
@@ -114,6 +117,12 @@ public abstract class MessageFactory {
     // this use jdbc-like semantics that each MessageFactory made available register
     // itself for discoverability? Might be worth pursuing.
   }
+
+  /**
+   * Method can be overridden to initialize stuff for the MessageFactory implementations.
+   * @throws MetaException Any exception to be converted and thrown as MetaException
+   */
+  public void init() throws MetaException {}
 
   public abstract MessageDeserializer getDeserializer();
 

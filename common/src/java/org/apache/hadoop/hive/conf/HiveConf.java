@@ -835,6 +835,12 @@ public class HiveConf extends Configuration {
     METASTORE_EVENT_MESSAGE_FACTORY("hive.metastore.event.message.factory",
         "org.apache.hadoop.hive.metastore.messaging.json.ExtendedJSONMessageFactory",
         "Factory class for making encoding and decoding messages in the events generated."),
+    EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS(
+        "hive.metastore.notification.parameters.exclude.patterns", "",
+        "List of comma-separated regexes that are used to reduced the size of HMS Notification messages."
+            + " The regexes are matched against each key of parameters map in Table or Partition object"
+            + "present in HMS Notification. Any key-value pair whose key is matched with any regex will"
+            + " be removed from Parameters map during Serialization of Table/Partition object."),
     METASTORE_DISABLE_STATS_NOTIFICATIONS(
         "hive.metastore.disable.stats.notifications", false,
         "Disable alter table/partition notifications created by stat changes"),

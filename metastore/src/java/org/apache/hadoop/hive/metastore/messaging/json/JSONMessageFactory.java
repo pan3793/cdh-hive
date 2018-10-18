@@ -20,10 +20,13 @@
 package org.apache.hadoop.hive.metastore.messaging.json;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.regex.PatternSyntaxException;
 
 import javax.annotation.Nullable;
 
@@ -32,6 +35,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.Index;
+import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.NotificationEvent;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.Table;
@@ -52,6 +56,7 @@ import org.apache.hadoop.hive.metastore.messaging.DropTableMessage;
 import org.apache.hadoop.hive.metastore.messaging.InsertMessage;
 import org.apache.hadoop.hive.metastore.messaging.MessageDeserializer;
 import org.apache.hadoop.hive.metastore.messaging.MessageFactory;
+import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TDeserializer;
 import org.apache.thrift.TException;
@@ -68,6 +73,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
+import static org.apache.hadoop.hive.metastore.MetaStoreUtils.filterMapkeys;
+
 /**
  * The JSON implementation of the MessageFactory. Constructs JSON implementations of each
  * message-type.
@@ -80,6 +87,23 @@ public class JSONMessageFactory extends MessageFactory {
 
   public static final boolean ADD_THRIFT_OBJECT =
       HiveConf.getBoolVar(hiveConf, HiveConf.ConfVars.METASTORE_NOTIFICATIONS_ADD_THRIFT_OBJECTS);
+
+  static List<Predicate<String>> paramsFilter;
+
+  @Override
+  public void init() throws MetaException {
+    super.init();
+
+    List<String> excludePatterns = Arrays.asList(
+        HiveConf.getTrimmedStringsVar(hiveConf, HiveConf.ConfVars.EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS));
+    try {
+      paramsFilter = MetaStoreUtils.compilePatternsToPredicates(excludePatterns);
+    } catch (PatternSyntaxException e) {
+      LOG.error("Regex pattern compilation failed. Verify that "
+          + HiveConf.ConfVars.EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS.varname + " has valid patterns.");
+      throw new MetaException("Regex pattern compilation failed. " + e.getMessage());
+    }
+  }
 
   @Override
   public MessageDeserializer getDeserializer() {
@@ -205,6 +229,9 @@ public class JSONMessageFactory extends MessageFactory {
     if (!ADD_THRIFT_OBJECT) {
       return null;
     }
+    // Note: The parameters of the Table object will be removed in the filter if it matches
+    // any pattern provided through EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS
+    filterMapkeys(tableObj.getParameters(), paramsFilter);
     TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
     return serializer.toString(tableObj, "UTF-8");
   }
@@ -213,6 +240,9 @@ public class JSONMessageFactory extends MessageFactory {
     if (!ADD_THRIFT_OBJECT) {
       return null;
     }
+    // Note: The parameters of the Partition object will be removed in the filter if it matches
+    // any pattern provided through EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS
+    filterMapkeys(partitionObj.getParameters(), paramsFilter);
     TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
     return serializer.toString(partitionObj, "UTF-8");
   }

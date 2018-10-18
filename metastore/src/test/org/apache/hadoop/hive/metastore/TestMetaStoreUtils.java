@@ -19,10 +19,12 @@
 package org.apache.hadoop.hive.metastore;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.common.StatsSetupConst;
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
@@ -32,20 +34,24 @@ import org.apache.thrift.TException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import static java.util.regex.Pattern.compile;
 import static org.apache.hadoop.hive.common.StatsSetupConst.COLUMN_STATS_ACCURATE;
 import static org.apache.hadoop.hive.common.StatsSetupConst.NUM_ERASURE_CODED_FILES;
 import static org.apache.hadoop.hive.common.StatsSetupConst.NUM_FILES;
 import static org.apache.hadoop.hive.common.StatsSetupConst.STATS_GENERATED;
 import static org.apache.hadoop.hive.common.StatsSetupConst.TOTAL_SIZE;
+import static org.apache.hadoop.hive.metastore.MetaStoreUtils.filterMapkeys;
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.updateTableStatsSlow;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -266,4 +272,101 @@ public class TestMetaStoreUtils {
              new Path(pathString), false, false, isErasureCoded);
   }
 
+  @Test
+  public void testFilterMapWithPredicates() {
+    Map<String, String> testMap = getTestParamMap();
+
+    List<String> excludePatterns = Arrays.asList("lastDdl", "num");
+    testMapFilter(testMap, excludePatterns);
+    assertFalse(testMap.containsKey("transient_lastDdlTime"));
+    assertFalse(testMap.containsKey("numFiles"));
+    assertFalse(testMap.containsKey("numFilesErasureCoded"));
+    assertFalse(testMap.containsKey("numRows"));
+
+    Map<String, String> expectedMap = new HashMap<String, String>() {{
+        put("totalSize", "1024");
+        put("rawDataSize", "3243234");
+        put("COLUMN_STATS_ACCURATE", "{\"BASIC_STATS\":\"true\"");
+        put("COLUMN_STATS_ACCURATED", "dummy");
+        put("bucketing_version", "2");
+        put("testBucketing_version", "2");
+      }};
+
+    assertThat(expectedMap, is(testMap));
+
+    testMap = getTestParamMap();
+    excludePatterns = Arrays.asList("^bucket", "ACCURATE$");
+    testMapFilter(testMap, excludePatterns);
+
+    expectedMap = new HashMap<String, String>() {{
+        put("totalSize", "1024");
+        put("numRows", "10");
+        put("rawDataSize", "3243234");
+        put("COLUMN_STATS_ACCURATED", "dummy");
+        put("numFiles", "2");
+        put("transient_lastDdlTime", "1537487124");
+        put("testBucketing_version", "2");
+        put("numFilesErasureCoded", "0");
+      }};
+
+    assertThat(expectedMap, is(testMap));
+
+    // Test for overlapping predicates on same key.
+    testMap = getTestParamMap();
+    excludePatterns = Arrays.asList("^bucket", "version$");
+    testMapFilter(testMap, excludePatterns);
+
+    expectedMap = new HashMap<String, String>() {{
+        put("totalSize", "1024");
+        put("numRows", "10");
+        put("rawDataSize", "3243234");
+        put("COLUMN_STATS_ACCURATE", "{\"BASIC_STATS\":\"true\"");
+        put("COLUMN_STATS_ACCURATED", "dummy");
+        put("numFiles", "2");
+        put("transient_lastDdlTime", "1537487124");
+        put("numFilesErasureCoded", "0");
+      }};
+
+    assertThat(expectedMap, is(testMap));
+
+    // test that if the config is not set in MetastoreConf, it does not filter any parameter
+    Configuration testConf = new HiveConf();
+    testMap = getTestParamMap();
+    excludePatterns = Arrays.asList(HiveConf
+        .getTrimmedStringsVar(testConf, HiveConf.ConfVars.EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS));
+
+    testMapFilter(testMap, excludePatterns);
+    assertThat(getTestParamMap(), is(testMap));
+
+
+    // test that if the config is set to empty String in MetastoreConf, it does not filter any parameter
+    testConf.setStrings(HiveConf.ConfVars.EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS.varname, "");
+    testMap = getTestParamMap();
+    excludePatterns = Arrays.asList(HiveConf
+        .getTrimmedStringsVar(testConf, HiveConf.ConfVars.EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS));
+
+    testMapFilter(testMap, excludePatterns);
+    assertThat(getTestParamMap(), is(testMap));
+  }
+
+  private void testMapFilter(Map<String, String> testMap, List<String> patterns) {
+    List<Predicate<String>> paramsFilter =
+        patterns.stream().map(pattern -> compile(pattern).asPredicate()).collect(Collectors.toList());
+    filterMapkeys(testMap, paramsFilter);
+  }
+
+  private Map<String, String> getTestParamMap() {
+    return new HashMap<String, String>() {{
+        put("totalSize", "1024");
+        put("numRows", "10");
+        put("rawDataSize", "3243234");
+        put("COLUMN_STATS_ACCURATE", "{\"BASIC_STATS\":\"true\"");
+        put("COLUMN_STATS_ACCURATED", "dummy");
+        put("numFiles", "2");
+        put("transient_lastDdlTime", "1537487124");
+        put("bucketing_version", "2");
+        put("testBucketing_version", "2");
+        put("numFilesErasureCoded", "0");
+      }};
+  }
 }
