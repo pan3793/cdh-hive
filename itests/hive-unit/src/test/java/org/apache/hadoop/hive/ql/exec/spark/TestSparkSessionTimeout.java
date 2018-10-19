@@ -53,7 +53,7 @@ public class TestSparkSessionTimeout {
 
     SessionState.start(conf);
 
-    runTestSparkSessionTimeout(conf);
+    runTestSparkSessionTimeout(conf, 1);
   }
 
   @Test
@@ -73,7 +73,7 @@ public class TestSparkSessionTimeout {
 
         SessionState.start(conf);
 
-        runTestSparkSessionTimeout(conf);
+        runTestSparkSessionTimeout(conf, 1);
         return null;
       }));
     }
@@ -82,7 +82,22 @@ public class TestSparkSessionTimeout {
     }
   }
 
-  private void runTestSparkSessionTimeout(HiveConf conf) throws HiveException,
+  @Test
+  public void testSparkSessionMultipleTimeout() throws HiveException, InterruptedException, MalformedURLException,
+          CommandNeedRetryException {
+    String confDir = "../../data/conf/spark/standalone/hive-site.xml";
+    HiveConf.setHiveSiteLocation(new File(confDir).toURI().toURL());
+
+    HiveConf conf = new HiveConf();
+    conf.set("spark.local.dir", Paths.get(System.getProperty("test.tmp.dir"),
+            "TestSparkSessionTimeout-testSparkSessionMultipleTimeout-local-dir").toString());
+
+    SessionState.start(conf);
+
+    runTestSparkSessionTimeout(conf, 2);
+  }
+
+  private void runTestSparkSessionTimeout(HiveConf conf, int sleepRunIteration) throws HiveException,
           InterruptedException, CommandNeedRetryException {
     conf.setVar(HiveConf.ConfVars.SPARK_SESSION_TIMEOUT, "5s");
     conf.setVar(HiveConf.ConfVars.SPARK_SESSION_TIMEOUT_PERIOD, "1s");
@@ -105,12 +120,14 @@ public class TestSparkSessionTimeout {
       Assert.assertEquals(0,
               driver.run("select * from " + tableName + " order by col").getResponseCode());
 
-      Thread.sleep(10000);
+      for (int i = 0; i < sleepRunIteration; i++) {
+        Thread.sleep(10000);
 
-      Assert.assertFalse(sparkSession.isOpen());
+        Assert.assertFalse(sparkSession.isOpen());
 
-      Assert.assertEquals(0,
-              driver.run("select * from " + tableName + " order by col").getResponseCode());
+        Assert.assertEquals(0,
+                driver.run("select * from " + tableName + " order by col").getResponseCode());
+      }
     } finally {
       if (driver != null) {
         Assert.assertEquals(0, driver.run("drop table if exists " + tableName).getResponseCode());

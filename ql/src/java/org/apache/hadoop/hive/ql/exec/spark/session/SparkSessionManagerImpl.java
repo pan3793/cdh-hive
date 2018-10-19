@@ -122,6 +122,7 @@ public class SparkSessionManagerImpl implements SparkSessionManager {
       // Open the session if it is closed.
       if (!existingSession.isOpen() && doOpen) {
         existingSession.open(conf);
+        createdSessions.add(existingSession);
       }
       return existingSession;
     }
