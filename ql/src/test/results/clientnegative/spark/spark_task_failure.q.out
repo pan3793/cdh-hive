@@ -50,4 +50,4 @@ FROM src
 PREHOOK: type: QUERY
 PREHOOK: Input: default@src
 #### A masked pattern was here ####
-FAILED: Execution Error, return code 3 from org.apache.hadoop.hive.ql.exec.spark.SparkTask. Spark job failed due to task failures: [Error 20003]: An error occurred when trying to close the Operator running your custom script.
+FAILED: Execution Error, return code 3 from org.apache.hadoop.hive.ql.exec.spark.SparkTask. Spark job failed due to: Job aborted due to stage failure: Aborting TaskSet 52.0 because task 0 (partition 0) cannot run anywhere due to node and executor blacklist.  Blacklisting behavior can be configured via spark.blacklist.*.
