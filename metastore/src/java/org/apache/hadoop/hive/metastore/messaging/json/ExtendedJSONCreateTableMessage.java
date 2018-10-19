@@ -19,12 +19,17 @@
 package org.apache.hadoop.hive.metastore.messaging.json;
 
 
+import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ExtendedJSONCreateTableMessage extends JSONCreateTableMessage {
   @JsonProperty
   private String location;
+  @JsonProperty
+  private PrincipalType ownerType;
+  @JsonProperty
+  private String ownerName;
 
   public ExtendedJSONCreateTableMessage() {
   }
@@ -40,8 +45,23 @@ public class ExtendedJSONCreateTableMessage extends JSONCreateTableMessage {
     this.location = location;
   }
 
+  public ExtendedJSONCreateTableMessage(String server, String servicePrincipal, Long timestamp, Table table) {
+    super(server, servicePrincipal, table, timestamp);
+    this.location = (table.getSd() != null) ? table.getSd().getLocation() : null;
+    this.ownerType = table.getOwnerType();
+    this.ownerName = table.getOwner();
+  }
+
   public String getLocation() {
     return location;
+  }
+
+  public PrincipalType getOwnerType() {
+    return ownerType;
+  }
+
+  public String getOwnerName() {
+    return ownerName;
   }
 
   @Override

@@ -118,8 +118,7 @@ public class ExtendedJSONMessageFactory extends MessageFactory {
   }
 
   public ExtendedJSONCreateDatabaseMessage buildCreateDatabaseMessage(Database db) {
-    return new ExtendedJSONCreateDatabaseMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, db.getName(),
-        now(), db.getLocationUri());
+    return new ExtendedJSONCreateDatabaseMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, now(),db);
   }
 
   public ExtendedJSONAlterDatabaseMessage buildAlterDatabaseMessage(Database before, Database after) {
@@ -133,11 +132,7 @@ public class ExtendedJSONMessageFactory extends MessageFactory {
   }
 
   public ExtendedJSONCreateTableMessage buildCreateTableMessage(Table table) {
-    String location = null;
-    if (table != null && table.isSetSd()) {
-      location = table.getSd().getLocation();
-    }
-    return new ExtendedJSONCreateTableMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, table, now(), location);
+    return new ExtendedJSONCreateTableMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, now(), table);
   }
 
   public ExtendedJSONAlterTableMessage buildAlterTableMessage(Table before, Table after) {

@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.metastore.messaging.json;
 
+import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -26,6 +27,22 @@ public class ExtendedJSONAlterTableMessage extends JSONAlterTableMessage {
   private String newLocation;
   @JsonProperty
   private String oldLocation;
+  @JsonProperty
+  private String newDbName;
+  @JsonProperty
+  private String oldDbName;
+  @JsonProperty
+  private String newTableName;
+  @JsonProperty
+  private String oldTableName;
+  @JsonProperty
+  private PrincipalType newOwnerType;
+  @JsonProperty
+  private PrincipalType oldOwnerType;
+  @JsonProperty
+  private String newOwnerName;
+  @JsonProperty
+  private String oldOwnerName;
 
   /**
    * Default constructor, needed for Jackson.
@@ -39,6 +56,14 @@ public class ExtendedJSONAlterTableMessage extends JSONAlterTableMessage {
     super(server, servicePrincipal, tableObjBefore, tableObjAfter, timestamp);
     this.newLocation = newLocation;
     this.oldLocation = oldLocation;
+    this.oldDbName = tableObjBefore.getDbName();
+    this.newDbName = tableObjAfter.getDbName();
+    this.oldTableName = tableObjBefore.getTableName();
+    this.newTableName = tableObjAfter.getTableName();
+    this.oldOwnerType = tableObjBefore.getOwnerType();
+    this.newOwnerType = tableObjAfter.getOwnerType();
+    this.oldOwnerName = tableObjBefore.getOwner();
+    this.newOwnerName = tableObjAfter.getOwner();
   }
 
   public String getNewLocation() {
@@ -47,6 +72,38 @@ public class ExtendedJSONAlterTableMessage extends JSONAlterTableMessage {
 
   public String getOldLocation() {
     return oldLocation;
+  }
+
+  public String getOldDbName() {
+    return oldDbName;
+  }
+
+  public String getNewDbName() {
+    return newDbName;
+  }
+
+  public String getOldTableName() {
+    return oldTableName;
+  }
+
+  public String getNewTableName() {
+    return newTableName;
+  }
+
+  public PrincipalType getNewOwnerType() {
+    return newOwnerType;
+  }
+
+  public PrincipalType getOldOwnerType() {
+    return oldOwnerType;
+  }
+
+  public String getNewOwnerName() {
+    return newOwnerName;
+  }
+
+  public String getOldOwnerName() {
+    return oldOwnerName;
   }
 
   @Override

@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.metastore.messaging.json;
 
 import org.apache.hadoop.hive.metastore.api.Database;
+import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ExtendedJSONAlterDatabaseMessage extends JSONAlterDatabaseMessage {
@@ -25,12 +26,30 @@ public class ExtendedJSONAlterDatabaseMessage extends JSONAlterDatabaseMessage {
   private String newLocation;
   @JsonProperty
   private String oldLocation;
+  @JsonProperty
+  private String newDbName;
+  @JsonProperty
+  private String oldDbName;
+  @JsonProperty
+  private PrincipalType newOwnerType;
+  @JsonProperty
+  private PrincipalType oldOwnerType;
+  @JsonProperty
+  private String newOwnerName;
+  @JsonProperty
+  private String oldOwnerName;
 
   public ExtendedJSONAlterDatabaseMessage(String server, String servicePrincipal,
     Database before, Database after, Long timestamp) {
     super(server, servicePrincipal, before, after, timestamp);
     this.newLocation = before.getLocationUri();
     this.oldLocation = after.getLocationUri();
+    this.oldDbName = before.getName();
+    this.newDbName = after.getName();
+    this.oldOwnerType = before.getOwnerType();
+    this.newOwnerType = after.getOwnerType();
+    this.oldOwnerName = before.getOwnerName();
+    this.newOwnerName = after.getOwnerName();
   }
 
   public String getNewLocation() {
@@ -39,6 +58,30 @@ public class ExtendedJSONAlterDatabaseMessage extends JSONAlterDatabaseMessage {
 
   public String getOldLocation() {
     return oldLocation;
+  }
+
+  public String getOldDbName() {
+    return oldDbName;
+  }
+
+  public String getNewDbName() {
+    return newDbName;
+  }
+
+  public PrincipalType getNewOwnerType() {
+    return newOwnerType;
+  }
+
+  public PrincipalType getOldOwnerType() {
+    return oldOwnerType;
+  }
+
+  public String getNewOwnerName() {
+    return newOwnerName;
+  }
+
+  public String getOldOwnerName() {
+    return oldOwnerName;
   }
 
   @Override

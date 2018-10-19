@@ -19,22 +19,38 @@
 package org.apache.hadoop.hive.metastore.messaging.json;
 
 
+import org.apache.hadoop.hive.metastore.api.Database;
+import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ExtendedJSONCreateDatabaseMessage extends JSONCreateDatabaseMessage {
   @JsonProperty
   private String location;
+  @JsonProperty
+  private PrincipalType ownerType;
+  @JsonProperty
+  private String ownerName;
 
   public ExtendedJSONCreateDatabaseMessage() {
   }
 
-  public ExtendedJSONCreateDatabaseMessage(String server, String servicePrincipal, String db, Long timestamp, String location) {
-    super(server, servicePrincipal, db, timestamp);
-    this.location = location;
+  public ExtendedJSONCreateDatabaseMessage(String server, String servicePrincipal, Long timestamp, Database db) {
+    super(server, servicePrincipal, db.getName(), timestamp);
+    this.location = db.getLocationUri();
+    this.ownerType = db.getOwnerType();
+    this.ownerName = db.getOwnerName();
   }
 
   public String getLocation() {
     return location;
+  }
+
+  public PrincipalType getOwnerType() {
+    return ownerType;
+  }
+
+  public String getOwnerName() {
+    return ownerName;
   }
 
   @Override
