@@ -43,6 +43,10 @@ public class ExtendedJSONAlterTableMessage extends JSONAlterTableMessage {
   private String newOwnerName;
   @JsonProperty
   private String oldOwnerName;
+  @JsonProperty
+  private String oldTableType;
+  @JsonProperty
+  private String newTableType;
 
   /**
    * Default constructor, needed for Jackson.
@@ -64,6 +68,8 @@ public class ExtendedJSONAlterTableMessage extends JSONAlterTableMessage {
     this.newOwnerType = tableObjAfter.getOwnerType();
     this.oldOwnerName = tableObjBefore.getOwner();
     this.newOwnerName = tableObjAfter.getOwner();
+    this.oldTableType = tableObjBefore.getTableType();
+    this.newTableType = tableObjAfter.getTableType();
   }
 
   public String getNewLocation() {
@@ -104,6 +110,14 @@ public class ExtendedJSONAlterTableMessage extends JSONAlterTableMessage {
 
   public String getOldOwnerName() {
     return oldOwnerName;
+  }
+
+  public String getOldTableType() {
+    return oldTableType;
+  }
+
+  public String getNewTableType() {
+    return newTableType;
   }
 
   @Override

@@ -26,22 +26,31 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class ExtendedJSONDropTableMessage extends JSONDropTableMessage {
   @JsonProperty
   private String location;
+  @JsonProperty
+  private String tableType;
 
   public ExtendedJSONDropTableMessage() {
   }
 
+  @Deprecated
   public ExtendedJSONDropTableMessage(String server, String servicePrincipal, String db, String table, Long timestamp, String location) {
     super(server, servicePrincipal, db, table, timestamp);
     this.location = location;
   }
+
   public ExtendedJSONDropTableMessage(String server, String servicePrincipal, Table tableObj,
       Long timestamp, String location) {
     super(server, servicePrincipal, tableObj, timestamp);
     this.location = location;
+    this.tableType = tableObj.getTableType();
   }
 
   public String getLocation() {
     return location;
+  }
+
+  public String getTableType() {
+    return tableType;
   }
 
   @Override

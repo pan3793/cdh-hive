@@ -30,15 +30,19 @@ public class ExtendedJSONCreateTableMessage extends JSONCreateTableMessage {
   private PrincipalType ownerType;
   @JsonProperty
   private String ownerName;
+  @JsonProperty
+  private String tableType;
 
   public ExtendedJSONCreateTableMessage() {
   }
 
+  @Deprecated
   public ExtendedJSONCreateTableMessage(String server, String servicePrincipal, String db, String table, Long timestamp, String location) {
     super(server, servicePrincipal, db, table, timestamp);
     this.location = location;
   }
 
+  @Deprecated
   public ExtendedJSONCreateTableMessage(String server, String servicePrincipal, Table tableObj, Long timestamp,
       String location) {
     super(server, servicePrincipal, tableObj, timestamp);
@@ -50,6 +54,7 @@ public class ExtendedJSONCreateTableMessage extends JSONCreateTableMessage {
     this.location = (table.getSd() != null) ? table.getSd().getLocation() : null;
     this.ownerType = table.getOwnerType();
     this.ownerName = table.getOwner();
+    this.tableType = table.getTableType();
   }
 
   public String getLocation() {
@@ -62,6 +67,10 @@ public class ExtendedJSONCreateTableMessage extends JSONCreateTableMessage {
 
   public String getOwnerName() {
     return ownerName;
+  }
+
+  public String getTableType() {
+    return tableType;
   }
 
   @Override

@@ -36,6 +36,7 @@ import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.NotificationEvent;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.metastore.events.AddIndexEvent;
 import org.apache.hadoop.hive.metastore.events.AddPartitionEvent;
 import org.apache.hadoop.hive.metastore.events.AlterDatabaseEvent;
@@ -182,13 +183,19 @@ public class DbNotificationListener extends MetaStoreEventListener {
         return;
       }
 
-      if (before.getSd().getLocation() == null || after.getSd().getLocation() == null) {
+      // Only check for null locations if it is not a view
+      if (!isVirtualView(before) && before.getSd().getLocation() == null) {
         return;
       }
 
-      if (before.getDbName().equals(after.getDbName()) && before.getTableName().equals(after.getTableName()) && before
-          .getSd().getLocation().equals(after.getSd().getLocation()) && before.getOwnerType() == after.getOwnerType()
-          && StringUtils.equals(before.getOwner(), after.getOwner())) {
+      // Only check for null locations if it is not a view
+      if (!isVirtualView(after) && after.getSd().getLocation() == null) {
+        return;
+      }
+
+      if (before.getDbName().equals(after.getDbName()) && before.getTableName().equals(after.getTableName())
+          && StringUtils.equals(before.getSd().getLocation(), after.getSd().getLocation())
+          && before.getOwnerType() == after.getOwnerType() && StringUtils.equals(before.getOwner(), after.getOwner())) {
         // Nothing interesting changed
         return;
       }
@@ -396,6 +403,11 @@ public class DbNotificationListener extends MetaStoreEventListener {
       return Integer.MAX_VALUE;
     }
     return (int)millis;
+  }
+
+  private boolean isVirtualView(Table table) {
+    String tableType = table.getTableType();
+    return tableType != null && tableType.equalsIgnoreCase(TableType.VIRTUAL_VIEW.name());
   }
 
   /**
