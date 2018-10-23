@@ -158,6 +158,10 @@ public class DbNotificationListener extends MetaStoreEventListener {
       return;
     }
 
+    if (before.getSd() == null || after.getSd() == null) {
+      return;
+    }
+
     // Only check for null locations if it is not a view
     if (!isVirtualView(before) && before.getSd().getLocation() == null) {
       return;
