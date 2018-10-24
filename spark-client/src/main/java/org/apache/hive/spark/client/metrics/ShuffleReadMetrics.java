@@ -44,12 +44,14 @@ public class ShuffleReadMetrics implements Serializable {
   public final long remoteBytesRead;
   /** Shuffle data that was read from the local disk (as opposed to from a remote executor). */
   public final long localBytesRead;
+  /** Total number of remotes bytes read to disk from the shuffle by this task. */
+  public final long remoteBytesReadToDisk;
   /** Total number of records read from the shuffle by this task. */
   public final long recordsRead;
 
   private ShuffleReadMetrics() {
     // For Serialization only.
-    this(0, 0, 0L, 0L, 0L, 0L);
+    this(0, 0, 0L, 0L, 0L, 0L, 0L);
   }
 
   public ShuffleReadMetrics(
@@ -58,12 +60,14 @@ public class ShuffleReadMetrics implements Serializable {
       long fetchWaitTime,
       long remoteBytesRead,
       long localBytesRead,
+      long remoteBytesReadToDisk,
       long recordsRead) {
     this.remoteBlocksFetched = remoteBlocksFetched;
     this.localBlocksFetched = localBlocksFetched;
     this.fetchWaitTime = fetchWaitTime;
     this.remoteBytesRead = remoteBytesRead;
     this.localBytesRead = localBytesRead;
+    this.remoteBytesReadToDisk = remoteBytesReadToDisk;
     this.recordsRead = recordsRead;
   }
 
@@ -73,6 +77,7 @@ public class ShuffleReadMetrics implements Serializable {
       metrics.shuffleReadMetrics().fetchWaitTime(),
       metrics.shuffleReadMetrics().remoteBytesRead(),
       metrics.shuffleReadMetrics().localBytesRead(),
+      metrics.shuffleReadMetrics().remoteBytesReadToDisk(),
       metrics.shuffleReadMetrics().recordsRead());
   }
 

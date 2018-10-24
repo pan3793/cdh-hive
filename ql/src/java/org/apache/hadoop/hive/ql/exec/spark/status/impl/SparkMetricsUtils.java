@@ -55,6 +55,8 @@ public final class SparkMetricsUtils {
               shuffleReadMetrics.remoteBytesRead + shuffleReadMetrics.localBytesRead);
       results.put(SparkStatisticsNames.SHUFFLE_REMOTE_BYTES_READ, shuffleReadMetrics.remoteBytesRead);
       results.put(SparkStatisticsNames.SHUFFLE_LOCAL_BYTES_READ, shuffleReadMetrics.localBytesRead);
+      results.put(SparkStatisticsNames.SHUFFLE_REMOTE_BYTES_READ_TO_DISK, shuffleReadMetrics
+              .remoteBytesReadToDisk);
       results.put(SparkStatisticsNames.SHUFFLE_RECORDS_READ, shuffleReadMetrics.recordsRead);
       results.put(SparkStatisticsNames.SHUFFLE_TOTAL_BLOCKS_FETCHED, rbf + lbf);
       results.put(SparkStatisticsNames.SHUFFLE_REMOTE_BLOCKS_FETCHED, rbf);

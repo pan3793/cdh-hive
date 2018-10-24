@@ -112,7 +112,7 @@ public class TestMetricsCollection {
     long value = 1000000 * jobId + 1000 * stageId + taskId;
     return new Metrics(value, value, value, value, value, value, value, value, value, value,
       new InputMetrics(value, value, value),
-      new ShuffleReadMetrics((int) value, (int) value, value, value, value, value),
+      new ShuffleReadMetrics((int) value, (int) value, value, value, value, value, value),
       new ShuffleWriteMetrics(value, value, value),
       new OutputMetrics(value, value));
   }
@@ -171,6 +171,7 @@ public class TestMetricsCollection {
     assertEquals(expected, metrics.shuffleReadMetrics.remoteBytesRead);
     assertEquals(expected, metrics.shuffleReadMetrics.localBytesRead);
     assertEquals(expected, metrics.shuffleReadMetrics.recordsRead);
+    assertEquals(expected, metrics.shuffleReadMetrics.remoteBytesReadToDisk);
 
     assertEquals(expected, metrics.shuffleWriteMetrics.shuffleBytesWritten);
     assertEquals(expected, metrics.shuffleWriteMetrics.shuffleWriteTime);

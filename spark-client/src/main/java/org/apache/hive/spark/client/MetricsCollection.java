@@ -165,6 +165,7 @@ public class MetricsCollection {
       long fetchWaitTime = 0L;
       long remoteBytesRead = 0L;
       long localBytesRead = 0L;
+      long remoteBytesReadToDisk = 0L;
       long shuffleRecordsRead = 0L;
 
       // Shuffle write metrics.
@@ -204,6 +205,7 @@ public class MetricsCollection {
           fetchWaitTime += m.shuffleReadMetrics.fetchWaitTime;
           remoteBytesRead += m.shuffleReadMetrics.remoteBytesRead;
           localBytesRead += m.shuffleReadMetrics.localBytesRead;
+          remoteBytesReadToDisk += m.shuffleReadMetrics.remoteBytesReadToDisk;
           shuffleRecordsRead += m.shuffleReadMetrics.recordsRead;
         }
 
@@ -233,6 +235,7 @@ public class MetricsCollection {
           fetchWaitTime,
           remoteBytesRead,
           localBytesRead,
+          remoteBytesReadToDisk,
           shuffleRecordsRead);
       }
 
