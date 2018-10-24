@@ -33,7 +33,6 @@
 
     <!-- The following are to match the latest in spark project, overriding hive's versions -->
     <spark.jetty.version>${cdh.jetty9.version}</spark.jetty.version>
-    <spark.kryo.version>2.21</spark.kryo.version>
     <qfile></qfile>
     <qfile_regex></qfile_regex>
     <run_disabled>false</run_disabled>
@@ -87,9 +86,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.esotericsoftware.kryo</groupId>
+      <groupId>com.esotericsoftware</groupId>
       <artifactId>kryo</artifactId>
-      <version>${spark.kryo.version}</version>
+      <version>${kryo.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -409,14 +408,11 @@
               <target>
                 <property name="test.classpath" refid="maven.test.classpath"/>
                 <echo message="${test.classpath}"/>
-                <taskdef resource="net/sf/antcontrib/antcontrib.properties"
-                  classpathref="maven.plugin.classpath" />
+                <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath" />
                 <mkdir dir="${project.build.directory}/qfile-results/clientpositive/spark" />
                 <mkdir dir="${project.build.directory}/qfile-results/clientpositive/miniSparkOnYarn" />
                 <mkdir dir="${project.build.directory}/qfile-results/clientnegative/spark" />
                 <mkdir dir="${project.build.directory}/qfile-results/clientnegative/miniSparkOnYarn" />
-
-
               </target>
             </configuration>
             <goals>

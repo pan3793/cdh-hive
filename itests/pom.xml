@@ -74,32 +74,40 @@
                     <echo file="target/download.sh">
                       set -x
                       /bin/pwd
+
                       BASE_DIR=./target
-                      HIVE_ROOT=$BASE_DIR/../../../
+                      HIVE_ROOT=$BASE_DIR/../../..
                       DOWNLOAD_DIR=./../thirdparty
+
                       download() {
-                      url=$1;
-                      finalName=$2
-                      tarName=$(basename $url)
-                      rm -rf $BASE_DIR/$finalName
-                      if [[ ! -f $DOWNLOAD_DIR/$tarName ]]; then
-                      curl -Sso $DOWNLOAD_DIR/$tarName $url || return 1
-                      else
-                      content=$(tar -tf "$DOWNLOAD_DIR/$tarName" | head -1)
-                      if ! echo "$content" | grep "spark-${spark.version}" >/dev/null 2>/dev/null; then
-                      curl -Sso $DOWNLOAD_DIR/$tarName $url || return 1
-                      fi
-                      fi
-                      tar -zxf $DOWNLOAD_DIR/$tarName -C $BASE_DIR
-                      mv $BASE_DIR/spark-2.2.0-cdh6.1.x-SNAPSHOT-bin-3.0.0-cdh6.1.x-SNAPSHOT $BASE_DIR/$finalName
+                        url=$1;
+                        finalName=$2
+                        tarName=$(basename $url)
+
+                        rm -rf $BASE_DIR/$finalName
+
+                        if [[ ! -f $DOWNLOAD_DIR/$tarName ]]; then
+                          curl -Sso $DOWNLOAD_DIR/$tarName $url || return 1
+                        else
+                          content=$(tar -tf "$DOWNLOAD_DIR/$tarName" | head -1)
+
+                          if ! echo "$content" | grep "spark-${spark.version}" >/dev/null 2>/dev/null; then
+                            curl -Sso $DOWNLOAD_DIR/$tarName $url || return 1
+                          fi
+                        fi
+
+                        tar -zxf $DOWNLOAD_DIR/$tarName -C $BASE_DIR
+                        mv $BASE_DIR/${tarName%.*} $BASE_DIR/$finalName
                       }
+
                       mkdir -p $DOWNLOAD_DIR
-                      CDH_VERSION=$(echo ${spark.version}|cut -d- -f2)
-                      REPO_URL="https://s3-us-west-1.amazonaws.com/hive-spark/spark-tarball/spark-2.2.0-cdh6.1.x-SNAPSHOT-bin-3.0.0-cdh6.1.x-SNAPSHOT.tgz"
+
+                      REPO_URL="https://s3-us-west-1.amazonaws.com/hive-spark/spark-tarball/spark-${spark.version}-bin-${hadoop.version}.tgz"
                       if ! download "$REPO_URL" "spark"; then
-                      echo "ERROR: Cannot download spark-latest.tar.gz from $REPO_URL"
-                      exit 1
+                        echo "ERROR: Cannot download spark-latest.tar.gz from $REPO_URL"
+                        exit 1
                       fi
+
                       cp -f $HIVE_ROOT/data/conf/spark/log4j2.properties $BASE_DIR/spark/conf/
                     </echo>
                   </target>

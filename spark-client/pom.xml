@@ -25,7 +25,6 @@
     <version>2.1.1-cdh6.1.x-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.hive</groupId>
   <artifactId>hive-spark-client</artifactId>
   <packaging>jar</packaging>
   <name>Hive Spark Remote Client</name>

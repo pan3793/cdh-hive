@@ -166,7 +166,7 @@
     <jodd.version>3.5.2</jodd.version>
     <json.version>20090211</json.version>
     <junit.version>4.11</junit.version>
-    <kryo.version>3.0.3</kryo.version>
+    <kryo.version>4.0.2</kryo.version>
     <libfb303.version>${cdh.thrift.version}</libfb303.version>
     <libthrift.version>${cdh.thrift.version}</libthrift.version>
     <log4j2.version>2.8.2</log4j2.version>
