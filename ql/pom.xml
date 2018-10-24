@@ -542,7 +542,7 @@
          <groupId>org.apache.hadoop</groupId>
          <artifactId>hadoop-yarn-client</artifactId>
        </exclusion>
-               <exclusion>
+          <exclusion>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
           </exclusion>
@@ -558,7 +558,7 @@
       <version>${tez.version}</version>
       <optional>true</optional>
       <exclusions>
-              <exclusion>
+          <exclusion>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
           </exclusion>
@@ -590,7 +590,7 @@
          <groupId>org.apache.hadoop</groupId>
          <artifactId>hadoop-yarn-client</artifactId>
        </exclusion>
-             <exclusion>
+          <exclusion>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
           </exclusion>
@@ -783,8 +783,7 @@
             <configuration>
               <target>
                 <property name="compile.classpath" refid="maven.compile.classpath"/>
-                <taskdef name="vectorcodegen" classname="org.apache.hadoop.hive.ant.GenVectorCode"
-                    classpath="${compile.classpath}"/>
+                <taskdef name="vectorcodegen" classname="org.apache.hadoop.hive.ant.GenVectorCode" classpath="${compile.classpath}"/>
                 <mkdir dir="${project.build.directory}/generated-sources/java/org/apache/hadoop/hive/ql/exec/vector/expressions/gen/"/>
                 <mkdir dir="${project.build.directory}/generated-sources/java/org/apache/hadoop/hive/ql/exec/vector/expressions/aggregates/gen/"/>
                 <mkdir dir="${project.build.directory}/generated-test-sources/java/org/apache/hadoop/hive/ql/exec/vector/expressions/gen/"/>
@@ -850,8 +849,8 @@
                   <include>org.apache.hive:hive-metastore</include>
                   <include>org.apache.hive:hive-service-rpc</include>
                   <include>com.esotericsoftware:kryo-shaded</include>
-		  <include>com.esotericsoftware:minlog</include>
-		  <include>org.objenesis:objenesis</include>
+                  <include>com.esotericsoftware:minlog</include>
+                  <include>org.objenesis:objenesis</include>
                   <include>org.apache.parquet:parquet-hadoop-bundle</include>
                   <include>org.apache.thrift:libthrift</include>
                   <include>javax.jdo:jdo-api</include>
