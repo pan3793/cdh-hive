@@ -3,6 +3,8 @@ set hive.auto.convert.join=true;
 set hive.spark.use.ts.stats.for.mapjoin=true;
 set hive.auto.convert.join.noconditionaltask.size=4000;
 
+-- SORT_BEFORE_DIFF
+
 EXPLAIN
 SELECT src1.key, src2.value
 FROM src src1 JOIN src src2 ON (src1.key = src2.key)
