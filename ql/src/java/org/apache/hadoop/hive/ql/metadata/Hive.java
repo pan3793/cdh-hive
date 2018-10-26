@@ -52,6 +52,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -1515,12 +1516,66 @@ public class Hive {
       boolean inheritTableSpecs, boolean inheritLocation, boolean isSkewedStoreAsSubdir,
       boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask) throws HiveException {
 
+    PerfLogger perfLogger = SessionState.getPerfLogger();
+    perfLogger.PerfLogBegin("MoveTask", PerfLogger.LOAD_PARTITION);
+
+    // Get the partition object if it already exists
+    Partition oldPart = getPartition(tbl, partSpec, false);
+
+    Partition newTPart = loadPartitionInternal(loadPath, tbl, partSpec, oldPart, replace, inheritTableSpecs,
+            inheritLocation, isSkewedStoreAsSubdir, isSrcLocal, isAcid);
+
+    if (oldPart == null) {
+      addPartitionToMetastore(newTPart, hasFollowingStatsTask, tbl);
+    } else {
+      try {
+        setStatsPropAndAlterPartition(hasFollowingStatsTask, tbl, newTPart);
+      } catch (TException e) {
+        LOG.error(StringUtils.stringifyException(e));
+        throw new HiveException(e);
+      }
+    }
+
+    perfLogger.PerfLogEnd("MoveTask", PerfLogger.LOAD_PARTITION);
+
+    return newTPart;
+  }
+
+  /**
+   * Move all the files from loadPath into Hive. If the partition
+   * does not exist - one is created - files in loadPath are moved into Hive. But the
+   * directory itself is not removed.
+   * @param loadPath
+   *          Directory containing file to load into Table
+   * @param tbl
+   *          name of table to be loaded.
+   * @param partSpec
+   *          defines which partitions needs to be loaded
+   * @param oldPart
+   *          already existing partition object, can be null
+   * @param replace
+   *          if true - replace files in the partition, otherwise add files to partition
+   * @param inheritTableSpecs if true, on [re]creating the partition, take the
+   *          location/inputformat/outputformat/serde details from table spec
+   * @param inheritLocation
+   *          if true, partition path is generated from table
+   * @param isSkewedStoreAsSubdir
+   *          if true, skewed is stored as sub-directory
+   * @param isSrcLocal
+   *          If the source directory is LOCAL
+   * @param isAcid true if this is an ACID operation
+   * @return Partition object being loaded with data
+   * @throws HiveException
+   */
+  private Partition loadPartitionInternal(Path loadPath, Table tbl, Map<String, String> partSpec,
+                        Partition oldPart, boolean replace,
+                        boolean inheritTableSpecs, boolean inheritLocation,
+                        boolean isSkewedStoreAsSubdir, boolean isSrcLocal,
+                        boolean isAcid) throws HiveException {
     Path tblDataLocationPath =  tbl.getDataLocation();
     try {
       PerfLogger perfLogger = SessionState.getPerfLogger();
-      perfLogger.PerfLogBegin("MoveTask", PerfLogger.LOAD_PARTITION);
 
-      Partition oldPart = getPartition(tbl, partSpec, false);
       /**
        * Move files before creating the partition since down stream processes
        * check for existence of partition in metadata before accessing the data.
@@ -1600,48 +1655,92 @@ public class Hive {
               StatsSetupConst.TRUE);
         }
         MetaStoreUtils.populateQuickStats(HiveStatsUtils.getFileStatusRecurse(newPartPath, -1, newPartPath.getFileSystem(conf)), newTPart.getParameters());
-        try {
-          LOG.debug("Adding new partition " + newTPart.getSpec());
-          getSychronizedMSC().add_partition(newTPart.getTPartition());
-        } catch (AlreadyExistsException aee) {
-          // With multiple users concurrently issuing insert statements on the same partition has
-          // a side effect that some queries may not see a partition at the time when they're issued,
-          // but will realize the partition is actually there when it is trying to add such partition
-          // to the metastore and thus get AlreadyExistsException, because some earlier query just created it (race condition).
-          // For example, imagine such a table is created:
-          //  create table T (name char(50)) partitioned by (ds string);
-          // and the following two queries are launched at the same time, from different sessions:
-          //  insert into table T partition (ds) values ('Bob', 'today'); -- creates the partition 'today'
-          //  insert into table T partition (ds) values ('Joe', 'today'); -- will fail with AlreadyExistsException
-          // In that case, we want to retry with alterPartition.
-          LOG.debug("Caught AlreadyExistsException, trying to alter partition instead");
-          setStatsPropAndAlterPartition(hasFollowingStatsTask, tbl, newTPart);
-        } catch (Exception e) {
-          try {
-            final FileSystem newPathFileSystem = newPartPath.getFileSystem(this.getConf());
-            boolean isAutoPurge = "true".equalsIgnoreCase(tbl.getProperty("auto.purge"));
-            final FileStatus status = newPathFileSystem.getFileStatus(newPartPath);
-            Hive.trashFiles(newPathFileSystem, new FileStatus[] {status}, this.getConf(), isAutoPurge);
-          } catch (IOException io) {
-            LOG.error("Could not delete partition directory contents after failed partition creation: ", io);
-          }
-          throw e;
-        }
-      } else {
-        setStatsPropAndAlterPartition(hasFollowingStatsTask, tbl, newTPart);
       }
-      perfLogger.PerfLogEnd("MoveTask", PerfLogger.LOAD_PARTITION);
       return newTPart;
-    } catch (IOException e) {
+    } catch (IOException | MetaException | InvalidOperationException e) {
       LOG.error(StringUtils.stringifyException(e));
       throw new HiveException(e);
-    } catch (MetaException e) {
+    }
+  }
+
+  private void addPartitionToMetastore(Partition newTPart, boolean hasFollowingStatsTask,
+                                       Table tbl) throws HiveException {
+    try {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Adding new partition " + newTPart.getSpec());
+      }
+      getSychronizedMSC().add_partition(newTPart.getTPartition());
+    } catch (AlreadyExistsException aee) {
+      // With multiple users concurrently issuing insert statements on the same partition has
+      // a side effect that some queries may not see a partition at the time when they're issued,
+      // but will realize the partition is actually there when it is trying to add such partition
+      // to the metastore and thus get AlreadyExistsException, because some earlier query just
+      // created it (race condition).
+      // For example, imagine such a table is created:
+      //  create table T (name char(50)) partitioned by (ds string);
+      // and the following two queries are launched at the same time, from different sessions:
+      //  insert into table T partition (ds) values ('Bob', 'today'); -- creates the partition 'today'
+      //  insert into table T partition (ds) values ('Joe', 'today'); -- will fail with AlreadyExistsException
+      // In that case, we want to retry with alterPartition.
+      LOG.debug("Caught AlreadyExistsException, trying to alter partition instead");
+      try {
+        setStatsPropAndAlterPartition(hasFollowingStatsTask, tbl, newTPart);
+      } catch (TException e) {
+        LOG.error(StringUtils.stringifyException(e));
+        throw new HiveException(e);
+      }
+    } catch (Exception e) {
+      try {
+        final FileSystem newPathFileSystem = newTPart.getPartitionPath().getFileSystem(this.getConf());
+        boolean isAutoPurge = "true".equalsIgnoreCase(tbl.getProperty("auto.purge"));
+        final FileStatus status = newPathFileSystem.getFileStatus(newTPart.getPartitionPath());
+        Hive.trashFiles(newPathFileSystem, new FileStatus[]{status}, this.getConf(), isAutoPurge);
+      } catch (IOException io) {
+        LOG.error("Could not delete partition directory contents after failed partition creation: ", io);
+      }
       LOG.error(StringUtils.stringifyException(e));
       throw new HiveException(e);
-    } catch (InvalidOperationException e) {
-      LOG.error(StringUtils.stringifyException(e));
-      throw new HiveException(e);
-    } catch (TException e) {
+    }
+  }
+
+  private void addPartitionsToMetastore(List<Partition> partitions,
+                                        boolean hasFollowingStatsTask, Table tbl)
+          throws HiveException {
+    try {
+      if (LOG.isDebugEnabled()) {
+        StringBuffer debugMsg = new StringBuffer("Adding new partitions ");
+        partitions.forEach(partition -> debugMsg.append(partition.getSpec() + " "));
+        LOG.debug(debugMsg.toString());
+      }
+      getSychronizedMSC().add_partitions(partitions.parallelStream().map(Partition::getTPartition)
+              .collect(Collectors.toList()));
+    } catch(AlreadyExistsException aee) {
+      // With multiple users concurrently issuing insert statements on the same partition has
+      // a side effect that some queries may not see a partition at the time when they're issued,
+      // but will realize the partition is actually there when it is trying to add such partition
+      // to the metastore and thus get AlreadyExistsException, because some earlier query just
+      // created it (race condition).
+      // For example, imagine such a table is created:
+      //  create table T (name char(50)) partitioned by (ds string);
+      // and the following two queries are launched at the same time, from different sessions:
+      //  insert into table T partition (ds) values ('Bob', 'today'); -- creates the partition 'today'
+      //  insert into table T partition (ds) values ('Joe', 'today'); -- will fail with AlreadyExistsException
+      // In that case, we want to retry with alterPartition.
+      LOG.debug("Caught AlreadyExistsException, trying to add partitions one by one.");
+      for (int i = 0; i < partitions.size(); i++) {
+        addPartitionToMetastore(partitions.get(i), hasFollowingStatsTask, tbl);
+      }
+    } catch (Exception e) {
+      try {
+        for (Partition partition : partitions) {
+          final FileSystem newPathFileSystem = partition.getPartitionPath().getFileSystem(this.getConf());
+          boolean isAutoPurge = "true".equalsIgnoreCase(tbl.getProperty("auto.purge"));
+          final FileStatus status = newPathFileSystem.getFileStatus(partition.getPartitionPath());
+          Hive.trashFiles(newPathFileSystem, new FileStatus[]{status}, this.getConf(), isAutoPurge);
+        }
+      } catch (IOException io) {
+        LOG.error("Could not delete partition directory contents after failed partition creation: ", io);
+      }
       LOG.error(StringUtils.stringifyException(e));
       throw new HiveException(e);
     }
@@ -1810,16 +1909,6 @@ private void constructOneLBLocationMap(FileStatus fSta,
     PerfLogger perfLogger = SessionState.getPerfLogger();
     perfLogger.PerfLogBegin("MoveTask", PerfLogger.LOAD_DYNAMIC_PARTITIONS);
 
-    final Map<Map<String, String>, Partition> partitionsMap =
-        Collections.synchronizedMap(new LinkedHashMap<Map<String, String>, Partition>());
-
-    int poolSize = conf.getInt(ConfVars.HIVE_LOAD_DYNAMIC_PARTITIONS_THREAD_COUNT.varname, 1);
-    final ExecutorService pool = Executors.newFixedThreadPool(poolSize,
-            new ThreadFactoryBuilder()
-                .setDaemon(true)
-                .setNameFormat("load-dynamic-partitions-%d")
-                .build());
-
     // Get all valid partition paths and existing partitions for them (if any)
     final Table tbl = getTable(tableName);
     final Set<Path> validPartitions = getValidPartitionsInPath(numDP, loadPath);
@@ -1830,87 +1919,147 @@ private void constructOneLBLocationMap(FileStatus fSta,
     final boolean inPlaceEligible = conf.getLong("fs.trash.interval", 0) <= 0
         && InPlaceUpdates.inPlaceEligible(conf);
     final PrintStream ps = (inPlaceEligible) ? SessionState.getConsole().getInfoStream() : null;
+
     final SessionState parentSession = SessionState.get();
+    List<Callable<Partition>> tasks = Lists.newLinkedList();
 
-    final List<Future<Void>> futures = Lists.newLinkedList();
-    try {
-      // for each dynamically created DP directory, construct a full partition spec
-      // and load the partition based on that
-      for(final Path partPath : validPartitions) {
-        // generate a full partition specification
-        final LinkedHashMap<String, String> fullPartSpec = Maps.newLinkedHashMap(partSpec);
-        Warehouse.makeSpecFromName(fullPartSpec, partPath);
-        futures.add(pool.submit(new Callable<Void>() {
-          @Override
-          public Void call() throws Exception {
-            try {
-              // move file would require session details (needCopy() invokes SessionState.get)
-              SessionState.setCurrentSessionState(parentSession);
-              LOG.info("New loading path = " + partPath + " with partSpec " + fullPartSpec);
+    final class PartitionDetails {
+      Map<String, String> fullSpec;
+      Partition partition;
+      boolean hasOldPartition = false;
+    }
 
-              // load the partition
-              Partition newPartition = loadPartition(partPath, tbl, fullPartSpec,
-                  replace, true, false, listBucketingEnabled,
-                  false, isAcid, hasFollowingStatsTask);
-              partitionsMap.put(fullPartSpec, newPartition);
+    Map<Path, PartitionDetails> partitionDetailsMap =
+            Collections.synchronizedMap(new LinkedHashMap<>());
 
-              if (inPlaceEligible) {
-                synchronized (ps) {
-                  InPlaceUpdates.rePositionCursor(ps);
-                  partitionsLoaded.incrementAndGet();
-                  InPlaceUpdates.reprintLine(ps, "Loaded : " + partitionsLoaded.get() + "/"
+    // calculate full path spec for each valid partition path
+    validPartitions.forEach(partPath -> {
+      Map<String, String> fullPartSpec = Maps.newLinkedHashMap(partSpec);
+      Warehouse.makeSpecFromName(fullPartSpec, partPath);
+      PartitionDetails details = new PartitionDetails();
+      details.fullSpec = fullPartSpec;
+      partitionDetailsMap.put(partPath, details);
+    });
+
+    // fetch all the partitions matching the part spec using partition iterable
+    // this way the maximum batch size configuration parameter is considered
+    PartitionIterable partitionIterable= new PartitionIterable(Hive.get(), tbl, partSpec,
+            conf.getInt(ConfVars.METASTORE_BATCH_RETRIEVE_MAX.varname, 300));
+    Iterator<Partition> iterator = partitionIterable.iterator();
+
+    // Match valid partition path to partitions
+    while (iterator.hasNext()) {
+      Partition partition = iterator.next();
+      partitionDetailsMap.entrySet().parallelStream()
+              .filter(entry -> entry.getValue().fullSpec.equals(partition.getSpec()))
+              .findAny().ifPresent(entry -> {
+                entry.getValue().partition = partition;
+                entry.getValue().hasOldPartition = true;
+      });
+    }
+
+    for (Entry<Path, PartitionDetails> entry : partitionDetailsMap.entrySet()) {
+      tasks.add(() -> {
+        PartitionDetails partitionDetails = entry.getValue();
+        Map<String, String> fullPartSpec = partitionDetails.fullSpec;
+        try {
+          SessionState.setCurrentSessionState(parentSession);
+          LOG.info("New loading path = " + entry.getKey() + " with PartSpec " + fullPartSpec);
+          Partition oldPartition = partitionDetails.partition;
+          // load the partition
+          Partition partition = loadPartitionInternal(entry.getKey(), tbl, fullPartSpec, oldPartition,
+                  replace, true, false, listBucketingEnabled, false, isAcid);
+          if (oldPartition == null) {
+            partitionDetails.partition = partition;
+          }
+
+          if (inPlaceEligible) {
+            synchronized (ps) {
+              InPlaceUpdates.rePositionCursor(ps);
+              partitionsLoaded.incrementAndGet();
+              InPlaceUpdates.reprintLine(ps, "Loaded : " + partitionsLoaded.get() + "/"
                       + partsToLoad + " partitions.");
-                }
-              }
-              return null;
-            } catch (Exception t) {
-              LOG.error("Exception when loading partition with parameters "
-                  + " partPath=" + partPath + ", "
+            }
+          }
+
+          return partition;
+        } catch (Exception e) {
+          LOG.error("Exception when loading partition with parameters "
+                  + " partPath=" + entry.getKey() + ", "
                   + " table=" + tbl.getTableName() + ", "
                   + " partSpec=" + fullPartSpec + ", "
                   + " replace=" + replace + ", "
                   + " listBucketingEnabled=" + listBucketingEnabled + ", "
                   + " isAcid=" + isAcid + ", "
-                  + " hasFollowingStatsTask=" + hasFollowingStatsTask, t);
-              throw t;
-            }
-          }
-        }));
-      }
-      pool.shutdown();
-      LOG.debug("Number of partitions to be added is " + futures.size());
+                  + " hasFollowingStatsTask=" + hasFollowingStatsTask, e);
+          throw e;
+        }
+      });
+    }
 
-      for (Future future : futures) {
-        future.get();
+    int poolSize = conf.getInt(ConfVars.HIVE_LOAD_DYNAMIC_PARTITIONS_THREAD_COUNT.varname, 1);
+    ExecutorService executor = Executors.newFixedThreadPool(poolSize,
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("load-dynamic-partitions-%d").build());
+
+    List<Future<Partition>> futures = Lists.newLinkedList();
+    Map<Map<String, String>, Partition> result = Maps.newLinkedHashMap();
+    try {
+      futures = executor.invokeAll(tasks);
+      LOG.debug("Number of partitions to be added is " + futures.size());
+      for (Future<Partition> future : futures) {
+        Partition partition = future.get();
+        result.put(partition.getSpec(), partition);
       }
+      // add new partitions in batch
+
+      addPartitionsToMetastore(
+              partitionDetailsMap.entrySet()
+                      .parallelStream()
+                      .filter(entry -> !entry.getValue().hasOldPartition)
+                      .map(entry -> entry.getValue().partition)
+                      .collect(Collectors.toList()),
+              hasFollowingStatsTask,
+              tbl);
+
     } catch (InterruptedException | ExecutionException e) {
+      throw new HiveException("Exception when loading " + validPartitions.size()
+              + " in table " + tbl.getTableName()
+              + " with loadPath=" + loadPath);
+    } catch (Exception e) {
+      StringBuffer logMsg = new StringBuffer();
+      logMsg.append("Exception when loading partitionsToAdd with parameters ");
+      logMsg.append("partPaths=");
+      validPartitions.forEach(path -> logMsg.append(path + ", "));
+      logMsg.append("table=" + tbl.getTableName() + ", ").
+              append("partSpec=" + partSpec + ", ").
+              append("replace=" + replace + ", ").
+              append("listBucketingEnabled=" + listBucketingEnabled + ", ").
+              append("isAcid=" + isAcid + ", ").
+              append("hasFollowingStatsTask=" + hasFollowingStatsTask);
+
+      LOG.error(logMsg.toString(), e);
+      throw e;
+    } finally {
       LOG.debug("Cancelling " + futures.size() + " dynamic loading tasks");
-      //cancel other futures
-      for (Future future : futures) {
-        future.cancel(true);
-      }
-      throw new HiveException("Exception when loading "
-          + partsToLoad + " in table " + tbl.getTableName()
-          + " with loadPath=" + loadPath, e);
+      executor.shutdownNow();
     }
 
     try {
       if (isAcid) {
-        List<String> partNames = new ArrayList<>(partitionsMap.size());
-        for (Partition p : partitionsMap.values()) {
-          partNames.add(p.getName());
-        }
-        getMSC().addDynamicPartitions(txnId, tbl.getDbName(), tbl.getTableName(),
-          partNames, AcidUtils.toDataOperationType(operation));
+        List<String> partNames =
+                result.values().parallelStream().map(Partition::getName).collect(Collectors.toList());
+        getMSC().addDynamicPartitions(txnId, tbl.getDbName(), tbl.getTableName(), partNames,
+                AcidUtils.toDataOperationType(operation));
       }
-      LOG.info("Loaded " + partitionsMap.size() + " partitions");
+      LOG.info("Loaded " + result.size() + " partitions");
 
       perfLogger.PerfLogEnd("MoveTask", PerfLogger.LOAD_DYNAMIC_PARTITIONS);
 
-      return partitionsMap;
+      return result;
     } catch (TException te) {
+      LOG.error(StringUtils.stringifyException(te));
       throw new HiveException("Exception updating metastore for acid table "
-          + tableName + " with partitions " + partitionsMap.values(), te);
+              + tableName + " with partitions " + result.values(), te);
     }
   }
 
@@ -2433,6 +2582,11 @@ private void constructOneLBLocationMap(FileStatus fSta,
     List<String> names = null;
     try {
       names = getMSC().listPartitionNames(dbName, tblName, max);
+    } catch (NoSuchObjectException nsoe) {
+      // this means no partition exists for the given dbName and tblName
+      // key value pairs - thrift cannot handle null return values, hence
+      // listPartitionNames() throws NoSuchObjectException to indicate null partitions
+      return Lists.newArrayList();
     } catch (Exception e) {
       LOG.error(StringUtils.stringifyException(e));
       throw new HiveException(e);
@@ -2449,6 +2603,11 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
     try {
       names = getMSC().listPartitionNames(dbName, tblName, pvals, max);
+    } catch (NoSuchObjectException nsoe) {
+      // this means no partition exists for the given dbName and tblName
+      // key value pairs - thrift cannot handle null return values, hence
+      // listPartitionNames() throws NoSuchObjectException to indicate null partitions
+      return Lists.newArrayList();
     } catch (Exception e) {
       LOG.error(StringUtils.stringifyException(e));
       throw new HiveException(e);

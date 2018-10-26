@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.metastore;
 
+import java.util.List;
+
 import org.apache.hadoop.hive.common.ValidTxnList;
 import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.LockRequest;
@@ -65,6 +67,10 @@ public final class SynchronizedMetaStoreClient {
 
   public synchronized Partition add_partition(Partition partition) throws TException {
     return client.add_partition(partition);
+  }
+
+  public synchronized int add_partitions(List<Partition> partitions) throws TException {
+    return client.add_partitions(partitions);
   }
 
   public synchronized void alter_partition(String dbName, String tblName,
