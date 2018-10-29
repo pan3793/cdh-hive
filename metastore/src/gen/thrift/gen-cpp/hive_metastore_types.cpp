@@ -177,6 +177,18 @@ const char* _kFileMetadataExprTypeNames[] = {
 };
 const std::map<int, const char*> _FileMetadataExprType_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(1, _kFileMetadataExprTypeValues, _kFileMetadataExprTypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
 
+int _kPartitionFilterModeValues[] = {
+  PartitionFilterMode::BY_NAMES,
+  PartitionFilterMode::BY_VALUES,
+  PartitionFilterMode::BY_EXPR
+};
+const char* _kPartitionFilterModeNames[] = {
+  "BY_NAMES",
+  "BY_VALUES",
+  "BY_EXPR"
+};
+const std::map<int, const char*> _PartitionFilterMode_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(3, _kPartitionFilterModeValues, _kPartitionFilterModeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+
 
 Version::~Version() throw() {
 }
@@ -19448,6 +19460,644 @@ const char* NoSuchLockException::what() const throw() {
   } catch (const std::exception&) {
     return "TException - service has thrown: NoSuchLockException";
   }
+}
+
+
+GetPartitionsProjectionSpec::~GetPartitionsProjectionSpec() throw() {
+}
+
+
+void GetPartitionsProjectionSpec::__set_fieldList(const std::vector<std::string> & val) {
+  this->fieldList = val;
+}
+
+void GetPartitionsProjectionSpec::__set_includeParamKeyPattern(const std::string& val) {
+  this->includeParamKeyPattern = val;
+}
+
+void GetPartitionsProjectionSpec::__set_excludeParamKeyPattern(const std::string& val) {
+  this->excludeParamKeyPattern = val;
+}
+
+uint32_t GetPartitionsProjectionSpec::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->fieldList.clear();
+            uint32_t _size782;
+            ::apache::thrift::protocol::TType _etype785;
+            xfer += iprot->readListBegin(_etype785, _size782);
+            this->fieldList.resize(_size782);
+            uint32_t _i786;
+            for (_i786 = 0; _i786 < _size782; ++_i786)
+            {
+              xfer += iprot->readString(this->fieldList[_i786]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.fieldList = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->includeParamKeyPattern);
+          this->__isset.includeParamKeyPattern = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->excludeParamKeyPattern);
+          this->__isset.excludeParamKeyPattern = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t GetPartitionsProjectionSpec::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("GetPartitionsProjectionSpec");
+
+  xfer += oprot->writeFieldBegin("fieldList", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->fieldList.size()));
+    std::vector<std::string> ::const_iterator _iter787;
+    for (_iter787 = this->fieldList.begin(); _iter787 != this->fieldList.end(); ++_iter787)
+    {
+      xfer += oprot->writeString((*_iter787));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("includeParamKeyPattern", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->includeParamKeyPattern);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("excludeParamKeyPattern", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString(this->excludeParamKeyPattern);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(GetPartitionsProjectionSpec &a, GetPartitionsProjectionSpec &b) {
+  using ::std::swap;
+  swap(a.fieldList, b.fieldList);
+  swap(a.includeParamKeyPattern, b.includeParamKeyPattern);
+  swap(a.excludeParamKeyPattern, b.excludeParamKeyPattern);
+  swap(a.__isset, b.__isset);
+}
+
+GetPartitionsProjectionSpec::GetPartitionsProjectionSpec(const GetPartitionsProjectionSpec& other788) {
+  fieldList = other788.fieldList;
+  includeParamKeyPattern = other788.includeParamKeyPattern;
+  excludeParamKeyPattern = other788.excludeParamKeyPattern;
+  __isset = other788.__isset;
+}
+GetPartitionsProjectionSpec& GetPartitionsProjectionSpec::operator=(const GetPartitionsProjectionSpec& other789) {
+  fieldList = other789.fieldList;
+  includeParamKeyPattern = other789.includeParamKeyPattern;
+  excludeParamKeyPattern = other789.excludeParamKeyPattern;
+  __isset = other789.__isset;
+  return *this;
+}
+void GetPartitionsProjectionSpec::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "GetPartitionsProjectionSpec(";
+  out << "fieldList=" << to_string(fieldList);
+  out << ", " << "includeParamKeyPattern=" << to_string(includeParamKeyPattern);
+  out << ", " << "excludeParamKeyPattern=" << to_string(excludeParamKeyPattern);
+  out << ")";
+}
+
+
+GetPartitionsFilterSpec::~GetPartitionsFilterSpec() throw() {
+}
+
+
+void GetPartitionsFilterSpec::__set_filterMode(const PartitionFilterMode::type val) {
+  this->filterMode = val;
+__isset.filterMode = true;
+}
+
+void GetPartitionsFilterSpec::__set_filters(const std::vector<std::string> & val) {
+  this->filters = val;
+__isset.filters = true;
+}
+
+uint32_t GetPartitionsFilterSpec::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 7:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          int32_t ecast790;
+          xfer += iprot->readI32(ecast790);
+          this->filterMode = (PartitionFilterMode::type)ecast790;
+          this->__isset.filterMode = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 8:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->filters.clear();
+            uint32_t _size791;
+            ::apache::thrift::protocol::TType _etype794;
+            xfer += iprot->readListBegin(_etype794, _size791);
+            this->filters.resize(_size791);
+            uint32_t _i795;
+            for (_i795 = 0; _i795 < _size791; ++_i795)
+            {
+              xfer += iprot->readString(this->filters[_i795]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.filters = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t GetPartitionsFilterSpec::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("GetPartitionsFilterSpec");
+
+  if (this->__isset.filterMode) {
+    xfer += oprot->writeFieldBegin("filterMode", ::apache::thrift::protocol::T_I32, 7);
+    xfer += oprot->writeI32((int32_t)this->filterMode);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.filters) {
+    xfer += oprot->writeFieldBegin("filters", ::apache::thrift::protocol::T_LIST, 8);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->filters.size()));
+      std::vector<std::string> ::const_iterator _iter796;
+      for (_iter796 = this->filters.begin(); _iter796 != this->filters.end(); ++_iter796)
+      {
+        xfer += oprot->writeString((*_iter796));
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(GetPartitionsFilterSpec &a, GetPartitionsFilterSpec &b) {
+  using ::std::swap;
+  swap(a.filterMode, b.filterMode);
+  swap(a.filters, b.filters);
+  swap(a.__isset, b.__isset);
+}
+
+GetPartitionsFilterSpec::GetPartitionsFilterSpec(const GetPartitionsFilterSpec& other797) {
+  filterMode = other797.filterMode;
+  filters = other797.filters;
+  __isset = other797.__isset;
+}
+GetPartitionsFilterSpec& GetPartitionsFilterSpec::operator=(const GetPartitionsFilterSpec& other798) {
+  filterMode = other798.filterMode;
+  filters = other798.filters;
+  __isset = other798.__isset;
+  return *this;
+}
+void GetPartitionsFilterSpec::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "GetPartitionsFilterSpec(";
+  out << "filterMode="; (__isset.filterMode ? (out << to_string(filterMode)) : (out << "<null>"));
+  out << ", " << "filters="; (__isset.filters ? (out << to_string(filters)) : (out << "<null>"));
+  out << ")";
+}
+
+
+GetPartitionsResponse::~GetPartitionsResponse() throw() {
+}
+
+
+void GetPartitionsResponse::__set_partitionSpec(const std::vector<PartitionSpec> & val) {
+  this->partitionSpec = val;
+}
+
+uint32_t GetPartitionsResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->partitionSpec.clear();
+            uint32_t _size799;
+            ::apache::thrift::protocol::TType _etype802;
+            xfer += iprot->readListBegin(_etype802, _size799);
+            this->partitionSpec.resize(_size799);
+            uint32_t _i803;
+            for (_i803 = 0; _i803 < _size799; ++_i803)
+            {
+              xfer += this->partitionSpec[_i803].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.partitionSpec = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t GetPartitionsResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("GetPartitionsResponse");
+
+  xfer += oprot->writeFieldBegin("partitionSpec", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->partitionSpec.size()));
+    std::vector<PartitionSpec> ::const_iterator _iter804;
+    for (_iter804 = this->partitionSpec.begin(); _iter804 != this->partitionSpec.end(); ++_iter804)
+    {
+      xfer += (*_iter804).write(oprot);
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(GetPartitionsResponse &a, GetPartitionsResponse &b) {
+  using ::std::swap;
+  swap(a.partitionSpec, b.partitionSpec);
+  swap(a.__isset, b.__isset);
+}
+
+GetPartitionsResponse::GetPartitionsResponse(const GetPartitionsResponse& other805) {
+  partitionSpec = other805.partitionSpec;
+  __isset = other805.__isset;
+}
+GetPartitionsResponse& GetPartitionsResponse::operator=(const GetPartitionsResponse& other806) {
+  partitionSpec = other806.partitionSpec;
+  __isset = other806.__isset;
+  return *this;
+}
+void GetPartitionsResponse::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "GetPartitionsResponse(";
+  out << "partitionSpec=" << to_string(partitionSpec);
+  out << ")";
+}
+
+
+GetPartitionsRequest::~GetPartitionsRequest() throw() {
+}
+
+
+void GetPartitionsRequest::__set_catName(const std::string& val) {
+  this->catName = val;
+__isset.catName = true;
+}
+
+void GetPartitionsRequest::__set_dbName(const std::string& val) {
+  this->dbName = val;
+}
+
+void GetPartitionsRequest::__set_tblName(const std::string& val) {
+  this->tblName = val;
+}
+
+void GetPartitionsRequest::__set_withAuth(const bool val) {
+  this->withAuth = val;
+__isset.withAuth = true;
+}
+
+void GetPartitionsRequest::__set_user(const std::string& val) {
+  this->user = val;
+__isset.user = true;
+}
+
+void GetPartitionsRequest::__set_groupNames(const std::vector<std::string> & val) {
+  this->groupNames = val;
+__isset.groupNames = true;
+}
+
+void GetPartitionsRequest::__set_projectionSpec(const GetPartitionsProjectionSpec& val) {
+  this->projectionSpec = val;
+}
+
+void GetPartitionsRequest::__set_filterSpec(const GetPartitionsFilterSpec& val) {
+  this->filterSpec = val;
+}
+
+uint32_t GetPartitionsRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->catName);
+          this->__isset.catName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->dbName);
+          this->__isset.dbName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->tblName);
+          this->__isset.tblName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->withAuth);
+          this->__isset.withAuth = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 5:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->user);
+          this->__isset.user = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 6:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->groupNames.clear();
+            uint32_t _size807;
+            ::apache::thrift::protocol::TType _etype810;
+            xfer += iprot->readListBegin(_etype810, _size807);
+            this->groupNames.resize(_size807);
+            uint32_t _i811;
+            for (_i811 = 0; _i811 < _size807; ++_i811)
+            {
+              xfer += iprot->readString(this->groupNames[_i811]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.groupNames = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 7:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->projectionSpec.read(iprot);
+          this->__isset.projectionSpec = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 8:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->filterSpec.read(iprot);
+          this->__isset.filterSpec = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t GetPartitionsRequest::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("GetPartitionsRequest");
+
+  if (this->__isset.catName) {
+    xfer += oprot->writeFieldBegin("catName", ::apache::thrift::protocol::T_STRING, 1);
+    xfer += oprot->writeString(this->catName);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldBegin("dbName", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->dbName);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("tblName", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString(this->tblName);
+  xfer += oprot->writeFieldEnd();
+
+  if (this->__isset.withAuth) {
+    xfer += oprot->writeFieldBegin("withAuth", ::apache::thrift::protocol::T_BOOL, 4);
+    xfer += oprot->writeBool(this->withAuth);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.user) {
+    xfer += oprot->writeFieldBegin("user", ::apache::thrift::protocol::T_STRING, 5);
+    xfer += oprot->writeString(this->user);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.groupNames) {
+    xfer += oprot->writeFieldBegin("groupNames", ::apache::thrift::protocol::T_LIST, 6);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->groupNames.size()));
+      std::vector<std::string> ::const_iterator _iter812;
+      for (_iter812 = this->groupNames.begin(); _iter812 != this->groupNames.end(); ++_iter812)
+      {
+        xfer += oprot->writeString((*_iter812));
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldBegin("projectionSpec", ::apache::thrift::protocol::T_STRUCT, 7);
+  xfer += this->projectionSpec.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("filterSpec", ::apache::thrift::protocol::T_STRUCT, 8);
+  xfer += this->filterSpec.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(GetPartitionsRequest &a, GetPartitionsRequest &b) {
+  using ::std::swap;
+  swap(a.catName, b.catName);
+  swap(a.dbName, b.dbName);
+  swap(a.tblName, b.tblName);
+  swap(a.withAuth, b.withAuth);
+  swap(a.user, b.user);
+  swap(a.groupNames, b.groupNames);
+  swap(a.projectionSpec, b.projectionSpec);
+  swap(a.filterSpec, b.filterSpec);
+  swap(a.__isset, b.__isset);
+}
+
+GetPartitionsRequest::GetPartitionsRequest(const GetPartitionsRequest& other813) {
+  catName = other813.catName;
+  dbName = other813.dbName;
+  tblName = other813.tblName;
+  withAuth = other813.withAuth;
+  user = other813.user;
+  groupNames = other813.groupNames;
+  projectionSpec = other813.projectionSpec;
+  filterSpec = other813.filterSpec;
+  __isset = other813.__isset;
+}
+GetPartitionsRequest& GetPartitionsRequest::operator=(const GetPartitionsRequest& other814) {
+  catName = other814.catName;
+  dbName = other814.dbName;
+  tblName = other814.tblName;
+  withAuth = other814.withAuth;
+  user = other814.user;
+  groupNames = other814.groupNames;
+  projectionSpec = other814.projectionSpec;
+  filterSpec = other814.filterSpec;
+  __isset = other814.__isset;
+  return *this;
+}
+void GetPartitionsRequest::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "GetPartitionsRequest(";
+  out << "catName="; (__isset.catName ? (out << to_string(catName)) : (out << "<null>"));
+  out << ", " << "dbName=" << to_string(dbName);
+  out << ", " << "tblName=" << to_string(tblName);
+  out << ", " << "withAuth="; (__isset.withAuth ? (out << to_string(withAuth)) : (out << "<null>"));
+  out << ", " << "user="; (__isset.user ? (out << to_string(user)) : (out << "<null>"));
+  out << ", " << "groupNames="; (__isset.groupNames ? (out << to_string(groupNames)) : (out << "<null>"));
+  out << ", " << "projectionSpec=" << to_string(projectionSpec);
+  out << ", " << "filterSpec=" << to_string(filterSpec);
+  out << ")";
 }
 
 }}} // namespace

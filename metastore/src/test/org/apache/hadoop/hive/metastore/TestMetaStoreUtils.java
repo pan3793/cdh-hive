@@ -28,9 +28,17 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
+import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.api.Partition;
+import org.apache.hadoop.hive.metastore.api.PartitionSpec;
+import org.apache.hadoop.hive.metastore.api.PartitionSpecWithSharedSD;
+import org.apache.hadoop.hive.metastore.api.PartitionWithoutSD;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.client.builder.PartitionBuilder;
+import org.apache.hadoop.hive.metastore.client.builder.TableBuilder;
 import org.apache.thrift.TException;
+import org.hamcrest.core.IsNot;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,6 +58,7 @@ import static org.apache.hadoop.hive.common.StatsSetupConst.STATS_GENERATED;
 import static org.apache.hadoop.hive.common.StatsSetupConst.TOTAL_SIZE;
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.filterMapkeys;
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.updateTableStatsSlow;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -368,5 +377,349 @@ public class TestMetaStoreUtils {
         put("testBucketing_version", "2");
         put("numFilesErasureCoded", "0");
       }};
+  }
+  /**
+   * Two empty StorageDescriptorKey should be equal.
+   */
+  @Test
+  public void testCompareNullSdKey() {
+    assertThat(MetaStoreUtils.StorageDescriptorKey.UNSET_KEY,
+        is(new MetaStoreUtils.StorageDescriptorKey()));
+  }
+
+  /**
+   * Two StorageDescriptorKey objects with null storage descriptors should be
+   * equal iff the base location is equal.
+   */
+  @Test
+  public void testCompareNullSd()
+  {
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", null),
+        is(new MetaStoreUtils.StorageDescriptorKey("a", null)));
+    // Different locations produce different objects
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", null),
+        IsNot.not(equalTo(new MetaStoreUtils.StorageDescriptorKey("b", null))));
+  }
+
+  /**
+   * Two StorageDescriptorKey objects with the same base location but different
+   * SD location should be equal
+   */
+  @Test
+  public void testCompareWithSdSamePrefixDifferentLocation() throws MetaException {
+    Partition p1 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l1")
+        .addCol("a", "int")
+        .addValue("val1")
+        .build();
+    Partition p2 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l2")
+        .addCol("a", "int")
+        .addValue("val1")
+        .build();
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", p1.getSd()),
+        is(new MetaStoreUtils.StorageDescriptorKey("a", p2.getSd())));
+  }
+
+  /**
+   * Two StorageDescriptorKey objects with the same base location
+   * should be equal iff their columns are equal
+   */
+  @Test
+  public void testCompareWithSdSamePrefixDifferentCols() throws MetaException {
+    Partition p1 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l1")
+        .addCol("a", "int")
+        .addValue("val1")
+        .build();
+    Partition p2 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l2")
+        .addCol("b", "int")
+        .addValue("val1")
+        .build();
+    Partition p3 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l2")
+        .addCol("a", "int")
+        .addValue("val1")
+        .build();
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", p1.getSd()),
+        IsNot.not(new MetaStoreUtils.StorageDescriptorKey("a", p2.getSd())));
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", p1.getSd()),
+        is(new MetaStoreUtils.StorageDescriptorKey("a", p3.getSd())));
+  }
+
+  /**
+   * Two StorageDescriptorKey objects with the same base location
+   * should be equal iff their output formats are equal
+   */
+  @Test
+  public void testCompareWithSdSamePrefixDifferentOutputFormat() throws MetaException {
+    Partition p1 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l1")
+        .addCol("a", "int")
+        .addValue("val1")
+        .setOutputFormat("foo")
+        .build();
+    Partition p2 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l2")
+        .addCol("a", "int")
+        .setOutputFormat("bar")
+        .addValue("val1")
+        .build();
+    Partition p3 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l2")
+        .addCol("a", "int")
+        .setOutputFormat("foo")
+        .addValue("val1")
+        .build();
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", p1.getSd()),
+        IsNot.not(new MetaStoreUtils.StorageDescriptorKey("a", p2.getSd())));
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", p1.getSd()),
+        is(new MetaStoreUtils.StorageDescriptorKey("a", p3.getSd())));
+  }
+
+  /**
+   * Two StorageDescriptorKey objects with the same base location
+   * should be equal iff their input formats are equal
+   */
+  @Test
+  public void testCompareWithSdSamePrefixDifferentInputFormat() throws MetaException {
+    Partition p1 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l1")
+        .addCol("a", "int")
+        .addValue("val1")
+        .setInputFormat("foo")
+        .build();
+    Partition p2 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l2")
+        .addCol("a", "int")
+        .setInputFormat("bar")
+        .addValue("val1")
+        .build();
+    Partition p3 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("l1")
+        .addCol("a", "int")
+        .addValue("val1")
+        .setInputFormat("foo")
+        .build();
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", p1.getSd()),
+        IsNot.not(new MetaStoreUtils.StorageDescriptorKey("a", p2.getSd())));
+    assertThat(new MetaStoreUtils.StorageDescriptorKey("a", p1.getSd()),
+        is(new MetaStoreUtils.StorageDescriptorKey("a", p3.getSd())));
+  }
+
+  /**
+   * Test getPartitionspecsGroupedByStorageDescriptor() for partitions with null SDs.
+   */
+  @Test
+  public void testGetPartitionspecsGroupedBySDNullSD() throws MetaException {
+    // Create database and table
+    Table tbl = new TableBuilder()
+        .setDbName(DB_NAME)
+        .setTableName(TABLE_NAME)
+        .addCol("id", "int")
+        .setLocation("/foo")
+        .build();
+    Partition p1 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .addCol("a", "int")
+        .addValue("val1")
+        .setInputFormat("foo")
+        .build();
+    // Set SD to null
+    p1.unsetSd();
+    assertThat(p1.getSd(), is((StorageDescriptor)null));
+    List<PartitionSpec> result =
+        MetaStoreUtils.getPartitionspecsGroupedByStorageDescriptor(tbl, Collections.singleton(p1));
+    assertThat(result.size(), is(1));
+    PartitionSpec ps = result.get(0);
+    assertThat(ps.getRootPath(), is((String)null));
+    List<PartitionWithoutSD> partitions = ps.getSharedSDPartitionSpec().getPartitions();
+    assertThat(partitions.size(), is(1));
+    PartitionWithoutSD partition = partitions.get(0);
+    assertThat(partition.getRelativePath(), is((String)null));
+    assertThat(partition.getValues(), is(Collections.singletonList("val1")));
+  }
+
+  /**
+   * Test getPartitionspecsGroupedByStorageDescriptor() for partitions with a single
+   * partition which is located under table location.
+   */
+  @Test
+  public void testGetPartitionspecsGroupedBySDOnePartitionInTable() throws MetaException {
+    // Create database and table
+    Table tbl = new TableBuilder()
+        .setDbName(DB_NAME)
+        .setTableName(TABLE_NAME)
+        .addCol("id", "int")
+        .setLocation("/foo")
+        .build();
+    Partition p1 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("/foo/bar")
+        .addCol("a", "int")
+        .addValue("val1")
+        .setInputFormat("foo")
+        .build();
+    List<PartitionSpec> result =
+        MetaStoreUtils.getPartitionspecsGroupedByStorageDescriptor(tbl, Collections.singleton(p1));
+    assertThat(result.size(), is(1));
+    PartitionSpec ps = result.get(0);
+    assertThat(ps.getRootPath(), is(tbl.getSd().getLocation()));
+    List<PartitionWithoutSD> partitions = ps.getSharedSDPartitionSpec().getPartitions();
+    assertThat(partitions.size(), is(1));
+    PartitionWithoutSD partition = partitions.get(0);
+    assertThat(partition.getRelativePath(), is("/bar"));
+    assertThat(partition.getValues(), is(Collections.singletonList("val1")));
+  }
+
+  /**
+   * Test getPartitionspecsGroupedByStorageDescriptor() for partitions with a single
+   * partition which is located outside table location.
+   */
+  @Test
+  public void testGetPartitionspecsGroupedBySDonePartitionExternal() throws MetaException {
+    // Create database and table
+    Table tbl = new TableBuilder()
+        .setDbName(DB_NAME)
+        .setTableName(TABLE_NAME)
+        .addCol("id", "int")
+        .setLocation("/foo")
+        .build();
+    Partition p1 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("/a/b")
+        .addCol("a", "int")
+        .addValue("val1")
+        .setInputFormat("foo")
+        .build();
+    List<PartitionSpec> result =
+        MetaStoreUtils.getPartitionspecsGroupedByStorageDescriptor(tbl, Collections.singleton(p1));
+    assertThat(result.size(), is(1));
+    PartitionSpec ps = result.get(0);
+    assertThat(ps.getRootPath(), is((String)null));
+    List<Partition>partitions = ps.getPartitionList().getPartitions();
+    assertThat(partitions.size(), is(1));
+    Partition partition = partitions.get(0);
+    assertThat(partition.getSd().getLocation(), is("/a/b"));
+    assertThat(partition.getValues(), is(Collections.singletonList("val1")));
+  }
+
+  /**
+   * Test getPartitionspecsGroupedByStorageDescriptor() multiple partitions:
+   * <ul>
+   *   <li>Partition with null SD</li>
+   *   <li>Two partitions under the table location</li>
+   *   <li>One partition outside of table location</li>
+   * </ul>
+   */
+  @Test
+  public void testGetPartitionspecsGroupedBySDonePartitionCombined() throws MetaException {
+    // Create database and table
+    String sharedInputFormat = "foo1";
+
+    Table tbl = new TableBuilder()
+        .setDbName(DB_NAME)
+        .setTableName(TABLE_NAME)
+        .addCol("id", "int")
+        .setLocation("/foo")
+        .build();
+    Partition p1 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("/foo/bar")
+        .addCol("a1", "int")
+        .addValue("val1")
+        .setInputFormat(sharedInputFormat)
+        .build();
+    Partition p2 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .setLocation("/a/b")
+        .addCol("a2", "int")
+        .addValue("val2")
+        .setInputFormat("foo2")
+        .build();
+    Partition p3 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName(TABLE_NAME)
+        .addCol("a3", "int")
+        .addValue("val3")
+        .setInputFormat("foo3")
+        .build();
+    Partition p4 = new PartitionBuilder()
+        .setDbName("DB_NAME")
+        .setTableName("TABLE_NAME")
+        .setLocation("/foo/baz")
+        .addCol("a1", "int")
+        .addValue("val4")
+        .setInputFormat(sharedInputFormat)
+        .build();
+    p3.unsetSd();
+    List<PartitionSpec> result =
+        MetaStoreUtils.getPartitionspecsGroupedByStorageDescriptor(tbl,
+            Arrays.asList(p1, p2, p3, p4));
+    assertThat(result.size(), is(3));
+    PartitionSpec ps1 = result.get(0);
+    assertThat(ps1.getRootPath(), is((String)null));
+    assertThat(ps1.getPartitionList(), is((List<Partition>)null));
+    PartitionSpecWithSharedSD partSpec = ps1.getSharedSDPartitionSpec();
+    List<PartitionWithoutSD> partitions1 = partSpec.getPartitions();
+    assertThat(partitions1.size(), is(1));
+    PartitionWithoutSD partition1 = partitions1.get(0);
+    assertThat(partition1.getRelativePath(), is((String)null));
+    assertThat(partition1.getValues(), is(Collections.singletonList("val3")));
+
+    PartitionSpec ps2 = result.get(1);
+    assertThat(ps2.getRootPath(), is(tbl.getSd().getLocation()));
+    assertThat(ps2.getPartitionList(), is((List<Partition>)null));
+    List<PartitionWithoutSD> partitions2 = ps2.getSharedSDPartitionSpec().getPartitions();
+    assertThat(partitions2.size(), is(2));
+    PartitionWithoutSD partition2_1 = partitions2.get(0);
+    PartitionWithoutSD partition2_2 = partitions2.get(1);
+    if (partition2_1.getRelativePath().equals("baz")) {
+      // Swap p2_1 and p2_2
+      PartitionWithoutSD tmp = partition2_1;
+      partition2_1 = partition2_2;
+      partition2_2 = tmp;
+    }
+    assertThat(partition2_1.getRelativePath(), is("/bar"));
+    assertThat(partition2_1.getValues(), is(Collections.singletonList("val1")));
+    assertThat(partition2_2.getRelativePath(), is("/baz"));
+    assertThat(partition2_2.getValues(), is(Collections.singletonList("val4")));
+
+    PartitionSpec ps4 = result.get(2);
+    assertThat(ps4.getRootPath(), is((String)null));
+    assertThat(ps4.getSharedSDPartitionSpec(), is((PartitionSpecWithSharedSD)null));
+    List<Partition>partitions = ps4.getPartitionList().getPartitions();
+    assertThat(partitions.size(), is(1));
+    Partition partition = partitions.get(0);
+    assertThat(partition.getSd().getLocation(), is("/a/b"));
+    assertThat(partition.getValues(), is(Collections.singletonList("val2")));
   }
 }

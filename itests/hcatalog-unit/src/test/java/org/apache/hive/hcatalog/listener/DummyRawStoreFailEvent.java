@@ -927,4 +927,12 @@ public class DummyRawStoreFailEvent implements RawStore, Configurable {
   public String getMetastoreDbUuid() throws MetaException {
     throw new MetaException("getMetastoreDbUuid is not implemented");
   }
+
+  @Override
+  public List<Partition> getPartitionSpecsByFilterAndProjection(String dbName,
+      String tblName, List<String> fieldList, String includeParamKeyPattern,
+      String excludeParamKeyPattern) throws MetaException, NoSuchObjectException {
+    return objectStore.getPartitionSpecsByFilterAndProjection(dbName, tblName, fieldList,
+        includeParamKeyPattern, excludeParamKeyPattern);
+  }
 }

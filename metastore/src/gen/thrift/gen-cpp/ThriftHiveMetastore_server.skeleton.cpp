@@ -772,6 +772,11 @@ class ThriftHiveMetastoreHandler : virtual public ThriftHiveMetastoreIf {
     printf("get_metastore_db_uuid\n");
   }
 
+  void get_partitions_with_specs(GetPartitionsResponse& _return, const GetPartitionsRequest& request) {
+    // Your implementation goes here
+    printf("get_partitions_with_specs\n");
+  }
+
 };
 
 int main(int argc, char **argv) {

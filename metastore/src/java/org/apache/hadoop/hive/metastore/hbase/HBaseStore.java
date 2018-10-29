@@ -1783,6 +1783,13 @@ public class HBaseStore implements RawStore {
     return partNames;
   }
 
+  @Override
+  public List<Partition> getPartitionSpecsByFilterAndProjection(String dbName,
+      String tblName, List<String> fieldList, String includeParamKeyPattern,
+      String excludeParamKeyPattern) throws MetaException, NoSuchObjectException {
+    throw new UnsupportedOperationException(
+        "getPartitionSpecsByFilterAndProjection is not yet implemented");
+  }
 
   @Override
   public List<Partition> listPartitionsPsWithAuth(String db_name, String tbl_name,

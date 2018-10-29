@@ -66,6 +66,8 @@ import org.apache.hadoop.hive.metastore.api.GetFileMetadataByExprResult;
 import org.apache.hadoop.hive.metastore.api.GetFileMetadataRequest;
 import org.apache.hadoop.hive.metastore.api.GetFileMetadataResult;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsInfoResponse;
+import org.apache.hadoop.hive.metastore.api.GetPartitionsResponse;
+import org.apache.hadoop.hive.metastore.api.GetPartitionsRequest;
 import org.apache.hadoop.hive.metastore.api.GetPrincipalsInRoleRequest;
 import org.apache.hadoop.hive.metastore.api.GetPrincipalsInRoleResponse;
 import org.apache.hadoop.hive.metastore.api.GetRoleGrantsForPrincipalRequest;
@@ -760,8 +762,7 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   @Override
   public List<Partition> exchange_partitions(Map<String, String> partitionSpecs,
       String sourceDb, String sourceTable, String destDb,
-      String destinationTableName) throws MetaException,
-      NoSuchObjectException, InvalidObjectException, TException {
+      String destinationTableName) throws MetaException, NoSuchObjectException, InvalidObjectException, TException {
     return client.exchange_partitions(partitionSpecs, sourceDb, sourceTable,
         destDb, destinationTableName);
   }
@@ -2701,5 +2702,11 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   @Override
   public String getMetastoreDbUuid() throws TException {
     return client.get_metastore_db_uuid();
+  }
+
+  @Override
+  public GetPartitionsResponse getPartitionsWithSpecs(GetPartitionsRequest request)
+      throws TException {
+    return client.get_partitions_with_specs(request);
   }
 }

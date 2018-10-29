@@ -43,6 +43,8 @@ import org.apache.hadoop.hive.metastore.api.ForeignKeysRequest;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.GetAllFunctionsResponse;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsInfoResponse;
+import org.apache.hadoop.hive.metastore.api.GetPartitionsRequest;
+import org.apache.hadoop.hive.metastore.api.GetPartitionsResponse;
 import org.apache.hadoop.hive.metastore.api.GetPrincipalsInRoleRequest;
 import org.apache.hadoop.hive.metastore.api.GetPrincipalsInRoleResponse;
 import org.apache.hadoop.hive.metastore.api.GetRoleGrantsForPrincipalRequest;
@@ -1675,4 +1677,22 @@ public interface IMetaStoreClient {
    * @throws TException in case of Thrift errors
    */
   String getMetastoreDbUuid() throws MetaException, TException;
+
+  /**
+   * Generic Partition request API, providing different ways of filtering and controlling output.
+   * <p>
+   * The API entry point is getPartitionsWithSpecs(), which is based on a single
+   * request/response object model.
+   * <p>
+   * The request (GetPartitionsRequest) defines any filtering that should be done for partitions
+   * as well as the list of fields that should be returned (this is called ProjectionSpec).
+   * Projection is simply a list of dot separated strings which represent the fields which should
+   * be returned. Projection may also include whitelist or blacklist of parameters to include in
+   * the partition. When both blacklist and whitelist are present, the blacklist supersedes the
+   * whitelist in case of conflicts.
+   * <p>
+   * Partition filter spec is the generalization of various types of partition filtering.
+   * Partitions can be filtered by names, by values or by partition expressions.
+   */
+  GetPartitionsResponse getPartitionsWithSpecs(GetPartitionsRequest request) throws TException;
 }

@@ -172,6 +172,7 @@ class ThriftHiveMetastoreIf : virtual public  ::facebook::fb303::FacebookService
   virtual void clear_file_metadata(ClearFileMetadataResult& _return, const ClearFileMetadataRequest& req) = 0;
   virtual void cache_file_metadata(CacheFileMetadataResult& _return, const CacheFileMetadataRequest& req) = 0;
   virtual void get_metastore_db_uuid(std::string& _return) = 0;
+  virtual void get_partitions_with_specs(GetPartitionsResponse& _return, const GetPartitionsRequest& request) = 0;
 };
 
 class ThriftHiveMetastoreIfFactory : virtual public  ::facebook::fb303::FacebookServiceIfFactory {
@@ -677,6 +678,9 @@ class ThriftHiveMetastoreNull : virtual public ThriftHiveMetastoreIf , virtual p
     return;
   }
   void get_metastore_db_uuid(std::string& /* _return */) {
+    return;
+  }
+  void get_partitions_with_specs(GetPartitionsResponse& /* _return */, const GetPartitionsRequest& /* request */) {
     return;
   }
 };
@@ -19243,6 +19247,118 @@ class ThriftHiveMetastore_get_metastore_db_uuid_presult {
 
 };
 
+typedef struct _ThriftHiveMetastore_get_partitions_with_specs_args__isset {
+  _ThriftHiveMetastore_get_partitions_with_specs_args__isset() : request(false) {}
+  bool request :1;
+} _ThriftHiveMetastore_get_partitions_with_specs_args__isset;
+
+class ThriftHiveMetastore_get_partitions_with_specs_args {
+ public:
+
+  ThriftHiveMetastore_get_partitions_with_specs_args(const ThriftHiveMetastore_get_partitions_with_specs_args&);
+  ThriftHiveMetastore_get_partitions_with_specs_args& operator=(const ThriftHiveMetastore_get_partitions_with_specs_args&);
+  ThriftHiveMetastore_get_partitions_with_specs_args() {
+  }
+
+  virtual ~ThriftHiveMetastore_get_partitions_with_specs_args() throw();
+  GetPartitionsRequest request;
+
+  _ThriftHiveMetastore_get_partitions_with_specs_args__isset __isset;
+
+  void __set_request(const GetPartitionsRequest& val);
+
+  bool operator == (const ThriftHiveMetastore_get_partitions_with_specs_args & rhs) const
+  {
+    if (!(request == rhs.request))
+      return false;
+    return true;
+  }
+  bool operator != (const ThriftHiveMetastore_get_partitions_with_specs_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ThriftHiveMetastore_get_partitions_with_specs_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class ThriftHiveMetastore_get_partitions_with_specs_pargs {
+ public:
+
+
+  virtual ~ThriftHiveMetastore_get_partitions_with_specs_pargs() throw();
+  const GetPartitionsRequest* request;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ThriftHiveMetastore_get_partitions_with_specs_result__isset {
+  _ThriftHiveMetastore_get_partitions_with_specs_result__isset() : success(false), o1(false) {}
+  bool success :1;
+  bool o1 :1;
+} _ThriftHiveMetastore_get_partitions_with_specs_result__isset;
+
+class ThriftHiveMetastore_get_partitions_with_specs_result {
+ public:
+
+  ThriftHiveMetastore_get_partitions_with_specs_result(const ThriftHiveMetastore_get_partitions_with_specs_result&);
+  ThriftHiveMetastore_get_partitions_with_specs_result& operator=(const ThriftHiveMetastore_get_partitions_with_specs_result&);
+  ThriftHiveMetastore_get_partitions_with_specs_result() {
+  }
+
+  virtual ~ThriftHiveMetastore_get_partitions_with_specs_result() throw();
+  GetPartitionsResponse success;
+  MetaException o1;
+
+  _ThriftHiveMetastore_get_partitions_with_specs_result__isset __isset;
+
+  void __set_success(const GetPartitionsResponse& val);
+
+  void __set_o1(const MetaException& val);
+
+  bool operator == (const ThriftHiveMetastore_get_partitions_with_specs_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    if (!(o1 == rhs.o1))
+      return false;
+    return true;
+  }
+  bool operator != (const ThriftHiveMetastore_get_partitions_with_specs_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ThriftHiveMetastore_get_partitions_with_specs_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ThriftHiveMetastore_get_partitions_with_specs_presult__isset {
+  _ThriftHiveMetastore_get_partitions_with_specs_presult__isset() : success(false), o1(false) {}
+  bool success :1;
+  bool o1 :1;
+} _ThriftHiveMetastore_get_partitions_with_specs_presult__isset;
+
+class ThriftHiveMetastore_get_partitions_with_specs_presult {
+ public:
+
+
+  virtual ~ThriftHiveMetastore_get_partitions_with_specs_presult() throw();
+  GetPartitionsResponse* success;
+  MetaException o1;
+
+  _ThriftHiveMetastore_get_partitions_with_specs_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class ThriftHiveMetastoreClient : virtual public ThriftHiveMetastoreIf, public  ::facebook::fb303::FacebookServiceClient {
  public:
   ThriftHiveMetastoreClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) :
@@ -19704,6 +19820,9 @@ class ThriftHiveMetastoreClient : virtual public ThriftHiveMetastoreIf, public  
   void get_metastore_db_uuid(std::string& _return);
   void send_get_metastore_db_uuid();
   void recv_get_metastore_db_uuid(std::string& _return);
+  void get_partitions_with_specs(GetPartitionsResponse& _return, const GetPartitionsRequest& request);
+  void send_get_partitions_with_specs(const GetPartitionsRequest& request);
+  void recv_get_partitions_with_specs(GetPartitionsResponse& _return);
 };
 
 class ThriftHiveMetastoreProcessor : public  ::facebook::fb303::FacebookServiceProcessor {
@@ -19864,6 +19983,7 @@ class ThriftHiveMetastoreProcessor : public  ::facebook::fb303::FacebookServiceP
   void process_clear_file_metadata(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_cache_file_metadata(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_get_metastore_db_uuid(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_get_partitions_with_specs(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   ThriftHiveMetastoreProcessor(boost::shared_ptr<ThriftHiveMetastoreIf> iface) :
      ::facebook::fb303::FacebookServiceProcessor(iface),
@@ -20018,6 +20138,7 @@ class ThriftHiveMetastoreProcessor : public  ::facebook::fb303::FacebookServiceP
     processMap_["clear_file_metadata"] = &ThriftHiveMetastoreProcessor::process_clear_file_metadata;
     processMap_["cache_file_metadata"] = &ThriftHiveMetastoreProcessor::process_cache_file_metadata;
     processMap_["get_metastore_db_uuid"] = &ThriftHiveMetastoreProcessor::process_get_metastore_db_uuid;
+    processMap_["get_partitions_with_specs"] = &ThriftHiveMetastoreProcessor::process_get_partitions_with_specs;
   }
 
   virtual ~ThriftHiveMetastoreProcessor() {}
@@ -21488,6 +21609,16 @@ class ThriftHiveMetastoreMultiface : virtual public ThriftHiveMetastoreIf, publi
     return;
   }
 
+  void get_partitions_with_specs(GetPartitionsResponse& _return, const GetPartitionsRequest& request) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->get_partitions_with_specs(_return, request);
+    }
+    ifaces_[i]->get_partitions_with_specs(_return, request);
+    return;
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -21954,6 +22085,9 @@ class ThriftHiveMetastoreConcurrentClient : virtual public ThriftHiveMetastoreIf
   void get_metastore_db_uuid(std::string& _return);
   int32_t send_get_metastore_db_uuid();
   void recv_get_metastore_db_uuid(std::string& _return, const int32_t seqid);
+  void get_partitions_with_specs(GetPartitionsResponse& _return, const GetPartitionsRequest& request);
+  int32_t send_get_partitions_with_specs(const GetPartitionsRequest& request);
+  void recv_get_partitions_with_specs(GetPartitionsResponse& _return, const int32_t seqid);
 };
 
 #ifdef _WIN32

@@ -61,6 +61,7 @@ import javax.jdo.datastore.DataStoreCache;
 import javax.jdo.identity.IntIdentity;
 import javax.sql.DataSource;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -409,7 +410,8 @@ public class ObjectStore implements RawStore, Configurable {
     if (isInitialized) {
       expressionProxy = createExpressionProxy(hiveConf);
       if (HiveConf.getBoolVar(getConf(), ConfVars.METASTORE_TRY_DIRECT_SQL)) {
-        directSql = new MetaStoreDirectSql(pm, hiveConf);
+        //TODO - backport HIVE-6990 here
+        directSql = new MetaStoreDirectSql(pm, hiveConf, "");
       }
     }
     LOG.debug("RawStore: " + this + ", with PersistenceManager: " + pm +
@@ -1559,8 +1561,11 @@ public class ObjectStore implements RawStore, Configurable {
     return keys;
   }
 
-  private SerDeInfo convertToSerDeInfo(MSerDeInfo ms) throws MetaException {
+  private SerDeInfo convertToSerDeInfo(MSerDeInfo ms, boolean allowNull) throws MetaException {
     if (ms == null) {
+      if (allowNull) {
+        return null;
+      }
       throw new MetaException("Invalid SerDeInfo object");
     }
     return new SerDeInfo(ms.getName(), ms.getSerializationLib(), convertMap(ms.getParameters()));
@@ -1599,7 +1604,7 @@ public class ObjectStore implements RawStore, Configurable {
     StorageDescriptor sd = new StorageDescriptor(noFS ? null : convertToFieldSchemas(mFieldSchemas),
         msd.getLocation(), msd.getInputFormat(), msd.getOutputFormat(), msd
         .isCompressed(), msd.getNumBuckets(), convertToSerDeInfo(msd
-        .getSerDeInfo()), convertList(msd.getBucketCols()), convertToOrders(msd
+        .getSerDeInfo(), true), convertList(msd.getBucketCols()), convertToOrders(msd
         .getSortCols()), convertMap(msd.getParameters()));
     SkewedInfo skewedInfo = new SkewedInfo(convertList(msd.getSkewedColNames()),
         convertToSkewedValues(msd.getSkewedColValues()),
@@ -2060,8 +2065,12 @@ public class ObjectStore implements RawStore, Configurable {
     if (mpart == null) {
       return null;
     }
-    return new Partition(convertList(mpart.getValues()), mpart.getTable().getDatabase()
-        .getName(), mpart.getTable().getTableName(), mpart.getCreateTime(),
+    //its possible that MPartition is partially filled, do null checks to avoid NPE
+    MTable table = mpart.getTable();
+    String dbName =
+        table == null ? null : table.getDatabase() == null ? null : table.getDatabase().getName();
+    String tableName = table == null ? null : table.getTableName();
+    return new Partition(convertList(mpart.getValues()), dbName, tableName, mpart.getCreateTime(),
         mpart.getLastAccessTime(), convertToStorageDescriptor(mpart.getSd()),
         convertMap(mpart.getParameters()));
   }
@@ -2811,6 +2820,64 @@ public class ObjectStore implements RawStore, Configurable {
     return new ObjectPair<Query, Map<String, String>>(query, params);
   }
 
+  // This code is only executed in JDO code path, not from direct SQL code path.
+  private List<MPartition> listMPartitionsWithProjection(String dbName, String tblName, int max,
+      QueryWrapper queryWrapper, List<String> fieldNames) throws MetaException {
+    boolean success = false;
+    List<MPartition> mparts = null;
+    try {
+      openTransaction();
+      LOG.debug("Executing listMPartitionsWithProjection");
+      dbName = HiveStringUtils.normalizeIdentifier(dbName);
+      tblName = HiveStringUtils.normalizeIdentifier(tblName);
+      Query query = queryWrapper.query = pm.newQuery(MPartition.class,
+          "table.tableName == t1 && table.database.name == t2");
+      query.declareParameters("java.lang.String t1, java.lang.String t2");
+      query.setOrdering("partitionName ascending");
+      if (max >= 0) {
+        query.setRange(0, max);
+      }
+      if (fieldNames == null || fieldNames.isEmpty()) {
+        // full fetch of partitions
+        mparts = (List<MPartition>) query.execute(tblName, dbName);
+        pm.retrieveAll(mparts);
+      } else {
+        // fetch partially filled partitions using result clause
+        query.setResult(Joiner.on(',').join(fieldNames));
+        // if more than one fields are in the result class the return type is List<Object[]>
+        if (fieldNames.size() > 1) {
+          List<Object[]> results = (List<Object[]>) query.execute(tblName, dbName);
+          mparts = new ArrayList<>(results.size());
+          for (Object[] row : results) {
+            MPartition mpart = new MPartition();
+            int i = 0;
+            for (Object val : row) {
+              MetaStoreUtils.setNestedProperty(mpart, fieldNames.get(i), val, true);
+              i++;
+            }
+            mparts.add(mpart);
+          }
+        } else {
+          // only one field is requested, return type is List<Object>
+          List<Object> results = (List<Object>) query.execute(tblName, dbName);
+          mparts = new ArrayList<>(results.size());
+          for (Object row : results) {
+            MPartition mpart = new MPartition();
+            MetaStoreUtils.setNestedProperty(mpart, fieldNames.get(0), row, true);
+            mparts.add(mpart);
+          }
+        }
+      }
+      success = commitTransaction();
+      LOG.debug("Done retrieving {} objects for listMPartitionsWithProjection", mparts.size());
+    } finally {
+      if (!success) {
+        rollbackTransaction();
+      }
+    }
+    return mparts;
+  }
+
   @Override
   public List<Partition> getPartitionsByFilter(String dbName, String tblName,
       String filter, short maxParts) throws MetaException, NoSuchObjectException {
@@ -2827,9 +2894,15 @@ public class ObjectStore implements RawStore, Configurable {
     protected final String dbName, tblName;
     private boolean success = false;
     protected T results = null;
+    protected final List<String> partitionFields;
 
-    public GetHelper(String dbName, String tblName, boolean allowSql, boolean allowJdo)
-        throws MetaException {
+    public GetHelper(String dbName, String tblName, boolean allowSql,
+        boolean allowJdo) throws MetaException {
+      this(dbName, tblName, null, allowSql, allowJdo);
+    }
+
+    public GetHelper(String dbName, String tblName,
+         List<String> fields, boolean allowSql, boolean allowJdo) throws MetaException {
       assert allowSql || allowJdo;
       this.allowJdo = allowJdo;
       this.dbName = HiveStringUtils.normalizeIdentifier(dbName);
@@ -2841,6 +2914,7 @@ public class ObjectStore implements RawStore, Configurable {
         this.tblName = null;
         this.table = null;
       }
+      this.partitionFields = fields;
       this.doTrace = LOG.isDebugEnabled();
       this.isInTxn = isActiveTransaction();
 
@@ -2850,7 +2924,8 @@ public class ObjectStore implements RawStore, Configurable {
       boolean isConfigEnabled = HiveConf.getBoolVar(getConf(), ConfVars.METASTORE_TRY_DIRECT_SQL)
           && (HiveConf.getBoolVar(getConf(), ConfVars.METASTORE_TRY_DIRECT_SQL_DDL) || !isInTxn);
       if (isConfigEnabled && directSql == null) {
-        directSql = new MetaStoreDirectSql(pm, getConf());
+        //TODO backport HIVE-6990
+        directSql = new MetaStoreDirectSql(pm, getConf(), "");
       }
 
       if (!allowJdo && isConfigEnabled && !directSql.isCompatibleDatastore()) {
@@ -3019,6 +3094,11 @@ public class ObjectStore implements RawStore, Configurable {
       super(dbName, tblName, allowSql, allowJdo);
     }
 
+    public GetListHelper(
+        String dbName, String tblName, List<String> fields, boolean allowSql, boolean allowJdo) throws MetaException {
+      super(dbName, tblName, fields, allowSql, allowJdo);
+    }
+
     @Override
     protected String describeResult() {
       return results.size() + " entries";
@@ -3161,6 +3241,44 @@ public class ObjectStore implements RawStore, Configurable {
         return getPartitionsViaOrmFilter(ctx.getTable(), tree, maxParts, true);
       }
     }.run(true);
+  }
+
+  @Override
+  public List<Partition> getPartitionSpecsByFilterAndProjection(String dbName,
+                                                                String tblName, List<String> fieldList,
+                                                                String includeParamKeyPattern,
+                                                                String excludeParamKeyPattern)
+      throws MetaException, NoSuchObjectException {
+    if (fieldList == null || fieldList.isEmpty()) {
+      // no fields are requested. Fallback to regular getPartitions implementation to return all the fields
+      return getPartitionsInternal(dbName, tblName, -1, true, true);
+    }
+
+    return new GetListHelper<Partition>(dbName, tblName,
+        fieldList, true, true) {
+
+      @Override
+      protected List<Partition> getSqlResult(GetHelper<List<Partition>> ctx) throws MetaException {
+        return directSql
+            .getPartitionSpecsUsingProjection(ctx.getTable(), ctx.partitionFields, includeParamKeyPattern,
+                excludeParamKeyPattern);
+      }
+
+      @Override
+      protected List<Partition> getJdoResult(
+          GetHelper<List<Partition>> ctx) throws MetaException {
+        // For single-valued fields we can use setResult() to implement projection of fields but
+        // JDO doesn't support multi-valued fields in setResult() so currently JDO implementation
+        // fallbacks to full-partition fetch if the requested fields contain multi-valued fields
+        // TODO: Add param filtering logic
+        List<String> fieldNames = PartitionProjectionEvaluator.getMPartitionFieldNames(ctx.partitionFields);
+        try (QueryWrapper queryWrapper = new QueryWrapper()) {
+          return convertToParts(
+              listMPartitionsWithProjection(dbName, tblName, -1, queryWrapper, fieldNames));
+        }
+      }
+    }.run(true);
+
   }
 
   /**
@@ -3537,7 +3655,7 @@ public class ObjectStore implements RawStore, Configurable {
     }
 
     oldSd.setBucketCols(newSd.getBucketCols());
-    oldSd.setCompressed(newSd.isCompressed());
+    oldSd.setIsCompressed(newSd.isCompressed());
     oldSd.setInputFormat(newSd.getInputFormat());
     oldSd.setOutputFormat(newSd.getOutputFormat());
     oldSd.setNumBuckets(newSd.getNumBuckets());

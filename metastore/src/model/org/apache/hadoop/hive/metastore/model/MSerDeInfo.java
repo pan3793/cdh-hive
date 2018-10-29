@@ -25,6 +25,9 @@ public class MSerDeInfo {
   private String serializationLib;
   private Map<String, String> parameters;
 
+  public MSerDeInfo() {
+    //default constructor used for deserialization
+  }
   /**
    * @param name
    * @param serializationLib

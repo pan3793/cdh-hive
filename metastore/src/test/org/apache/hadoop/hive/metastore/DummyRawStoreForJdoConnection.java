@@ -866,4 +866,11 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   public String getMetastoreDbUuid() throws MetaException {
     throw new MetaException("Get metastore uuid is not implemented");
   }
+
+  @Override
+  public List<Partition> getPartitionSpecsByFilterAndProjection(String dbName,
+      String tblName, List<String> fieldList, String paramKeys, String excludeFlag)
+      throws MetaException, NoSuchObjectException {
+    return Collections.emptyList();
+  }
 }
