@@ -659,7 +659,7 @@ public abstract class BaseSemanticAnalyzer {
     int relyIndex =  child.getChildCount() == 7 ? 4 : 3;
     for (int j = 0; j < child.getChild(1).getChildCount(); j++) {
      Tree grandChild = child.getChild(1).getChild(j);
-     boolean rely = child.getChild(relyIndex).getType() == HiveParser.TOK_VALIDATE;
+     boolean rely = child.getChild(relyIndex).getType() == HiveParser.TOK_RELY;
      boolean enable =  child.getChild(relyIndex+1).getType() == HiveParser.TOK_ENABLE;
      boolean validate =  child.getChild(relyIndex+2).getType() == HiveParser.TOK_VALIDATE;
      if (enable) {
@@ -721,7 +721,7 @@ public abstract class BaseSemanticAnalyzer {
     String[] qualifiedTabName = getQualifiedTableName((ASTNode) parent.getChild(0));
     for (int j = 0; j < child.getChild(1).getChildCount(); j++) {
      Tree grandChild = child.getChild(1).getChild(j);
-     boolean rely = child.getChild(relyIndex).getType() == HiveParser.TOK_VALIDATE;
+     boolean rely = child.getChild(relyIndex).getType() == HiveParser.TOK_RELY;
      boolean enable =  child.getChild(relyIndex+1).getType() == HiveParser.TOK_ENABLE;
      boolean validate =  child.getChild(relyIndex+2).getType() == HiveParser.TOK_VALIDATE;
      if (enable) {
@@ -783,7 +783,7 @@ public abstract class BaseSemanticAnalyzer {
     for (int j = 0; j < child.getChild(fkIndex).getChildCount(); j++) {
       SQLForeignKey sqlForeignKey = new SQLForeignKey();
       Tree fkgrandChild = child.getChild(fkIndex).getChild(j);
-      boolean rely = child.getChild(relyIndex).getType() == HiveParser.TOK_VALIDATE;
+      boolean rely = child.getChild(relyIndex).getType() == HiveParser.TOK_RELY;
       boolean enable =  child.getChild(relyIndex+1).getType() == HiveParser.TOK_ENABLE;
       boolean validate =  child.getChild(relyIndex+2).getType() == HiveParser.TOK_VALIDATE;
       if (enable) {
