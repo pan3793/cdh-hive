@@ -51,13 +51,12 @@ public class TestJdbcWithDBTokenStore extends TestJdbcWithMiniKdc{
         HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTOREWAREHOUSE));
     System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname,
         HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTORECONNECTURLKEY));
-    // Before this patch, the Embedded MetaStore was used here not the one started by the MiniHS2
-    // The below 3 lines would change the tests to use the Remote MetaStore, but it will cause a
-    // failure. By removing the thrift MetaStore uris, the tests are passing again.
-    // I think this is an valid problem here, but not really sure about the
-    // tests original intention, so keep everything as it was originally.
-//    System.setProperty(HiveConf.ConfVars.METASTOREURIS.varname,
-//        HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTOREURIS));
-//    Thread.sleep(2000);
+    System.setProperty(ConfVars.METASTORE_USE_THRIFT_SASL.varname,
+        String.valueOf(HiveConf.getBoolVar(hiveConf, ConfVars.METASTORE_USE_THRIFT_SASL)));
+    System.setProperty(HiveConf.ConfVars.METASTORE_KERBEROS_PRINCIPAL.varname,
+        HiveConf.getVar(hiveConf, ConfVars.METASTORE_KERBEROS_PRINCIPAL));
+    System.setProperty(ConfVars.METASTORE_KERBEROS_KEYTAB_FILE.varname,
+        HiveConf.getVar(hiveConf, ConfVars.METASTORE_KERBEROS_KEYTAB_FILE));
+    Thread.sleep(10000);
   }
 }

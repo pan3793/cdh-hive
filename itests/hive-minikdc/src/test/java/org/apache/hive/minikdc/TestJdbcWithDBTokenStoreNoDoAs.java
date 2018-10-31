@@ -41,7 +41,7 @@ public class TestJdbcWithDBTokenStoreNoDoAs extends TestJdbcWithMiniKdc{
     HiveConf hiveConf = new HiveConf();
     hiveConf.setVar(ConfVars.METASTORE_CLUSTER_DELEGATION_TOKEN_STORE_CLS, "org.apache.hadoop.hive.thrift.DBTokenStore");
     hiveConf.setBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS, false);
-    miniHS2 = MiniHiveKdc.getMiniHS2WithKerbWithRemoteHMSWithKerb(miniHiveKdc, hiveConf);
+    miniHS2 = MiniHiveKdc.getMiniHS2WithKerbWithRemoteHMS(miniHiveKdc, hiveConf);
     miniHS2.start(confOverlay);
     String metastorePrincipal = miniHS2.getConfProperty(ConfVars.METASTORE_KERBEROS_PRINCIPAL.varname);
     String hs2Principal = miniHS2.getConfProperty(ConfVars.HIVE_SERVER2_KERBEROS_PRINCIPAL.varname);
@@ -51,13 +51,8 @@ public class TestJdbcWithDBTokenStoreNoDoAs extends TestJdbcWithMiniKdc{
         HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTOREWAREHOUSE));
     System.setProperty(HiveConf.ConfVars.METASTORECONNECTURLKEY.varname,
         HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTORECONNECTURLKEY));
-    // Before this patch, the Embedded MetaStore was used here not the one started by the MiniHS2
-    // The below 3 lines would change the tests to use the Remote MetaStore, but it will cause a
-    // failure. By removing the thrift MetaStore uris, the tests are passing again.
-    // I think this is an valid problem here, but not really sure about the
-    // tests original intention, so keep everything as it was originally.
-//    System.setProperty(HiveConf.ConfVars.METASTOREURIS.varname,
-//        HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTOREURIS));
-    Thread.sleep(4000);
+    System.setProperty(HiveConf.ConfVars.METASTOREURIS.varname,
+        HiveConf.getVar(hiveConf, HiveConf.ConfVars.METASTOREURIS));
+    Thread.sleep(10000);
   }
 }
