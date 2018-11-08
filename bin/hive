@@ -124,6 +124,7 @@ done
 if [[ -n "$SPARK_HOME" ]]
 then
   CLASSPATH=${CLASSPATH}:${SPARK_HOME}/jars/spark-core*.jar
+  CLASSPATH=${CLASSPATH}:${SPARK_HOME}/jars/spark-unsafe*.jar
   CLASSPATH=${CLASSPATH}:${SPARK_HOME}/jars/scala-library*.jar
 fi
 
