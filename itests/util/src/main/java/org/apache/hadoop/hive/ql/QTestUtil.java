@@ -155,7 +155,7 @@ public class QTestUtil {
 
   private static final String DEFAULT_TEST_SRC_TABLES =
       "src,src1,srcbucket,srcbucket2,src_json,src_thrift,src_sequencefile,srcpart,alltypesorc," +
-      "src_hbase,cbo_t1,cbo_t2,cbo_t3,src_cbo,part,lineitem,alltypesparquet";
+      "src_hbase,cbo_t1,cbo_t2,cbo_t3,src_cbo,part,lineitem,alltypesparquet,primitives";
 
   /**
    * The default Erasure Coding Policy to use in Erasure Coding tests.
