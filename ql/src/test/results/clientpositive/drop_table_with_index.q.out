@@ -86,6 +86,7 @@ cbo_t3
 default__aa_aa_lshipdate_idx__
 lineitem
 part
+primitives
 src
 src1
 src_cbo
