@@ -122,7 +122,7 @@ public class JSONMessageFactory extends MessageFactory {
 
   @Override
   public CreateDatabaseMessage buildCreateDatabaseMessage(Database db) {
-    return new JSONCreateDatabaseMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, db.getName(), now());
+    return new JSONCreateDatabaseMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, db, now());
   }
 
   @Override
@@ -234,6 +234,17 @@ public class JSONMessageFactory extends MessageFactory {
     filterMapkeys(tableObj.getParameters(), paramsFilter);
     TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
     return serializer.toString(tableObj, "UTF-8");
+  }
+
+  static String createDatabaseObjJson(Database dbObj) throws TException {
+    if (!ADD_THRIFT_OBJECT) {
+      return null;
+    }
+    // Note: The parameters of the Table object will be removed in the filter if it matches
+    // any pattern provided through EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS
+    filterMapkeys(dbObj.getParameters(), paramsFilter);
+    TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
+    return serializer.toString(dbObj, "UTF-8");
   }
 
   static String createPartitionObjJson(Partition partitionObj) throws TException {

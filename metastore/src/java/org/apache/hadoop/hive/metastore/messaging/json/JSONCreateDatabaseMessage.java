@@ -19,7 +19,9 @@
 
 package org.apache.hadoop.hive.metastore.messaging.json;
 
+import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.messaging.CreateDatabaseMessage;
+import org.apache.thrift.TException;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -28,7 +30,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class JSONCreateDatabaseMessage extends CreateDatabaseMessage {
 
   @JsonProperty
-  String server, servicePrincipal, db;
+  String server, servicePrincipal, db, dbJson;
 
   @JsonProperty
   Long timestamp;
@@ -38,12 +40,27 @@ public class JSONCreateDatabaseMessage extends CreateDatabaseMessage {
    */
   public JSONCreateDatabaseMessage() {}
 
-  public JSONCreateDatabaseMessage(String server, String servicePrincipal, String db, Long timestamp) {
+  public JSONCreateDatabaseMessage(String server, String servicePrincipal, String dbname,
+      Long timestamp) {
     this.server = server;
     this.servicePrincipal = servicePrincipal;
-    this.db = db;
+    this.db = dbname;
     this.timestamp = timestamp;
     checkValid();
+  }
+
+  public JSONCreateDatabaseMessage(String server, String servicePrincipal, Database db,
+      Long timestamp) {
+    this(server, servicePrincipal, db.getName(), timestamp);
+    try {
+      this.dbJson = JSONMessageFactory.createDatabaseObjJson(db);
+    } catch (TException ex) {
+      throw new IllegalArgumentException("Could not serialize Function object", ex);
+    }
+  }
+
+  public Database getDatabaseObject() throws Exception {
+    return (Database) JSONMessageFactory.getTObj(dbJson, Database.class);
   }
 
   @Override

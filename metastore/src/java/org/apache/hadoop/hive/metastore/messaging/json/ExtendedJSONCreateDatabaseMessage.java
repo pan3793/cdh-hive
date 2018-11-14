@@ -35,7 +35,7 @@ public class ExtendedJSONCreateDatabaseMessage extends JSONCreateDatabaseMessage
   }
 
   public ExtendedJSONCreateDatabaseMessage(String server, String servicePrincipal, Long timestamp, Database db) {
-    super(server, servicePrincipal, db.getName(), timestamp);
+    super(server, servicePrincipal, db, timestamp);
     this.location = db.getLocationUri();
     this.ownerType = db.getOwnerType();
     this.ownerName = db.getOwnerName();

@@ -24,5 +24,4 @@ public abstract class CreateDatabaseMessage extends EventMessage {
   protected CreateDatabaseMessage() {
     super(EventType.CREATE_DATABASE);
   }
-
 }
