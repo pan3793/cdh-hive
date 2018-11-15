@@ -458,7 +458,7 @@ public class CDHMetaStoreSchemaInfo extends MetaStoreSchemaInfo {
       String[] aVersionParts = cdhVersion1.split("\\.");
       String[] bVersionParts = cdhVersion2.split("\\.");
 
-      if ("6".equals(aVersionParts[0]) || "6".equals(bVersionParts[0])) {
+      if (cdhVersion1.contains("x") || cdhVersion2.contains("x")) {
         return aVersionParts[0].compareTo(bVersionParts[0]);
       }
       return compareVersionStrings(aVersionParts, bVersionParts, skipMaintainenceRelease);
