@@ -72,6 +72,8 @@ import org.apache.hadoop.hive.ql.hooks.PostExecute;
 import org.apache.hadoop.hive.ql.hooks.PreExecute;
 import org.apache.hadoop.hive.ql.hooks.ReadEntity;
 import org.apache.hadoop.hive.ql.hooks.WriteEntity;
+import org.apache.hadoop.hive.ql.lock.CompileLock;
+import org.apache.hadoop.hive.ql.lock.CompileLockFactory;
 import org.apache.hadoop.hive.ql.lockmgr.HiveLock;
 import org.apache.hadoop.hive.ql.lockmgr.HiveTxnManager;
 import org.apache.hadoop.hive.ql.lockmgr.LockException;
@@ -146,7 +148,6 @@ public class Driver implements IDriver {
   ByteStream.Output bos = new ByteStream.Output();
 
   private final HiveConf conf;
-  private final boolean isParallelEnabled;
   private DataInput resStream;
   private Context ctx;
   private DriverContext driverCxt;
@@ -403,8 +404,6 @@ public class Driver implements IDriver {
   public Driver(QueryState queryState, String userName, HooksLoader hooksLoader, QueryInfo queryInfo) {
     this.queryState = queryState;
     this.conf = queryState.getConf();
-    isParallelEnabled = (conf != null)
-        && HiveConf.getBoolVar(conf, ConfVars.HIVE_SERVER2_PARALLEL_COMPILATION);
     this.userName = userName;
     this.hooksLoader = hooksLoader;
     this.queryLifeTimeHookRunner = new QueryLifeTimeHookRunner(conf, hooksLoader, console);
@@ -837,7 +836,7 @@ public class Driver implements IDriver {
     }
 
     // The following union operation returns a union, which traverses over the
-    // first set once and then  then over each element of second set, in order, 
+    // first set once and then  then over each element of second set, in order,
     // that is not contained in first. This means it doesn't replace anything
     // in first set, and would preserve the WriteType in WriteEntity in first
     // set in case of outputs list.
@@ -1168,7 +1167,7 @@ public class Driver implements IDriver {
     conf.set(ValidTxnList.VALID_TXNS_KEY, txnStr);
     if(plan.getFetchTask() != null) {
       /**
-       * This is needed for {@link HiveConf.ConfVars.HIVEFETCHTASKCONVERSION} optimization which 
+       * This is needed for {@link HiveConf.ConfVars.HIVEFETCHTASKCONVERSION} optimization which
        * initializes JobConf in FetchOperator before recordValidTxns() but this has to be done
        * after locks are acquired to avoid race conditions in ACID.
        */
@@ -1396,7 +1395,6 @@ public class Driver implements IDriver {
     return createProcessorResponse(compileInternal(command, false));
   }
 
-  private static final ReentrantLock globalCompileLock = new ReentrantLock();
   private int compileInternal(String command, boolean deferClose) {
     int ret;
 
@@ -1406,19 +1404,21 @@ public class Driver implements IDriver {
     }
 
     PerfLogger perfLogger = SessionState.getPerfLogger(true);
-    final ReentrantLock compileLock = tryAcquireCompileLock(isParallelEnabled,
-      command);
-    if (compileLock == null) {
-      return ErrorMsg.COMPILE_LOCK_TIMED_OUT.getErrorCode();
-    }
+    perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.WAIT_COMPILE);
 
-    try {
+    try (CompileLock compileLock = CompileLockFactory.newInstance(conf, command)) {
+      boolean success = compileLock.tryAcquire();
+
+      perfLogger.PerfLogEnd(CLASS_NAME, PerfLogger.WAIT_COMPILE);
+
       if (metrics != null) {
         metrics.decrementCounter(MetricsConstant.WAITING_COMPILE_OPS, 1);
       }
+      if (!success) {
+        return ErrorMsg.COMPILE_LOCK_TIMED_OUT.getErrorCode();
+      }
+
       ret = compile(command, true, deferClose);
-    } finally {
-      compileLock.unlock();
     }
 
     if (ret != 0) {
@@ -1435,65 +1435,6 @@ public class Driver implements IDriver {
     queryDisplay.setPerfLogStarts(QueryDisplay.Phase.COMPILATION, perfLogger.getStartTimes());
     queryDisplay.setPerfLogEnds(QueryDisplay.Phase.COMPILATION, perfLogger.getEndTimes());
     return ret;
-  }
-
-  /**
-   * Acquires the compile lock. If the compile lock wait timeout is configured,
-   * it will acquire the lock if it is not held by another thread within the given
-   * waiting time.
-   * @return the ReentrantLock object if the lock was successfully acquired,
-   *         or {@code null} if compile lock wait timeout is configured and
-   *         either the waiting time elapsed before the lock could be acquired
-   *         or if the current thread is interrupted.
-   */
-  private ReentrantLock tryAcquireCompileLock(boolean isParallelEnabled,
-    String command) {
-    final ReentrantLock compileLock = isParallelEnabled ?
-        SessionState.get().getCompileLock() : globalCompileLock;
-    long maxCompileLockWaitTime = HiveConf.getTimeVar(
-      this.conf, ConfVars.HIVE_SERVER2_COMPILE_LOCK_TIMEOUT,
-      TimeUnit.SECONDS);
-
-    final String lockAcquiredMsg = "Acquired the compile lock.";
-    // First shot without waiting.
-    try {
-      if (compileLock.tryLock(0, TimeUnit.SECONDS)) {
-        LOG.debug(lockAcquiredMsg);
-        return compileLock;
-      }
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Interrupted Exception ignored", e);
-      }
-      return null;
-    }
-
-    // If the first shot fails, then we log the waiting messages.
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Waiting to acquire compile lock: " + command);
-    }
-
-    if (maxCompileLockWaitTime > 0) {
-      try {
-        if(!compileLock.tryLock(maxCompileLockWaitTime, TimeUnit.SECONDS)) {
-          errorMessage = ErrorMsg.COMPILE_LOCK_TIMED_OUT.getErrorCodedMsg();
-          LOG.error(errorMessage + ": " + command);
-          return null;
-        }
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Interrupted Exception ignored", e);
-        }
-        return null;
-      }
-    } else {
-      compileLock.lock();
-    }
-
-    LOG.debug(lockAcquiredMsg);
-    return compileLock;
   }
 
   private CommandProcessorResponse runInternal(String command, boolean alreadyCompiled)
