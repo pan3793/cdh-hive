@@ -89,6 +89,7 @@ public class TestRestrictedList {
     addToExpectedRestrictedMap("spark.home");
     addToExpectedRestrictedMap("bonecp.test");
     addToExpectedRestrictedMap("hikaricp.test");
+    addToExpectedRestrictedMap("hive.driver.parallel.compilation.global.limit");
   }
 
   @AfterClass
