@@ -17,18 +17,16 @@
  */
 package org.apache.hadoop.hive.ql.exec.spark.session;
 
-import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.ErrorMsg;
-import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.util.StringUtils;
 
 import org.apache.hive.spark.client.SparkClientFactory;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.hadoop.hive.conf.HiveConf;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,7 +39,6 @@ import org.apache.hadoop.hive.ql.exec.spark.HiveSparkClient;
 import org.apache.hadoop.hive.ql.exec.spark.HiveSparkClientFactory;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.spark.SparkConf;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -49,17 +46,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class TestSparkSessionManagerImpl {
-
   private static final Logger LOG = LoggerFactory.getLogger(TestSparkSessionManagerImpl.class);
 
   private SparkSessionManagerImpl sessionManagerHS2 = null;
   private boolean anyFailedSessionThread; // updated only when a thread has failed.
-  private static HiveConf SESSION_HIVE_CONF = new HiveConf();
-
-  @BeforeClass
-  public static void setup() {
-    SessionState.start(SESSION_HIVE_CONF);
-  }
 
 
   /** Tests CLI scenario where we get a single session and use it multiple times. */
@@ -99,7 +89,7 @@ public class TestSparkSessionManagerImpl {
 
     List<Thread> threadList = new ArrayList<Thread>();
     for (int i = 0; i < 10; i++) {
-      Thread t = new Thread(new SessionThread(SessionState.get()), "Session thread " + i);
+      Thread t = new Thread(new SessionThread(), "Session thread " + i);
       t.start();
       threadList.add(t);
     }
@@ -204,23 +194,6 @@ public class TestSparkSessionManagerImpl {
   }
 
   @Test
-  public void testGetSessionId() throws HiveException {
-    SessionState ss = SessionState.start(SESSION_HIVE_CONF);
-    SparkSessionManager ssm = SparkSessionManagerImpl.getInstance();
-
-    ss.setSparkSession(ssm.getSession(null, SESSION_HIVE_CONF, true));
-    assertEquals("0", ss.getSparkSession().getSessionId());
-
-    ss.setSparkSession(ssm.getSession(null, SESSION_HIVE_CONF, true));
-    assertEquals("1", ss.getSparkSession().getSessionId());
-
-    ss = SessionState.start(SESSION_HIVE_CONF);
-
-    ss.setSparkSession(ssm.getSession(null, SESSION_HIVE_CONF, true));
-    assertEquals("0", ss.getSparkSession().getSessionId());
-  }
-
-  @Test
   public void testConfigsForInitialization() {
     //Test to make sure that configs listed in RpcConfiguration.HIVE_SPARK_RSC_CONFIGS which are passed
     // through HiveConf are included in the Spark configuration.
@@ -252,6 +225,7 @@ public class TestSparkSessionManagerImpl {
 
     testSessionManager.shutdown();
   }
+
   private void checkHiveException(SparkSessionImpl ss, Throwable e, ErrorMsg expectedErrMsg) {
     checkHiveException(ss, e, expectedErrMsg, null);
   }
@@ -287,16 +261,10 @@ public class TestSparkSessionManagerImpl {
   /* Thread simulating a user session in HiveServer2. */
   public class SessionThread implements Runnable {
 
-    private final SessionState ss;
-
-    private SessionThread(SessionState ss) {
-      this.ss = ss;
-    }
 
     @Override
     public void run() {
       try {
-        SessionState.setCurrentSessionState(ss);
         Random random = new Random(Thread.currentThread().getId());
         String threadName = Thread.currentThread().getName();
         System.out.println(threadName + " started.");
