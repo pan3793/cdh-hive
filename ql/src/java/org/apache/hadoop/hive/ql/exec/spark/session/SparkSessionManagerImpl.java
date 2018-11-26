@@ -27,14 +27,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.hive.common.util.ShutdownHookManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.spark.HiveSparkClientFactory;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
-import org.apache.hive.common.util.ShutdownHookManager;
 import org.apache.hive.spark.client.SparkClientFactory;
 
 /**
@@ -127,7 +126,7 @@ public class SparkSessionManagerImpl implements SparkSessionManager {
       return existingSession;
     }
 
-    SparkSession sparkSession = new SparkSessionImpl(SessionState.get().getNewSparkSessionId());
+    SparkSession sparkSession = new SparkSessionImpl();
     if (doOpen) {
       sparkSession.open(conf);
     }

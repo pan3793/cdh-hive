@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.google.common.collect.Maps;
@@ -286,8 +285,6 @@ public class SessionState {
   private final ResourceDownloader resourceDownloader;
 
   private List<String> forwardedAddresses;
-
-  private final AtomicLong sparkSessionId = new AtomicLong();
 
   public HiveConf getConf() {
     return sessionConf;
@@ -1838,10 +1835,6 @@ public class SessionState {
    */
   public String getReloadableAuxJars() {
     return StringUtils.join(preReloadableAuxJars, ',');
-  }
-
-  public String getNewSparkSessionId() {
-    return Long.toString(this.sparkSessionId.getAndIncrement());
   }
 }
 

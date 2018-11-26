@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -118,8 +119,8 @@ public class SparkSessionImpl implements SparkSession {
 
   private ReadWriteLock closeLock = new ReentrantReadWriteLock();
 
-  SparkSessionImpl(String sessionId) {
-    this.sessionId = sessionId;
+  public SparkSessionImpl() {
+    sessionId = makeSessionId();
     initErrorPatterns();
   }
 
@@ -131,8 +132,7 @@ public class SparkSessionImpl implements SparkSession {
       this.conf = conf;
       isOpen = true;
       try {
-        hiveSparkClient = HiveSparkClientFactory.createHiveSparkClient(conf, sessionId,
-              SessionState.get().getSessionId());
+        hiveSparkClient = HiveSparkClientFactory.createHiveSparkClient(conf, sessionId);
       } catch (Throwable e) {
         // It's possible that user session is closed while creating Spark client.
         HiveException he;
@@ -396,6 +396,10 @@ public class SparkSessionImpl implements SparkSession {
     }
     activeJobs.remove(queryId);
     lastSparkJobCompletionTime = System.currentTimeMillis();
+  }
+
+  public static String makeSessionId() {
+    return UUID.randomUUID().toString();
   }
 
   @VisibleForTesting
