@@ -1841,7 +1841,7 @@ public class SessionState {
   }
 
   public String getNewSparkSessionId() {
-    return getSessionId() + "_" + Long.toString(this.sparkSessionId.getAndIncrement());
+    return Long.toString(this.sparkSessionId.getAndIncrement());
   }
 }
 
