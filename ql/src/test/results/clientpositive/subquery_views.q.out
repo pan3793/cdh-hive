@@ -195,7 +195,9 @@ STAGE PLANS:
               Map-reduce partition columns: _col0 (type: string), _col1 (type: string), _col0 (type: string)
               Statistics: Num rows: 166 Data size: 3257 Basic stats: COMPLETE Column stats: NONE
           TableScan
-            alias: a
+            alias: b
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: ((value > 'val_11') and (key < '11')) (type: boolean)
@@ -352,7 +354,9 @@ STAGE PLANS:
               Map-reduce partition columns: _col0 (type: string), _col1 (type: string), _col0 (type: string)
               Statistics: Num rows: 166 Data size: 3257 Basic stats: COMPLETE Column stats: NONE
           TableScan
-            alias: a
+            alias: b
+            properties:
+              insideView TRUE
             Statistics: Num rows: 500 Data size: 5312 Basic stats: COMPLETE Column stats: NONE
             Filter Operator
               predicate: ((value > 'val_11') and (key < '11')) (type: boolean)
