@@ -73,13 +73,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
@@ -304,6 +307,79 @@ public class TestObjectStore {
       Assert.assertEquals(1L, count.longValue());
     }
     Assert.assertEquals(prevId, lastEventId);
+  }
+
+  /**
+   * Test the concurrent drop of same partition would leak transaction.
+   * https://issues.apache.org/jira/browse/HIVE-16839
+   *
+   * Note: the leak happens during a race condition, this test case tries
+   * to simulate the race condition on best effort, it have two threads trying
+   * to drop the same set of partitions
+   */
+  @Test
+  public void testConcurrentDropPartitions() throws TException {
+    Database db1 = new DatabaseBuilder()
+        .setName(DB1)
+        .setDescription("description")
+        .setLocation("locationurl")
+        .build();
+    objectStore.createDatabase(db1);
+    StorageDescriptor sd = createFakeSd("location");
+    HashMap<String, String> tableParams = new HashMap<>();
+    tableParams.put("EXTERNAL", "false");
+    FieldSchema partitionKey1 = new FieldSchema("Country", serdeConstants.STRING_TYPE_NAME, "");
+    FieldSchema partitionKey2 = new FieldSchema("State", serdeConstants.STRING_TYPE_NAME, "");
+    Table tbl1 =
+        new Table(TABLE1, DB1, "owner", 1, 2, 3, sd, Arrays.asList(partitionKey1, partitionKey2),
+            tableParams, null, null, "MANAGED_TABLE");
+    objectStore.createTable(tbl1);
+    HashMap<String, String> partitionParams = new HashMap<>();
+    partitionParams.put("PARTITION_LEVEL_PRIVILEGE", "true");
+
+    // Create some partitions
+    final List<List<String>> partNames = new LinkedList<>();
+    for (char c = 'A'; c < 'Z'; c++) {
+      String name = "" + c;
+      partNames.add(Arrays.asList(name, name));
+    }
+    for (List<String> n : partNames) {
+      Partition p = new Partition(n, DB1, TABLE1, 111, 111, sd, partitionParams);
+      objectStore.addPartition(p);
+    }
+
+    int numThreads = 2;
+    ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+    for (int i = 0; i < numThreads; i++) {
+      executorService.execute(
+          new Runnable() {
+            @Override
+            public void run() {
+              for (List<String> p : partNames) {
+                try {
+                  objectStore.dropPartition(DB1, TABLE1, p);
+                  System.out.println("Dropping partition: " + p.get(0));
+                } catch (Exception e) {
+                  throw new RuntimeException(e);
+                }
+              }
+            }
+          }
+      );
+    }
+
+    executorService.shutdown();
+    try {
+      executorService.awaitTermination(30, TimeUnit.SECONDS);
+    } catch (InterruptedException ex) {
+      Assert.assertTrue("Got interrupted.", false);
+    }
+    Assert.assertTrue("Expect no active transactions.", !objectStore.isActiveTransaction());
+  }
+
+  private StorageDescriptor createFakeSd(String location) {
+    return new StorageDescriptor(null, location, null, null, false, 0,
+        new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
   }
 
   /**
