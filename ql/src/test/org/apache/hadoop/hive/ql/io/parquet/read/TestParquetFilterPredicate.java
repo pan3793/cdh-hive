@@ -113,4 +113,35 @@ public class TestParquetFilterPredicate {
     assertEquals(expected, p.toString());
   }
 
+  @Test
+  public void testFilterMultiLeaves() {
+    MessageType schema =
+        MessageTypeParser.parseMessageType("message test {  required binary value; required int32 id; }");
+    SearchArgument sarg = SearchArgumentFactory.newBuilder()
+                              .startOr()
+                              .startAnd()
+                              .equals("value","value1")
+                              .startNot()
+                              .isNull("id")
+                              .end()
+                              .end()
+                              .startAnd()
+                              .equals("value","value2")
+                              .startNot()
+                              .isNull("id")
+                              .end()
+                              .end()
+                              .end()
+                              .build();
+
+    FilterPredicate p = ParquetFilterPredicateConverter.toFilterPredicate(sarg, schema);
+
+    String expected =
+        "and(and(and(" +
+            "or(eq(value, Binary{\"value1\"}), eq(value, Binary{\"value2\"})), " +
+            "or(not(eq(id, null)), eq(value, Binary{\"value2\"}))), " +
+            "or(eq(value, Binary{\"value1\"}), not(eq(id, null)))), " +
+            "or(not(eq(id, null)), not(eq(id, null))))";
+    assertEquals(expected, p.toString());
+  }
 }

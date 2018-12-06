@@ -53,3 +53,4 @@ POSTHOOK: type: QUERY
 POSTHOOK: Input: default@tbl1
 POSTHOOK: Input: default@tbl2
 #### A masked pattern was here ####
+1	value1	value2

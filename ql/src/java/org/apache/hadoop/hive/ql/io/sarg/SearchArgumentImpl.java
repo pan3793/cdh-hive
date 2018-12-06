@@ -605,7 +605,7 @@ final class SearchArgumentImpl implements SearchArgument {
         for(ExpressionTree kid: kids) {
           for(ExpressionTree or: work) {
             ExpressionTree copy = new ExpressionTree(or);
-            copy.getChildren().add(kid);
+            copy.getChildren().add(new ExpressionTree(kid));
             result.add(copy);
           }
         }
