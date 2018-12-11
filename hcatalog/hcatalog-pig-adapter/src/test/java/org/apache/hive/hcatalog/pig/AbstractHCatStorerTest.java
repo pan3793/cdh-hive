@@ -273,7 +273,8 @@ public abstract class AbstractHCatStorerTest extends HCatBaseTest {
       String format) throws Exception {
     AbstractHCatLoaderTest.dropTable(tblName, driver);
     final String field = "f1";
-    AbstractHCatLoaderTest.createTable(tblName, field + " " + hiveType, null, driver, storageFormat);
+    AbstractHCatLoaderTest.createTableDefaultDB(tblName, field + " " + hiveType, null, driver,
+            storageFormat);
     HcatTestUtils.createTestDataFile(INPUT_FILE_NAME, new String[] { inputValue });
     LOG.debug("File=" + INPUT_FILE_NAME);
     dumpFile(INPUT_FILE_NAME);
@@ -352,7 +353,7 @@ public abstract class AbstractHCatStorerTest extends HCatBaseTest {
   public void testDateCharTypes() throws Exception {
     final String tblName = "junit_date_char";
     AbstractHCatLoaderTest.dropTable(tblName, driver);
-    AbstractHCatLoaderTest.createTable(tblName,
+    AbstractHCatLoaderTest.createTableDefaultDB(tblName,
         "id int, char5 char(5), varchar10 varchar(10), dec52 decimal(5,2)", null, driver,
         storageFormat);
     int NUM_ROWS = 5;
