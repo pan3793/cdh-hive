@@ -105,6 +105,13 @@ public class TestObjectStore {
   private static final String ROLE1 = "testobjectstorerole1";
   private static final String ROLE2 = "testobjectstorerole2";
 
+  /**
+   * Java system properties for configuring SSL to the database store
+   */
+  private static final String TRUSTSTORE_PATH_KEY = "javax.net.ssl.trustStore";
+  private static final String TRUSTSTORE_PASSWORD_KEY = "javax.net.ssl.trustStorePassword";
+  private static final String TRUSTSTORE_TYPE_KEY = "javax.net.ssl.trustStoreType";
+
   public static class MockPartitionExpressionProxy implements PartitionExpressionProxy {
     @Override
     public String convertExprToFilter(byte[] expr) throws MetaException {
@@ -147,6 +154,10 @@ public class TestObjectStore {
 
   @After
   public void tearDown() {
+    // Clear the SSL system properties before each test.
+    System.clearProperty(TRUSTSTORE_PATH_KEY);
+    System.clearProperty(TRUSTSTORE_PASSWORD_KEY);
+    System.clearProperty(TRUSTSTORE_TYPE_KEY);
   }
 
   /**
@@ -884,4 +895,70 @@ public class TestObjectStore {
     Mockito.verify(spy, Mockito.times(3))
         .rollbackAndCleanup(Mockito.anyBoolean(), Mockito.<Query>anyObject());
   }
+
+  /**
+   * Test the SSL configuration parameters to ensure that they modify the Java system properties correctly.
+   */
+  @Test
+  public void testSSLPropertiesAreSet() {
+    setAndCheckSSLProperties(true, "/tmp/truststore.p12", "password", "pkcs12");
+  }
+
+  /**
+   * Test the property hive.metastore.dbaccess.use.SSL to ensure that it correctly
+   * toggles whether or not the SSL configuration parameters will be set. Effectively, this is testing whether
+   * SSL can be turned on/off correctly.
+   */
+  @Test
+  public void testUseSSLProperty() {
+    setAndCheckSSLProperties(false, "/tmp/truststore.jks", "password", "jks");
+  }
+
+  /**
+   * Test that the deprecated property hive.metastore.dbaccess.ssl.properties is overwritten by the hive.metastore.dbaccess.ssl.* properties
+   * if both are set.
+   *
+   * This is not an ideal scenario. It is highly recommend to only set the hive.metastore.dbaccess.ssl.* properties.
+   */
+  @Test
+  public void testDeprecatedConfigIsOverwritten() {
+    // Different from the values in the safe config
+    HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_DBACCESS_SSL_PROPS,
+        TRUSTSTORE_PATH_KEY + "=/tmp/truststore.p12," + TRUSTSTORE_PASSWORD_KEY + "=pwd," + TRUSTSTORE_TYPE_KEY + "=pkcs12");
+
+    // Safe config
+    setAndCheckSSLProperties(true, "/tmp/truststore.jks", "password", "jks");
+  }
+
+  /**
+   * Ensure that an empty trustStore path in hive.metastore.dbaccess.ssl.truststore.path throws an IllegalArgumentException.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testEmptyTrustStorePath() {
+    setAndCheckSSLProperties(true, "", "password", "jks");
+  }
+
+  /**
+   * Helper method for setting and checking the SSL configuration parameters.
+   */
+  private void setAndCheckSSLProperties(boolean useSSL, String trustStorePath, String trustStorePassword, String trustStoreType) {
+    HiveConf.setBoolVar(conf, HiveConf.ConfVars.METASTORE_DBACCESS_USE_SSL, useSSL);
+    HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_PATH, trustStorePath);
+    HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD, trustStorePassword);
+    HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_TYPE, trustStoreType);
+    objectStore.setConf(conf); // Calls configureSSL()
+
+    // Check that the Java system values correspond to the values that we set
+    if (useSSL) {
+      Assert.assertEquals(trustStorePath, System.getProperty(TRUSTSTORE_PATH_KEY));
+      Assert.assertEquals(trustStorePassword, System.getProperty(TRUSTSTORE_PASSWORD_KEY));
+      Assert.assertEquals(trustStoreType, System.getProperty(TRUSTSTORE_TYPE_KEY));
+    } else {
+      Assert.assertNull(System.getProperty(TRUSTSTORE_PATH_KEY));
+      Assert.assertNull(System.getProperty(TRUSTSTORE_PASSWORD_KEY));
+      Assert.assertNull(System.getProperty(TRUSTSTORE_TYPE_KEY));
+    }
+  }
+
+
 }

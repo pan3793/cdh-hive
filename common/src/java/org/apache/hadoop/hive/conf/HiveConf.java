@@ -673,9 +673,35 @@ public class HiveConf extends Configuration {
         "JDBC connect string for a JDBC metastore.\n" +
         "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
         "For example, jdbc:postgresql://myhost/db?ssl=true for postgres database."),
+
+    // Parameters for configuring SSL encryption to the database store
+    // If METASTORE_DBACCESS_USE_SSL is false, then all other METASTORE_DBACCESS_SSL_* properties will be ignored
+    METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD("hive.metastore.dbaccess.ssl.truststore.password", "",
+        "Password for the Java truststore file that is used when encrypting the connection to the database store. \n"
+            + "This directly maps to the javax.net.ssl.trustStorePassword Java system property. \n"
+            + "While Java does allow an empty truststore password, we highly recommend against this. \n"
+            + "An empty password can compromise the integrity of the truststore file."),
+    METASTORE_DBACCESS_SSL_TRUSTSTORE_PATH("hive.metastore.dbaccess.ssl.truststore.path", "",
+        "Location on disk of the Java truststore file to use when encrypting the connection to the database store. \n"
+            + "This directly maps to the javax.net.ssl.trustStore Java system property. \n"
+            + "This file consists of a collection of certificates trusted by the metastore server.\n"),
+    METASTORE_DBACCESS_SSL_TRUSTSTORE_TYPE("hive.metastore.dbaccess.ssl.truststore.type", "jks",
+        new StringSet("jceks", "jks", "dks", "pkcs11", "pkcs12"),
+        "File type for the Java truststore file that is used when encrypting the connection to the database store. \n"
+            + "This directly maps to the javax.net.ssl.trustStoreType Java system property. \n"
+            + "Types jceks, jks, dks, pkcs11, and pkcs12 can be read from Java 8 and beyond. We default to jks. \n"),
+    METASTORE_DBACCESS_USE_SSL("hive.metastore.dbaccess.ssl.use.SSL", false,
+        "Set this to true to use SSL encryption to the database store."),
+
+    // Planned to be removed in HIVE-21024
+    @Deprecated
     METASTORE_DBACCESS_SSL_PROPS("hive.metastore.dbaccess.ssl.properties", "",
-           "Comma-separated SSL properties for metastore to access database when JDO connection URL\n" +
-           "enables SSL access. e.g. javax.net.ssl.trustStore=/tmp/truststore,javax.net.ssl.trustStorePassword=pwd."),
+        "Deprecated. Use the hive.metastore.dbaccess.ssl.* properties instead. Comma-separated SSL properties for " +
+            "metastore to access database when JDO connection URL enables SSL access. \n"
+            + "e.g. javax.net.ssl.trustStore=/tmp/truststore,javax.net.ssl.trustStorePassword=pwd.\n " +
+            "If both this and the hive.metastore.dbaccess.ssl.* properties are set, then the latter properties \n" +
+            "will overwrite what was set in the deprecated property."),
+
     HMSHANDLERATTEMPTS("hive.hmshandler.retry.attempts", 10,
         "The number of times to retry a HMSHandler call if there were a connection error."),
     HMSHANDLERINTERVAL("hive.hmshandler.retry.interval", "2000ms",
@@ -3282,17 +3308,19 @@ public class HiveConf extends Configuration {
             "hive.driver.parallel.compilation.global.limit",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
-        METASTOREPWD.varname + "," + HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname
+        METASTOREPWD.varname + "," +
+        HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname + "," +
+        METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD.varname + "," +
         // Adding the S3 credentials from Hadoop config to be hidden
-        + ",fs.s3.awsAccessKeyId"
-        + ",fs.s3.awsSecretAccessKey"
-        + ",fs.s3n.awsAccessKeyId"
-        + ",fs.s3n.awsSecretAccessKey"
-        + ",fs.s3a.access.key"
-        + ",fs.s3a.secret.key"
-        + ",fs.s3a.proxy.password"
-        + ",dfs.adls.oauth2.credential"
-        + ",fs.adl.oauth2.credential",
+        "fs.s3.awsAccessKeyId," +
+        "fs.s3.awsSecretAccessKey," +
+        "fs.s3n.awsAccessKeyId," +
+        "fs.s3n.awsSecretAccessKey," +
+        "fs.s3a.access.key," +
+        "fs.s3a.secret.key," +
+        "fs.s3a.proxy.password," +
+        "dfs.adls.oauth2.credential," +
+        "fs.adl.oauth2.credential",
         "Comma separated list of configuration options which should not be read by normal user like passwords"),
     HIVE_CONF_INTERNAL_VARIABLE_LIST("hive.conf.internal.variable.list",
         "hive.added.files.path,hive.added.jars.path,hive.added.archives.path",
