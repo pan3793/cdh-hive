@@ -73,6 +73,7 @@ import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.messaging.CreateDatabaseMessage;
+import org.apache.hadoop.hive.metastore.messaging.AlterDatabaseMessage;
 import org.apache.hadoop.hive.metastore.messaging.CreateTableMessage;
 import org.apache.hadoop.hive.metastore.messaging.DropDatabaseMessage;
 import org.apache.hadoop.hive.metastore.messaging.AlterPartitionMessage;
@@ -419,17 +420,20 @@ public class TestDbNotificationListener {
   @Test
   public void alterDatabase() throws Exception {
     String dbName = "alterdatabase";
-    Database db =
+    Database dbBefore =
         new Database(dbName, "", "file:/tmp/alterdatabase", null);
-    db.setOwnerName("me");
+    dbBefore.setOwnerName("me");
 
     // Event 1
-    msClient.createDatabase(db);
-
+    msClient.createDatabase(dbBefore);
+    // get the db for comparison below since it may include additional parameters
+    dbBefore = msClient.getDatabase(dbName);
+    Database dbAfter = dbBefore.deepCopy();
     // Event 2
-    db.setOwnerName("you");
-    db.setLocationUri("file:/tmp/alterdatabase_copy");
-    msClient.alterDatabase(dbName, db);
+    dbAfter.setOwnerName("you");
+    dbAfter.setLocationUri("file:/tmp/alterdatabase_copy");
+    msClient.alterDatabase(dbName, dbAfter);
+    dbAfter = msClient.getDatabase(dbName);
 
     // Get notifications from metastore
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
@@ -440,6 +444,12 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_ALTER_DATABASE_EVENT, event.getEventType());
     assertEquals(dbName, event.getDbName());
 
+    // Parse the message field
+    AlterDatabaseMessage alterDatabaseMessage = md.getAlterDatabaseMessage(event.getMessage());
+    assertEquals(dbName, alterDatabaseMessage.getDB());
+    assertEquals(dbBefore, alterDatabaseMessage.getDbObjBefore());
+    assertEquals(dbAfter, alterDatabaseMessage.getDbObjAfter());
+
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.ALTER_DATABASE, firstEventId + 2);
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.CREATE_DATABASE, firstEventId + 1);
@@ -448,7 +458,7 @@ public class TestDbNotificationListener {
     // a failed event should not create a new notification
     DummyRawStoreFailEvent.setEventSucceed(false);
     try {
-      msClient.alterDatabase(dbName, db);
+      msClient.alterDatabase(dbName, dbAfter);
       fail("Error: alter database should've failed");
     } catch (Exception ex) {
       // expected

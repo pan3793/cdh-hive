@@ -57,10 +57,12 @@ public class JSONAlterDatabaseMessage extends AlterDatabaseMessage {
     return timestamp;
   }
 
+  @Override
   public Database getDbObjBefore() throws Exception {
     return (Database) JSONMessageFactory.getTObj(dbObjBeforeJson, Database.class);
   }
 
+  @Override
   public Database getDbObjAfter() throws Exception {
     return (Database) JSONMessageFactory.getTObj(dbObjAfterJson, Database.class);
   }

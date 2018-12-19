@@ -39,6 +39,12 @@ public class ExtendedJSONAlterDatabaseMessage extends JSONAlterDatabaseMessage {
   @JsonProperty
   private String oldOwnerName;
 
+  /**
+   * Default constructor, needed for Jackson.
+   */
+  public ExtendedJSONAlterDatabaseMessage() {
+  }
+
   public ExtendedJSONAlterDatabaseMessage(String server, String servicePrincipal,
     Database before, Database after, Long timestamp) {
     super(server, servicePrincipal, before, after, timestamp);
