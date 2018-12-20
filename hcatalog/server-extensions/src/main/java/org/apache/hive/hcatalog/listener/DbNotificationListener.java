@@ -381,7 +381,12 @@ public class DbNotificationListener extends MetaStoreEventListener {
 
   @Override
   public void onInsert(InsertEvent insertEvent) throws MetaException {
-    // Sentry doesn't care about this one
+    NotificationEvent event = new NotificationEvent(0, now(), EventType.INSERT.toString(), msgFactory
+        .buildInsertMessage(insertEvent.getDb(), insertEvent.getTable(), insertEvent.getPartitionKeyValues(),
+            insertEvent.getFiles()).toString());
+    event.setDbName(insertEvent.getDb());
+    event.setTableName(insertEvent.getTable());
+    enqueue(event, insertEvent);
   }
 
   /**

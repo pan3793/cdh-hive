@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -81,6 +82,7 @@ import org.apache.hadoop.hive.metastore.messaging.AddPartitionMessage;
 import org.apache.hadoop.hive.metastore.messaging.AlterTableMessage;
 import org.apache.hadoop.hive.metastore.messaging.DropPartitionMessage;
 import org.apache.hadoop.hive.metastore.messaging.DropTableMessage;
+import org.apache.hadoop.hive.metastore.messaging.InsertMessage;
 import org.apache.hadoop.hive.metastore.messaging.MessageDeserializer;
 import org.apache.hadoop.hive.metastore.messaging.MessageFactory;
 import org.apache.hadoop.hive.metastore.events.AlterDatabaseEvent;
@@ -127,6 +129,7 @@ public class TestDbNotificationListener {
   private static MessageDeserializer md = null;
   private int startTime;
   private long firstEventId;
+  private final String testTempDir = Paths.get(System.getProperty("java.io.tmpdir"), "testDbNotif").toString();
 
   // The HiveConf used here is static, hence any config changed in a test should be explicitly reset to
   // default value at the end of the test so that it will not affect subsequent tests.
@@ -1113,15 +1116,17 @@ public class TestDbNotificationListener {
     assertEquals(4, rsp.getEventsSize());
   }
 
-  @Ignore("INSERT events are currently not generated")
   @Test
   public void insertTable() throws Exception {
+    String dbName = "default";
+    String tblName = "insertTable";
+    String serdeLocation = testTempDir;
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(new FieldSchema("col1", "int", "nocomment"));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
+    StorageDescriptor sd = new StorageDescriptor(cols, serdeLocation, "input", "output", false, 0,
         serde, null, null, emptyParameters);
-    Table table = new Table("insertTable", "default", "me", startTime, startTime, 0, sd, null,
+    Table table = new Table(tblName, dbName, "me", startTime, startTime, 0, sd, null,
         emptyParameters, null, null, null);
     msClient.createTable(table);
 
@@ -1130,8 +1135,8 @@ public class TestDbNotificationListener {
     data.setInsertData(insertData);
     insertData.addToFilesAdded("/warehouse/mytable/b1");
     FireEventRequest rqst = new FireEventRequest(true, data);
-    rqst.setDbName("default");
-    rqst.setTableName("insertTable");
+    rqst.setDbName(dbName);
+    rqst.setTableName(tblName);
     msClient.fireListenerEvent(rqst);
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
@@ -1143,18 +1148,19 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
     assertEquals("insertTable", event.getTableName());
-    assertTrue(event.getMessage(),
-        event.getMessage().matches("\\{\"eventType\":\"INSERT\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":" +
-        "\"insertTable\",\"timestamp\":[0-9]+,\"files\":\\[\"/warehouse/mytable/b1\"]," +
-        "\"partKeyVals\":\\{},\"partitionKeyValues\":\\{}}"));
+
+    InsertMessage insertMsg = md.getInsertMessage(event.getMessage());
+    assertEquals(dbName, insertMsg.getDB());
+    assertEquals(tblName, insertMsg.getTable());
+    // Should have files
+    Iterator<String> files = insertMsg.getFiles().iterator();
+    assertTrue(files.hasNext());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.INSERT, firstEventId + 2);
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.CREATE_TABLE, firstEventId + 1);
   }
 
-  @Ignore("INSERT PARTITION events are currently not generated")
   @Test
   public void insertPartition() throws Exception {
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
@@ -1162,7 +1168,7 @@ public class TestDbNotificationListener {
     List<FieldSchema> partCols = new ArrayList<FieldSchema>();
     partCols.add(new FieldSchema("ds", "string", ""));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
-    StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
+    StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 0,
         serde, null, null, emptyParameters);
     Table table = new Table("insertPartition", "default", "me", startTime, startTime, 0, sd,
         partCols, emptyParameters, null, null, null);
@@ -1190,12 +1196,15 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
     assertEquals("insertPartition", event.getTableName());
-    assertTrue(event.getMessage(),
-        event.getMessage().matches("\\{\"eventType\":\"INSERT\",\"server\":\"\"," +
-        "\"servicePrincipal\":\"\",\"db\":\"default\",\"table\":" +
-        "\"insertPartition\",\"timestamp\":[0-9]+," +
-        "\"files\":\\[\"/warehouse/mytable/today/b1\"],\"partKeyVals\":\\{\"ds\":\"today\"}," +
-        "\"partitionKeyValues\":\\{\"ds\":\"today\"}}"));
+
+    // Parse the message field
+    InsertMessage insertMessage = md.getInsertMessage(event.getMessage());
+    Map<String, String> partitionKeyValues = insertMessage.getPartitionKeyValues();
+    assertTrue(partitionKeyValues.containsValue("today"));
+    // Should have files
+    Iterator<String> files = insertMessage.getFiles().iterator();
+    assertTrue(files.hasNext());
+
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.INSERT, firstEventId + 3);
@@ -1258,33 +1267,33 @@ public class TestDbNotificationListener {
     assertEquals(firstEventId + 1, rsp.getEvents().get(0).getEventId());
   }
 
-  @Ignore("INSERT TABLE are currently not generated")
   @Test
   public void sqlInsertTable() throws Exception {
+    String defaultDbName = "default";
+    String tblName = "sqlins";
+    // Event 1
+    driver.run("create table " + tblName + " (c int)");
+    // Event 2 (insert)
+    driver.run("insert into table " + tblName + " values (1)");
+    // (No alter event generated as METASTORE_ALTER_NOTIFICATIONS_BASIC=true by default)
+    driver.run("alter table " + tblName + " add columns (c2 int)");
+    // Event 3
+    driver.run("drop table " + tblName);
 
-    driver.run("create table sit (c int)");
-    driver.run("insert into table sit values (1)");
-    driver.run("alter table sit add columns (c2 int)");
-    driver.run("drop table sit");
-
+    // Get notifications from metastore
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
-    // For reasons not clear to me there's an alter after the create table and one after the
-    // insert.  I think the one after the insert is a stats calculation.
-    assertEquals(6, rsp.getEventsSize());
+    assertEquals(3, rsp.getEventsSize());
     NotificationEvent event = rsp.getEvents().get(0);
     assertEquals(firstEventId + 1, event.getEventId());
-    assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
+    assertEquals(EventType.CREATE_TABLE.toString(), event.getEventType());
+
+    event = rsp.getEvents().get(1);
+    assertEquals(firstEventId + 2, event.getEventId());
+    assertEquals(EventType.INSERT.toString(), event.getEventType());
+
     event = rsp.getEvents().get(2);
     assertEquals(firstEventId + 3, event.getEventId());
-    assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    // Make sure the files are listed in the insert
-    assertTrue(event.getMessage().matches(".*\"files\":\\[\"pfile.*"));
-    event = rsp.getEvents().get(4);
-    assertEquals(firstEventId + 5, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(5);
-    assertEquals(firstEventId + 6, event.getEventId());
-    assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
+    assertEquals(EventType.DROP_TABLE.toString(), event.getEventType());
   }
 
   @Test
@@ -1296,12 +1305,15 @@ public class TestDbNotificationListener {
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
 
-    assertEquals(2, rsp.getEventsSize());
+    assertEquals(3, rsp.getEventsSize());
     NotificationEvent event = rsp.getEvents().get(0);
     assertEquals(firstEventId + 1, event.getEventId());
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
     event = rsp.getEvents().get(1);
     assertEquals(firstEventId + 2, event.getEventId());
+    assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
+    event = rsp.getEvents().get(2);
+    assertEquals(firstEventId + 3, event.getEventId());
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
   }
 
@@ -1333,22 +1345,29 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_DROP_DATABASE_EVENT, event.getEventType());
   }
 
-  @Ignore
   @Test
   public void sqlInsertPartition() throws Exception {
-
+    //create_table
     driver.run("create table sip (c int) partitioned by (ds string)");
+    //add_partition
     driver.run("insert into table sip partition (ds = 'today') values (1)");
+    //insert
     driver.run("insert into table sip partition (ds = 'today') values (2)");
+    //insert
     driver.run("insert into table sip partition (ds) values (3, 'today')");
+    //add_partition
     driver.run("alter table sip add partition (ds = 'yesterday')");
+    //insert
     driver.run("insert into table sip partition (ds = 'yesterday') values (2)");
-
+    //insert
     driver.run("insert into table sip partition (ds) values (3, 'yesterday')");
+    //add_partition
     driver.run("insert into table sip partition (ds) values (3, 'tomorrow')");
+    //drop_partition
     driver.run("alter table sip drop partition (ds = 'tomorrow')");
-
+    //add_partition
     driver.run("insert into table sip partition (ds) values (42, 'todaytwo')");
+    //insert
     driver.run("insert overwrite table sip partition(ds='todaytwo') select c from sip where 'ds'='today'");
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
@@ -1356,57 +1375,62 @@ public class TestDbNotificationListener {
     for (NotificationEvent ne : rsp.getEvents()) LOG.debug("EVENT: " + ne.getMessage());
     // For reasons not clear to me there's one or more alter partitions after add partition and
     // insert.
-    assertEquals(24, rsp.getEventsSize());
+    assertEquals(11, rsp.getEventsSize());
     NotificationEvent event = rsp.getEvents().get(1);
     assertEquals(firstEventId + 2, event.getEventId());
     assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, event.getEventType());
+
+    event = rsp.getEvents().get(2);
+    assertEquals(firstEventId + 3, event.getEventId());
+    assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
+    InsertMessage insertMsg = md.getInsertMessage(event.getMessage());
+    Iterator<String> files = insertMsg.getFiles().iterator();
+    assertTrue(files.hasNext());
+
     event = rsp.getEvents().get(3);
     assertEquals(firstEventId + 4, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    // Make sure the files are listed in the insert
-    assertTrue(event.getMessage().matches(".*\"files\":\\[\"pfile.*"));
+    insertMsg = md.getInsertMessage(event.getMessage());
+    files = insertMsg.getFiles().iterator();
+    assertTrue(files.hasNext());
+
+    event = rsp.getEvents().get(4);
+    assertEquals(firstEventId + 5, event.getEventId());
+    assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, event.getEventType());
+
+    event = rsp.getEvents().get(5);
+    assertEquals(firstEventId + 6, event.getEventId());
+    assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
+    insertMsg = md.getInsertMessage(event.getMessage());
+    files = insertMsg.getFiles().iterator();
+    assertTrue(files.hasNext());
+
     event = rsp.getEvents().get(6);
     assertEquals(firstEventId + 7, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    assertTrue(event.getMessage().matches(".*\"files\":\\[\"pfile.*"));
+    insertMsg = md.getInsertMessage(event.getMessage());
+    files = insertMsg.getFiles().iterator();
+    assertTrue(files.hasNext());
+
+    event = rsp.getEvents().get(7);
+    assertEquals(firstEventId + 8, event.getEventId());
+    assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, event.getEventType());
+
+    event = rsp.getEvents().get(8);
+    assertEquals(firstEventId + 9, event.getEventId());
+    assertEquals(HCatConstants.HCAT_DROP_PARTITION_EVENT, event.getEventType());
+
     event = rsp.getEvents().get(9);
     assertEquals(firstEventId + 10, event.getEventId());
     assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, event.getEventType());
+
     event = rsp.getEvents().get(10);
     assertEquals(firstEventId + 11, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    assertTrue(event.getMessage().matches(".*\"files\":\\[\"pfile.*"));
-    event = rsp.getEvents().get(13);
-    assertEquals(firstEventId + 14, event.getEventId());
-    assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    assertTrue(event.getMessage().matches(".*\"files\":\\[\"pfile.*"));
-    event = rsp.getEvents().get(16);
-    assertEquals(firstEventId + 17, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, event.getEventType());
-    event = rsp.getEvents().get(18);
-    assertEquals(firstEventId + 19, event.getEventId());
-    assertEquals(HCatConstants.HCAT_DROP_PARTITION_EVENT, event.getEventType());
-
-    event = rsp.getEvents().get(19);
-    assertEquals(firstEventId + 20, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ADD_PARTITION_EVENT, event.getEventType());
-    event = rsp.getEvents().get(20);
-    assertEquals(firstEventId + 21, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_PARTITION_EVENT, event.getEventType());
-    assertTrue(event.getMessage().matches(".*\"ds\":\"todaytwo\".*"));
-
-    event = rsp.getEvents().get(21);
-    assertEquals(firstEventId + 22, event.getEventId());
-    assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    assertTrue(event.getMessage().matches(".*\"files\":\\[\\].*")); // replace-overwrite introduces no new files
-    event = rsp.getEvents().get(22);
-    assertEquals(firstEventId + 23, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_PARTITION_EVENT, event.getEventType());
-    assertTrue(event.getMessage().matches(".*\"ds\":\"todaytwo\".*"));
-    event = rsp.getEvents().get(23);
-    assertEquals(firstEventId + 24, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_PARTITION_EVENT, event.getEventType());
-    assertTrue(event.getMessage().matches(".*\"ds\":\"todaytwo\".*"));
+    insertMsg = md.getInsertMessage(event.getMessage());
+    files = insertMsg.getFiles().iterator();
+    // replace-overwrite introduces no new files
+    assertTrue(event.getMessage().matches(".*\"files\":\\[\\].*"));
    }
 
   @Test
@@ -1440,30 +1464,34 @@ public class TestDbNotificationListener {
     // By default when it is true, alter notifications are created only
     // if tableName, dbName, location or owner info changes.
     conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, false);
+    try {
+      driver.run("create table tbl_test (c int)");
+      driver.run("insert into table tbl_test values (1),(2)");
+      driver.run("drop table tbl_test");
 
-    driver.run("create table tbl_test (c int)");
-    driver.run("insert into table tbl_test values (1),(2)");
-    driver.run("drop table tbl_test");
-
-    NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
-    // Event 1 = CREATE_TABLE, Event 2 = ALTER_TABLE (Marker stats), Event 3 = ALTER_TABLE (Stats update)
-    // Event 4 = DROP_TABLE
-    assertEquals(4, rsp.getEventsSize());
-    NotificationEvent event = rsp.getEvents().get(0);
-    assertEquals(firstEventId + 1, event.getEventId());
-    assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(1);
-    assertEquals(firstEventId + 2, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(2);
-    assertEquals(firstEventId + 3, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(3);
-    assertEquals(firstEventId + 4, event.getEventId());
-    assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
-
-    // TearDown : Set config back to default value
-    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, true);
+      NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
+      // Event 1 = CREATE_TABLE,Event 2 = ALTER_TABLE (Marker stats), Event 3 = INSERT,
+      // Event 4 = ALTER_TABLE (Stats update), Event 5 = DROP_TABLE
+      assertEquals(5, rsp.getEventsSize());
+      NotificationEvent event = rsp.getEvents().get(0);
+      assertEquals(firstEventId + 1, event.getEventId());
+      assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
+      event = rsp.getEvents().get(1);
+      assertEquals(firstEventId + 2, event.getEventId());
+      assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
+      event = rsp.getEvents().get(2);
+      assertEquals(firstEventId + 3, event.getEventId());
+      assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
+      event = rsp.getEvents().get(3);
+      assertEquals(firstEventId + 4, event.getEventId());
+      assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
+      event = rsp.getEvents().get(4);
+      assertEquals(firstEventId + 5, event.getEventId());
+      assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
+    } finally {
+      // TearDown : Set config back to default value
+      conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, true);
+    }
   }
 
   /**
@@ -1476,28 +1504,32 @@ public class TestDbNotificationListener {
   public void testDisableStatsNotificationsFlag() throws Exception {
     conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, false);
     conf.setBoolVar(HiveConf.ConfVars.METASTORE_DISABLE_STATS_NOTIFICATIONS, true);
+    try {
+      driver.run("create table tbl_flag_test (c int)");
+      driver.run("insert into table tbl_flag_test values (1),(2)");
+      driver.run("drop table tbl_flag_test");
 
-    driver.run("create table tbl_flag_test (c int)");
-    driver.run("insert into table tbl_flag_test values (1),(2)");
-    driver.run("drop table tbl_flag_test");
-
-    NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
-    // Event 1 = CREATE_TABLE, Event 2 = ALTER_TABLE (Marker stats), (ALTER_TABLE for Stats update is disabled here)
-    // Event 3 = DROP_TABLE
-    assertEquals(3, rsp.getEventsSize());
-    NotificationEvent event = rsp.getEvents().get(0);
-    assertEquals(firstEventId + 1, event.getEventId());
-    assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(1);
-    assertEquals(firstEventId + 2, event.getEventId());
-    assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
-    event = rsp.getEvents().get(2);
-    assertEquals(firstEventId + 3, event.getEventId());
-    assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
-
-    // TearDown : Set configs back to default values
-    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, true);
-    conf.setBoolVar(HiveConf.ConfVars.METASTORE_DISABLE_STATS_NOTIFICATIONS, false);
+      NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
+      // Event 1 = CREATE_TABLE, Event 2 = INSERT, Event 3 = ALTER_TABLE (Marker stats),
+      // (ALTER_TABLE for Stats update is disabled here) Event 4 = DROP_TABLE
+      assertEquals(4, rsp.getEventsSize());
+      NotificationEvent event = rsp.getEvents().get(0);
+      assertEquals(firstEventId + 1, event.getEventId());
+      assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
+      event = rsp.getEvents().get(1);
+      assertEquals(firstEventId + 2, event.getEventId());
+      assertEquals(HCatConstants.HCAT_ALTER_TABLE_EVENT, event.getEventType());
+      event = rsp.getEvents().get(2);
+      assertEquals(firstEventId + 3, event.getEventId());
+      assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
+      event = rsp.getEvents().get(3);
+      assertEquals(firstEventId + 4, event.getEventId());
+      assertEquals(HCatConstants.HCAT_DROP_TABLE_EVENT, event.getEventType());
+    } finally {
+      // TearDown : Set configs back to default values
+      conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, true);
+      conf.setBoolVar(HiveConf.ConfVars.METASTORE_DISABLE_STATS_NOTIFICATIONS, false);
+    }
   }
 
 }
