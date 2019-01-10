@@ -1415,6 +1415,7 @@ public class Driver implements IDriver {
         metrics.decrementCounter(MetricsConstant.WAITING_COMPILE_OPS, 1);
       }
       if (!success) {
+        errorMessage = ErrorMsg.COMPILE_LOCK_TIMED_OUT.getErrorCodedMsg();
         return ErrorMsg.COMPILE_LOCK_TIMED_OUT.getErrorCode();
       }
 
