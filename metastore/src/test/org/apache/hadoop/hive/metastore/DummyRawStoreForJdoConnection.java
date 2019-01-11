@@ -868,8 +868,8 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   }
 
   @Override
-  public List<Partition> getPartitionSpecsByFilterAndProjection(String dbName,
-      String tblName, List<String> fieldList, String paramKeys, String excludeFlag)
+  public List<Partition> getPartitionSpecsByFilterAndProjection(Table table,
+      GetPartitionsProjectionSpec projectionSpec, GetPartitionsFilterSpec filterSpec)
       throws MetaException, NoSuchObjectException {
     return Collections.emptyList();
   }

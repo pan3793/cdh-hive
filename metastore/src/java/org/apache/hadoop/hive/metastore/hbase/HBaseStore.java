@@ -22,6 +22,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.CacheLoader;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.hive.metastore.api.GetPartitionsFilterSpec;
+import org.apache.hadoop.hive.metastore.api.GetPartitionsProjectionSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -1784,9 +1786,9 @@ public class HBaseStore implements RawStore {
   }
 
   @Override
-  public List<Partition> getPartitionSpecsByFilterAndProjection(String dbName,
-      String tblName, List<String> fieldList, String includeParamKeyPattern,
-      String excludeParamKeyPattern) throws MetaException, NoSuchObjectException {
+  public List<Partition> getPartitionSpecsByFilterAndProjection(Table table,
+      GetPartitionsProjectionSpec projectionSpec, GetPartitionsFilterSpec filterSpec)
+      throws MetaException, NoSuchObjectException {
     throw new UnsupportedOperationException(
         "getPartitionSpecsByFilterAndProjection is not yet implemented");
   }

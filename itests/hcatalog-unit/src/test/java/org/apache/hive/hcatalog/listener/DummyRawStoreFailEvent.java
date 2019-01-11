@@ -37,6 +37,8 @@ import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.FileMetadataExprType;
 import org.apache.hadoop.hive.metastore.api.Function;
+import org.apache.hadoop.hive.metastore.api.GetPartitionsFilterSpec;
+import org.apache.hadoop.hive.metastore.api.GetPartitionsProjectionSpec;
 import org.apache.hadoop.hive.metastore.api.HiveObjectPrivilege;
 import org.apache.hadoop.hive.metastore.api.Index;
 import org.apache.hadoop.hive.metastore.api.InvalidInputException;
@@ -929,10 +931,9 @@ public class DummyRawStoreFailEvent implements RawStore, Configurable {
   }
 
   @Override
-  public List<Partition> getPartitionSpecsByFilterAndProjection(String dbName,
-      String tblName, List<String> fieldList, String includeParamKeyPattern,
-      String excludeParamKeyPattern) throws MetaException, NoSuchObjectException {
-    return objectStore.getPartitionSpecsByFilterAndProjection(dbName, tblName, fieldList,
-        includeParamKeyPattern, excludeParamKeyPattern);
+  public List<Partition> getPartitionSpecsByFilterAndProjection(Table table,
+      GetPartitionsProjectionSpec projectionSpec, GetPartitionsFilterSpec filterSpec)
+      throws MetaException, NoSuchObjectException {
+    return objectStore.getPartitionSpecsByFilterAndProjection(table, projectionSpec, filterSpec);
   }
 }

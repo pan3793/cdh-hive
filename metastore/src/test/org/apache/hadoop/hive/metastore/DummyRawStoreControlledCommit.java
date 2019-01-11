@@ -852,11 +852,9 @@ public class DummyRawStoreControlledCommit implements RawStore, Configurable {
   }
 
   @Override
-  public List<Partition> getPartitionSpecsByFilterAndProjection(String dbName,
-      String tblName, List<String> fieldList, String paramKeys, String excludeFlag)
+  public List<Partition> getPartitionSpecsByFilterAndProjection(Table table,
+      GetPartitionsProjectionSpec projectionSpec, GetPartitionsFilterSpec filterSpec)
       throws MetaException, NoSuchObjectException {
-    return objectStore
-        .getPartitionSpecsByFilterAndProjection(dbName, tblName, fieldList, paramKeys,
-            excludeFlag);
+    return objectStore.getPartitionSpecsByFilterAndProjection(table, projectionSpec, filterSpec);
   }
 }
