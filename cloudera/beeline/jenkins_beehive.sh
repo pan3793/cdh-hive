@@ -38,7 +38,7 @@ cd $WORKSPACE
 # make the build tools available
 . /opt/toolchain/toolchain.sh
 echo "Note: utils.sh pulled from master branch"
-curl -s -S -O --location http://github.mtv.cloudera.com/QE/infra_tools/raw/master/utils.sh
+curl -s -S -O --location https://github.mtv.cloudera.com/QE/infra_tools/raw/master/utils.sh
 CDEP_ENV=1
 # Convenience functions are imported from this file
 # It should be the same as Cluster-Setup job
@@ -48,7 +48,7 @@ if [ "$NEW_CLUSTER" = true ]
 then
   # Create the hive safety valves
   OPTIONAL_ARGS="-is=HDFS,YARN,ZOOKEEPER,MAPREDUCE,HIVE,SPARK,SPARK_ON_YARN"
-  OPTIONAL_ARGS="${OPTIONAL_ARGS} -jsonurl http://github.mtv.cloudera.com/raw/CDH/hive/cdh6.x/cloudera/beeline/hive-beeline.json"
+  OPTIONAL_ARGS="${OPTIONAL_ARGS} -jsonurl https://github.mtv.cloudera.com/raw/CDH/hive/cdh6.x/cloudera/beeline/hive-beeline.json"
 
   # Setup the cluster
   cloudcat_setup
