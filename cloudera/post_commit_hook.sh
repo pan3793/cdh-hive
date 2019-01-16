@@ -39,6 +39,6 @@ EOF
 
 rm -f execute-hive-ptest.sh
 
-curl -O http://github.mtv.cloudera.com/raw/CDH/hive-ptest-conf/master/bin/execute-hive-ptest.sh
+curl -O https://github.mtv.cloudera.com/raw/CDH/hive-ptest-conf/master/bin/execute-hive-ptest.sh
 
 exec bash ./execute-hive-ptest.sh --branch $HIVE_BRANCH
