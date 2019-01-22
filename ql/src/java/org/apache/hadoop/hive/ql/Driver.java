@@ -525,6 +525,9 @@ public class Driver implements IDriver {
 
       // Initialize the transaction manager.  This must be done before analyze is called.
       final HiveTxnManager txnManager = SessionState.get().initTxnMgr(conf);
+      if (txnManager instanceof Configurable) {
+        ((Configurable) txnManager).setConf(conf);
+      }
       // In case when user Ctrl-C twice to kill Hive CLI JVM, we want to release locks
 
       // if compile is being called multiple times, clear the old shutdownhook
