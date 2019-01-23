@@ -3327,6 +3327,10 @@ class Database {
    * @var int
    */
   public $ownerType = null;
+  /**
+   * @var int
+   */
+  public $createTime = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3368,6 +3372,10 @@ class Database {
           'var' => 'ownerType',
           'type' => TType::I32,
           ),
+        9 => array(
+          'var' => 'createTime',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -3391,6 +3399,9 @@ class Database {
       }
       if (isset($vals['ownerType'])) {
         $this->ownerType = $vals['ownerType'];
+      }
+      if (isset($vals['createTime'])) {
+        $this->createTime = $vals['createTime'];
       }
     }
   }
@@ -3477,6 +3488,13 @@ class Database {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 9:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->createTime);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -3539,6 +3557,11 @@ class Database {
     if ($this->ownerType !== null) {
       $xfer += $output->writeFieldBegin('ownerType', TType::I32, 7);
       $xfer += $output->writeI32($this->ownerType);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->createTime !== null) {
+      $xfer += $output->writeFieldBegin('createTime', TType::I32, 9);
+      $xfer += $output->writeI32($this->createTime);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

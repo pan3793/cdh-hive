@@ -9,6 +9,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.CDHMetaStoreSchemaInfo.CDHVersion;
 import org.apache.hadoop.hive.metastore.tools.HiveSchemaHelper.MetaStoreConnectionInfo;
+import org.apache.hive.common.util.HiveVersionInfo;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -121,7 +122,8 @@ public class TestCDHMetaStoreSchemaInfo {
       "1.1.0-cdh5.12.5",
       "1.1.0-cdh5.14.0",
       "2.1.1-cdh6.0.0",
-      "2.1.1-cdh6.1.2"
+      "2.1.1-cdh6.1.2",
+      "2.1.1-cdh6.2.0"
     });
     CDHMetaStoreSchemaInfo cdhSchemaInfo = createMockMetaStoreSchemaInfo(dummySchemaChangeVersions);
     //both the cdh and db versions are before the first schema change version

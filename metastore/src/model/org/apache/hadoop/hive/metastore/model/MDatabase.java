@@ -34,6 +34,7 @@ public class MDatabase {
   private Map<String, String> parameters;
   private String ownerName;
   private String ownerType;
+  private int createTime;
 
   /**
    * Default construction to keep jpox/jdo happy
@@ -124,5 +125,13 @@ public class MDatabase {
 
   public void setOwnerType(String ownerType) {
     this.ownerType = ownerType;
+  }
+
+  public int getCreateTime() {
+    return createTime;
+  }
+
+  public void setCreateTime(int createTime) {
+    this.createTime = createTime;
   }
 }

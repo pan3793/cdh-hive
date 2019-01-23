@@ -109,6 +109,7 @@ public class TestDatabases extends MetaStoreClientTest {
     Database createdDatabase = client.getDatabase(database.getName());
 
     // The createTime will be set on the server side, so the comparison should skip it
+    database.setCreateTime(createdDatabase.getCreateTime());
     Assert.assertEquals("Comparing databases", database, createdDatabase);
     Assert.assertTrue("The directory should be created", metaStore.isPathExists(
         new Path(database.getLocationUri())));
@@ -192,6 +193,33 @@ public class TestDatabases extends MetaStoreClientTest {
     Assert.assertEquals("Default database owner", "public", database.getOwnerName());
     Assert.assertEquals("Default database owner type", PrincipalType.ROLE, database.getOwnerType());
     Assert.assertNull("Default database privileges", database.getPrivileges());
+  }
+
+  @Test
+  public void testDatabaseCreateTime() throws Exception {
+    // create db without specifying createtime
+    Database testDb =
+        new DatabaseBuilder().setName("test_create_time").build();
+    client.createDatabase(testDb);
+    Database database = client.getDatabase("test_create_time");
+    Assert.assertTrue("Database create time should have been set",
+        database.getCreateTime() > 0);
+  }
+
+  @Test
+  public void testDbCreateTimeOverride() throws Exception {
+    // create db by providing a create time. Should be overridden, create time should
+    // always be set by metastore
+    Database testDb =
+        new DatabaseBuilder().setName("test_create_time")
+            .setCreateTime(1)
+            .build();
+    client.createDatabase(testDb);
+    Database database = client.getDatabase("test_create_time");
+    Assert.assertTrue("Database create time should have been set",
+        database.getCreateTime() > 0);
+    Assert.assertTrue("Database create time should have been reset by metastore",
+        database.getCreateTime() != 1);
   }
 
   @Test
@@ -483,6 +511,7 @@ public class TestDatabases extends MetaStoreClientTest {
             .setDescription("dummy description 2")
             .addParam("param_key_1", "param_value_1_2")
             .addParam("param_key_2_3", "param_value_2_3")
+            .setCreateTime(originalDatabase.getCreateTime())
             .build();
 
     client.alterDatabase(originalDatabase.getName(), newDatabase);

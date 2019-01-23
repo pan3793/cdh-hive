@@ -366,7 +366,7 @@ class MetaStoreDirectSql {
 
       String queryTextDbSelector= "select "
           + "\"DB_ID\", \"NAME\", \"DB_LOCATION_URI\", \"DESC\", "
-          + "\"OWNER_NAME\", \"OWNER_TYPE\" "
+          + "\"OWNER_NAME\", \"OWNER_TYPE\" , \"CREATE_TIME\""
           + "FROM \"DBS\" where \"NAME\" = ? ";
       Object[] params = new Object[] { dbName };
       queryDbSelector = pm.newQuery("javax.jdo.query.SQL", queryTextDbSelector);
@@ -417,6 +417,7 @@ class MetaStoreDirectSql {
       String type = MetastoreDirectSqlUtils.extractSqlString(dbline[5]);
       db.setOwnerType(
           (null == type || type.trim().isEmpty()) ? null : PrincipalType.valueOf(type));
+      db.setCreateTime(MetastoreDirectSqlUtils.extractSqlInt(dbline[6]));
       db.setParameters(MetaStoreUtils.trimMapNulls(dbParams,convertMapNullsToEmptyStrings));
       if (LOG.isDebugEnabled()){
         LOG.debug("getDatabase: directsql returning db " + db.getName()

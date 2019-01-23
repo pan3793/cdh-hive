@@ -625,6 +625,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           wh.getDefaultDatabasePath(DEFAULT_DATABASE_NAME).toString(), null);
         db.setOwnerName(PUBLIC);
         db.setOwnerType(PrincipalType.ROLE);
+        long time = System.currentTimeMillis() / 1000;
+        db.setCreateTime((int) time);
         ms.createDatabase(db);
       }
     }
@@ -858,7 +860,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       } else {
         db.setLocationUri(wh.getDnsPath(new Path(db.getLocationUri())).toString());
       }
-
+      long time = System.currentTimeMillis()/1000;
+      db.setCreateTime((int) time);
       Path dbPath = new Path(db.getLocationUri());
       boolean success = false;
       boolean madeDir = false;

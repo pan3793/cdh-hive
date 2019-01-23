@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS `DBS` (
   `NAME` varchar(128) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `OWNER_NAME` varchar(128) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `OWNER_TYPE` varchar(10) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `CREATE_TIME` INT(11),
   PRIMARY KEY (`DB_ID`),
   UNIQUE KEY `UNIQUE_DATABASE` (`NAME`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -850,7 +851,7 @@ CREATE TABLE IF NOT EXISTS `CDH_VERSION` (
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
 INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1', 'Hive release version 2.1.1');
-INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.1.0', 'Hive release version 2.1.1 for CDH 6.1.0');
+INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.2.0', 'Hive release version 2.1.1 for CDH 6.2.0');
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

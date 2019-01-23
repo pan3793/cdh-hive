@@ -3338,6 +3338,11 @@ void Database::__set_ownerType(const PrincipalType::type val) {
 __isset.ownerType = true;
 }
 
+void Database::__set_createTime(const int32_t val) {
+  this->createTime = val;
+__isset.createTime = true;
+}
+
 uint32_t Database::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -3432,6 +3437,14 @@ uint32_t Database::read(::apache::thrift::protocol::TProtocol* iprot) {
           xfer += iprot->skip(ftype);
         }
         break;
+      case 9:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->createTime);
+          this->__isset.createTime = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -3489,6 +3502,11 @@ uint32_t Database::write(::apache::thrift::protocol::TProtocol* oprot) const {
     xfer += oprot->writeI32((int32_t)this->ownerType);
     xfer += oprot->writeFieldEnd();
   }
+  if (this->__isset.createTime) {
+    xfer += oprot->writeFieldBegin("createTime", ::apache::thrift::protocol::T_I32, 9);
+    xfer += oprot->writeI32(this->createTime);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -3503,6 +3521,7 @@ void swap(Database &a, Database &b) {
   swap(a.privileges, b.privileges);
   swap(a.ownerName, b.ownerName);
   swap(a.ownerType, b.ownerType);
+  swap(a.createTime, b.createTime);
   swap(a.__isset, b.__isset);
 }
 
@@ -3514,6 +3533,7 @@ Database::Database(const Database& other131) {
   privileges = other131.privileges;
   ownerName = other131.ownerName;
   ownerType = other131.ownerType;
+  createTime = other131.createTime;
   __isset = other131.__isset;
 }
 Database& Database::operator=(const Database& other132) {
@@ -3524,6 +3544,7 @@ Database& Database::operator=(const Database& other132) {
   privileges = other132.privileges;
   ownerName = other132.ownerName;
   ownerType = other132.ownerType;
+  createTime = other132.createTime;
   __isset = other132.__isset;
   return *this;
 }
@@ -3537,6 +3558,7 @@ void Database::printTo(std::ostream& out) const {
   out << ", " << "privileges="; (__isset.privileges ? (out << to_string(privileges)) : (out << "<null>"));
   out << ", " << "ownerName="; (__isset.ownerName ? (out << to_string(ownerName)) : (out << "<null>"));
   out << ", " << "ownerType="; (__isset.ownerType ? (out << to_string(ownerType)) : (out << "<null>"));
+  out << ", " << "createTime="; (__isset.createTime ? (out << to_string(createTime)) : (out << "<null>"));
   out << ")";
 }
 

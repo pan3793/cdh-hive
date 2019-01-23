@@ -59,6 +59,10 @@
        <field name="ownerType">
         <column name="OWNER_TYPE" length="10" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
+      <field name="createTime">
+        <!-- allows null is true to keep backwards compatibility with old releases -->
+        <column name="CREATE_TIME" jdbc-type="integer" allows-null="true"/>
+      </field>
     </class>
 
     <class name="MFieldSchema" embedded-only="true" table="TYPE_FIELDS" detachable="true">

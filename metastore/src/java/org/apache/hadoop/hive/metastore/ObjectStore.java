@@ -779,6 +779,7 @@ public class ObjectStore implements RawStore, Configurable {
     mdb.setOwnerName(db.getOwnerName());
     PrincipalType ownerType = db.getOwnerType();
     mdb.setOwnerType((null == ownerType ? PrincipalType.USER.name() : ownerType.name()));
+    mdb.setCreateTime(db.getCreateTime());
     try {
       openTransaction();
       pm.makePersistent(mdb);
@@ -867,6 +868,7 @@ public class ObjectStore implements RawStore, Configurable {
     db.setOwnerName(mdb.getOwnerName());
     String type = mdb.getOwnerType();
     db.setOwnerType((null == type || type.trim().isEmpty()) ? null : PrincipalType.valueOf(type));
+    db.setCreateTime(mdb.getCreateTime());
     return db;
   }
 

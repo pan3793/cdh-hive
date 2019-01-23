@@ -274,7 +274,8 @@ CREATE TABLE DBS
     DB_LOCATION_URI nvarchar(4000) NOT NULL,
     "NAME" nvarchar(128) NULL,
     OWNER_NAME nvarchar(128) NULL,
-    OWNER_TYPE nvarchar(10) NULL
+    OWNER_TYPE nvarchar(10) NULL,
+    CREATE_TIME BIGINT
 );
 
 ALTER TABLE DBS ADD CONSTRAINT DBS_PK PRIMARY KEY (DB_ID);
@@ -1031,4 +1032,4 @@ ALTER TABLE CDH_VERSION ADD CONSTRAINT CDH_VERSION_PK PRIMARY KEY (VER_ID);
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
 INSERT INTO VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1', 'Hive release version 2.1.1');
-INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.1.0', 'Hive release version 2.1.1 for CDH 6.1.0');
+INSERT INTO CDH_VERSION (VER_ID, SCHEMA_VERSION, VERSION_COMMENT) VALUES (1, '2.1.1-cdh6.2.0', 'Hive release version 2.1.1 for CDH 6.2.0');

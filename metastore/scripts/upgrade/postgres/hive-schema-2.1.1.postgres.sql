@@ -69,7 +69,8 @@ CREATE TABLE "DBS" (
     "DB_LOCATION_URI" character varying(4000) NOT NULL,
     "NAME" character varying(128) DEFAULT NULL::character varying,
     "OWNER_NAME" character varying(128) DEFAULT NULL::character varying,
-    "OWNER_TYPE" character varying(10) DEFAULT NULL::character varying
+    "OWNER_TYPE" character varying(10) DEFAULT NULL::character varying,
+    "CREATE_TIME" bigint
 );
 
 
@@ -1488,4 +1489,4 @@ ALTER TABLE ONLY "CDH_VERSION" ADD CONSTRAINT "CDH_VERSION_pkey" PRIMARY KEY ("V
 -- Record schema version. Should be the last step in the init script
 -- -----------------------------------------------------------------
 INSERT INTO "VERSION" ("VER_ID", "SCHEMA_VERSION", "VERSION_COMMENT") VALUES (1, '2.1.1', 'Hive release version 2.1.1');
-INSERT INTO "CDH_VERSION" ("VER_ID", "SCHEMA_VERSION", "VERSION_COMMENT") VALUES (1, '2.1.1-cdh6.1.0', 'Hive release version 2.1.1 for CDH 6.1.0');
+INSERT INTO "CDH_VERSION" ("VER_ID", "SCHEMA_VERSION", "VERSION_COMMENT") VALUES (1, '2.1.1-cdh6.2.0', 'Hive release version 2.1.1 for CDH 6.2.0');

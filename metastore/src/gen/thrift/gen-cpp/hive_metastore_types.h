@@ -1688,7 +1688,7 @@ inline std::ostream& operator<<(std::ostream& out, const GrantRevokeRoleResponse
 }
 
 typedef struct _Database__isset {
-  _Database__isset() : name(false), description(false), locationUri(false), parameters(false), privileges(false), ownerName(false), ownerType(false) {}
+  _Database__isset() : name(false), description(false), locationUri(false), parameters(false), privileges(false), ownerName(false), ownerType(false), createTime(false) {}
   bool name :1;
   bool description :1;
   bool locationUri :1;
@@ -1696,6 +1696,7 @@ typedef struct _Database__isset {
   bool privileges :1;
   bool ownerName :1;
   bool ownerType :1;
+  bool createTime :1;
 } _Database__isset;
 
 class Database {
@@ -1703,7 +1704,7 @@ class Database {
 
   Database(const Database&);
   Database& operator=(const Database&);
-  Database() : name(), description(), locationUri(), ownerName(), ownerType((PrincipalType::type)0) {
+  Database() : name(), description(), locationUri(), ownerName(), ownerType((PrincipalType::type)0), createTime(0) {
   }
 
   virtual ~Database() throw();
@@ -1714,6 +1715,7 @@ class Database {
   PrincipalPrivilegeSet privileges;
   std::string ownerName;
   PrincipalType::type ownerType;
+  int32_t createTime;
 
   _Database__isset __isset;
 
@@ -1730,6 +1732,8 @@ class Database {
   void __set_ownerName(const std::string& val);
 
   void __set_ownerType(const PrincipalType::type val);
+
+  void __set_createTime(const int32_t val);
 
   bool operator == (const Database & rhs) const
   {
@@ -1752,6 +1756,10 @@ class Database {
     if (__isset.ownerType != rhs.__isset.ownerType)
       return false;
     else if (__isset.ownerType && !(ownerType == rhs.ownerType))
+      return false;
+    if (__isset.createTime != rhs.__isset.createTime)
+      return false;
+    else if (__isset.createTime && !(createTime == rhs.createTime))
       return false;
     return true;
   }
