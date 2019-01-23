@@ -706,7 +706,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         aliasIndex = index;
       }
     }
-
     ASTNode tableTree = (ASTNode) (tabref.getChild(0));
 
     String tabIdName = getUnescapedName(tableTree).toLowerCase();
