@@ -72,7 +72,6 @@ public interface MetaStoreFilterHook {
 
   /**
    * Filter given list of tables
-   * @param dbName
    * @param tableList
    * @returnList of filtered table names
    */

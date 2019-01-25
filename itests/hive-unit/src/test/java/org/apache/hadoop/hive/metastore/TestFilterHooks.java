@@ -38,11 +38,9 @@ import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.ql.DriverFactory;
 import org.apache.hadoop.hive.ql.IDriver;
 import org.apache.hadoop.hive.ql.session.SessionState;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.collect.Lists;
 
 import com.google.common.collect.Lists;
 
@@ -155,8 +153,8 @@ public class TestFilterHooks {
     }
   }
 
-  private static final String DBNAME1 = "testdb1";
-  private static final String DBNAME2 = "testdb2";
+  private static String DBNAME1 = "testdb1";
+  private static String DBNAME2 = "testdb2";
   private static final String TAB1 = "tab1";
   private static final String TAB2 = "tab2";
   private static final String INDEX1 = "idx1";
@@ -164,8 +162,8 @@ public class TestFilterHooks {
   private static HiveMetaStoreClient msc;
   private static IDriver driver;
 
-  @BeforeClass
-  public static void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     DummyMetaStoreFilterHookImpl.blockResults = false;
 
     hiveConf = new HiveConf(TestFilterHooks.class);
@@ -175,11 +173,13 @@ public class TestFilterHooks {
     hiveConf.set(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY.varname, "false");
     hiveConf.setVar(ConfVars.METASTORE_FILTER_HOOK, DummyMetaStoreFilterHookImpl.class.getName());
     UtilsForTest.setNewDerbyDbLocation(hiveConf, TestFilterHooks.class.getSimpleName());
-    MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
+  }
 
-    SessionState.start(new CliSessionState(hiveConf));
-    msc = new HiveMetaStoreClient(hiveConf);
-    driver = DriverFactory.newDriver(hiveConf);
+  private void createEnv(HiveConf conf) throws Exception {
+    MetaStoreUtils.startMetaStoreWithRetry(hiveConf);
+    SessionState.start(new CliSessionState(conf));
+    msc = new HiveMetaStoreClient(conf);
+    driver = DriverFactory.newDriver(conf);
 
     driver.run("drop database if exists " + DBNAME1  + " cascade");
     driver.run("drop database if exists " + DBNAME2  + " cascade");
@@ -193,18 +193,127 @@ public class TestFilterHooks {
     driver.run("CREATE INDEX " + INDEX1 + " on table " + TAB1 + "(id) AS 'COMPACT' WITH DEFERRED REBUILD");
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     DummyMetaStoreFilterHookImpl.blockResults = false;
     driver.run("drop database if exists " + DBNAME1  + " cascade");
     driver.run("drop database if exists " + DBNAME2  + " cascade");
     driver.close();
     driver.destroy();
-    msc.close();
+    if ( msc != null ) {
+      msc.close();
+    }
   }
 
+  /**
+   * By default, the HMS Client side filtering is enabled
+   * Disable the HMS server side filtering in order to see HMS client filtering behavior
+   * @throws Exception
+   */
   @Test
-  public void testDefaultFilter() throws Exception {
+  public void testHMSClientWithFilter() throws Exception {
+    DummyMetaStoreFilterHookImpl.blockResults = false;
+    HiveConf.setBoolVar(hiveConf, ConfVars.METASTORE_CLIENT_FILTER_ENABLED, true);
+    HiveConf.setBoolVar(hiveConf, ConfVars.METASTORE_SERVER_FILTER_ENABLED, false);
+    DBNAME1 = "db_testHMSClientWithFilter_1";
+    DBNAME2 = "db_testHMSClientWithFilter_2";
+    createEnv(hiveConf);
+
+    testDefaultFilter();
+    testDummyFilterForTables();
+    testDummyFilterForDb();
+    testDummyFilterForPartition();
+    testDummyFilterForIndex();
+  }
+
+  /**
+   * The default configuration should be disable filtering at HMS server
+   * Disable the HMS client side filtering in order to see HMS server filtering behavior
+   * @throws Exception
+   */
+  @Test
+  public void testHMSServerWithoutFilter() throws Exception {
+    DummyMetaStoreFilterHookImpl.blockResults = true;
+    HiveConf.setBoolVar(hiveConf, ConfVars.METASTORE_CLIENT_FILTER_ENABLED, false);
+    HiveConf.setBoolVar(hiveConf, ConfVars.METASTORE_SERVER_FILTER_ENABLED, false);
+    DBNAME1 = "db_testHMSServerWithoutFilter_1";
+    DBNAME2 = "db_testHMSServerWithoutFilter_2";
+    createEnv(hiveConf);
+
+    testDefaultFilter();
+  }
+
+  /**
+   * Enable the HMS server side filtering
+   * Disable the HMS client side filtering in order to see HMS server filtering behavior
+   * @throws Exception
+   */
+  @Test
+  public void testHMSServerWithFilter() throws Exception {
+    DummyMetaStoreFilterHookImpl.blockResults = true;
+    HiveConf.setBoolVar(hiveConf, ConfVars.METASTORE_CLIENT_FILTER_ENABLED, false);
+    HiveConf.setBoolVar(hiveConf, ConfVars.METASTORE_SERVER_FILTER_ENABLED, true);
+    DBNAME1 = "db_testHMSServerWithFilter_1";
+    DBNAME2 = "db_testHMSServerWithFilter_2";
+    createEnv(hiveConf);
+
+    testFilterForDb(true);
+    testFilterForTables(true);
+    testFilterForPartition();
+  }
+
+  protected void testFilterForDb(boolean filterAtServer) throws Exception {
+
+    // Skip this call when testing filter hook at HMS server because HMS server calls authorization
+    // API for getDatabase(), and does not call filter hook
+    if (!filterAtServer) {
+      try {
+        assertNotNull(msc.getDatabase(DBNAME1));
+        fail("getDatabase() should fail with blocking mode");
+      } catch (NoSuchObjectException e) {
+        // Excepted
+      }
+    }
+
+    assertEquals(0, msc.getDatabases("*").size());
+    assertEquals(0, msc.getAllDatabases().size());
+    assertEquals(0, msc.getDatabases(DBNAME1).size());
+  }
+
+  protected void testFilterForTables(boolean filterAtServer) throws Exception {
+    // Skip this call when testing filter hook at HMS server because HMS server calls authorization
+    // API for getTable(), and does not call filter hook
+    if (!filterAtServer) {
+      try {
+        msc.getTable(DBNAME1, TAB1);
+        fail("getTable() should fail with blocking mode");
+      } catch (NoSuchObjectException e) {
+        // Excepted
+      }
+    }
+
+    assertEquals(0, msc.getTables(DBNAME1, "*").size());
+    assertEquals(0, msc.getAllTables(DBNAME1).size());
+    assertEquals(0, msc.getTables(DBNAME1, TAB2).size());
+  }
+
+  protected void testFilterForPartition() throws Exception {
+    try {
+      assertNotNull(msc.getPartition(DBNAME1, TAB2, "name=value1"));
+      fail("getPartition() should fail with blocking mode");
+    } catch (NoSuchObjectException e) {
+      // Excepted
+    }
+
+    try {
+      msc.getPartitionsByNames(DBNAME1, TAB2,
+          Lists.newArrayList("name=value1")).size();
+    } catch (NoSuchObjectException e) {
+      // Excepted
+    }
+  }
+
+  private void testDefaultFilter() throws Exception {
     assertNotNull(msc.getTable(DBNAME1, TAB1));
     assertEquals(3, msc.getTables(DBNAME1, "*").size());
     assertEquals(3, msc.getAllTables(DBNAME1).size());
@@ -222,8 +331,7 @@ public class TestFilterHooks {
     assertNotNull(msc.getIndex(DBNAME1, TAB1, INDEX1));
   }
 
-  @Test
-  public void testDummyFilterForTables() throws Exception {
+  private void testDummyFilterForTables() throws Exception {
     DummyMetaStoreFilterHookImpl.blockResults = true;
     try {
       msc.getTable(DBNAME1, TAB1);
@@ -236,8 +344,7 @@ public class TestFilterHooks {
     assertEquals(0, msc.getTables(DBNAME1, TAB2).size());
   }
 
-  @Test
-  public void testDummyFilterForDb() throws Exception {
+  private void testDummyFilterForDb() throws Exception {
     DummyMetaStoreFilterHookImpl.blockResults = true;
     try {
       assertNotNull(msc.getDatabase(DBNAME1));
@@ -250,8 +357,7 @@ public class TestFilterHooks {
     assertEquals(0, msc.getDatabases(DBNAME1).size());
   }
 
-  @Test
-  public void testDummyFilterForPartition() throws Exception {
+  private void testDummyFilterForPartition() throws Exception {
     DummyMetaStoreFilterHookImpl.blockResults = true;
     try {
       assertNotNull(msc.getPartition(DBNAME1, TAB2, "name=value1"));
@@ -259,12 +365,17 @@ public class TestFilterHooks {
     } catch (NoSuchObjectException e) {
       // Excepted
     }
-    assertEquals(0, msc.getPartitionsByNames(DBNAME1, TAB2,
-        Lists.newArrayList("name=value1")).size());
+
+    try {
+      assertEquals(0, msc.getPartitionsByNames(DBNAME1, TAB2,
+          Lists.newArrayList("name=value1")).size());
+      fail("getPartition() should fail with blocking mode");
+    } catch (NoSuchObjectException e) {
+      // Excepted
+    }
   }
 
-  @Test
-  public void testDummyFilterForIndex() throws Exception {
+  private void testDummyFilterForIndex() throws Exception {
     DummyMetaStoreFilterHookImpl.blockResults = true;
     try {
       assertNotNull(msc.getIndex(DBNAME1, TAB1, INDEX1));

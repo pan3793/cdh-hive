@@ -973,6 +973,10 @@ public class HiveConf extends Configuration {
     METASTORE_FILTER_HOOK("hive.metastore.filter.hook", "org.apache.hadoop.hive.metastore.DefaultMetaStoreFilterHookImpl",
         "Metastore hook class for filtering the metadata read results. If hive.security.authorization.manager"
         + "is set to instance of HiveAuthorizerFactory, then this value is ignored."),
+    METASTORE_CLIENT_FILTER_ENABLED("hive.metastore.client.filter.enabled", true,
+        "Enable filtering the metadata read results at HMS client. Default is true."),
+    METASTORE_SERVER_FILTER_ENABLED("hive.metastore.server.filter.enabled", false,
+        "Enable filtering the metadata read results at HMS server. Default is false."),
     FIRE_EVENTS_FOR_DML("hive.metastore.dml.events", false, "If true, the metastore will be asked" +
         " to fire events for DML operations"),
     METASTORE_CLIENT_DROP_PARTITIONS_WITH_EXPRESSIONS("hive.metastore.client.drop.partitions.using.expressions", true,

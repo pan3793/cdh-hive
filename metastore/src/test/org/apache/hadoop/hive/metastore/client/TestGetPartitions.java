@@ -221,13 +221,13 @@ public class TestGetPartitions extends MetaStoreClientTest {
     client.getPartition(DB_NAME, TABLE_NAME, "yyyy=1997/mm=05/dd=16");
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testGetPartitionNullDbName() throws Exception {
     createTable3PartCols1Part(client);
     client.getPartition(null, TABLE_NAME, "yyyy=1997/mm=05/dd=16");
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testGetPartitionNullTblName() throws Exception {
     createTable3PartCols1Part(client);
     client.getPartition(DB_NAME, null, "yyyy=1997/mm=05/dd=16");
@@ -296,13 +296,13 @@ public class TestGetPartitions extends MetaStoreClientTest {
     client.getPartition(DB_NAME, TABLE_NAME, Lists.newArrayList("1997", "05", "16"));
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testGetPartitionByValuesNullDbName() throws Exception {
     createTable3PartCols1Part(client);
     client.getPartition(null, TABLE_NAME, Lists.newArrayList("1997", "05", "16"));
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testGetPartitionByValuesNullTblName() throws Exception {
     createTable3PartCols1Part(client);
     client.getPartition(DB_NAME, null, Lists.newArrayList("1997", "05", "16"));

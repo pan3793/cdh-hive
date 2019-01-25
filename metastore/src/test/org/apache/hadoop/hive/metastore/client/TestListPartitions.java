@@ -369,13 +369,13 @@ public class TestListPartitions extends MetaStoreClientTest {
     client.listPartitions(DB_NAME, TABLE_NAME, Lists.newArrayList("1999"), (short)-1);
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testListPartitionsByValuesNullDbName() throws Exception {
     createTable3PartCols1Part(client);
     client.listPartitions(null, TABLE_NAME, Lists.newArrayList("1999"), (short)-1);
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testListPartitionsByValuesNullTblName() throws Exception {
     createTable3PartCols1Part(client);
     client.listPartitions(DB_NAME, null, Lists.newArrayList("1999"), (short)-1);
@@ -525,13 +525,13 @@ public class TestListPartitions extends MetaStoreClientTest {
   }
 
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testListPartitionsWithAuthNullDbName() throws Exception {
     createTable4PartColsParts(client);
     client.listPartitionsWithAuthInfo(null, TABLE_NAME, (short)-1, "", Lists.newArrayList());
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testListPartitionsWithAuthNullTblName() throws Exception {
     createTable4PartColsParts(client);
     client.listPartitionsWithAuthInfo(DB_NAME, null, (short)-1, "", Lists.newArrayList());
@@ -951,13 +951,13 @@ public class TestListPartitions extends MetaStoreClientTest {
     client.listPartitionSpecsByFilter(DB_NAME, TABLE_NAME, "yyyy=\"2017\"", -1);
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testListPartitionSpecsByFilterNullTblName() throws Exception {
     createTable4PartColsParts(client);
     client.listPartitionSpecsByFilter(DB_NAME, null, "yyyy=\"2017\"", -1);
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NullPointerException.class)
   public void testListPartitionSpecsByFilterNullDbName() throws Exception {
     createTable4PartColsParts(client);
     client.listPartitionSpecsByFilter(null, TABLE_NAME, "yyyy=\"2017\"", -1);
@@ -1277,7 +1277,7 @@ public class TestListPartitions extends MetaStoreClientTest {
     }
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NoSuchObjectException.class)
   public void testListPartitionValuesNoDbName() throws Exception {
     createTable4PartColsParts(client);
     List<FieldSchema> partitionSchema = Lists.newArrayList(
@@ -1289,7 +1289,7 @@ public class TestListPartitions extends MetaStoreClientTest {
     client.listPartitionValues(request);
   }
 
-  @Test(expected = MetaException.class)
+  @Test(expected = NoSuchObjectException.class)
   public void testListPartitionValuesNoTblName() throws Exception {
     createTable4PartColsParts(client);
     List<FieldSchema> partitionSchema = Lists.newArrayList(
