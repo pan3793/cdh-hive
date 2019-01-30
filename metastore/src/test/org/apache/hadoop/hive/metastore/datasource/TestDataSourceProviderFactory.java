@@ -45,21 +45,8 @@ public class TestDataSourceProviderFactory {
 
     HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, "dummy");
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNull(dsp);
-  }
-
-  @Test
-  public void testCanCreateDataSourceForSpecificProp() throws SQLException {
-
-    Assert.assertFalse(
-            DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, BoneCPDataSourceProvider.BONECP);
-    conf.set(BoneCPDataSourceProvider.BONECP + ".dummy.var", "dummy");
-
-    Assert.assertTrue(
-            DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
   }
 
   @Test
@@ -67,7 +54,7 @@ public class TestDataSourceProviderFactory {
 
     conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, BoneCPDataSourceProvider.BONECP);
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
@@ -80,7 +67,7 @@ public class TestDataSourceProviderFactory {
     conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, BoneCPDataSourceProvider.BONECP);
     conf.set(BoneCPDataSourceProvider.BONECP + ".initSQL", "select 1 from dual");
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
@@ -94,7 +81,7 @@ public class TestDataSourceProviderFactory {
     conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, BoneCPDataSourceProvider.BONECP);
     conf.set(BoneCPDataSourceProvider.BONECP + ".acquireRetryDelayInMs", "599");
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
@@ -108,7 +95,7 @@ public class TestDataSourceProviderFactory {
     conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, BoneCPDataSourceProvider.BONECP);
     conf.set(BoneCPDataSourceProvider.BONECP + ".disableJMX", "true");
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
@@ -123,7 +110,7 @@ public class TestDataSourceProviderFactory {
     // This is needed to prevent the HikariDataSource from trying to connect to the DB
     conf.set(HikariCPDataSourceProvider.HIKARI + ".initializationFailTimeout", "-1");
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
@@ -137,7 +124,7 @@ public class TestDataSourceProviderFactory {
     conf.set(HikariCPDataSourceProvider.HIKARI + ".connectionInitSql", "select 1 from dual");
     conf.set(HikariCPDataSourceProvider.HIKARI + ".initializationFailTimeout", "-1");
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
@@ -152,7 +139,7 @@ public class TestDataSourceProviderFactory {
     conf.set(HikariCPDataSourceProvider.HIKARI + ".idleTimeout", "59999");
     conf.set(HikariCPDataSourceProvider.HIKARI + ".initializationFailTimeout", "-1");
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
@@ -167,7 +154,7 @@ public class TestDataSourceProviderFactory {
     conf.set(HikariCPDataSourceProvider.HIKARI + ".allowPoolSuspension", "false");
     conf.set(HikariCPDataSourceProvider.HIKARI + ".initializationFailTimeout", "-1");
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
@@ -185,64 +172,10 @@ public class TestDataSourceProviderFactory {
 
     HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, DbCPDataSourceProvider.DBCP);
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     Assert.assertNotNull(dsp);
 
     DataSource ds = dsp.create(conf);
     Assert.assertTrue(ds instanceof PoolingDataSource);
-  }
-
-  @Test
-  public void testHasProviderSpecificConfigurationBonecp() throws SQLException {
-
-    HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, BoneCPDataSourceProvider.BONECP);
-
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("dbcp.dummyConf", "dummyValue");
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("hikaricp.dummyConf", "dummyValue");
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("bonecp.dummyConf", "dummyValue");
-    Assert.assertTrue(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-  }
-
-  @Test
-  public void testHasProviderSpecificConfigurationHikaricp() throws SQLException {
-
-    HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, HikariCPDataSourceProvider.HIKARI);
-
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("dbcp.dummyConf", "dummyValue");
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("bonecp.dummyConf", "dummyValue");
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("hikaricp.dummyConf", "dummyValue");
-    Assert.assertTrue(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-  }
-
-  @Test
-  public void testHasProviderSpecificConfigurationDbcp() throws SQLException {
-
-    HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE, DbCPDataSourceProvider.DBCP);
-
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("hikaricp.dummyConf", "dummyValue");
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("bonecp.dummyConf", "dummyValue");
-    Assert.assertFalse(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
-    conf.set("dbcp.dummyConf", "dummyValue");
-    Assert.assertTrue(DataSourceProviderFactory.hasProviderSpecificConfigurations(conf));
-
   }
 }

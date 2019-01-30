@@ -108,8 +108,7 @@ public class DbCPDataSourceProvider implements DataSourceProvider {
   }
 
   @Override
-  public boolean supports(Configuration configuration) {
-    String poolingType = configuration.get(HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE.varname);
-    return DBCP.equalsIgnoreCase(poolingType);
+  public String getPoolingType() {
+    return DBCP;
   }
 }

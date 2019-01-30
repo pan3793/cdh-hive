@@ -18,11 +18,13 @@
 
 package org.apache.hadoop.hive.ql.log;
 
+import com.codahale.metrics.Timer;
 import com.google.common.collect.ImmutableMap;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.common.metrics.common.MetricsScope;
+import org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.slf4j.Logger;
@@ -225,14 +227,20 @@ public class PerfLogger {
 
   //Methods for metrics integration.  Each thread-local PerfLogger will open/close scope during each perf-log method.
   transient Map<String, MetricsScope> openScopes = new HashMap<String, MetricsScope>();
+  private transient Timer.Context totalApiCallsTimerContext = null;
 
   private void beginMetrics(String method) {
     Metrics metrics = MetricsFactory.getInstance();
     if (metrics != null) {
       MetricsScope scope = metrics.createScope(MetricsConstant.API_PREFIX + method);
       openScopes.put(method, scope);
+      if (metrics instanceof CodahaleMetrics) {
+        final Timer timer = ((CodahaleMetrics) metrics).getTimer(MetricsConstant.TOTAL_API_CALLS);
+        if (timer != null) {
+          totalApiCallsTimerContext = timer.time();
+        }
+      }
     }
-
   }
 
   private void endMetrics(String method) {
@@ -242,6 +250,9 @@ public class PerfLogger {
       if (scope != null) {
         metrics.endScope(scope);
       }
+    }
+    if (totalApiCallsTimerContext != null) {
+      totalApiCallsTimerContext.close();
     }
   }
 
@@ -256,5 +267,9 @@ public class PerfLogger {
       }
     }
     openScopes.clear();
+    if (totalApiCallsTimerContext != null) {
+      totalApiCallsTimerContext.close();
+      totalApiCallsTimerContext = null;
+    }
   }
 }

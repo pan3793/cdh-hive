@@ -17,16 +17,27 @@
  */
 package org.apache.hadoop.hive.metastore.datasource;
 
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import javax.sql.DataSource;
+
+import com.codahale.metrics.Gauge;
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.MetricSet;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.jolbox.bonecp.BoneCPDataSource;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.common.metrics.common.Metrics;
+import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
+import org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * DataSourceProvider for the BoneCP connection pool.
@@ -68,7 +79,7 @@ public class BoneCPDataSourceProvider implements DataSourceProvider {
     config.setPartitionCount(Integer.parseInt(partitionCount));
     config.setUser(user);
     config.setPassword(passwd);
-    return new BoneCPDataSource(config);
+    return initMetrics(new BoneCPDataSource(config));
   }
 
   @Override
@@ -78,10 +89,87 @@ public class BoneCPDataSourceProvider implements DataSourceProvider {
   }
 
   @Override
-  public boolean supports(Configuration configuration) {
-    String poolingType =
-        configuration.get(
-            HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE.varname);
-    return BONECP.equalsIgnoreCase(poolingType);
+  public String getPoolingType() {
+    return BONECP;
+  }
+
+  private BoneCPDataSource initMetrics(BoneCPDataSource ds) {
+    Metrics metrics = MetricsFactory.getInstance();
+    if (metrics instanceof CodahaleMetrics) {
+      final MetricRegistry registry = ((CodahaleMetrics) metrics).getMetricRegistry();
+      if (registry != null) {
+        try {
+          registry.registerAll(new BoneCPMetrics(ds));
+        } catch (final IllegalArgumentException e) {
+          LOG.info("BoneCP metrics have already been registered");
+        }
+      }
+    }
+    return ds;
+  }
+
+  private static class BoneCPMetrics implements MetricSet {
+    private BoneCPDataSource ds;
+    private Optional<String> poolName;
+
+    private BoneCPMetrics(final BoneCPDataSource ds) {
+      this.ds = ds;
+      this.poolName = Optional.ofNullable(ds.getPoolName());
+    }
+
+    private String name(final String gaugeName) {
+      return poolName.orElse("BoneCP") + ".pool." + gaugeName;
+    }
+
+    @Override
+    public Map<String, Metric> getMetrics() {
+      final Map<String, Metric> gauges = new HashMap<>();
+
+      gauges.put(name("TotalConnections"), new Gauge<Integer>() {
+        @Override
+        public Integer getValue() {
+          if (ds.getPool() != null) {
+            return ds.getPool().getStatistics().getTotalCreatedConnections();
+          } else {
+            return 0;
+          }
+        }
+      });
+
+      gauges.put(name("IdleConnections"), new Gauge<Integer>() {
+        @Override
+        public Integer getValue() {
+          if (ds.getPool() != null) {
+            return ds.getPool().getStatistics().getTotalFree();
+          } else {
+            return 0;
+          }
+        }
+      });
+
+      gauges.put(name("ActiveConnections"), new Gauge<Integer>() {
+        @Override
+        public Integer getValue() {
+          if (ds.getPool() != null) {
+            return ds.getPool().getStatistics().getTotalLeased();
+          } else {
+            return 0;
+          }
+        }
+      });
+
+      gauges.put(name("WaitTimeAvg"), new Gauge<Double>() {
+        @Override
+        public Double getValue() {
+          if (ds.getPool() != null) {
+            return ds.getPool().getStatistics().getConnectionWaitTimeAvg();
+          } else {
+            return 0.0;
+          }
+        }
+      });
+
+      return Collections.unmodifiableMap(gauges);
+    }
   }
 }

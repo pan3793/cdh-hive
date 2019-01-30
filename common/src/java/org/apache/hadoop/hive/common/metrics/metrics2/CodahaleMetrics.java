@@ -27,6 +27,8 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricSet;
+import com.codahale.metrics.Slf4jReporter;
+import com.codahale.metrics.Slf4jReporter.LoggingLevel;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.json.MetricsModule;
 import com.codahale.metrics.jvm.BufferPoolMetricSet;
@@ -362,7 +364,7 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
   }
 
   // This method is necessary to synchronize lazy-creation to the timers.
-  private Timer getTimer(String name) {
+  public Timer getTimer(String name) {
     String key = name;
     try {
       timersLock.lock();
@@ -386,7 +388,6 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
     }
   }
 
-  @VisibleForTesting
   public MetricRegistry getMetricRegistry() {
     return metricRegistry;
   }
@@ -439,6 +440,18 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
                   "General"); // Name for each metric record
           metrics2Reporter.start(reportingInterval, TimeUnit.SECONDS);
           break;
+        case SLF4J:
+          final String level = conf.get(HiveConf.ConfVars.HIVE_METRICS_SLF4J_LOG_LEVEL.varname);
+          final Slf4jReporter reporter = Slf4jReporter.forRegistry(metricRegistry)
+              .outputTo(LOGGER)
+              .convertRatesTo(TimeUnit.SECONDS)
+              .convertDurationsTo(TimeUnit.MILLISECONDS)
+              .withLoggingLevel(LoggingLevel.valueOf(level))
+              .build();
+          long logFrequencySecs = conf.getTimeVar(
+              HiveConf.ConfVars.HIVE_METRICS_SLF4J_LOG_FREQUENCY_MINS, TimeUnit.SECONDS);
+          reporter.start(logFrequencySecs, TimeUnit.SECONDS);
+          reporters.add(reporter);
       }
     }
   }

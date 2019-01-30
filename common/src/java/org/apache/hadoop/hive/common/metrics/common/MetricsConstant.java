@@ -25,6 +25,8 @@ public class MetricsConstant {
   public static final String API_PREFIX = "api_";
   public static final String ACTIVE_CALLS = "active_calls_";
 
+  public static final String TOTAL_API_CALLS = "total_api_calls";
+
   public static final String JVM_PAUSE_INFO = "jvm.pause.info-threshold";
   public static final String JVM_PAUSE_WARN = "jvm.pause.warn-threshold";
   public static final String JVM_EXTRA_SLEEP = "jvm.pause.extraSleepTime";

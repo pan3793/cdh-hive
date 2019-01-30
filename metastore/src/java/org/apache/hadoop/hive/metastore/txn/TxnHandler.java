@@ -2923,7 +2923,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
   private static synchronized void setupJdbcConnectionPool(HiveConf conf) throws SQLException {
     if (connPool != null) return;
 
-    DataSourceProvider dsp = DataSourceProviderFactory.getDataSourceProvider(conf);
+    DataSourceProvider dsp = DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf);
     if (dsp != null) {
       doRetryOnConnPool = dsp.mayReturnClosedConnection();
       connPool = dsp.create(conf);

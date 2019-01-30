@@ -605,7 +605,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       HiveConf conf = new HiveConf(ObjectStore.class);
       DataSourceProvider dsp = DataSourceProviderFactory.hasProviderSpecificConfigurations(conf) ?
-              DataSourceProviderFactory.getDataSourceProvider(conf) : null;
+          DataSourceProviderFactory.tryGetDataSourceProviderOrNull(conf) : null;
       if (dsp == null) {
         pmf = JDOHelper.getPersistenceManagerFactory(prop);
       } else {

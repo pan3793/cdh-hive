@@ -28,6 +28,7 @@ import org.apache.hadoop.hive.common.metrics.MetricsTestUtils;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.common.metrics.common.MetricsVariable;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.logging.log4j.Level;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -42,6 +43,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -204,6 +206,45 @@ public class TestCodahaleMetrics {
     json = ((CodahaleMetrics) MetricsFactory.getInstance()).dumpJson();
     MetricsTestUtils.verifyMetricsJson(json, MetricsTestUtils.METER, "meter", "2");
 
+  }
+
+  @Test
+  public void slf4jReporter() throws Exception {
+    HiveConf conf = new HiveConf();
+
+    conf.setVar(HiveConf.ConfVars.HIVE_METRICS_CLASS, CodahaleMetrics.class.getCanonicalName());
+    conf.setVar(HiveConf.ConfVars.HIVE_METRICS_REPORTER, MetricsReporting.SLF4J.name());
+    conf.setVar(HiveConf.ConfVars.HIVE_METRICS_SLF4J_LOG_FREQUENCY_MINS, "1s");
+
+    // 1. Verify the default level (INFO)
+    validateSlf4jReporter(conf, Level.INFO);
+
+    // 2. Verify an overridden level (DEBUG)
+    conf.setVar(HiveConf.ConfVars.HIVE_METRICS_SLF4J_LOG_LEVEL, "DEBUG");
+    validateSlf4jReporter(conf, Level.DEBUG);
+  }
+
+  private void validateSlf4jReporter(HiveConf conf, Level level) throws Exception {
+    MetricsFactory.close();
+    MetricsFactory.init(conf);
+    metricRegistry = ((CodahaleMetrics) MetricsFactory.getInstance()).getMetricRegistry();
+
+    int runs = 5;
+    for (int i = 0; i < runs; i++) {
+      MetricsFactory.getInstance().incrementCounter("my-counter");
+    }
+
+    long logFrequencySeconds = 1;
+    // Make sure it has a chance to dump it.
+    Thread.sleep(logFrequencySeconds * 1000 + logFrequencySeconds * 1000 / 2);
+    final List<String> capturedLogMessages = CapturingLogAppender.findLogMessagesContaining(level,"my-counter");
+    Assert.assertTrue("Not a single counter message was logged from metrics when " +
+            "configured for SLF4J metric reporting at level " + level + "!",
+        capturedLogMessages.size() > 0);
+    final String logMessage = capturedLogMessages.get(0);
+    Assert.assertTrue("Counter value is incorrect on captured log message: \"" + logMessage + "\"",
+        logMessage.contains("count=5"));
+    MetricsFactory.close();
   }
 
   /**

@@ -24,5 +24,6 @@ public enum MetricsReporting {
   JMX,
   CONSOLE,
   JSON_FILE,
-  HADOOP2
+  HADOOP2,
+  SLF4J
 }

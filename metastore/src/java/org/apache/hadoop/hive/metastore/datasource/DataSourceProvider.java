@@ -43,11 +43,11 @@ public interface DataSourceProvider {
   boolean mayReturnClosedConnection();
 
   /**
-   * @param configuration Hadoop configuration object
-   * @return factory able to create a connection pool for the implementation
-   * specified in the configuration
+   * Get the declared pooling type string. This is used to check against the constant in
+   * config options.
+   * @return The pooling type string associated with the data source.
    */
-  boolean supports(Configuration configuration);
+  String getPoolingType();
 
   /**
    * @param hdpConfig

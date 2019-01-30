@@ -27,40 +27,41 @@ import org.apache.hadoop.hive.conf.HiveConf;
  * Configuration object.
  */
 public abstract  class DataSourceProviderFactory {
-
-  private static final ImmutableList<DataSourceProvider> FACTORIES =
-      ImmutableList.<DataSourceProvider>builder().add(new HikariCPDataSourceProvider(), new BoneCPDataSourceProvider(),
-              new DbCPDataSourceProvider()).build();
+  private static final ImmutableList<DataSourceProvider> FACTORIES = ImmutableList.of(
+      new HikariCPDataSourceProvider(),
+      new BoneCPDataSourceProvider(),
+      new DbCPDataSourceProvider());
 
   /**
+   * The data source providers declare if they are supported or not based on the config.
+   * This function looks through all the data source providers and picks the first one which is
+   * supported. If no data source provider is found, returns a null.
+   *
    * @param hdpConfig hadoop configuration
-   * @return factory for the configured datanucleus.connectionPoolingType
+   * @return factory for the configured datanucleus.connectionPoolingType or null if no supported
+   *         data source providers are found.
    */
-  public static DataSourceProvider getDataSourceProvider(Configuration hdpConfig) {
-
-    for (DataSourceProvider factory : FACTORIES) {
-
-      if (factory.supports(hdpConfig)) {
-        return factory;
-      }
-    }
-    return null;
+  public static DataSourceProvider tryGetDataSourceProviderOrNull(Configuration hdpConfig) {
+    final String configuredPoolingType =
+        HiveConf.getVar(hdpConfig, HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE);
+    return Iterables.tryFind(FACTORIES, factory -> {
+      String poolingType = factory.getPoolingType();
+      return poolingType != null && poolingType.equalsIgnoreCase(configuredPoolingType);
+    }).orNull();
   }
 
   /**
    * @param hdpConfig hadoop configuration
    * @return true if the configuration contains settings specifically aimed for one
-   * of the supported conntection pool implementations.
+   * of the supported connection pool implementations.
    */
   public static boolean hasProviderSpecificConfigurations(Configuration hdpConfig) {
-
-    String poolingType = HiveConf.getVar(hdpConfig, HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE).toLowerCase();
-
+    String poolingType = HiveConf.getVar(hdpConfig,
+        HiveConf.ConfVars.METASTORE_CONNECTION_POOLING_TYPE).toLowerCase();
     return Iterables.any(hdpConfig, entry ->
     {
       String key = entry.getKey();
       return key != null && (key.startsWith(poolingType));
     });
   }
-
 }
