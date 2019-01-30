@@ -704,6 +704,8 @@ public class TestDbNotificationListener {
 
   @Test
   public void dropPartition() throws Exception {
+    String dbName = "default";
+    String tblName = "dropparttable";
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(new FieldSchema("col1", "int", "nocomment"));
     List<FieldSchema> partCols = new ArrayList<FieldSchema>();
@@ -711,7 +713,7 @@ public class TestDbNotificationListener {
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
     StorageDescriptor sd = new StorageDescriptor(cols, "file:/tmp", "input", "output", false, 0,
         serde, null, null, emptyParameters);
-    Table table = new Table("dropPartTable", "default", "me", startTime, startTime, 0, sd, partCols,
+    Table table = new Table("dropPartTable", dbName, "me", startTime, startTime, 0, sd, partCols,
         emptyParameters, null, null, null);
     msClient.createTable(table);
 
@@ -719,7 +721,7 @@ public class TestDbNotificationListener {
         startTime, startTime, sd, emptyParameters);
     msClient.add_partition(partition);
 
-    msClient.dropPartition("default", "dropparttable", Arrays.asList("today"), false);
+    msClient.dropPartition(dbName, "dropparttable", Arrays.asList("today"), false);
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
     assertEquals(3, rsp.getEventsSize());
@@ -729,9 +731,19 @@ public class TestDbNotificationListener {
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_DROP_PARTITION_EVENT, event.getEventType());
     assertEquals("default", event.getDbName());
-    assertEquals("dropparttable", event.getTableName());
-    ObjectNode jsonTree = JSONMessageFactory.getJsonTree(event);
-    assertEquals("today", jsonTree.get("partitions").get(0).get("ds").asText());
+    assertEquals(tblName, event.getTableName());
+
+    // Parse the message field
+    DropPartitionMessage dropPtnMsg = md.getDropPartitionMessage(event.getMessage());
+    assertEquals(dbName, dropPtnMsg.getDB());
+    assertEquals(tblName, dropPtnMsg.getTable());
+    Table tableObj = dropPtnMsg.getTableObj();
+    assertEquals(table.getDbName(), tableObj.getDbName());
+    assertEquals(tblName, tableObj.getTableName());
+    assertEquals(table.getOwner(), tableObj.getOwner());
+    Iterator<Map<String, String>> parts = dropPtnMsg.getPartitions().iterator();
+    assertTrue(parts.hasNext());
+    assertEquals(partition.getValues(), Lists.newArrayList(parts.next().values()));
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.DROP_PARTITION, firstEventId + 3);
@@ -824,6 +836,10 @@ public class TestDbNotificationListener {
     DropPartitionMessage dropPtnMsg = md.getDropPartitionMessage(event.getMessage());
     assertEquals(dbName, dropPtnMsg.getDB());
     assertEquals(tab1.getTableName(), dropPtnMsg.getTable());
+    Table tableObj = dropPtnMsg.getTableObj();
+    assertEquals(tab1.getDbName(), tableObj.getDbName());
+    assertEquals(tab1.getTableName(), tableObj.getTableName());
+    assertEquals(tab1.getOwner(), tableObj.getOwner());
     Iterator<Map<String, String>> parts = dropPtnMsg.getPartitions().iterator();
     assertTrue(parts.hasNext());
     assertEquals(part1.getValues(), Lists.newArrayList(parts.next().values()));

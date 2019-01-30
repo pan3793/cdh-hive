@@ -179,7 +179,7 @@ public class ExtendedJSONMessageFactory extends MessageFactory {
     PartitionBasicInfo partitionBasicInfo = getPartitionBasicInfo(table, partitions);
 
     return new ExtendedJSONDropPartitionMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL,
-        table.getDbName(), table.getTableName(), partitionBasicInfo.getPartitionList(),
+        table, partitionBasicInfo.getPartitionList(),
         now(), partitionBasicInfo.getLocations());
   }
 

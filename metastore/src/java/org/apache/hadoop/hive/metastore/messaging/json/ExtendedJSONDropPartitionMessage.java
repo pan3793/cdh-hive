@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.metastore.messaging.json;
 
 
+import org.apache.hadoop.hive.metastore.api.Table;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.List;
@@ -32,10 +33,10 @@ public class ExtendedJSONDropPartitionMessage extends JSONDropPartitionMessage {
   }
 
   public ExtendedJSONDropPartitionMessage(String server, String servicePrincipal,
-                                        String db, String table,
+                                        Table table,
                                         List<Map<String, String>> partitions,
                                         Long timestamp, List<String> locations) {
-    super(server, servicePrincipal, db, table, partitions, timestamp);
+    super(server, servicePrincipal, table, partitions, timestamp);
     this.locations = locations;
   }
 
