@@ -207,9 +207,9 @@ public class ObjectStore implements RawStore, Configurable {
   /**
    * Java system properties for configuring SSL to the database store
    */
-  private static final String TRUSTSTORE_PATH_KEY = "javax.net.ssl.trustStore";
-  private static final String TRUSTSTORE_PASSWORD_KEY = "javax.net.ssl.trustStorePassword";
-  private static final String TRUSTSTORE_TYPE_KEY = "javax.net.ssl.trustStoreType";
+  public static final String TRUSTSTORE_PATH_KEY = "javax.net.ssl.trustStore";
+  public static final String TRUSTSTORE_PASSWORD_KEY = "javax.net.ssl.trustStorePassword";
+  public static final String TRUSTSTORE_TYPE_KEY = "javax.net.ssl.trustStoreType";
 
   private static final Map<String, Class> PINCLASSMAP;
   private static final String HOSTNAME;
@@ -455,18 +455,18 @@ public class ObjectStore implements RawStore, Configurable {
    *
    * The following properties must be set correctly to enable encryption:
    *
-   * 1. hive.metastore.dbaccess.ssl.use.SSL
-   * 2. javax.jdo.option.ConnectionURL
-   * 3. hive.metastore.dbaccess.ssl.truststore.path
-   * 4. hive.metastore.dbaccess.ssl.truststore.password
-   * 5. hive.metastore.dbaccess.ssl.truststore.type
+   * 1. {@link HiveConf.ConfVars#METASTORE_DBACCESS_USE_SSL}
+   * 2. {@link HiveConf.ConfVars#METASTORECONNECTURLKEY}
+   * 3. {@link HiveConf.ConfVars#METASTORE_DBACCESS_SSL_TRUSTSTORE_PATH}
+   * 4. {@link HiveConf.ConfVars#METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD}
+   * 5. {@link HiveConf.ConfVars#METASTORE_DBACCESS_SSL_TRUSTSTORE_TYPE}
    *
    * The last three properties directly map to JSSE (Java) system properties. The Java layer will handle enabling
    * encryption once these properties are set.
    *
-   * Additionally, javax.jdo.option.ConnectionURL must have the database-specific SSL flag in the connection URL.
+   * Additionally, {@link HiveConf.ConfVars#METASTORECONNECTURLKEY} must have the database-specific SSL flag in the connection URL.
    *
-   * @param conf
+   * @param conf configuration values
    */
   private static void configureSSL(Configuration conf) {
     configureSSLDeprecated(conf); // TODO: Deprecate this method
@@ -477,25 +477,23 @@ public class ObjectStore implements RawStore, Configurable {
       try {
         LOG.info("Setting SSL properties to connect to the database store");
         String trustStorePath = HiveConf.getVar(conf, ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_PATH).trim();
-        if (trustStorePath.isEmpty()) {
-          throw new IllegalArgumentException("SSL to the database store has been enabled but " + ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_PATH.toString() + " is empty. "
-              + "Set this property to enable SSL.");
+        // Specifying a truststore path is not necessary. If one is not provided, then the default Java truststore path will be used instead.
+        if (!trustStorePath.isEmpty()) {
+          System.setProperty(TRUSTSTORE_PATH_KEY, trustStorePath);
+        } else {
+          LOG.info(ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_PATH.toString() + " has not been set. Defaulting to jssecacerts, if it exists. Otherwise, cacerts.");
         }
         // If the truststore password has been configured and redacted properly using the Hadoop CredentialProvider API, then
         // getPassword() will securely decrypt it. Otherwise, it will default to being read in from the
         // configuration file in plain text.
         String trustStorePassword = ShimLoader.getHadoopShims().getPassword(conf, ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD.varname);
-        if (trustStorePassword.isEmpty()) {
-          LOG.warn("SSL has been enabled but " + ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD.toString() + " is empty. "
-              + "It is highly recommended to set this property. An empty truststore password could compromise the integrity of the truststore file. "
-              + "Arbitrary certificates could be placed into the truststore, thereby potentially exposing an attack vector to this application."
-              + "Continuing with SSL enabled.");
+        if (trustStorePassword != null && !trustStorePassword.isEmpty()) {
+          System.setProperty(TRUSTSTORE_PASSWORD_KEY, trustStorePassword);
+        } else {
+          LOG.info(ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD.toString() + " has not been set. Using default Java truststore password.");
         }
         // Already validated in HiveConf
         String trustStoreType = HiveConf.getVar(conf, ConfVars.METASTORE_DBACCESS_SSL_TRUSTSTORE_TYPE);
-
-        System.setProperty(TRUSTSTORE_PATH_KEY, trustStorePath);
-        System.setProperty(TRUSTSTORE_PASSWORD_KEY, trustStorePassword);
         System.setProperty(TRUSTSTORE_TYPE_KEY, trustStoreType);
       } catch (IOException e) {
         throw new RuntimeException("Failed to set the SSL properties to connect to the database store.", e);
@@ -508,15 +506,15 @@ public class ObjectStore implements RawStore, Configurable {
    *
    * This method was kept for backwards compatibility purposes.
    *
-   * The property hive.metastore.dbaccess.ssl.properties was deprecated in
-   * HIVE-20992 in favor of more transparent and user-friendly properties.
+   * The property {@link HiveConf.ConfVars#METASTORE_DBACCESS_SSL_PROPS} was deprecated in HIVE-20992 in favor of more
+   * transparent and user-friendly properties.
    *
-   * Please use the hive.metastore.dbaccess.ssl.* properties instead. Setting those properties will overwrite the values
+   * Please use the HiveConf.ConfVars#METASTORE_DBACCESS_SSL_* properties instead. Setting those properties will overwrite the values
    * of the deprecated property.
    *
    * The process of completely removing this property and its functionality is being tracked in HIVE-21024.
    *
-   * @param conf Configuration
+   * @param conf configuration values
    */
   @Deprecated
   private static void configureSSLDeprecated(Configuration conf) {

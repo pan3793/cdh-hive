@@ -678,18 +678,21 @@ public class HiveConf extends Configuration {
     // If METASTORE_DBACCESS_USE_SSL is false, then all other METASTORE_DBACCESS_SSL_* properties will be ignored
     METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD("hive.metastore.dbaccess.ssl.truststore.password", "",
         "Password for the Java truststore file that is used when encrypting the connection to the database store. \n"
-            + "This directly maps to the javax.net.ssl.trustStorePassword Java system property. \n"
-            + "While Java does allow an empty truststore password, we highly recommend against this. \n"
-            + "An empty password can compromise the integrity of the truststore file."),
+            + "hive.metastore.dbaccess.ssl.use.SSL must be set to true for this property to take effect. \n"
+            + "This directly maps to the javax.net.ssl.trustStorePassword Java system property. Defaults to the default Java truststore password. \n"
+            + "It is recommended to specify the password using a credential provider so as to not expose it to discovery by other users. \n"
+            + "One way to do this is by using the Hadoop CredentialProvider API and provisioning credentials for this property. Refer to the Hadoop CredentialProvider API Guide for more details."),
     METASTORE_DBACCESS_SSL_TRUSTSTORE_PATH("hive.metastore.dbaccess.ssl.truststore.path", "",
         "Location on disk of the Java truststore file to use when encrypting the connection to the database store. \n"
-            + "This directly maps to the javax.net.ssl.trustStore Java system property. \n"
-            + "This file consists of a collection of certificates trusted by the metastore server.\n"),
+            + "This file consists of a collection of certificates trusted by the metastore server. \n"
+            + "hive.metastore.dbaccess.ssl.use.SSL must be set to true for this property to take effect. \n"
+            + "This directly maps to the javax.net.ssl.trustStore Java system property. Defaults to jssecacerts, if it exists, otherwise uses cacerts. \n"),
     METASTORE_DBACCESS_SSL_TRUSTSTORE_TYPE("hive.metastore.dbaccess.ssl.truststore.type", "jks",
         new StringSet("jceks", "jks", "dks", "pkcs11", "pkcs12"),
         "File type for the Java truststore file that is used when encrypting the connection to the database store. \n"
+            + "hive.metastore.dbaccess.ssl.use.SSL must be set to true for this property to take effect. \n"
             + "This directly maps to the javax.net.ssl.trustStoreType Java system property. \n"
-            + "Types jceks, jks, dks, pkcs11, and pkcs12 can be read from Java 8 and beyond. We default to jks. \n"),
+            + "Types jceks, jks, dks, pkcs11, and pkcs12 can be read from Java 8 and beyond. Defaults to jks."),
     METASTORE_DBACCESS_USE_SSL("hive.metastore.dbaccess.ssl.use.SSL", false,
         "Set this to true to use SSL encryption to the database store."),
 

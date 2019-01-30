@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.common.metrics.MetricsTestUtils;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
@@ -105,13 +106,6 @@ public class TestObjectStore {
   private static final String ROLE1 = "testobjectstorerole1";
   private static final String ROLE2 = "testobjectstorerole2";
 
-  /**
-   * Java system properties for configuring SSL to the database store
-   */
-  private static final String TRUSTSTORE_PATH_KEY = "javax.net.ssl.trustStore";
-  private static final String TRUSTSTORE_PASSWORD_KEY = "javax.net.ssl.trustStorePassword";
-  private static final String TRUSTSTORE_TYPE_KEY = "javax.net.ssl.trustStoreType";
-
   public static class MockPartitionExpressionProxy implements PartitionExpressionProxy {
     @Override
     public String convertExprToFilter(byte[] expr) throws MetaException {
@@ -155,9 +149,9 @@ public class TestObjectStore {
   @After
   public void tearDown() {
     // Clear the SSL system properties before each test.
-    System.clearProperty(TRUSTSTORE_PATH_KEY);
-    System.clearProperty(TRUSTSTORE_PASSWORD_KEY);
-    System.clearProperty(TRUSTSTORE_TYPE_KEY);
+    System.clearProperty(ObjectStore.TRUSTSTORE_PATH_KEY);
+    System.clearProperty(ObjectStore.TRUSTSTORE_PASSWORD_KEY);
+    System.clearProperty(ObjectStore.TRUSTSTORE_TYPE_KEY);
   }
 
   /**
@@ -905,7 +899,7 @@ public class TestObjectStore {
   }
 
   /**
-   * Test the property hive.metastore.dbaccess.use.SSL to ensure that it correctly
+   * Test the property {@link HiveConf.ConfVars#METASTORE_DBACCESS_USE_SSL} to ensure that it correctly
    * toggles whether or not the SSL configuration parameters will be set. Effectively, this is testing whether
    * SSL can be turned on/off correctly.
    */
@@ -915,31 +909,36 @@ public class TestObjectStore {
   }
 
   /**
-   * Test that the deprecated property hive.metastore.dbaccess.ssl.properties is overwritten by the hive.metastore.dbaccess.ssl.* properties
-   * if both are set.
+   * Test that the deprecated property {@link HiveConf.ConfVars#METASTORE_DBACCESS_SSL_PROPS} is overwritten by the
+   * HiveConf.ConfVars#METASTORE_DBACCESS_SSL_* properties if both are set.
    *
-   * This is not an ideal scenario. It is highly recommend to only set the hive.metastore.dbaccess.ssl.* properties.
+   * This is not an ideal scenario. It is highly recommend to only set the HiveConf.ConfVars#METASTORE_DBACCESS_SSL_* properties.
    */
   @Test
   public void testDeprecatedConfigIsOverwritten() {
     // Different from the values in the safe config
     HiveConf.setVar(conf, HiveConf.ConfVars.METASTORE_DBACCESS_SSL_PROPS,
-        TRUSTSTORE_PATH_KEY + "=/tmp/truststore.p12," + TRUSTSTORE_PASSWORD_KEY + "=pwd," + TRUSTSTORE_TYPE_KEY + "=pkcs12");
+        ObjectStore.TRUSTSTORE_PATH_KEY + "=/tmp/truststore.p12," + ObjectStore.TRUSTSTORE_PASSWORD_KEY + "=pwd," +
+            ObjectStore.TRUSTSTORE_TYPE_KEY + "=pkcs12");;
 
     // Safe config
     setAndCheckSSLProperties(true, "/tmp/truststore.jks", "password", "jks");
   }
 
   /**
-   * Ensure that an empty trustStore path in hive.metastore.dbaccess.ssl.truststore.path throws an IllegalArgumentException.
+   * Test that providing an empty truststore path and truststore password will not throw an exception.
    */
-  @Test(expected = IllegalArgumentException.class)
-  public void testEmptyTrustStorePath() {
-    setAndCheckSSLProperties(true, "", "password", "jks");
+  @Test
+  public void testEmptyTrustStoreProps() {
+    setAndCheckSSLProperties(true, "", "", "jks");
   }
 
   /**
    * Helper method for setting and checking the SSL configuration parameters.
+   * @param useSSL whether or not SSL is enabled
+   * @param trustStorePath truststore path, corresponding to the value for {@link HiveConf.ConfVars#METASTORE_DBACCESS_SSL_TRUSTSTORE_PATH}
+   * @param trustStorePassword truststore password, corresponding to the value for {@link HiveConf.ConfVars#METASTORE_DBACCESS_SSL_TRUSTSTORE_PASSWORD}
+   * @param trustStoreType truststore type, corresponding to the value for {@link HiveConf.ConfVars#METASTORE_DBACCESS_SSL_TRUSTSTORE_TYPE}
    */
   private void setAndCheckSSLProperties(boolean useSSL, String trustStorePath, String trustStorePassword, String trustStoreType) {
     HiveConf.setBoolVar(conf, HiveConf.ConfVars.METASTORE_DBACCESS_USE_SSL, useSSL);
@@ -949,16 +948,23 @@ public class TestObjectStore {
     objectStore.setConf(conf); // Calls configureSSL()
 
     // Check that the Java system values correspond to the values that we set
-    if (useSSL) {
-      Assert.assertEquals(trustStorePath, System.getProperty(TRUSTSTORE_PATH_KEY));
-      Assert.assertEquals(trustStorePassword, System.getProperty(TRUSTSTORE_PASSWORD_KEY));
-      Assert.assertEquals(trustStoreType, System.getProperty(TRUSTSTORE_TYPE_KEY));
-    } else {
-      Assert.assertNull(System.getProperty(TRUSTSTORE_PATH_KEY));
-      Assert.assertNull(System.getProperty(TRUSTSTORE_PASSWORD_KEY));
-      Assert.assertNull(System.getProperty(TRUSTSTORE_TYPE_KEY));
-    }
+    // Check that the properties were set correctly
+    checkSSLProperty(useSSL, ObjectStore.TRUSTSTORE_PATH_KEY, trustStorePath);
+    checkSSLProperty(useSSL, ObjectStore.TRUSTSTORE_PASSWORD_KEY, trustStorePassword);
+    checkSSLProperty(useSSL, ObjectStore.TRUSTSTORE_TYPE_KEY, trustStoreType);
   }
 
-
+  /**
+   * Helper method to check whether the Java system properties were set correctly in {@link ObjectStore#configureSSL(Configuration)}
+   * @param useSSL whether or not SSL is enabled
+   * @param key Java system property key
+   * @param value Java system property value indicated by the key
+   */
+  private void checkSSLProperty(boolean useSSL, String key, String value) {
+    if (useSSL && !value.isEmpty()) {
+      Assert.assertEquals(value, System.getProperty(key));
+    } else {
+      Assert.assertNull(System.getProperty(key));
+    }
+  }
 }
