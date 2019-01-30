@@ -18,6 +18,28 @@
 
 package org.apache.hadoop.hive.common.metrics.metrics2;
 
+import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.ExponentiallyDecayingReservoir;
@@ -26,6 +48,7 @@ import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricSet;
+import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.json.MetricsModule;
 import com.codahale.metrics.jvm.BufferPoolMetricSet;
@@ -40,33 +63,14 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.common.metrics.common.MetricsScope;
 import org.apache.hadoop.hive.common.metrics.common.MetricsVariable;
 import org.apache.hadoop.hive.conf.HiveConf;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.lang.management.ManagementFactory;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Codahale-backed Metrics implementation.
@@ -76,7 +80,7 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
   public static final String API_PREFIX = "api_";
   public static final String ACTIVE_CALLS = "active_calls_";
 
-  public static final Log LOGGER = LogFactory.getLog(CodahaleMetrics.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CodahaleMetrics.class);
 
   public final MetricRegistry metricRegistry = new MetricRegistry();
   private final Lock timersLock = new ReentrantLock();
@@ -318,7 +322,7 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
   }
 
   // This method is necessary to synchronize lazy-creation to the timers.
-  private Timer getTimer(String name) {
+  public Timer getTimer(String name) {
     String key = name;
     try {
       timersLock.lock();
@@ -341,7 +345,6 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
     }
   }
 
-  @VisibleForTesting
   public MetricRegistry getMetricRegistry() {
     return metricRegistry;
   }
@@ -380,6 +383,49 @@ public class CodahaleMetrics implements org.apache.hadoop.hive.common.metrics.co
           jsonFileReporter.start();
           reporters.add(jsonFileReporter);
           break;
+        case SLF4J:
+          final String level = conf.get(HiveConf.ConfVars.HIVE_METRICS_SLF4J_LOG_LEVEL.varname);
+          final Slf4jReporter reporter = Slf4jReporter.forRegistry(metricRegistry)
+              .outputTo(infoToLevelWrapper(level.toLowerCase()))
+              .convertRatesTo(TimeUnit.SECONDS)
+              .convertDurationsTo(TimeUnit.MILLISECONDS)
+              .build();
+          long logFrequencySecs = conf.getTimeVar(
+              HiveConf.ConfVars.HIVE_METRICS_SLF4J_LOG_FREQUENCY_MINS, TimeUnit.SECONDS);
+          reporter.start(logFrequencySecs, TimeUnit.SECONDS);
+          reporters.add(reporter);
+      }
+    }
+  }
+
+  private static Logger infoToLevelWrapper(final String level) {
+    return (Logger) Proxy.newProxyInstance(
+        CodahaleMetrics.class.getClassLoader(),
+        new Class[] { Logger.class },
+        new LevelChangingLoggerWrapper(CodahaleMetrics.LOGGER, level));
+  }
+
+  private static class LevelChangingLoggerWrapper implements InvocationHandler {
+    private final Logger delegate;
+    private final String level;
+
+    LevelChangingLoggerWrapper(Logger delegate, String level) {
+      this.delegate = delegate;
+      this.level = level;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      try {
+        if (method.getName().equals("info")) {
+          final Method modifiedLevelMethod = Logger.class.getDeclaredMethod(
+              level, method.getParameterTypes());
+          return modifiedLevelMethod.invoke(delegate, args);
+        } else {
+          return method.invoke(delegate, args);
+        }
+      } catch (InvocationTargetException e) {
+        throw e.getTargetException();
       }
     }
   }
