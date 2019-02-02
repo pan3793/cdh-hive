@@ -1134,15 +1134,15 @@ public class TestDbNotificationListener {
 
   @Test
   public void insertTable() throws Exception {
-    String dbName = "default";
-    String tblName = "insertTable";
+    String defaultDbName = "default";
+    String tblName = "inserttbl";
     String serdeLocation = testTempDir;
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(new FieldSchema("col1", "int", "nocomment"));
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
     StorageDescriptor sd = new StorageDescriptor(cols, serdeLocation, "input", "output", false, 0,
         serde, null, null, emptyParameters);
-    Table table = new Table(tblName, dbName, "me", startTime, startTime, 0, sd, null,
+    Table table = new Table(tblName, defaultDbName, "me", startTime, startTime, 0, sd, null,
         emptyParameters, null, null, null);
     msClient.createTable(table);
 
@@ -1151,7 +1151,7 @@ public class TestDbNotificationListener {
     data.setInsertData(insertData);
     insertData.addToFilesAdded("/warehouse/mytable/b1");
     FireEventRequest rqst = new FireEventRequest(true, data);
-    rqst.setDbName(dbName);
+    rqst.setDbName(defaultDbName);
     rqst.setTableName(tblName);
     msClient.fireListenerEvent(rqst);
 
@@ -1162,15 +1162,15 @@ public class TestDbNotificationListener {
     assertEquals(firstEventId + 2, event.getEventId());
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    assertEquals("default", event.getDbName());
-    assertEquals("insertTable", event.getTableName());
+    assertEquals(defaultDbName, event.getDbName());
+    assertEquals(tblName, event.getTableName());
+
+    // Parse the message field
+    verifyInsert(event, defaultDbName, tblName);
 
     InsertMessage insertMsg = md.getInsertMessage(event.getMessage());
-    assertEquals(dbName, insertMsg.getDB());
+    assertEquals(defaultDbName, insertMsg.getDB());
     assertEquals(tblName, insertMsg.getTable());
-    // Should have files
-    Iterator<String> files = insertMsg.getFiles().iterator();
-    assertTrue(files.hasNext());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.INSERT, firstEventId + 2);
@@ -1179,6 +1179,8 @@ public class TestDbNotificationListener {
 
   @Test
   public void insertPartition() throws Exception {
+    String defaultDbName = "default";
+    String tblName = "insertptn";
     List<FieldSchema> cols = new ArrayList<FieldSchema>();
     cols.add(new FieldSchema("col1", "int", "nocomment"));
     List<FieldSchema> partCols = new ArrayList<FieldSchema>();
@@ -1186,10 +1188,12 @@ public class TestDbNotificationListener {
     SerDeInfo serde = new SerDeInfo("serde", "seriallib", null);
     StorageDescriptor sd = new StorageDescriptor(cols, testTempDir, "input", "output", false, 0,
         serde, null, null, emptyParameters);
-    Table table = new Table("insertPartition", "default", "me", startTime, startTime, 0, sd,
+    Table table = new Table(tblName, defaultDbName, "me", startTime, startTime, 0, sd,
         partCols, emptyParameters, null, null, null);
     msClient.createTable(table);
-    Partition partition = new Partition(Arrays.asList("today"), "default", "insertPartition",
+    List<String> partKeyVals = new ArrayList<String>();
+    partKeyVals.add("today");
+    Partition partition = new Partition(partKeyVals, defaultDbName, tblName,
         startTime, startTime, sd, emptyParameters);
     msClient.add_partition(partition);
 
@@ -1198,8 +1202,8 @@ public class TestDbNotificationListener {
     data.setInsertData(insertData);
     insertData.addToFilesAdded("/warehouse/mytable/today/b1");
     FireEventRequest rqst = new FireEventRequest(true, data);
-    rqst.setDbName("default");
-    rqst.setTableName("insertPartition");
+    rqst.setDbName(defaultDbName);
+    rqst.setTableName(tblName);
     rqst.setPartitionVals(Arrays.asList("today"));
     msClient.fireListenerEvent(rqst);
 
@@ -1210,17 +1214,14 @@ public class TestDbNotificationListener {
     assertEquals(firstEventId + 3, event.getEventId());
     assertTrue(event.getEventTime() >= startTime);
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    assertEquals("default", event.getDbName());
-    assertEquals("insertPartition", event.getTableName());
+    assertEquals(defaultDbName, event.getDbName());
+    assertEquals(tblName, event.getTableName());
 
     // Parse the message field
+    verifyInsert(event, defaultDbName, tblName);
     InsertMessage insertMessage = md.getInsertMessage(event.getMessage());
-    Map<String, String> partitionKeyValues = insertMessage.getPartitionKeyValues();
-    assertTrue(partitionKeyValues.containsValue("today"));
-    // Should have files
-    Iterator<String> files = insertMessage.getFiles().iterator();
-    assertTrue(files.hasNext());
-
+    List<String> ptnValues = insertMessage.getPtnObj().getValues();
+    assertEquals(partKeyVals, ptnValues);
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.INSERT, firstEventId + 3);
@@ -1306,6 +1307,8 @@ public class TestDbNotificationListener {
     event = rsp.getEvents().get(1);
     assertEquals(firstEventId + 2, event.getEventId());
     assertEquals(EventType.INSERT.toString(), event.getEventType());
+    // Parse the message field
+    verifyInsert(event, defaultDbName, tblName);
 
     event = rsp.getEvents().get(2);
     assertEquals(firstEventId + 3, event.getEventId());
@@ -1314,10 +1317,11 @@ public class TestDbNotificationListener {
 
   @Test
   public void sqlCTAS() throws Exception {
-
-    driver.run("create table ctas_source (c int)");
-    driver.run("insert into table ctas_source values (1)");
-    driver.run("create table ctas_target as select c from ctas_source");
+    String sourceTblName = "sqlctasins1";
+    String targetTblName = "sqlctasins2";
+    driver.run("create table " + sourceTblName + " (c int)");
+    driver.run("insert into table " + sourceTblName + " values (1)");
+    driver.run("create table " + targetTblName + " as select c from " + sourceTblName);
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
 
@@ -1328,6 +1332,9 @@ public class TestDbNotificationListener {
     event = rsp.getEvents().get(1);
     assertEquals(firstEventId + 2, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
+    // Parse the message field
+    verifyInsert(event, null, sourceTblName);
+
     event = rsp.getEvents().get(2);
     assertEquals(firstEventId + 3, event.getEventId());
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
@@ -1363,28 +1370,30 @@ public class TestDbNotificationListener {
 
   @Test
   public void sqlInsertPartition() throws Exception {
+    String tblName = "sqlinsptn";
     //create_table
-    driver.run("create table sip (c int) partitioned by (ds string)");
+    driver.run("create table " + tblName + " (c int) partitioned by (ds string)");
     //add_partition
-    driver.run("insert into table sip partition (ds = 'today') values (1)");
+    driver.run("insert into table " + tblName + " partition (ds = 'today') values (1)");
     //insert
-    driver.run("insert into table sip partition (ds = 'today') values (2)");
+    driver.run("insert into table " + tblName + " partition (ds = 'today') values (2)");
     //insert
-    driver.run("insert into table sip partition (ds) values (3, 'today')");
+    driver.run("insert into table " + tblName + " partition (ds) values (3, 'today')");
     //add_partition
-    driver.run("alter table sip add partition (ds = 'yesterday')");
+    driver.run("alter table " + tblName + " add partition (ds = 'yesterday')");
     //insert
-    driver.run("insert into table sip partition (ds = 'yesterday') values (2)");
+    driver.run("insert into table " + tblName + " partition (ds = 'yesterday') values (2)");
     //insert
-    driver.run("insert into table sip partition (ds) values (3, 'yesterday')");
+    driver.run("insert into table " + tblName + " partition (ds) values (3, 'yesterday')");
     //add_partition
-    driver.run("insert into table sip partition (ds) values (3, 'tomorrow')");
+    driver.run("insert into table " + tblName + " partition (ds) values (3, 'tomorrow')");
     //drop_partition
-    driver.run("alter table sip drop partition (ds = 'tomorrow')");
+    driver.run("alter table " + tblName + " drop partition (ds = 'tomorrow')");
     //add_partition
-    driver.run("insert into table sip partition (ds) values (42, 'todaytwo')");
+    driver.run("insert into table " + tblName + " partition (ds) values (42, 'todaytwo')");
     //insert
-    driver.run("insert overwrite table sip partition(ds='todaytwo') select c from sip where 'ds'='today'");
+    driver.run("insert overwrite table " + tblName + " partition(ds='todaytwo') select c from "
+        + tblName + " where 'ds'='today'");
 
     NotificationEventResponse rsp = msClient.getNextNotification(firstEventId, 0, null);
 
@@ -1399,16 +1408,14 @@ public class TestDbNotificationListener {
     event = rsp.getEvents().get(2);
     assertEquals(firstEventId + 3, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    InsertMessage insertMsg = md.getInsertMessage(event.getMessage());
-    Iterator<String> files = insertMsg.getFiles().iterator();
-    assertTrue(files.hasNext());
+    // Parse the message field
+    verifyInsert(event, null, tblName);
 
     event = rsp.getEvents().get(3);
     assertEquals(firstEventId + 4, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    insertMsg = md.getInsertMessage(event.getMessage());
-    files = insertMsg.getFiles().iterator();
-    assertTrue(files.hasNext());
+    // Parse the message field
+    verifyInsert(event, null, tblName);
 
     event = rsp.getEvents().get(4);
     assertEquals(firstEventId + 5, event.getEventId());
@@ -1417,16 +1424,14 @@ public class TestDbNotificationListener {
     event = rsp.getEvents().get(5);
     assertEquals(firstEventId + 6, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    insertMsg = md.getInsertMessage(event.getMessage());
-    files = insertMsg.getFiles().iterator();
-    assertTrue(files.hasNext());
+    // Parse the message field
+    verifyInsert(event, null, tblName);
 
     event = rsp.getEvents().get(6);
     assertEquals(firstEventId + 7, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    insertMsg = md.getInsertMessage(event.getMessage());
-    files = insertMsg.getFiles().iterator();
-    assertTrue(files.hasNext());
+    // Parse the message field
+    verifyInsert(event, null, tblName);
 
     event = rsp.getEvents().get(7);
     assertEquals(firstEventId + 8, event.getEventId());
@@ -1443,11 +1448,25 @@ public class TestDbNotificationListener {
     event = rsp.getEvents().get(10);
     assertEquals(firstEventId + 11, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
-    insertMsg = md.getInsertMessage(event.getMessage());
-    files = insertMsg.getFiles().iterator();
     // replace-overwrite introduces no new files
     assertTrue(event.getMessage().matches(".*\"files\":\\[\\].*"));
    }
+
+  private void verifyInsert(NotificationEvent event, String dbName, String tblName) throws Exception {
+    // Parse the message field
+    InsertMessage insertMsg = md.getInsertMessage(event.getMessage());
+
+    if (dbName != null ){
+      assertEquals(dbName, insertMsg.getTableObj().getDbName());
+    }
+    if (tblName != null){
+      assertEquals(tblName, insertMsg.getTableObj().getTableName());
+    }
+    // Should have files
+    Iterator<String> files = insertMsg.getFiles().iterator();
+    assertTrue(files.hasNext());
+    assertTrue(files.hasNext());
+  }
 
   @Test
   public void cleanupNotifs() throws Exception {

@@ -15801,6 +15801,10 @@ class InsertEventRequestData {
    * @var string[]
    */
   public $filesAdded = null;
+  /**
+   * @var bool
+   */
+  public $replace = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -15813,11 +15817,18 @@ class InsertEventRequestData {
             'type' => TType::STRING,
             ),
           ),
+        2 => array(
+          'var' => 'replace',
+          'type' => TType::BOOL,
+          ),
         );
     }
     if (is_array($vals)) {
       if (isset($vals['filesAdded'])) {
         $this->filesAdded = $vals['filesAdded'];
+      }
+      if (isset($vals['replace'])) {
+        $this->replace = $vals['replace'];
       }
     }
   }
@@ -15858,6 +15869,13 @@ class InsertEventRequestData {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 2:
+          if ($ftype == TType::BOOL) {
+            $xfer += $input->readBool($this->replace);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -15886,6 +15904,11 @@ class InsertEventRequestData {
         }
         $output->writeListEnd();
       }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->replace !== null) {
+      $xfer += $output->writeFieldBegin('replace', TType::BOOL, 2);
+      $xfer += $output->writeBool($this->replace);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

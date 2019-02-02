@@ -2478,9 +2478,11 @@ end
 class InsertEventRequestData
   include ::Thrift::Struct, ::Thrift::Struct_Union
   FILESADDED = 1
+  REPLACE = 2
 
   FIELDS = {
-    FILESADDED => {:type => ::Thrift::Types::LIST, :name => 'filesAdded', :element => {:type => ::Thrift::Types::STRING}}
+    FILESADDED => {:type => ::Thrift::Types::LIST, :name => 'filesAdded', :element => {:type => ::Thrift::Types::STRING}},
+    REPLACE => {:type => ::Thrift::Types::BOOL, :name => 'replace', :optional => true}
   }
 
   def struct_fields; FIELDS; end

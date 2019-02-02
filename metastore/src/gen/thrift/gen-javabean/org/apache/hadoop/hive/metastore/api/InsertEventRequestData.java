@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("InsertEventRequestData");
 
   private static final org.apache.thrift.protocol.TField FILES_ADDED_FIELD_DESC = new org.apache.thrift.protocol.TField("filesAdded", org.apache.thrift.protocol.TType.LIST, (short)1);
+  private static final org.apache.thrift.protocol.TField REPLACE_FIELD_DESC = new org.apache.thrift.protocol.TField("replace", org.apache.thrift.protocol.TType.BOOL, (short)2);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -47,10 +48,12 @@ import org.slf4j.LoggerFactory;
   }
 
   private List<String> filesAdded; // required
+  private boolean replace; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    FILES_ADDED((short)1, "filesAdded");
+    FILES_ADDED((short)1, "filesAdded"),
+    REPLACE((short)2, "replace");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -67,6 +70,8 @@ import org.slf4j.LoggerFactory;
       switch(fieldId) {
         case 1: // FILES_ADDED
           return FILES_ADDED;
+        case 2: // REPLACE
+          return REPLACE;
         default:
           return null;
       }
@@ -107,12 +112,17 @@ import org.slf4j.LoggerFactory;
   }
 
   // isset id assignments
+  private static final int __REPLACE_ISSET_ID = 0;
+  private byte __isset_bitfield = 0;
+  private static final _Fields optionals[] = {_Fields.REPLACE};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.FILES_ADDED, new org.apache.thrift.meta_data.FieldMetaData("filesAdded", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
+    tmpMap.put(_Fields.REPLACE, new org.apache.thrift.meta_data.FieldMetaData("replace", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(InsertEventRequestData.class, metaDataMap);
   }
@@ -131,10 +141,12 @@ import org.slf4j.LoggerFactory;
    * Performs a deep copy on <i>other</i>.
    */
   public InsertEventRequestData(InsertEventRequestData other) {
+    __isset_bitfield = other.__isset_bitfield;
     if (other.isSetFilesAdded()) {
       List<String> __this__filesAdded = new ArrayList<String>(other.filesAdded);
       this.filesAdded = __this__filesAdded;
     }
+    this.replace = other.replace;
   }
 
   public InsertEventRequestData deepCopy() {
@@ -144,6 +156,8 @@ import org.slf4j.LoggerFactory;
   @Override
   public void clear() {
     this.filesAdded = null;
+    setReplaceIsSet(false);
+    this.replace = false;
   }
 
   public int getFilesAddedSize() {
@@ -184,6 +198,28 @@ import org.slf4j.LoggerFactory;
     }
   }
 
+  public boolean isReplace() {
+    return this.replace;
+  }
+
+  public void setReplace(boolean replace) {
+    this.replace = replace;
+    setReplaceIsSet(true);
+  }
+
+  public void unsetReplace() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __REPLACE_ISSET_ID);
+  }
+
+  /** Returns true if field replace is set (has been assigned a value) and false otherwise */
+  public boolean isSetReplace() {
+    return EncodingUtils.testBit(__isset_bitfield, __REPLACE_ISSET_ID);
+  }
+
+  public void setReplaceIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __REPLACE_ISSET_ID, value);
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case FILES_ADDED:
@@ -194,6 +230,14 @@ import org.slf4j.LoggerFactory;
       }
       break;
 
+    case REPLACE:
+      if (value == null) {
+        unsetReplace();
+      } else {
+        setReplace((Boolean)value);
+      }
+      break;
+
     }
   }
 
@@ -201,6 +245,9 @@ import org.slf4j.LoggerFactory;
     switch (field) {
     case FILES_ADDED:
       return getFilesAdded();
+
+    case REPLACE:
+      return isReplace();
 
     }
     throw new IllegalStateException();
@@ -215,6 +262,8 @@ import org.slf4j.LoggerFactory;
     switch (field) {
     case FILES_ADDED:
       return isSetFilesAdded();
+    case REPLACE:
+      return isSetReplace();
     }
     throw new IllegalStateException();
   }
@@ -241,6 +290,15 @@ import org.slf4j.LoggerFactory;
         return false;
     }
 
+    boolean this_present_replace = true && this.isSetReplace();
+    boolean that_present_replace = true && that.isSetReplace();
+    if (this_present_replace || that_present_replace) {
+      if (!(this_present_replace && that_present_replace))
+        return false;
+      if (this.replace != that.replace)
+        return false;
+    }
+
     return true;
   }
 
@@ -252,6 +310,11 @@ import org.slf4j.LoggerFactory;
     list.add(present_filesAdded);
     if (present_filesAdded)
       list.add(filesAdded);
+
+    boolean present_replace = true && (isSetReplace());
+    list.add(present_replace);
+    if (present_replace)
+      list.add(replace);
 
     return list.hashCode();
   }
@@ -270,6 +333,16 @@ import org.slf4j.LoggerFactory;
     }
     if (isSetFilesAdded()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.filesAdded, other.filesAdded);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReplace()).compareTo(other.isSetReplace());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReplace()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.replace, other.replace);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -301,6 +374,12 @@ import org.slf4j.LoggerFactory;
       sb.append(this.filesAdded);
     }
     first = false;
+    if (isSetReplace()) {
+      if (!first) sb.append(", ");
+      sb.append("replace:");
+      sb.append(this.replace);
+      first = false;
+    }
     sb.append(")");
     return sb.toString();
   }
@@ -324,6 +403,8 @@ import org.slf4j.LoggerFactory;
 
   private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
+      // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+      __isset_bitfield = 0;
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {
       throw new java.io.IOException(te);
@@ -366,6 +447,14 @@ import org.slf4j.LoggerFactory;
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 2: // REPLACE
+            if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
+              struct.replace = iprot.readBool();
+              struct.setReplaceIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -389,6 +478,11 @@ import org.slf4j.LoggerFactory;
           }
           oprot.writeListEnd();
         }
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetReplace()) {
+        oprot.writeFieldBegin(REPLACE_FIELD_DESC);
+        oprot.writeBool(struct.replace);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -415,6 +509,14 @@ import org.slf4j.LoggerFactory;
           oprot.writeString(_iter562);
         }
       }
+      BitSet optionals = new BitSet();
+      if (struct.isSetReplace()) {
+        optionals.set(0);
+      }
+      oprot.writeBitSet(optionals, 1);
+      if (struct.isSetReplace()) {
+        oprot.writeBool(struct.replace);
+      }
     }
 
     @Override
@@ -431,6 +533,11 @@ import org.slf4j.LoggerFactory;
         }
       }
       struct.setFilesAddedIsSet(true);
+      BitSet incoming = iprot.readBitSet(1);
+      if (incoming.get(0)) {
+        struct.replace = iprot.readBool();
+        struct.setReplaceIsSet(true);
+      }
     }
   }
 

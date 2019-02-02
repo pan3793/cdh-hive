@@ -381,11 +381,12 @@ public class DbNotificationListener extends MetaStoreEventListener {
 
   @Override
   public void onInsert(InsertEvent insertEvent) throws MetaException {
+    Table tableObj = insertEvent.getTableObj();
     NotificationEvent event = new NotificationEvent(0, now(), EventType.INSERT.toString(), msgFactory
-        .buildInsertMessage(insertEvent.getDb(), insertEvent.getTable(), insertEvent.getPartitionKeyValues(),
+        .buildInsertMessage(tableObj, insertEvent.getPartitionObj(), insertEvent.isReplace(),
             insertEvent.getFiles()).toString());
-    event.setDbName(insertEvent.getDb());
-    event.setTableName(insertEvent.getTable());
+    event.setDbName(tableObj.getDbName());
+    event.setTableName(tableObj.getTableName());
     enqueue(event, insertEvent);
   }
 

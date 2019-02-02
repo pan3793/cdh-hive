@@ -6731,9 +6731,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     public FireEventResponse fire_listener_event(FireEventRequest rqst) throws TException {
       switch (rqst.getData().getSetField()) {
         case INSERT_DATA:
-          InsertEvent event = new InsertEvent(rqst.getDbName(), rqst.getTableName(),
-              rqst.getPartitionVals(), rqst.getData().getInsertData().getFilesAdded(),
-              rqst.isSuccessful(), this);
+          InsertEvent event =
+              new InsertEvent(rqst.getDbName(), rqst.getTableName(), rqst.getPartitionVals(),
+                  rqst.getData().getInsertData(), rqst.isSuccessful(), this);
           /*
            * The transactional listener response will be set already on the event, so there is not need
            * to pass the response to the non-transactional listener.

@@ -225,12 +225,12 @@ public class ExtendedJSONMessageFactory extends MessageFactory {
   }
 
   @Override
-  public InsertMessage buildInsertMessage(String db, String table, Map<String,String> partKeyVals,
-      List<String> files) {
+  public InsertMessage buildInsertMessage(Table tableObj, Partition partObj,
+      boolean replace, List<String> files) {
     // Sentry would be not be interested in InsertMessage as these are generated when is data is
     // added inserted. This method is implemented for completeness. This is reason why, new sentry
     // JSON class is not defined for InsertMessage.
-    return new JSONInsertMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, db, table, partKeyVals,
+    return new JSONInsertMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, tableObj, partObj, replace,
         files, now());
   }
 

@@ -6472,23 +6472,36 @@ inline std::ostream& operator<<(std::ostream& out, const CurrentNotificationEven
   return out;
 }
 
+typedef struct _InsertEventRequestData__isset {
+  _InsertEventRequestData__isset() : replace(false) {}
+  bool replace :1;
+} _InsertEventRequestData__isset;
 
 class InsertEventRequestData {
  public:
 
   InsertEventRequestData(const InsertEventRequestData&);
   InsertEventRequestData& operator=(const InsertEventRequestData&);
-  InsertEventRequestData() {
+  InsertEventRequestData() : replace(0) {
   }
 
   virtual ~InsertEventRequestData() throw();
   std::vector<std::string>  filesAdded;
+  bool replace;
+
+  _InsertEventRequestData__isset __isset;
 
   void __set_filesAdded(const std::vector<std::string> & val);
+
+  void __set_replace(const bool val);
 
   bool operator == (const InsertEventRequestData & rhs) const
   {
     if (!(filesAdded == rhs.filesAdded))
+      return false;
+    if (__isset.replace != rhs.__isset.replace)
+      return false;
+    else if (__isset.replace && !(replace == rhs.replace))
       return false;
     return true;
   }

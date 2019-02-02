@@ -805,7 +805,8 @@ struct CurrentNotificationEventId {
 }
 
 struct InsertEventRequestData {
-    1: required list<string> filesAdded
+    1: required list<string> filesAdded,
+    2: optional bool replace
 }
 
 union FireEventRequestData {

@@ -11015,15 +11015,18 @@ class InsertEventRequestData:
   """
   Attributes:
    - filesAdded
+   - replace
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.LIST, 'filesAdded', (TType.STRING,None), None, ), # 1
+    (2, TType.BOOL, 'replace', None, None, ), # 2
   )
 
-  def __init__(self, filesAdded=None,):
+  def __init__(self, filesAdded=None, replace=None,):
     self.filesAdded = filesAdded
+    self.replace = replace
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -11044,6 +11047,11 @@ class InsertEventRequestData:
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.BOOL:
+          self.replace = iprot.readBool()
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -11061,6 +11069,10 @@ class InsertEventRequestData:
         oprot.writeString(iter498)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
+    if self.replace is not None:
+      oprot.writeFieldBegin('replace', TType.BOOL, 2)
+      oprot.writeBool(self.replace)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -11073,6 +11085,7 @@ class InsertEventRequestData:
   def __hash__(self):
     value = 17
     value = (value * 31) ^ hash(self.filesAdded)
+    value = (value * 31) ^ hash(self.replace)
     return value
 
   def __repr__(self):

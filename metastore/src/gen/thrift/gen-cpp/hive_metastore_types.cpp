@@ -15916,6 +15916,11 @@ void InsertEventRequestData::__set_filesAdded(const std::vector<std::string> & v
   this->filesAdded = val;
 }
 
+void InsertEventRequestData::__set_replace(const bool val) {
+  this->replace = val;
+__isset.replace = true;
+}
+
 uint32_t InsertEventRequestData::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -15958,6 +15963,14 @@ uint32_t InsertEventRequestData::read(::apache::thrift::protocol::TProtocol* ipr
           xfer += iprot->skip(ftype);
         }
         break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->replace);
+          this->__isset.replace = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -15989,6 +16002,11 @@ uint32_t InsertEventRequestData::write(::apache::thrift::protocol::TProtocol* op
   }
   xfer += oprot->writeFieldEnd();
 
+  if (this->__isset.replace) {
+    xfer += oprot->writeFieldBegin("replace", ::apache::thrift::protocol::T_BOOL, 2);
+    xfer += oprot->writeBool(this->replace);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -15997,19 +16015,26 @@ uint32_t InsertEventRequestData::write(::apache::thrift::protocol::TProtocol* op
 void swap(InsertEventRequestData &a, InsertEventRequestData &b) {
   using ::std::swap;
   swap(a.filesAdded, b.filesAdded);
+  swap(a.replace, b.replace);
+  swap(a.__isset, b.__isset);
 }
 
 InsertEventRequestData::InsertEventRequestData(const InsertEventRequestData& other656) {
   filesAdded = other656.filesAdded;
+  replace = other656.replace;
+  __isset = other656.__isset;
 }
 InsertEventRequestData& InsertEventRequestData::operator=(const InsertEventRequestData& other657) {
   filesAdded = other657.filesAdded;
+  replace = other657.replace;
+  __isset = other657.__isset;
   return *this;
 }
 void InsertEventRequestData::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "InsertEventRequestData(";
   out << "filesAdded=" << to_string(filesAdded);
+  out << ", " << "replace="; (__isset.replace ? (out << to_string(replace)) : (out << "<null>"));
   out << ")";
 }
 

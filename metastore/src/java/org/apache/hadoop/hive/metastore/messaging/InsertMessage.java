@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,8 +19,10 @@
 
 package org.apache.hadoop.hive.metastore.messaging;
 
+import org.apache.hadoop.hive.metastore.api.Partition;
+import org.apache.hadoop.hive.metastore.api.Table;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * HCat message sent when an insert is done to a table or partition.
@@ -38,17 +40,30 @@ public abstract class InsertMessage extends EventMessage {
   public abstract String getTable();
 
   /**
-   * Get the map of partition keyvalues.  Will be null if this insert is to a table and not a
-   * partition.
-   * @return Map of partition keyvalues, or null.
+   * Getter for the replace flag being insert into/overwrite
+   * @return Replace flag to represent INSERT INTO or INSERT OVERWRITE (Boolean).
    */
-  public abstract Map<String,String> getPartitionKeyValues();
+  public abstract boolean isReplace();
 
   /**
    * Get the list of files created as a result of this DML operation.  May be null.
    * @return List of new files, or null.
    */
   public abstract List<String> getFiles();
+
+  /**
+   * Get the table object associated with the insert
+   *
+   * @return The Json format of Table object
+   */
+  public abstract Table getTableObj() throws Exception;
+
+  /**
+   * Get the partition object associated with the insert
+   *
+   * @return The Json format of Partition object if the table is partitioned else return null.
+   */
+  public abstract Partition getPtnObj() throws Exception;
 
   @Override
   public EventMessage checkValid() {
