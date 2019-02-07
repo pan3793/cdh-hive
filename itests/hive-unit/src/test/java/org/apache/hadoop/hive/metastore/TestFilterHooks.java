@@ -21,9 +21,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.hadoop.hive.UtilsForTest;
 import org.apache.hadoop.hive.cli.CliSessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -41,8 +41,6 @@ import org.apache.hadoop.hive.ql.session.SessionState;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.collect.Lists;
 
 public class TestFilterHooks {
 
@@ -259,7 +257,7 @@ public class TestFilterHooks {
 
     testFilterForDb(true);
     testFilterForTables(true);
-    testFilterForPartition();
+    testFilterForPartition(true);
   }
 
   protected void testFilterForDb(boolean filterAtServer) throws Exception {
@@ -297,7 +295,7 @@ public class TestFilterHooks {
     assertEquals(0, msc.getTables(DBNAME1, TAB2).size());
   }
 
-  protected void testFilterForPartition() throws Exception {
+  protected void testFilterForPartition(boolean filterAtServer) throws Exception {
     try {
       assertNotNull(msc.getPartition(DBNAME1, TAB2, "name=value1"));
       fail("getPartition() should fail with blocking mode");
@@ -305,12 +303,23 @@ public class TestFilterHooks {
       // Excepted
     }
 
-    try {
-      msc.getPartitionsByNames(DBNAME1, TAB2,
-          Lists.newArrayList("name=value1")).size();
-    } catch (NoSuchObjectException e) {
-      // Excepted
+    if (filterAtServer) {
+      // at HMS server, the table of the partitions should be filtered out and result in
+      // NoSuchObjectException
+      try {
+        msc.getPartitionsByNames(DBNAME1, TAB2,
+            Lists.newArrayList("name=value1")).size();
+        fail("getPartitionsByNames() should fail with blocking mode at server side");
+      } catch (NoSuchObjectException e) {
+        // Excepted
+      }
+    } else {
+      // at HMS client, we cannot filter the table of the partitions due to
+      // HIVE-21227: HIVE-20776 causes view access regression
+      assertEquals(0, msc.getPartitionsByNames(DBNAME1, TAB2,
+          Lists.newArrayList("name=value1")).size());
     }
+
   }
 
   private void testDefaultFilter() throws Exception {
@@ -359,20 +368,7 @@ public class TestFilterHooks {
 
   private void testDummyFilterForPartition() throws Exception {
     DummyMetaStoreFilterHookImpl.blockResults = true;
-    try {
-      assertNotNull(msc.getPartition(DBNAME1, TAB2, "name=value1"));
-      fail("getPartition() should fail with blocking mode");
-    } catch (NoSuchObjectException e) {
-      // Excepted
-    }
-
-    try {
-      assertEquals(0, msc.getPartitionsByNames(DBNAME1, TAB2,
-          Lists.newArrayList("name=value1")).size());
-      fail("getPartition() should fail with blocking mode");
-    } catch (NoSuchObjectException e) {
-      // Excepted
-    }
+    testFilterForPartition(false);
   }
 
   private void testDummyFilterForIndex() throws Exception {

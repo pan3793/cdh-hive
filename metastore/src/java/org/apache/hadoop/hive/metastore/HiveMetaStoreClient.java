@@ -1656,8 +1656,11 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   private void checkDbAndTableFilters(final String dbName, final String tblName)
       throws NoSuchObjectException, MetaException {
 
+    // HIVE-20776 causes view access regression
+    // Therefore, do not do filtering here. Call following function only to check
+    // if dbName and tblName is valid
     FilterUtils.checkDbAndTableFilters(
-        isClientFilterEnabled, filterHook, dbName, tblName);
+        false, filterHook, dbName, tblName);
   }
 
   private List<TableMeta> filterNames(List<TableMeta> metas) throws MetaException {
