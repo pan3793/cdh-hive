@@ -22,13 +22,13 @@
   <parent>
     <groupId>org.apache.hive</groupId>
     <artifactId>hive</artifactId>
-    <version>2.1.1-cdh6.x-SNAPSHOT</version>
+    <version>2.1.1-cdh6.2.x-SNAPSHOT</version>
   </parent>
 
   <artifactId>hive-spark-client</artifactId>
   <packaging>jar</packaging>
   <name>Hive Spark Remote Client</name>
-  <version>2.1.1-cdh6.x-SNAPSHOT</version>
+  <version>2.1.1-cdh6.2.x-SNAPSHOT</version>
 
   <properties>
     <hive.path.to.root>..</hive.path.to.root>
