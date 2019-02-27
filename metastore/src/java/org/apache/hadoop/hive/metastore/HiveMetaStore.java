@@ -4168,6 +4168,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       try {
         try {
           tbl = get_table_core(db, base_table_name);
+          firePreEvent(new PreReadTableEvent(tbl, this));
         } catch (NoSuchObjectException e) {
           throw new UnknownTableException(e.getMessage());
         }
