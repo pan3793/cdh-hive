@@ -865,7 +865,7 @@ public class HiveConf extends Configuration {
         "org.apache.hadoop.hive.metastore.messaging.json.ExtendedJSONMessageFactory",
         "Factory class for making encoding and decoding messages in the events generated."),
     EVENT_NOTIFICATION_PARAMETERS_EXCLUDE_PATTERNS(
-        "hive.metastore.notification.parameters.exclude.patterns", "^impala",
+        "hive.metastore.notification.parameters.exclude.patterns", "",
         "List of comma-separated regexes that are used to reduced the size of HMS Notification messages."
             + " The regexes are matched against each key of parameters map in Table or Partition object"
             + "present in HMS Notification. Any key-value pair whose key is matched with any regex will"
