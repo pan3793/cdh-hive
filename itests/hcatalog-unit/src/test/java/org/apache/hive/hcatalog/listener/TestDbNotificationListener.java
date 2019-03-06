@@ -1323,6 +1323,9 @@ public class TestDbNotificationListener {
 
   @Test
   public void sqlCTAS() throws Exception {
+    // Force only basic stats notifications. Otherwise, additional ALTER notifications will be generated.
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, true);
+
     String sourceTblName = "sqlctasins1";
     String targetTblName = "sqlctasins2";
     driver.run("create table " + sourceTblName + " (c int)");
@@ -1344,6 +1347,9 @@ public class TestDbNotificationListener {
     event = rsp.getEvents().get(2);
     assertEquals(firstEventId + 3, event.getEventId());
     assertEquals(HCatConstants.HCAT_CREATE_TABLE_EVENT, event.getEventType());
+
+    // Reset back to its original value.
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC.defaultBoolVal);
   }
 
   @Test
@@ -1376,6 +1382,9 @@ public class TestDbNotificationListener {
 
   @Test
   public void sqlInsertPartition() throws Exception {
+    // Force only basic stats notifications. Otherwise, additional ALTER notifications will be generated.
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, true);
+
     String tblName = "sqlinsptn";
     //create_table
     driver.run("create table " + tblName + " (c int) partitioned by (ds string)");
@@ -1456,6 +1465,9 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
     // replace-overwrite introduces no new files
     assertTrue(event.getMessage().matches(".*\"files\":\\[\\].*"));
+
+    // Reset back to its original value.
+    conf.setBoolVar(HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC, HiveConf.ConfVars.METASTORE_ALTER_NOTIFICATIONS_BASIC.defaultBoolVal);
    }
 
   private void verifyInsert(NotificationEvent event, String dbName, String tblName) throws Exception {
