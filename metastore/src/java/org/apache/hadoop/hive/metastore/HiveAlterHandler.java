@@ -295,11 +295,11 @@ public class HiveAlterHandler implements AlterHandler {
           boolean revertMetaDataTransaction = false;
           try {
             msdb.openTransaction();
-            msdb.alterTable(newt.getDbName(), newt.getTableName(), oldt);
+            alterTableUpdateTableColumnStats(msdb, newt, oldt);
             for (ObjectPair<Partition, String> pair : altps) {
               Partition part = pair.getFirst();
               part.getSd().setLocation(pair.getSecond());
-              msdb.alterPartition(newt.getDbName(), name, part.getValues(), part);
+              msdb.alterPartition(oldt.getDbName(), name, part.getValues(), part);
             }
             revertMetaDataTransaction = msdb.commitTransaction();
           } catch (Exception e1) {
