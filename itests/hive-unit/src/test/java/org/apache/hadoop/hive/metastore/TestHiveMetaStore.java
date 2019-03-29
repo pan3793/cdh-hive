@@ -48,6 +48,7 @@ import org.apache.hadoop.hive.metastore.api.GetPartitionsRequest;
 import org.apache.hadoop.hive.metastore.api.GetPartitionsResponse;
 import org.apache.hadoop.hive.metastore.api.PartitionSpecWithSharedSD;
 import org.apache.hadoop.hive.metastore.api.PartitionWithoutSD;
+import org.apache.hive.common.util.HiveVersionInfo;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.slf4j.Logger;
@@ -3392,6 +3393,11 @@ public abstract class TestHiveMetaStore extends TestCase {
 
     client.dropDatabase(dbName);
     silentDropDatabase(dbName);
+  }
+
+  @Test
+  public void testVersion() throws TException {
+    assertEquals(HiveVersionInfo.getVersion(), client.getServerVersion());
   }
 
   private void checkDbOwnerType(String dbName, String ownerName, PrincipalType ownerType)

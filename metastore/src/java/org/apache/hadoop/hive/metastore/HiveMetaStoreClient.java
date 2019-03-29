@@ -2794,4 +2794,9 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
     checkDbAndTableFilters(request.getDbName(), request.getTblName());
     return client.get_partitions_with_specs(request);
   }
+
+  @Override
+  public String getServerVersion() throws TException {
+    return client.getVersion();
+  }
 }

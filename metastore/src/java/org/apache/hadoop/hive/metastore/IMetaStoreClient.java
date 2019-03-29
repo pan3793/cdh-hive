@@ -1695,4 +1695,11 @@ public interface IMetaStoreClient {
    * Partitions can be filtered by names, by values or by partition expressions.
    */
   GetPartitionsResponse getPartitionsWithSpecs(GetPartitionsRequest request) throws TException;
+   
+  /**
+   * Gets the version string of the metastore server which this client is connected to
+   *
+   * @return String representation of the version number of Metastore server (eg: 3.1.0-SNAPSHOT)
+   */
+  String getServerVersion() throws TException;
 }
