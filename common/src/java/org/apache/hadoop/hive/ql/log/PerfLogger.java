@@ -212,34 +212,33 @@ public class PerfLogger {
     return ImmutableMap.copyOf(endTimes);
   }
 
-  //Methods for metrics integration.  Each thread-local PerfLogger will open/close scope during each perf-log method.
+  // Methods for metrics integration.  Each thread-local PerfLogger will open/close scope during each perf-log method.
   transient Map<String, MetricsScope> openScopes = new HashMap<String, MetricsScope>();
-  private transient Timer.Context totalApiCallsTimerContext = null;
 
   private void beginMetrics(String method) {
     Metrics metrics = MetricsFactory.getInstance();
     if (metrics != null) {
-      MetricsScope scope = metrics.createScope(method);
-      openScopes.put(method, scope);
-      if (metrics instanceof CodahaleMetrics) {
-        final Timer timer = ((CodahaleMetrics) metrics).getTimer(MetricsConstant.TOTAL_API_CALLS);
-        if (timer != null) {
-          totalApiCallsTimerContext = timer.time();
-        }
-      }
+      createAndAddScope(metrics, method);
+      createAndAddScope(metrics, MetricsConstant.ALL_CALLS_METHOD);
     }
   }
 
   private void endMetrics(String method) {
     Metrics metrics = MetricsFactory.getInstance();
     if (metrics != null) {
-      MetricsScope scope = openScopes.remove(method);
-      if (scope != null) {
-        metrics.endScope(scope);
-      }
+      removeAndEndScope(metrics, method);
+      removeAndEndScope(metrics, MetricsConstant.ALL_CALLS_METHOD);
     }
-    if (totalApiCallsTimerContext != null) {
-      totalApiCallsTimerContext.close();
+  }
+
+  private void createAndAddScope(final Metrics metrics, final String method) {
+    openScopes.put(method, metrics.createScope(method));
+  }
+
+  private void removeAndEndScope(final Metrics metrics, final String method) {
+    MetricsScope scope = openScopes.remove(method);
+    if (scope != null) {
+      metrics.endScope(scope);
     }
   }
 
@@ -254,9 +253,5 @@ public class PerfLogger {
       }
     }
     openScopes.clear();
-    if (totalApiCallsTimerContext != null) {
-      totalApiCallsTimerContext.close();
-      totalApiCallsTimerContext = null;
-    }
   }
 }
