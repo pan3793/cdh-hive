@@ -21,6 +21,7 @@ package org.apache.hive.hcatalog.listener;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
@@ -1156,6 +1157,7 @@ public class TestDbNotificationListener {
     InsertEventRequestData insertData = new InsertEventRequestData();
     data.setInsertData(insertData);
     insertData.addToFilesAdded("/warehouse/mytable/b1");
+    insertData.setReplace(false);
     FireEventRequest rqst = new FireEventRequest(true, data);
     rqst.setDbName(defaultDbName);
     rqst.setTableName(tblName);
@@ -1177,6 +1179,7 @@ public class TestDbNotificationListener {
     InsertMessage insertMsg = md.getInsertMessage(event.getMessage());
     assertEquals(defaultDbName, insertMsg.getDB());
     assertEquals(tblName, insertMsg.getTable());
+    assertFalse(insertMsg.isReplace());
 
     // Verify the eventID was passed to the non-transactional listener
     MockMetaStoreEventListener.popAndVerifyLastEventId(EventType.INSERT, firstEventId + 2);
@@ -1207,6 +1210,7 @@ public class TestDbNotificationListener {
     InsertEventRequestData insertData = new InsertEventRequestData();
     data.setInsertData(insertData);
     insertData.addToFilesAdded("/warehouse/mytable/today/b1");
+    insertData.setReplace(false);
     FireEventRequest rqst = new FireEventRequest(true, data);
     rqst.setDbName(defaultDbName);
     rqst.setTableName(tblName);
@@ -1227,6 +1231,7 @@ public class TestDbNotificationListener {
     verifyInsert(event, defaultDbName, tblName);
     InsertMessage insertMessage = md.getInsertMessage(event.getMessage());
     List<String> ptnValues = insertMessage.getPtnObj().getValues();
+    assertFalse(insertMessage.isReplace());
     assertEquals(partKeyVals, ptnValues);
 
     // Verify the eventID was passed to the non-transactional listener
@@ -1315,6 +1320,8 @@ public class TestDbNotificationListener {
     assertEquals(EventType.INSERT.toString(), event.getEventType());
     // Parse the message field
     verifyInsert(event, defaultDbName, tblName);
+    InsertMessage insertMsg = md.getInsertMessage(event.getMessage());
+    assertFalse(insertMsg.isReplace());
 
     event = rsp.getEvents().get(2);
     assertEquals(firstEventId + 3, event.getEventId());
@@ -1425,6 +1432,9 @@ public class TestDbNotificationListener {
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
     // Parse the message field
     verifyInsert(event, null, tblName);
+    // Verify the replace flag.
+    InsertMessage insertMsg = md.getInsertMessage(event.getMessage());
+    assertFalse(insertMsg.isReplace());
 
     event = rsp.getEvents().get(3);
     assertEquals(firstEventId + 4, event.getEventId());
@@ -1463,6 +1473,10 @@ public class TestDbNotificationListener {
     event = rsp.getEvents().get(10);
     assertEquals(firstEventId + 11, event.getEventId());
     assertEquals(HCatConstants.HCAT_INSERT_EVENT, event.getEventType());
+
+    // Verify the replace flag.
+    insertMsg = md.getInsertMessage(event.getMessage());
+    assertTrue(insertMsg.isReplace());
     // replace-overwrite introduces no new files
     assertTrue(event.getMessage().matches(".*\"files\":\\[\\].*"));
 
