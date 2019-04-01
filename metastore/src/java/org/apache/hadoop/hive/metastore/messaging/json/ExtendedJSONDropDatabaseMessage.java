@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.metastore.messaging.json;
 
 
+import org.apache.hadoop.hive.metastore.api.Database;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ExtendedJSONDropDatabaseMessage extends JSONDropDatabaseMessage {
@@ -28,7 +29,8 @@ public class ExtendedJSONDropDatabaseMessage extends JSONDropDatabaseMessage {
   public ExtendedJSONDropDatabaseMessage() {
   }
 
-  public ExtendedJSONDropDatabaseMessage(String server, String servicePrincipal, String db, Long timestamp, String location) {
+  public ExtendedJSONDropDatabaseMessage(String server, String servicePrincipal, Database db,
+      Long timestamp, String location) {
     super(server, servicePrincipal, db, timestamp);
     this.location = location;
   }

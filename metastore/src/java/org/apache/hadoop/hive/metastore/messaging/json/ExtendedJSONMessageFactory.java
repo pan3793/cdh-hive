@@ -127,7 +127,7 @@ public class ExtendedJSONMessageFactory extends MessageFactory {
   }
 
   public ExtendedJSONDropDatabaseMessage buildDropDatabaseMessage(Database db) {
-    return new ExtendedJSONDropDatabaseMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, db.getName(),
+    return new ExtendedJSONDropDatabaseMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, db,
         now(), db.getLocationUri());
   }
 

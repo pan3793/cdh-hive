@@ -132,7 +132,7 @@ public class JSONMessageFactory extends MessageFactory {
 
   @Override
   public DropDatabaseMessage buildDropDatabaseMessage(Database db) {
-    return new JSONDropDatabaseMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, db.getName(), now());
+    return new JSONDropDatabaseMessage(MS_SERVER_URL, MS_SERVICE_PRINCIPAL, db, now());
   }
 
   @Override
