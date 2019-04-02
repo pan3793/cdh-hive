@@ -62,6 +62,8 @@ public class MapWork extends BaseWork {
 
   private static final Log LOG = LogFactory.getLog(MapWork.class);
 
+  private boolean hadoopSupportsSplittable;
+
   // use LinkedHashMap to make sure the iteration order is
   // deterministic, to ease testing
   private LinkedHashMap<String, ArrayList<String>> pathToAliases = new LinkedHashMap<String, ArrayList<String>>();
@@ -433,6 +435,14 @@ public class MapWork extends BaseWork {
 
   public boolean isMapperCannotSpanPartns() {
     return this.mapperCannotSpanPartns;
+  }
+
+  public boolean getHadoopSupportsSplittable() {
+    return hadoopSupportsSplittable;
+  }
+
+  public void setHadoopSupportsSplittable(boolean hadoopSupportsSplittable) {
+    this.hadoopSupportsSplittable = hadoopSupportsSplittable;
   }
 
   public String getIndexIntermediateFile() {

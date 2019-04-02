@@ -935,6 +935,8 @@ public final class GenMapRedUtils {
     work.setPathToAliases(new LinkedHashMap<String, ArrayList<String>>());
     work.setPathToPartitionInfo(new LinkedHashMap<String, PartitionDesc>());
     work.setAliasToWork(new LinkedHashMap<String, Operator<? extends OperatorDesc>>());
+    work.setHadoopSupportsSplittable(
+        conf.getBoolVar(HiveConf.ConfVars.HIVE_COMBINE_INPUT_FORMAT_SUPPORTS_SPLITTABLE));
     return mrWork;
   }
 
