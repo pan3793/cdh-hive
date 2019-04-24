@@ -1625,10 +1625,14 @@ public class Hive {
       Partition newTPart = oldPart != null ? oldPart : new Partition(tbl, partSpec, newPartPath);
       alterPartitionSpecInMemory(tbl, partSpec, newTPart.getTPartition(), inheritTableSpecs, newPartPath.toString());
       validatePartition(newTPart);
-      if ((null != newFiles) || replace) {
+
+      // Generate an insert event only if inserting into an existing partition
+      // When inserting into a new partition, the add partition event takes care of insert event
+      if (null != oldPart || (null != newFiles)) {
         fireInsertEvent(tbl, partSpec, replace, newFiles);
       } else {
-        LOG.debug("No new files were created, and is not a replace. Skipping generating INSERT event.");
+        LOG.debug("No new files were created, and is not a replace, or we're inserting into a "
+            + "partition that does not exist yet. Skipping generating INSERT event.");
       }
 
       //column stats will be inaccurate
