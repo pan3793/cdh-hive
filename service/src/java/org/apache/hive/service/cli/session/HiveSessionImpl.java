@@ -170,7 +170,8 @@ public class HiveSessionImpl implements HiveSession {
     sessionState.setIsUsingThriftJDBCBinarySerDe(updateIsUsingThriftJDBCBinarySerDe());
     SessionState.start(sessionState);
     try {
-      sessionState.reloadAuxJars();
+      sessionState.loadAuxJars();
+      sessionState.loadReloadableAuxJars();
     } catch (IOException e) {
       String msg = "Failed to load reloadable jar file path: " + e;
       LOG.error(msg, e);
