@@ -16,14 +16,9 @@
  * limitations under the License.
  */
 package org.apache.hadoop.hive.ql.exec.tez;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import org.apache.hadoop.hive.ql.exec.ObjectCache;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.tez.TezProcessor.TezKVOutputCollector;
@@ -40,8 +35,11 @@ import org.apache.tez.runtime.api.ProcessorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 
 /**
  * Process input from tez LogicalInput and write output
@@ -84,19 +82,7 @@ public abstract class RecordProcessor  {
     this.outputs = outputs;
 
     checkAbortCondition();
-
-    //log classpaths
-    try {
-      if (l4j.isDebugEnabled()) {
-        l4j.debug("conf classpath = "
-            + Arrays.asList(((URLClassLoader) jconf.getClassLoader()).getURLs()));
-        l4j.debug("thread classpath = "
-            + Arrays.asList(((URLClassLoader) Thread.currentThread()
-            .getContextClassLoader()).getURLs()));
-      }
-    } catch (Exception e) {
-      l4j.info("cannot get classpath: " + e.getMessage());
-    }
+    Utilities.tryLoggingClassPaths(jconf, l4j);
   }
 
   /**

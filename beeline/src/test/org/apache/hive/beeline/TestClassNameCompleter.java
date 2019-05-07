@@ -18,16 +18,17 @@
 
 package org.apache.hive.beeline;
 
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TestClassNameCompleter {
 
@@ -40,7 +41,7 @@ public class TestClassNameCompleter {
     String fileName = "empty.file.jar";
     File p = tmpFolder.newFile(fileName);
 
-    URLClassLoader classLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     try {
       URLClassLoader newClassLoader = new URLClassLoader(new URL[] { p.toURL() }, classLoader);
 
@@ -62,7 +63,7 @@ public class TestClassNameCompleter {
     String fileName = "empty.file";
     File p = tmpFolder.newFile(fileName);
 
-    URLClassLoader classLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     try {
       URLClassLoader newClassLoader = new URLClassLoader(new URL[] { p.toURL() }, classLoader);
 
