@@ -127,7 +127,8 @@ if 'HADOOP_OPTS' not in os.environ:
   os.environ['HADOOP_OPTS'] = ''
 
 # log under the Hive log dir but use a separate log file for HCat logs
-os.environ['HADOOP_OPTS'] += " " + "-Dhive.log.file=hcat.log" + " " + "-Dhive.log.dir=" + os.path.join(os.environ['HIVE_HOME'], "logs")
+os.environ['HADOOP_OPTS'] += " " + "-Dhive.log.file=hcat.log" + " " + "-Dhive.log.dir=" + "/var/log/hcatalog"
+os.environ['HADOOP_USER_CLASSPATH_FIRST'] = 'true'
 
 ##### Uncomment to debug log4j configuration
 #os.environ['HADOOP_OPTS'] += " -Dlog4j.debug"
