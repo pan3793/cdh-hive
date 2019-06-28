@@ -850,12 +850,12 @@ public class HiveConf extends Configuration {
     METASTORE_EVENT_EXPIRY_DURATION("hive.metastore.event.expiry.duration", "0s",
         new TimeValidator(TimeUnit.SECONDS),
         "Duration after which events expire from events table"),
-    METASTORE_ALTER_NOTIFICATIONS_BASIC("hive.metastore.alter.notifications.basic", false,
+    METASTORE_ALTER_NOTIFICATIONS_BASIC("hive.metastore.alter.notifications.basic", true,
         "Setting this config to true will only provide alter notifications in HMS if tableName,"
             + " dbName, location or owner info changes. "
             + "If this config is set to false, all the alter table/partition events for any attribute "
             + "change will be enabled. Hence, setting the config to false will turn on a "
-            + "lot of additional alter notifications in HMS. Defaults to false."),
+            + "lot of additional alter notifications in HMS and it should be done only if necessary."),
     /**
      * This setting makes ExtendedJSONMessageFactory the default message factory in
      * HMS metastore. Earlier config hcatalog.message.factory.impl.json is no longer
@@ -869,13 +869,14 @@ public class HiveConf extends Configuration {
         "List of comma-separated regexes that are used to reduced the size of HMS Notification messages."
             + " The regexes are matched against each key of parameters map in Table or Partition object"
             + "present in HMS Notification. Any key-value pair whose key is matched with any regex will"
-            + " be removed from Parameters map during Serialization of Table/Partition object. Defaults to excluding Impala."),
+            + " be removed from Parameters map during Serialization of Table/Partition object."),
     METASTORE_DISABLE_STATS_NOTIFICATIONS(
-        "hive.metastore.disable.stats.notifications", true,
-        "Disable alter table/partition notifications created by stat changes. Defaults to disabled."),
-    METASTORE_NOTIFICATIONS_ADD_THRIFT_OBJECTS("hive.metastore.notifications.add.thrift.objects", true,
+        "hive.metastore.disable.stats.notifications", false,
+        "Disable alter table/partition notifications created by stat changes"),
+    METASTORE_NOTIFICATIONS_ADD_THRIFT_OBJECTS("hive.metastore.notifications.add.thrift.objects", false,
         "Setting this option to true will add the entire thrift Table/Partition objects to the HMS notifications. "
-            + "This will increase the message size of each notification. Defaults to true."),
+            + "This will increase the message size of each notification so this should be"
+            + " set to true only if necessary."),
     METASTORE_EXECUTE_SET_UGI("hive.metastore.execute.setugi", true,
         "In unsecure mode, setting this property to true will cause the metastore to execute DFS operations using \n" +
         "the client's reported user and group permissions. Note that this property must be set on \n" +
