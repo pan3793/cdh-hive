@@ -1,3 +1,7 @@
+SET hive.vectorized.execution.enabled=false;
+
+-- SORT_QUERY_RESULTS
+
 -- In this test, 2 files are loaded into table T1. The data contains rows with the same value of a and b,
 -- with different number of rows for a and b in each file. Since bucketizedHiveInputFormat is used, 
 -- this tests that the aggregate function stores the partial aggregate state correctly even if an 
