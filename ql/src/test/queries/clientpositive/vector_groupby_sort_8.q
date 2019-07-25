@@ -1,4 +1,5 @@
-SET hive.vectorized.execution.enabled=false;
+SET hive.vectorized.execution.enabled=true;
+SET hive.vectorized.execution.reduce.enabled=true;
 set hive.mapred.mode=nonstrict;
 set hive.exec.reducers.max = 10;
 set hive.map.groupby.sorted=true;
@@ -8,7 +9,7 @@ set hive.map.groupby.sorted=true;
 CREATE TABLE T1(key STRING, val STRING) PARTITIONED BY (ds string)
 CLUSTERED BY (key) SORTED BY (key) INTO 2 BUCKETS STORED AS TEXTFILE;
 
-LOAD DATA LOCAL INPATH '../../data/files/T1.txt' INTO TABLE T1 PARTITION (ds='1');
+LOAD DATA LOCAL INPATH '../../data/files/bucket_files/000000_0' INTO TABLE T1  PARTITION (ds='1');
 
 -- perform an insert to make sure there are 2 files
 INSERT OVERWRITE TABLE T1 PARTITION (ds='1') select key, val from T1 where ds = '1';
@@ -16,7 +17,7 @@ INSERT OVERWRITE TABLE T1 PARTITION (ds='1') select key, val from T1 where ds = 
 -- The plan is not converted to a map-side, since although the sorting columns and grouping
 -- columns match, the user is issueing a distinct.
 -- However, after HIVE-4310, partial aggregation is performed on the mapper
-EXPLAIN
+EXPLAIN VECTORIZATION DETAIL
 select count(distinct key) from T1;
 select count(distinct key) from T1;
 
