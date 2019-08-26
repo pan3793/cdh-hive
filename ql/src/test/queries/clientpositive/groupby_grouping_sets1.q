@@ -1,7 +1,3 @@
-SET hive.vectorized.execution.enabled=false;
-
--- SORT_QUERY_RESULTS
-
 CREATE TABLE T1(a STRING, b STRING, c STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ' ' STORED AS TEXTFILE; 
 
 LOAD DATA LOCAL INPATH '../../data/files/grouping_sets.txt' INTO TABLE T1;
